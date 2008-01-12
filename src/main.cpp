@@ -10,9 +10,19 @@
 
 int main(int argc, char **argv)
 {
+	char buf[16];
+
 	zSocket sock;
-	sock.bind("127.0.0.1", 7171);
+	sock.bind("127.0.0.1", 7001);
 	sock.listen(5);
-	sock.accept();
+
+	zSocket *newSock = sock.accept();
+	newSock->recv(buf, 16);
+	newSock->send("It worked!\n", 11);
+	newSock->recv(buf, 16);
+	newSock->close(true);
+	sock.close(true);
+	delete newSock;
 	return (0);
 }
+
