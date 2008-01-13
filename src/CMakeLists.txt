@@ -6,6 +6,8 @@ SET(ZIAHTTPD_HEADERS zia.h singleton.hpp ISocket.hpp zSocket_win32.h)
 IF (WIN32)
 	SET(ZIAHTTPD_LIBS Ws2_32.lib)
 	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS} zSocket_win32.cpp)
+ELSE (WIN32)
+	SET(ZIAHTTPD_LIBS pthread)
 ENDIF (WIN32)
 
 IF (UNIX)
