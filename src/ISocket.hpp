@@ -5,7 +5,6 @@
 #include "zia.h"
 
 /// Socket interface to plugin OS dependant code.
-template <typename S>
 class ISocket
 {
 public:
@@ -14,7 +13,7 @@ public:
 	/// Listen wait for incoming connections.
 	virtual void listen(int queue) const = 0;
 	/// Spawn a new socket for the new client.
-	virtual S *accept() = 0;
+	virtual ISocket *accept() = 0;
 	/// Send data to the client.
 	virtual int	send(char *buf, int length) const = 0;
 	/// Read input data from the client.

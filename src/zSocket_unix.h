@@ -8,7 +8,7 @@
 
 #define SOCKET_ERROR -1
 
-class zSocket : public ISocket<zSocket>
+class zSocket : public ISocket
 {
 public:
 	zSocket();

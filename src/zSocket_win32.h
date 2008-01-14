@@ -5,7 +5,7 @@
 #include "zia.h"
 #include "ISocket.hpp"
 
-class zSocket : public ISocket<zSocket>
+class zSocket : public ISocket
 {
 public:
 	zSocket();
