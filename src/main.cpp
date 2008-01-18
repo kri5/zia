@@ -1,6 +1,8 @@
 #include <iostream>
 #include "zia.h"
 
+#include "test.h"
+
 #ifdef WIN32
  #include "zSocket_win32.h"
 #else
@@ -10,7 +12,9 @@
 
 int main(int argc, char **argv)
 {
-	char buf[16];
+
+/*      Socket part       */
+/*	char buf[16];
 
 	zSocket sock;
 	sock.bind("127.0.0.1", 7001);
@@ -23,6 +27,13 @@ int main(int argc, char **argv)
 	newSock->close(true);
 	sock.close(true);
 	delete newSock;
+*/
+
+/*	Thread part     */ 
+	test::create("Balip");
+	test::create("Balop");
+	sleep(11);
+
 	return (0);
 }
 
