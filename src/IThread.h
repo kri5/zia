@@ -12,6 +12,7 @@ class IThread
 public:
 	virtual		~IThread() { }
 	void		run();
+  void    stop();
 	unsigned long	pid() const { return m_pid; }
 
 protected:

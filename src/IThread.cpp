@@ -15,6 +15,16 @@ void			IThread::run()
 	running = 1;
 }
 
+void      IThread::stop()
+{
+  // Don't stop a thread already stopped.
+  if (!running) return;
+  
+  // Stopping the thread.
+  pthread_cancel(m_pid);
+  running = 0;
+}
+
 void*			IThread::dispatch(void* thread_obj)
 {
 	// Call the thread code
