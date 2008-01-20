@@ -1,7 +1,7 @@
 #include "IThreadbase.h"
 
 
-IThreadbase::IThreadbase() : running(0), m_pid(0L)
+IThreadbase::IThreadbase() : running(false), m_pid(0L)
 {
 }
 

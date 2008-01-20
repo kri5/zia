@@ -7,7 +7,7 @@ void			IThread::run()
 
 	// Creating an OS specific thread, using the static callback.
 	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)IThread::dispatch, this, 0, &m_pid);
-	running = 1;
+	running = true;
 }
 
 void      IThread::stop()
@@ -17,5 +17,5 @@ void      IThread::stop()
 
 	// Stopping the thread.
 	TerminateThread(hThread, 0);
-	running = 0;
+	running = false;
 }

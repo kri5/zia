@@ -7,7 +7,7 @@ void			IThread::run()
 
 	// Creating an OS specific thread, using the static callback.
 	pthread_create(&m_pid, NULL, IThread::dispatch, this); 
-	running = 1;
+	running = true;
 }
 
 void      IThread::stop()
@@ -17,5 +17,5 @@ void      IThread::stop()
 
 	// Stopping the thread.
 	pthread_cancel(m_pid);
-	running = 0;
+	running = false;
 }
