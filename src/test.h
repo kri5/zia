@@ -1,7 +1,14 @@
 #ifndef __TEST_H__
 #define __TEST_H__
 
-#include "IThread.h"
+#include "zia.h"
+
+#ifdef WIN32
+ #include "IThread_win32.h"
+#else
+ #include <unistd.h>
+ #include "IThread_unix.h"
+#endif
 
 class		test : private IThread
 {

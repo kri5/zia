@@ -1,6 +1,5 @@
 #include <iostream>
 #include "zia.h"
-
 #include "test.h"
 
 #ifdef WIN32
@@ -29,7 +28,7 @@ int main(int argc, char **argv)
 	delete newSock;
 */
 
-/*	Thread part     */ 
+/*      Thread part     */ 
 	test::create("Balip");
 	test::create("Balop");
 	sleep(11);

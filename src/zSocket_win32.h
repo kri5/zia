@@ -1,7 +1,6 @@
 #ifndef __ZSOCKET_H__
 #define __ZSOCKET_H__
 
-#include <WinSock2.h>
 #include "zia.h"
 #include "ISocket.hpp"
 
