@@ -17,5 +17,6 @@ void      IThread::stop()
 
 	// Stopping the thread.
 	TerminateThread(hThread, 0);
+	CloseHandle(hThread);
 	running = false;
 }
