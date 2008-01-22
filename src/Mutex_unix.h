@@ -15,7 +15,8 @@ public:
 	void			unlock();
 protected:
 private:
-	pthread_mutex_t	mutex;
+	pthread_mutex_t		mutex;
 };
 
 #endif // MUTEX_UNIX_H
+

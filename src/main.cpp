@@ -31,6 +31,7 @@ int main(int argc, char **argv)
 /*      Thread part     */
 	Mutex mutex;
 	test::create("Moulaf", mutex);
+	sleep(1);
 	test::create("roolz", mutex);
 	
 	sleep(1);

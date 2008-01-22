@@ -3,12 +3,14 @@
 Mutex::Mutex()
 {
 	lockCount = 0;
+	pthread_mutex_init(&mutex, NULL);
 }
 
 Mutex::~Mutex()
 {
 	if (lockCount > 0)
 		; // Put a line in the logs.
+	pthread_mutex_destroy(&mutex);
 }
 
 void		Mutex::lock()
@@ -33,3 +35,4 @@ void		Mutex::unlock()
 		lockCount -= 1;
 	pthread_mutex_unlock(&mutex);
 }
+
