@@ -1,4 +1,5 @@
 #include "Mutex_win32.h"
+#include <iostream>
 
 Mutex::Mutex()
 {
@@ -17,15 +18,18 @@ Mutex::~Mutex()
 
 void		Mutex::lock()
 {
-	if (lockCount == 0)
-		if (WaitForSingleObject(ghMutex, INFINITE) != WAIT_FAILED)
+	if (WaitForSingleObject(ghMutex, INFINITE) == WAIT_OBJECT_0)
+	{
+			std::cout << "Locked! (real)" << std::endl;
 			lockCount += 1;
+	}
 }
 
 bool		Mutex::trylock()
 {
 	if (WaitForSingleObject(ghMutex, 0) == WAIT_OBJECT_0)
 	{
+		std::cout << "Locked! (real)" << std::endl;
 		lockCount += 1;
 		return true;
 	}
@@ -34,8 +38,8 @@ bool		Mutex::trylock()
 
 void		Mutex::unlock()
 {
-	if (lockCount == 1)
-		ReleaseMutex(ghMutex);
 	if (lockCount > 0)
 		lockCount -= 1;
+	std::cout << "Unlocked!" << std::endl;
+	ReleaseMutex(ghMutex);
 }

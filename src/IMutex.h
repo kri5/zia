@@ -12,6 +12,7 @@ public:
 	/// Unlock the mutex.
 	virtual void	unlock() = 0;
 protected:
+	/// How much time a thread has been locked by the same thread.
 	int				lockCount;
 private:
 };

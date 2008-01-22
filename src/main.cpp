@@ -28,10 +28,15 @@ int main(int argc, char **argv)
 	delete newSock;
 */
 
-/*      Thread part     */ 
-	test::create("Balip");
-	test::create("Balop");
-	sleep(11);
+/*      Thread part     */
+	Mutex mutex;
+	test::create("Moulaf", mutex);
+	test::create("roolz", mutex);
+	
+	sleep(1);
+	while (!mutex.trylock())
+		sleep(1);
+	mutex.unlock();
 
 	return (0);
 }

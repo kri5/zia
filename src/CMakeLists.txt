@@ -1,17 +1,17 @@
 PROJECT (ziahttpd)
 
 SET(ZIAHTTPD_SRCS main.cpp test.cpp IThreadbase.cpp)
-SET(ZIAHTTPD_HEADERS zia.h singleton.hpp ISocket.hpp zSocket_win32.h test.h IThreadbase.h IThread_win32.h)
+SET(ZIAHTTPD_HEADERS zia.h singleton.hpp ISocket.hpp zSocket_win32.h test.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h)
 
 IF (WIN32)
 	SET(ZIAHTTPD_LIBS Ws2_32.lib)
-	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS} zSocket_win32.cpp IThread_win32.cpp)
+	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS} zSocket_win32.cpp IThread_win32.cpp Mutex_win32.cpp)
 ELSE (WIN32)
 	SET(ZIAHTTPD_LIBS pthread)
 ENDIF (WIN32)
 
 IF (UNIX)
-  SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} zSocket_unix.cpp IThread_unix.cpp)
+  SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} zSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp)
 ENDIF (UNIX)
 
 ADD_EXECUTABLE (ziahttpd ${ZIAHTTPD_SRCS})
