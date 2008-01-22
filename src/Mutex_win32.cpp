@@ -19,17 +19,13 @@ Mutex::~Mutex()
 void		Mutex::lock()
 {
 	if (WaitForSingleObject(ghMutex, INFINITE) == WAIT_OBJECT_0)
-	{
-			std::cout << "Locked! (real)" << std::endl;
-			lockCount += 1;
-	}
+		lockCount += 1;
 }
 
 bool		Mutex::trylock()
 {
 	if (WaitForSingleObject(ghMutex, 0) == WAIT_OBJECT_0)
 	{
-		std::cout << "Locked! (real)" << std::endl;
 		lockCount += 1;
 		return true;
 	}
@@ -40,6 +36,5 @@ void		Mutex::unlock()
 {
 	if (lockCount > 0)
 		lockCount -= 1;
-	std::cout << "Unlocked!" << std::endl;
 	ReleaseMutex(ghMutex);
 }
