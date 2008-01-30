@@ -8,6 +8,7 @@
 #endif
 
 template <typename T>
+/// Templated Singleton Class Thread Safe
 class Singleton
 {
   // Methods
@@ -16,6 +17,8 @@ class Singleton
     virtual ~Singleton(){}
 
   public:
+    /// Return a pointer on the Singleton Instance
+    /// If doesn't exist, it creates it.
     static  T*  getInstance()
     {
       if(Singleton<T>::_instance == NULL) 
@@ -24,13 +27,13 @@ class Singleton
         if(Singleton<T>::_instance == NULL)
         {
           Singleton<T>::_instance = new T();
-          _count++;
         }
         Singleton<T>::_mutex->unlock();
       }
       return static_cast<T*>(Singleton<T>::_instance);
     }
 
+    /// Delete the Instance of Singleton, if exist
     static  void  deleteInstance()
     {
       if (Singleton<T>::_singleton != NULL)
@@ -39,7 +42,6 @@ class Singleton
         if (Singleton<T>::_instance != NULL)
         {
           delete  Singleton<T>::_instance;
-          _count--;
           Singleton<T>::_instance = NULL;
         }
         Singleton<T>::_mutex->unlock();
@@ -50,15 +52,11 @@ class Singleton
   protected:
     static  T*      _instance;
     static  IMutex* _mutex; 
-  public:
-    static  int     _count;
 };
 
 template <typename T>
 T*      Singleton<T>::_instance = NULL;
 template <typename T>
 IMutex* Singleton<T>::_mutex = static_cast<IMutex*>(new Mutex());
-template <typename T>
-int     Singleton<T>::_count = 0;
 
 #endif /* !__SINGLETON_HPP__ */
