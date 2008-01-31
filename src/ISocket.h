@@ -7,10 +7,6 @@
 class ISocket
 {
 public:
-	/// Send data to the client.
-	virtual int	send(char *buf, int length) const = 0;
-	/// Read input data from the client.
-	virtual int	recv(char *buf, int length) const = 0;
 	//virtual int select() const = 0;
 	/// Close the connection with auto-shutdown support.
 	virtual void close(bool shutdown) const = 0;

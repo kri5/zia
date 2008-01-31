@@ -3,13 +3,15 @@
 
 #include "zia.h"
 #include "Socket_win32.h"
+#include "IClientSocket.h"
 
-class ClientSocket : public Socket
+class ClientSocket : public Socket, public IClientSocket
 {
 public:
 	ClientSocket(int acceptedSocket);
 	~ClientSocket();
 	int	recv(char *buf, int length) const;
+	int send(char *buf, int length) const;
 private:
 };
 

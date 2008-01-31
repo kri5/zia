@@ -18,18 +18,6 @@ Socket::~Socket()
 	WSACleanup();
 }
 
-int Socket::send(char *buf, int length) const
-{
-	int iResult = ::send(listenSocket, buf, length, 0);
-	if (iResult == SOCKET_ERROR)
-	{
-		closesocket(listenSocket);
-		WSACleanup();
-		throw 0;
-	}
-	return (iResult);
-}
-
 void Socket::close(bool shutdown) const
 {
 	if (shutdown)

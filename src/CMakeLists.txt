@@ -1,7 +1,8 @@
 PROJECT (ziahttpd)
 
 SET(ZIAHTTPD_SRCS main.cpp test.cpp IThreadbase.cpp)
-SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp ISocket.h Socket_win32.h ClientSocket_win32.h MainSocket_win32.h test.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h)
+SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h test.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
+	IClientSocket.h)
 
 IF (WIN32)
 	SET(ZIAHTTPD_LIBS Ws2_32.lib)

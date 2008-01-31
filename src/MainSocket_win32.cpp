@@ -44,14 +44,3 @@ ClientSocket *MainSocket::accept()
 	return (ret);
 }
 
-int MainSocket::recv( char *buf, int length ) const
-{
-	int iResult = ::recv(listenSocket, buf, length, 0);
-	if (iResult == SOCKET_ERROR)
-	{
-		closesocket(listenSocket);
-		WSACleanup();
-		throw 0;
-	}
-	return (iResult);
-}

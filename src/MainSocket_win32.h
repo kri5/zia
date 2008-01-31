@@ -13,7 +13,6 @@ public:
 	
 	/// Spawn a new socket for the new client.
 	ClientSocket *accept();
-	int	recv(char *buf, int length) const;
 private:
 	/// Bind the socket on a specified host and port.
 	void bind(std::string address, int port) const;
