@@ -1,19 +1,12 @@
 #ifndef __ISOCKET_HPP__
 #define __ISOCKET_HPP__
 
-#include <iostream>
 #include "zia.h"
 
 /// Socket interface to plugin OS dependant code.
 class ISocket
 {
 public:
-	/// Bind the socket on a specified host and port.
-	virtual void bind(std::string address, int port) const = 0;
-	/// Listen wait for incoming connections.
-	virtual void listen(int queue) const = 0;
-	/// Spawn a new socket for the new client.
-	virtual ISocket *accept() = 0;
 	/// Send data to the client.
 	virtual int	send(char *buf, int length) const = 0;
 	/// Read input data from the client.

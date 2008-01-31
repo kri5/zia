@@ -1,12 +1,9 @@
 #include <iostream>
 #include "zia.h"
 #include "test.h"
-
-#ifdef WIN32
- #include "zSocket_win32.h"
-#else
- #include "zSocket_unix.h"
-#endif
+#include "MainSocket.h"
+#include "ClientSocket.h"
+#include "Socket.h"
 
 
 int main(int argc, char **argv)
@@ -27,6 +24,15 @@ int main(int argc, char **argv)
 	sock.close(true);
 	delete newSock;
 */
+
+	MainSocket		*sock;
+	char			buff[16];
+
+	sock = new MainSocket(5, "127.0.0.1", 7001);
+	ClientSocket *clt = sock->accept();
+	clt->send("It worked\n", 11);
+	delete clt;
+	delete sock;
 
 /*      Thread part     */
 	Mutex mutex;

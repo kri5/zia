@@ -11,7 +11,8 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 IF (UNIX)
-  SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} zSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp)
+  SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} Socket_unix.cpp ClientSocket_unix.cpp
+	  MainSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp)
 ENDIF (UNIX)
 
 ADD_EXECUTABLE (ziahttpd ${ZIAHTTPD_SRCS})
