@@ -5,7 +5,7 @@
 #include "Socket_win32.h"
 #include "ClientSocket_win32.h"
 
-class MainSocket : Socket
+class MainSocket : public Socket
 {
 public:
 	// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
