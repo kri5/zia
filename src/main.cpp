@@ -30,7 +30,8 @@ int main(int argc, char **argv)
 
 	sock = new MainSocket(5, "127.0.0.1", 7001);
 	ClientSocket *clt = sock->accept();
-	clt->send("It worked\n", 11);
+	clt->send("It worked\r\n", 12);
+	clt->recv(buff, 16);
 	delete clt;
 	delete sock;
 

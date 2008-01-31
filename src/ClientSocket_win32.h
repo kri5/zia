@@ -7,13 +7,11 @@
 class ClientSocket : public Socket
 {
 public:
-	ClientSocket();
+	ClientSocket(int acceptedSocket);
 	~ClientSocket();
-	int	send(char *buf, int length) const;
 	int	recv(char *buf, int length) const;
-	void close(bool shutdown) const;
 private:
-}
+};
 
 #endif //__CLIENT_SOCKET_WIN32_H__
 

@@ -15,11 +15,10 @@ public:
 	virtual int	recv(char *buf, int length) const = 0;
 	//virtual int select() const = 0;
 	/// Close the connection with auto-shutdown support.
-	virtual void close(bool shutdown) const = 0;
+	void close(bool shutdown) const;
 protected:
 	WSADATA wsaData;
 	SOCKET listenSocket;
-	static const int SOCKET_ERROR = -1;
 };
 
 #endif // __SOCKET_WIN32_H__

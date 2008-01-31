@@ -3,6 +3,7 @@
 
 #include <string>
 #include "Socket_win32.h"
+#include "ClientSocket_win32.h"
 
 class MainSocket : Socket
 {
@@ -11,7 +12,8 @@ public:
 	MainSocket(int queue, std::string adress, int port);
 	
 	/// Spawn a new socket for the new client.
-	ISocket *accept();
+	ClientSocket *accept();
+	int	recv(char *buf, int length) const;
 private:
 	/// Bind the socket on a specified host and port.
 	void bind(std::string address, int port) const;
