@@ -4,8 +4,9 @@
 #include <string>
 #include "Socket_win32.h"
 #include "ClientSocket_win32.h"
+#include "IMainSocket.h"
 
-class MainSocket : public Socket
+class MainSocket : public Socket, public IMainSocket
 {
 public:
 	// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
