@@ -2,7 +2,6 @@
 #define __CLIENTSOCKET_H__
 
 #include "zia.h"
-#include "ISocket.h"
 
 #ifdef WIN32
  #include "ClientSocket_win32.h"

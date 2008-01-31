@@ -2,7 +2,6 @@
 #define __MAINSOCKET_H__
 
 #include "zia.h"
-#include "ISocket.h"
 
 #ifdef WIN32
  #include "MainSocket_win32.h"
