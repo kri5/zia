@@ -7,11 +7,11 @@
 
 class ClientSocket : public Socket, public IClientSocket
 {
-public:
-	ClientSocket(int acceptedSocket);
-	~ClientSocket();
-	int	send(char *buf, int length) const;
-	int	recv(char *buf, int length) const;
+    public:
+        ClientSocket(int acceptedSocket);
+        virtual ~ClientSocket();
+        virtual int	    send(char *buf, int length) const;
+        virtual int	    recv(char *buf, int length) const;
 };
 
 #endif //__CLIENT_SOCKET_UNIX_H__

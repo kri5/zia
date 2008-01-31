@@ -20,7 +20,7 @@ public:
 	virtual int	recv(char *buf, int length) const = 0;
 	//virtual int select() const = 0;
 	/// Close the connection with auto-shutdown support.
-	void close(bool shutdown) const;
+	virtual void close(bool shutdown) const;
 protected:
 	int listenSocket;
 	static const int SOCKET_ERROR = -1;
