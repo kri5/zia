@@ -7,15 +7,20 @@
 
 class SSLClientSocket : public ClientSocket
 {
-    public:
-        SSLClientSocket(int acceptedSocket);
-        ~SSLClientSocket();
-        int     send(char *buf, int length) const;
-        int     recv(char *buf, int length) const;
-        void    close(bool shutdown) const;
-   protected:
-        SSL_CTX* ctx;
-        SSL* ssl;
+  public:
+    SSLClientSocket(int acceptedSocket);
+    ~SSLClientSocket();
+    int     send(char *buf, int length) const;
+    int     recv(char *buf, int length) const;
+    void    close(bool shutdown) const;
+
+  protected:
+    SSL_CTX* ctx;
+    SSL* ssl;
+
+  private:
+    void	logError() const;
+
 };
 
 #endif // __SSL_CLIENT_SOCKET_UNIX_H__
