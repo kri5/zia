@@ -3,8 +3,9 @@
 
 #include "Singleton.hpp"
 #include <fstream>
+#include <string>
 
-class Logger  : public Singleton<Logger>
+class Logger : public Singleton<Logger>
 {
   //Attributes
   public:
@@ -13,7 +14,7 @@ class Logger  : public Singleton<Logger>
       NONE,
       INFO,
       WARN,
-      ERROR,
+      ERRORLVL,
       DEBUG,
       ALL
     };

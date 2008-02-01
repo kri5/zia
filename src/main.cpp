@@ -3,6 +3,8 @@
 #include "test.h"
 #include "MainSocket.h"
 #include "ClientSocket.h"
+#include "XMLDocument.h"
+#include "XMLNode.h"
 #include "Socket.h"
 
 
@@ -25,18 +27,9 @@ int main(int argc, char **argv)
 	delete newSock;
 */
 
-	MainSocket		*sock;
-	char			buff[16];
-
-	sock = new MainSocket(5, "127.0.0.1", 7001);
-	ClientSocket *clt = sock->accept();
-	clt->send("It worked\r\n", 12);
-	clt->recv(buff, 16);
-	delete clt;
-	delete sock;
 
 /*      Thread part     */
-	Mutex mutex;
+	/*Mutex mutex;
 	test::create("Moulaf", mutex);
 	test::create("roolz", mutex);
 	
@@ -44,7 +37,21 @@ int main(int argc, char **argv)
 	while (!mutex.trylock())
 		sleep(1);
 	mutex.unlock();
+*/
 
+	/* XML Part */
+/*
+	Xml::Document* doc = new Xml::Document("zia.conf");
+	Xml::Node* root = doc->getRootNode();
+	std::cout << "<" << root->getName() << ">" << std::endl;
+	Xml::Node*	subNode;
+	while (subNode = root->getNextChildNode())
+	{
+		std::cout << '<' << subNode->getName() << '>' << subNode->getValue()
+			<< "</" << subNode->getName() << '>' << std::endl;
+	}
+	std::cout << "</" << root->getName() << ">" << std::endl;
+*/
 	return (0);
 }
 
