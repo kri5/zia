@@ -1,16 +1,6 @@
 #include "SSLClientSocket_unix.h"
 #include <openssl/ssl.h>
 
-//
-// Object construction:
-// 3 steps.
-//
-// 1_ Memory allocation
-// 2_ Init ??? -> Default constructor
-// 3_ Constructor code execution
-//
-// Merci jack :)
-
 SSLClientSocket::SSLClientSocket(int acceptedSocket) : ClientSocket(acceptedSocket)
 {
     int SSL_RESULT;
@@ -39,50 +29,81 @@ SSLClientSocket::SSLClientSocket(int acceptedSocket) : ClientSocket(acceptedSock
 
         e = ERR_get_error();
         buf = ERR_error_string(e, NULL);
-        // printf("SSL_accept error: %s", buf);
+        Logger::getInstance()->log(Logger::WARN, "SSL_accept error :" + buf);
         this->close(true);
         throw 0;
     }
 }
 
+SSLClientSocket::~SSLClientSocket()
+{
+    this->close(true);
+    SSL_free(ssl);
+    SSL_CTX_free(ctx);
+}
+
 int     SSLClientSocket::send(char *buf, int length) const
 {
-    /*
-     * WARNING
-     * When an SSL_read() operation has to be repeated because of
-     * SSL_ERROR_WANT_READ or SSL_ERROR_WANT_WRITE, it must be repeated with
-     * the same arguments.
-     */
-    int iResult = SSL_write(ssl, buf, length);
-    if (iResult <= 0)
+    bool no_error = true;
+    int iResult;
+
+    do
     {
-        // call SSL_get_error()
-        throw 0;
+        iResult = SSL_write(ssl, buf, length);
+        switch(SSL_get_error(ssl, iResult))
+        {
+            case SSL_ERROR_NONE:
+            case SSL_ERROR_ZERO_RETURN:
+            case SSL_ERROR_WANT_READ:
+            case SSL_ERROR_WANT_WRITE:
+                break;
+            case SSL_ERROR_WANT_CONNECT:
+            case SSL_ERROR_WANT_ACCEPT:
+            case SSL_ERROR_WANT_X509_LOOKUP:
+            case SSL_ERROR_SYSCALL:
+            case SSL_ERROR_SSL:
+            default:
+                no_error = false;
+                break;
+        }
     }
-    return iResult;
+    while (iResult < 0 && no_error);
+
+   return iResult;
 }
 
 int     SSLClientSocket::recv(char *buf, int length) const
 {
-    /*
-     * WARNING
-     * When an SSL_write() operation has to be repeated because of
-     * SSL_ERROR_WANT_READ or SSL_ERROR_WANT_WRITE, it must be repeated with
-     * the same arguments.
-     */
-    int iResult = SSL_read(ssl, buf, length);
-    if (iResult <= 0)
+    bool no_error = true;
+    int iResult;
+
+    do
     {
-        // call SSL_get_error()
-        throw 0;
+        iResult = SSL_read(ssl, buf, length);
+        switch(SSL_get_error(ssl, iResult))
+        {
+            case SSL_ERROR_NONE:
+            case SSL_ERROR_ZERO_RETURN:
+            case SSL_ERROR_WANT_READ:
+                break;
+            case SSL_ERROR_WANT_WRITE:
+            case SSL_ERROR_WANT_CONNECT:
+            case SSL_ERROR_WANT_ACCEPT:
+            case SSL_ERROR_WANT_X509_LOOKUP:
+            case SSL_ERROR_SYSCALL:
+            case SSL_ERROR_SSL:
+            default:
+                no_error = false;
+                break;
+        }
     }
+    while (iResult < 0 && no_error);
+    
     return iResult;
 }
  
 void    SSLClientSocket::close(bool shutdown) const
 {
     SSL_shutdown(ssl);
-    SSL_free(ssl);
-    SSL_CTX_free(ctx);
-    ::close(listenSocket);
+    ClientSocket::close(shutdown);
 }

@@ -3,7 +3,7 @@
 
 #include "zia.h"
 #include "ClientSocket_unix.h"
-
+#include "Logger.hpp"
 
 class SSLClientSocket : public ClientSocket
 {
@@ -12,6 +12,7 @@ class SSLClientSocket : public ClientSocket
         ~SSLClientSocket();
         int     send(char *buf, int length) const;
         int     recv(char *buf, int length) const;
+        void    close(bool shutdown) const;
    protected:
         SSL_CTX* ctx;
         SSL* ssl;
