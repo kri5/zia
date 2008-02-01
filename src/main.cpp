@@ -40,18 +40,18 @@ int main(int argc, char **argv)
 */
 
 	/* XML Part */
-/*
+
 	Xml::Document* doc = new Xml::Document("zia.conf");
 	Xml::Node* root = doc->getRootNode();
 	std::cout << "<" << root->getName() << ">" << std::endl;
 	Xml::Node*	subNode;
 	while (subNode = root->getNextChildNode())
 	{
-		std::cout << '<' << subNode->getName() << '>' << subNode->getValue()
+		std::cout << '<' << subNode->getName() << '>' << subNode->getValue() 
 			<< "</" << subNode->getName() << '>' << std::endl;
 	}
 	std::cout << "</" << root->getName() << ">" << std::endl;
-*/
+
 	return (0);
 }
 

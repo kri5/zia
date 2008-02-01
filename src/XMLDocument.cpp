@@ -12,7 +12,7 @@ Xml::Node*	Xml::Document::getRootNode()
 {
 	if (!this->_rootNode)
 	{
-		this->_rootNode = new Xml::Node(xmlDocGetRootElement(this->_doc));
+		this->_rootNode = new Xml::Node(xmlDocGetRootElement(this->_doc), this->_doc);
 	}
 	return this->_rootNode;
 }
@@ -20,4 +20,9 @@ Xml::Node*	Xml::Document::getRootNode()
 Xml::Document::~Document()
 {
 	xmlFreeDoc(_doc);
+}
+
+xmlDocPtr		Xml::Document::getDocumentPtr() const
+{
+	return this->_doc;
 }

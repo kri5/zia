@@ -6,10 +6,9 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include "ISocket.h"
 
 /// Socket class which will have generic code for both server and client socket.
-class Socket : public ISocket
+class Socket
 {
 public:
 	Socket();

@@ -9,10 +9,12 @@
 
 namespace Xml
 {
+	class Document;
+
 	class Node
 	{
 		public:
-			Node(xmlNode* node);
+			Node(xmlNode* node, xmlDocPtr doc);
 			~Node();
 			/// Will return the node value. (IE for <loutre>test</loutre> this will return test)
 			std::string			getValue() const;
@@ -20,6 +22,7 @@ namespace Xml
 			std::string			getName() const;
 			/// Will return true if node has a text content. Otherwise, we should browse child nodes.
 			bool				isElement() const;
+			int					getType() const;
 			bool				goToNextChildNode();
 			/// Will move to the next child node and return it.
 			Node*				getNextChildNode();
@@ -31,8 +34,10 @@ namespace Xml
 			xmlNode*			_currentXmlChildNode;
 			Node*				_currentChildNode;
 			std::stack<Node*>	_toDelete;
+			xmlDocPtr			_doc;
 			//here should go the libxml pointer.
 	};
 }
 
 #endif // XMLNODE_H__
+

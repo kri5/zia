@@ -1,10 +1,11 @@
 #include "XMLNode.h"
 
-Xml::Node::Node(xmlNode* node)
+Xml::Node::Node(xmlNode* node, xmlDocPtr doc)
 {
 	_node = node;
 	_currentChildNode = NULL;
 	_currentXmlChildNode = NULL;
+	_doc = doc;
 }
 
 Xml::Node::~Node()
@@ -19,14 +20,17 @@ Xml::Node::~Node()
 std::string		Xml::Node::getValue() const
 {
 	assert(this->isElement());
-	std::cout << (char*)this->_node->content << std::endl;
-	std::cout << this->isElement() << std::endl;
-	return (const char*)this->_node->content;
+	return (const char*)xmlNodeListGetString(this->_doc, this->_node->children, 0);
 }
 
 std::string		Xml::Node::getName() const
 {
 	return (const char*)this->_node->name;
+}
+
+int				Xml::Node::getType() const
+{
+	return this->_node->type;
 }
 
 bool			Xml::Node::isElement() const
@@ -42,7 +46,7 @@ bool			Xml::Node::isChildNodeElement() const
 void			Xml::Node::initChildNodes()
 {
 	this->_currentXmlChildNode = this->_node->children;
-	this->_currentChildNode = new Xml::Node(this->_currentXmlChildNode);
+	this->_currentChildNode = new Xml::Node(this->_currentXmlChildNode, this->_doc);
 	this->_toDelete.push(this->_currentChildNode);
 }
 
@@ -60,7 +64,7 @@ bool			Xml::Node::goToNextChildNode()
 		this->_currentXmlChildNode = this->_currentXmlChildNode->next;
 		if (!this->isChildNodeElement())
 			return (this->goToNextChildNode());	
-		this->_currentChildNode = new Xml::Node(this->_currentXmlChildNode);
+		this->_currentChildNode = new Xml::Node(this->_currentXmlChildNode, this->_doc);
 		this->_toDelete.push(this->_currentChildNode);
 		return true;
 	}
@@ -85,3 +89,4 @@ Xml::Node*		Xml::Node::getCurrentChildNode()
 	}
 	return this->_currentChildNode;
 }
+

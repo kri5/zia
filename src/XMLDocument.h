@@ -13,7 +13,8 @@ namespace Xml
 			/// Will construct the document by loading "filename".
 			Document(const char* filename);
 			~Document();
-			Node*	getRootNode();
+			Node*			getRootNode();
+			xmlDocPtr		getDocumentPtr() const;
 		private:
 			xmlDocPtr		_doc;
 			Node*			_rootNode;
@@ -21,3 +22,4 @@ namespace Xml
 }
 
 #endif // XMLDOCUMENT_H__
+
