@@ -5,7 +5,7 @@
 #include <openssl/err.h>
 #include <iostream>
 #include "zia.h"
-#include "ClientSocket_unix.h"
+#include "ClientSocket.h"
 #include "Logger.hpp"
 
 class SSLClientSocket : public ClientSocket
