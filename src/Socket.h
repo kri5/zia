@@ -1,4 +1,4 @@
-#ifndef _SOCKET_H__
+#ifndef __SOCKET_H__
 #define __SOCKET_H__
 
 #ifdef WIN32
