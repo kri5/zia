@@ -10,6 +10,7 @@ Init::~Init()
 
 }
 
+/// Run the sequential initialization
 int         Init::run()
 {
     this->readCommandLine();
@@ -21,16 +22,19 @@ int         Init::run()
     return EXIT_SUCCESS; // EXIT_FAILURE on error
 }
 
+/// Read and process arguments from the command line
 void        Init::readCommandLine()
 {
 
 }
 
+/// Read the XML configuration
 void        Init::readConfiguration()
 {
 
 }
 
+/// Initialize the SSL features
 void        Init::initSSL()
 {
   SSL_library_init(); // load encryption & hash algorithms for SSL
@@ -38,11 +42,13 @@ void        Init::initSSL()
   Logger::getInstance()->log(Logger::INFO, "SSL loaded successfully.");
 }
 
+/// Start the server sockets
 void        Init::initSockets()
 {
 
 }
 
+/// Spawn the threads
 void        Init::initThreads()
 {
 
