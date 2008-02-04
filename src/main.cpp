@@ -3,10 +3,9 @@
 #include "test.h"
 #include "MainSocket.h"
 #include "ClientSocket.h"
-#include "XMLDocument.h"
-#include "XMLNode.h"
 #include "Socket.h"
 
+#include <libxml++/libxml++.h>
 
 int main(int argc, char **argv)
 {
@@ -41,16 +40,7 @@ int main(int argc, char **argv)
 
 	/* XML Part */
 
-	Xml::Document* doc = new Xml::Document("zia.conf");
-	Xml::Node* root = doc->getRootNode();
-	std::cout << "<" << root->getName() << ">" << std::endl;
-	Xml::Node*	subNode;
-	while (subNode = root->getNextChildNode())
-	{
-		std::cout << '<' << subNode->getName() << '>' << subNode->getValue() 
-			<< "</" << subNode->getName() << '>' << std::endl;
-	}
-	std::cout << "</" << root->getName() << ">" << std::endl;
+	xmlpp::DomParser	doc;
 
 	return (0);
 }
