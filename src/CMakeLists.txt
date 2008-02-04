@@ -5,9 +5,16 @@ SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h Mai
 	IClientSocket.h Logger.hpp Config.h)
 
 IF (WIN32)
-	INCLUDE_DIRECTORIES(../libs/libxml/win32/includes ../libs/iconv/win32/include)
-	LINK_DIRECTORIES(../libs/libxml/win32/lib ../libs/iconv/win32/lib)
-	SET(ZIAHTTPD_LIBS Ws2_32.lib libxml2.lib iconv.lib)
+	INCLUDE_DIRECTORIES(../libs/libxml/win32/includes ../libs/iconv/win32/include "C:/Program Files/Common Files/GTK/2.0/include/libxml++-2.6/"
+	"C:/Program Files/Common Files/GTK/2.0/include/glibmm-2.4/"
+	"C:/Program Files/Common Files/glib/include/glib-2.0/"
+	"C:/Program Files/Common Files/glib/lib/glib-2.0/include/"
+	"C:/Program Files/Common Files/GTK/2.0/lib/gtkmm-2.4/include/"
+	"C:/Program Files/Common Files/GTK/2.0/lib/glibmm-2.4/include"
+	"C:/Program Files/Common Files/GTK/2.0/lib/libxml++-2.6/include"
+	)
+	LINK_DIRECTORIES("C:/Program Files/Common Files/GTK/2.0/lib/")
+	SET(ZIAHTTPD_LIBS Ws2_32.lib xml++-2.6.lib)
 	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS}  IThread_win32.cpp Mutex_win32.cpp Socket_win32.cpp ClientSocket_win32.cpp MainSocket_win32.cpp)
 ELSE (WIN32)
 	INCLUDE_DIRECTORIES(
