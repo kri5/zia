@@ -1,8 +1,11 @@
+
+INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
+
 SET(ZIAHTTPD_SRCS main.cpp test.cpp IThreadbase.cpp Logger.cpp 
-	Config.cpp)
+	Config.cpp Init.cpp SSLClientSocket.cpp)
 
 SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h test.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
-	IClientSocket.h Logger.hpp Config.h)
+	IClientSocket.h Logger.hpp Init.h Config.h SSLClientSocket.h)
 
 IF (WIN32)
 	SET(GTK_INCLUDE_DIR "C:/Program Files/Common Files/GTK/2.0/include/")
@@ -20,7 +23,8 @@ IF (WIN32)
 		"${GTK_LIB_DIR}/libxml++-2.6/include"
 	)
 	LINK_DIRECTORIES("${GTK_LIB_DIR}")
-	SET(ZIAHTTPD_LIBS Ws2_32.lib xml++-2.6.lib)
+	SET(ZIAHTTPD_LIBS Ws2_32.lib xml++-2.6.lib ${OPENSSL_LIBRARIES}
+      ${OPENSSL_EAY_LIBRARIES})
 	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS}  IThread_win32.cpp Mutex_win32.cpp Socket_win32.cpp ClientSocket_win32.cpp MainSocket_win32.cpp)
 ELSE (WIN32)
 	FIND_PACKAGE(GTK)
@@ -33,7 +37,7 @@ ELSE (WIN32)
 	/usr/lib/glib-2.0/include
 	)	
 	SET(ZIAHTTPD_LIBS pthread xml2 xml++-2.6 glibmm-2.4
-		gobject-2.0 sigc-2.0 glib-2.0)
+		gobject-2.0 sigc-2.0 glib-2.0 ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
 ENDIF (WIN32)
 
 IF (UNIX)

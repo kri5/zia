@@ -1,15 +1,10 @@
-#include "SSLClientSocket_unix.h"
-#include <openssl/ssl.h>
+#include "SSLClientSocket.h"
 
 /// Initialising SSL socket and doing handshake with the client.
 SSLClientSocket::SSLClientSocket(int acceptedSocket) : ClientSocket(acceptedSocket)
 {
   int iResult;
   bool no_error = true;
-
-  /* This must maybe be defined near the main ? */
-  SSL_library_init(); // load encryption & hash algorithms for SSL
-  SSL_load_error_strings(); // load the error strings for good error reporting
 
   // Initialising the SSL Method
   ctx = SSL_CTX_new(SSLv23_server_method());
@@ -93,7 +88,7 @@ int     SSLClientSocket::send(char *buf, int length) const
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
       case SSL_ERROR_WANT_WRITE:
-	Logger::getInstance()->Log(Logger::DEBUG, "SSL_write: renegociating session.");
+	Logger::getInstance()->log(Logger::DEBUG, "SSL_write: renegociating session.");
 	break;
       case SSL_ERROR_WANT_CONNECT:
       case SSL_ERROR_WANT_ACCEPT:
@@ -124,7 +119,7 @@ int     SSLClientSocket::recv(char *buf, int length) const
       case SSL_ERROR_NONE:
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
-	Logger::getInstance()->Log(Logger::DEBUG, "SSL_read: renegociating session.");
+	Logger::getInstance()->log(Logger::DEBUG, "SSL_read: renegociating session.");
 	break;
       case SSL_ERROR_WANT_WRITE:
       case SSL_ERROR_WANT_CONNECT:
@@ -157,7 +152,7 @@ void	SSLClientSocket::logError() const
 
   e = ERR_get_error();
   buf = ERR_error_string(e, NULL);
-  Logger::getInstance()->log(Logger::ERROR, "SSL error: " + buf);
+  Logger::getInstance()->log(Logger::ERRORLVL, "SSL error: " + std::string(buf));
 }
 
 

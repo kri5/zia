@@ -1,6 +1,9 @@
 #ifndef __SSL_CLIENT_SOCKET_UNIX_H__
 #define __SSL_CLIENT_SOCKET_UNIX_H__
 
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <iostream>
 #include "zia.h"
 #include "ClientSocket_unix.h"
 #include "Logger.hpp"
