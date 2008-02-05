@@ -17,7 +17,7 @@ Socket::~Socket()
 {
 }
 
-int		Socket::send(char* buf, int length) const
+int		Socket::send(const char* buf, int length) const
 {
 	int iResult = ::send(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
@@ -25,6 +25,13 @@ int		Socket::send(char* buf, int length) const
 		throw 0;
 	}
 	return (iResult);
+}
+
+int   Socket::send(const std::string& buf, int length = -1) const
+{
+    if (length == -1)
+        return send(buf.c_str(), buf.size());
+    return send(buf.c_str(), length);
 }
 
 void Socket::close( bool shutdown ) const

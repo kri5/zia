@@ -10,7 +10,7 @@ class ClientSocket : public Socket, public IClientSocket
     public:
         ClientSocket(int acceptedSocket);
         virtual ~ClientSocket();
-        virtual int	    send(char *buf, int length) const;
+        virtual int	    send(const char *buf, int length) const;
         virtual int	    recv(char *buf, int length) const;
 };
 

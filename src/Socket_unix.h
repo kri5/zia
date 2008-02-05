@@ -1,6 +1,7 @@
 #ifndef __SOCKET_UNIX_H__
 #define __SOCKET_UNIX_H__
 
+#include <iostream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -14,7 +15,9 @@ public:
 	Socket();
 	virtual ~Socket();
 	/// Send data to the client.
-	int	send(char *buf, int length) const;
+	int	send(const char *buf, int length) const;
+  /// Overloaded method that take a String
+  int send(const std::string& buf, int length) const;
 	/// Read input data from the client.
 	virtual int	recv(char *buf, int length) const = 0;
 	//virtual int select() const = 0;

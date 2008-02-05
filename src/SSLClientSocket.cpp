@@ -74,7 +74,7 @@ SSLClientSocket::~SSLClientSocket()
   SSL_CTX_free(ctx);
 }
 
-int     SSLClientSocket::send(char *buf, int length) const
+int     SSLClientSocket::send(const char *buf, int length) const
 {
   bool no_error = true;
   int iResult;

@@ -13,7 +13,7 @@ class SSLClientSocket : public ClientSocket
   public:
     SSLClientSocket(int acceptedSocket);
     ~SSLClientSocket();
-    int     send(char *buf, int length) const;
+    int     send(const char *buf, int length) const;
     int     recv(char *buf, int length) const;
     void    close(bool shutdown) const;
 

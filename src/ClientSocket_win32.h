@@ -11,7 +11,7 @@ public:
 	ClientSocket(int acceptedSocket);
 	~ClientSocket();
 	int	recv(char *buf, int length) const;
-	int send(char *buf, int length) const;
+	int send(const char *buf, int length) const;
 private:
 };
 

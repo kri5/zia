@@ -22,7 +22,7 @@ int ClientSocket::recv( char *buf, int length ) const
 	return (iResult);
 }
 
-int ClientSocket::send(char *buf, int length) const
+int ClientSocket::send(const char *buf, int length) const
 {
 	int iResult = ::send(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
