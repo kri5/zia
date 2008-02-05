@@ -3,7 +3,13 @@
 
 #include "zia.h"
 #include "Logger.hpp"
+#include <list>
+#include <string>
+#include "XMLDocument.h"
+#include "XMLNode.h"
+#include "Vhost.h"
 #include <openssl/ssl.h>
+#include "Config.h"
 
 class Init
 {
@@ -19,6 +25,12 @@ class Init
         void    initThreads();
 
     private:
+		std::string		getConfigNodeValue(Xml::Node*);
+		void			parseConfigNode(Xml::Node*, Config*);
+		void			addVhost(Xml::Node*);
+		Config*			_conf;
+		std::list<Vhost*>	_vhosts;
+
         int     _argc;
         char**  _argv;  
 };

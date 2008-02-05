@@ -6,14 +6,10 @@
 #include "ClientSocket.h"
 #include "Socket.h"
 
-#include <libxml++/libxml++.h>
 
 int main(int argc, char **argv)
 {
-    // Please remove this line when finished with the config parser.
-	  xmlpp::DomParser	doc;
-
-    Init i(argc, argv);
-    return i.run();
+	Init	i(argc, argv);
+	i.run();
 }
 
