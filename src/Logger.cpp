@@ -1,3 +1,7 @@
+#include "zia.h"
+
+#include <sstream>
+
 #include "Logger.hpp"
 #include <iostream>
 #include <fstream>
