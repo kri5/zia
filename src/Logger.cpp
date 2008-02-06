@@ -34,14 +34,34 @@ void  Logger::log(Logger::LOGLEVEL level, std::string msg)
   }
 }
 
+void		Logger::setNextDebugLevel(Logger::LOGLEVEL logLvl)
+{
+	this->_nextDebugLevel = logLvl;
+}
+
+template <typename T>
+Logger&		Logger::operator <<(const T& toLog)
+{
+	if (this->_nextDebugLevel == UNSET)
+	{
+		this->log(WARN, "Warning: You haven't set a error level for Logger::log\n Setting default value to warning");
+		this->_nextDebugLevel = WARN;
+	}
+	std::ostringstream stream;
+	stream << toLog;
+	this->log(this->_nextDebugLevel, stream.str());
+	return *this;
+}
+
 Logger::Logger() : _file(NULL)
 {
   this->setLogLevel(Logger::ALL);
   this->setOutputFile("test.log");
   this->_stdout = true;
+  this->_nextDebugLevel = UNSET;
 }
 
 Logger::~Logger()
 {
-  ;
+  delete this->_file;
 }

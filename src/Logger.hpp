@@ -11,6 +11,7 @@ class Logger : public Singleton<Logger>
   public:
     enum  LOGLEVEL
     {
+	  UNSET = -1,
       NONE,
       INFO,
       WARN,
@@ -19,9 +20,10 @@ class Logger : public Singleton<Logger>
       ALL
     };
   private:
-    Logger::LOGLEVEL  _level;
-    std::ofstream*    _file;
-    bool              _stdout;
+    Logger::LOGLEVEL	_level;
+    std::ofstream*		_file;
+    bool				_stdout;
+	LOGLEVEL			_nextDebugLevel;
 
   // Methods
   public:
@@ -31,6 +33,9 @@ class Logger : public Singleton<Logger>
     void  setOutputFile(const char*);
     void  setStdOut(bool);
     void  log(Logger::LOGLEVEL, std::string);
+	template <typename T>
+	Logger&	operator<<(const T&);
+	void	setNextDebugLevel(LOGLEVEL);
 };
 
 #endif  /* !__LOGGER_HPP__ */
