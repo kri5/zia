@@ -26,6 +26,16 @@ NetworkID*		NetworkID::factory(std::string addr, std::string port)
 	return new NetworkID(new Address(addr), new Port(port));
 }
 
+Address*		NetworkID::getAddress() const
+{
+	return this->_addr;
+}
+
+Port*			NetworkID::getPort() const
+{
+	return this->_port;
+}
+
 bool			NetworkID::compare(const NetworkID& right) const
 {
 	//FIXME

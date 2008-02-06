@@ -150,9 +150,9 @@ void	SSLClientSocket::logError() const
   unsigned long e;
   static char *buf;
 
-  e = ERR_get_error();
-  buf = ERR_error_string(e, NULL);
-  Logger::getInstance()->log(Logger::ERRORLVL, "SSL error: " + std::string(buf));
+  //e = ERR_get_error();
+  //buf = ERR_error_string(e, NULL);
+  //Logger::getInstance()->log(Logger::ERRORLVL, "SSL error: " + std::string(buf));
 }
 
 

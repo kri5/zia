@@ -11,6 +11,8 @@ class	NetworkID : public IWildcard<NetworkID>
 		/// Factory which will force the developper to use it, and not the constructor.
 		static NetworkID* factory(std::string, std::string);
 		virtual bool	compare(const NetworkID&) const;
+		Address*		getAddress() const;
+		Port*			getPort() const;
 	protected:
 		/// Private constructor to ensure instantiation via the factory method.
 		NetworkID(Address*, Port*);

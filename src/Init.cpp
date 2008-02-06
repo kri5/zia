@@ -43,6 +43,8 @@ void		Init::addVhost(Xml::Node* node)
 	addr = node->getAttr("address");
 	port = node->getAttr("port");
 	Vhost*	v = new Vhost(NetworkID::factory(addr, port));
+	this->_binds[v->getAddress()][v->getPort()].push_back(v);
+	this->_vhosts.push_back(v);
 }
 
 void		Init::parseConfigNode(Xml::Node* node, Config* cfg)
@@ -83,7 +85,24 @@ void        Init::initSSL()
 /// Start the server sockets
 void        Init::initSockets()
 {
+	Address*		addr;
+	Port*			port;
 
+	//Browsing the Address* map
+	std::cout << "Starting binding server socket(s)" << std::endl;
+	std::map<Address*, std::map<Port*, std::vector<Vhost*> > >::iterator	itAddr = this->_binds.begin();
+	while (itAddr != this->_binds.end())
+	{
+		addr = itAddr->first;
+		std::map<Port*, std::vector<Vhost*> >::iterator		itPorts = itAddr->second.begin();
+		while (itPorts != itAddr->second.end())
+		{
+			port = itPorts->first;
+			std::cout << "Binding addr " << addr->getAddr() << ":" << port->getPort() << std::endl;
+			++itPorts;
+		}
+		++itAddr;
+	}
 }
 
 /// Spawn the threads

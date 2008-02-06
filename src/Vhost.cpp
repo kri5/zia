@@ -6,16 +6,14 @@ Vhost::Vhost(NetworkID* netId) : _netId(netId)
 {
 }
 
-std::string			Vhost::getAddress() const
+Address*			Vhost::getAddress() const
 {
-//FIXME
-//return this->_address;
+	return this->_netId->getAddress();
 }
 
-int					Vhost::getPort() const
+Port*			Vhost::getPort() const
 {
-//FIXME
-//	return this->_port;
+	return this->_netId->getPort();
 }
 
 std::string		Vhost::getParam(std::string name) const

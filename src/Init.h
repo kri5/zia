@@ -2,13 +2,15 @@
 #define __INIT_H__
 
 #include "zia.h"
-#include "Logger.hpp"
+
 #include <list>
 #include <string>
+#include <openssl/ssl.h>
+
+#include "Logger.hpp"
 #include "XMLDocument.h"
 #include "XMLNode.h"
 #include "Vhost.h"
-#include <openssl/ssl.h>
 #include "Config.h"
 
 class Init
@@ -28,8 +30,10 @@ class Init
 		std::string		getConfigNodeValue(Xml::Node*);
 		void			parseConfigNode(Xml::Node*, Config*);
 		void			addVhost(Xml::Node*);
-		Config*			_conf;
+		
+		Config*				_conf;
 		std::list<Vhost*>	_vhosts;
+		std::map<Address*, std::map<Port*, std::vector<Vhost*> > >	_binds;
 
         int     _argc;
         char**  _argv;  

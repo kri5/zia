@@ -34,7 +34,7 @@ void  Logger::log(Logger::LOGLEVEL level, std::string msg)
   }
 }
 
-Logger::Logger()
+Logger::Logger() : _file(NULL)
 {
   this->setLogLevel(Logger::ALL);
   this->setOutputFile("test.log");
