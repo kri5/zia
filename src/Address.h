@@ -4,6 +4,7 @@
 #include <string>
 #include "Wildcard.hpp"
 
+/// Will represent an IP address. This class is wildcardable.
 class Address : public IWildcard<Address> 
 {
 	public:
@@ -14,6 +15,7 @@ class Address : public IWildcard<Address>
 		std::string		_addr;
 };
 
+/// Wildcard address.
 class AddressWildcard : public Address, public Wildcard<Address>
 {
 	public:

@@ -6,6 +6,7 @@
 #include "NetworkID.h"
 #include "Config.h"
 
+/// Represent a Virtual Host. Mainly used for store configuration.
 class Vhost : public Config
 {
 	public:

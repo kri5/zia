@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 
+/// Stores the config values. To be used in clients and main sockets classes.
 class Config
 {
 	public:

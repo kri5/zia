@@ -88,7 +88,7 @@ int     SSLClientSocket::send(const char *buf, int length) const
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
       case SSL_ERROR_WANT_WRITE:
-	Logger::getInstance()->log(Logger::DEBUG, "SSL_write: renegociating session.");
+	Logger::getInstance() << Logger::DEBUGMODE << "SSL_write: renegociating session." << Logger::FLUSH;
 	break;
       case SSL_ERROR_WANT_CONNECT:
       case SSL_ERROR_WANT_ACCEPT:
@@ -119,7 +119,7 @@ int     SSLClientSocket::recv(char *buf, int length) const
       case SSL_ERROR_NONE:
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
-	Logger::getInstance()->log(Logger::DEBUG, "SSL_read: renegociating session.");
+	Logger::getInstance() << Logger::DEBUGMODE << "SSL_read: renegociating session." << Logger::FLUSH;
 	break;
       case SSL_ERROR_WANT_WRITE:
       case SSL_ERROR_WANT_CONNECT:
@@ -150,9 +150,9 @@ void	SSLClientSocket::logError() const
   unsigned long e;
   static char *buf;
 
-  //e = ERR_get_error();
-  //buf = ERR_error_string(e, NULL);
-  //Logger::getInstance()->log(Logger::ERRORLVL, "SSL error: " + std::string(buf));
+  e = ERR_get_error();
+  buf = ERR_error_string(e, NULL);
+  Logger::getInstance() << Logger::ERRORLVL << "SSL error: " << std::string(buf) << Logger::FLUSH;
 }
 
 

@@ -5,8 +5,10 @@
 #include <libxml/tree.h>
 #include "XMLNode.h"
 
+/// Encapsulate XML classes.
 namespace Xml
 {
+	/// Represent a XML document.
 	class Document
 	{
 		public:

@@ -5,13 +5,17 @@
 #include "Port.h"
 #include "Wildcard.hpp"
 
+/// Will represent a couple Address/Port.
 class	NetworkID : public IWildcard<NetworkID> 
 {
 	public:
 		/// Factory which will force the developper to use it, and not the constructor.
 		static NetworkID* factory(std::string, std::string);
+		/// Will compare two NetworkID. can be overwritten by Wilcard<NetworkID>
 		virtual bool	compare(const NetworkID&) const;
+		/// Will return the Address of this network id.
 		Address*		getAddress() const;
+		/// Will return the Port of this network id.
 		Port*			getPort() const;
 	protected:
 		/// Private constructor to ensure instantiation via the factory method.
@@ -21,6 +25,7 @@ class	NetworkID : public IWildcard<NetworkID>
 		Port*		_port;
 };
 
+/// Wildcarded NetworkID, will always match comparaison.
 class NetworkIDWildcard : public NetworkID, public Wildcard<NetworkID>
 {
 	public:

@@ -4,6 +4,7 @@
 #include "Wildcard.hpp"
 #include <string>
 
+/// Will represent a port, as a part of a NetworkID (network identifier)
 class Port : public IWildcard<Port>
 {
 	public:
@@ -11,6 +12,7 @@ class Port : public IWildcard<Port>
 		Port(int);
 		/// Will convert std::string to int, then assign this int to _port
 		Port(std::string);
+		/// Will return the port as an int.
 		int				getPort() const;
 		/// Will compare 2 Ports, and return true if they match. Will be reimplemented if port is a wildcard port.
 		virtual bool	compare(const Port&) const;

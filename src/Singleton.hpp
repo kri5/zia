@@ -17,9 +17,9 @@ class Singleton
     virtual ~Singleton(){}
 
   public:
-    /// Return a pointer on the Singleton Instance
+    /// Return a reference on the Singleton Instance
     /// If doesn't exist, it creates it.
-    static  T*  getInstance()
+    static  T&  getInstance()
     {
       if(Singleton<T>::_instance == NULL) 
       {
@@ -30,13 +30,13 @@ class Singleton
         }
         Singleton<T>::_mutex->unlock();
       }
-      return static_cast<T*>(Singleton<T>::_instance);
+      return (*(Singleton<T>::_instance));
     }
 
     /// Delete the Instance of Singleton, if exist
     static  void  deleteInstance()
     {
-      if (Singleton<T>::_singleton != NULL)
+      if (Singleton<T>::_instance != NULL)
       {
         Singleton<T>::_mutex->lock();
         if (Singleton<T>::_instance != NULL)

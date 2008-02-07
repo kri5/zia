@@ -9,8 +9,7 @@
 
 namespace Xml
 {
-	class Document;
-
+	/// Represent a libxml node.
 	class Node
 	{
 		public:

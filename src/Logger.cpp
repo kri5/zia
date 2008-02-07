@@ -1,12 +1,11 @@
 #include "zia.h"
 
-#include <sstream>
 
 #include "Logger.hpp"
 #include <iostream>
 #include <fstream>
 
-void  Logger::setLogLevel(Logger::LOGLEVEL level)
+void  Logger::setLogLevel(Logger::LEVEL level)
 {
   this->_level = level;
 }
@@ -27,34 +26,37 @@ void  Logger::setStdOut(bool value)
   this->_stdout = value;
 }
 
-void  Logger::log(Logger::LOGLEVEL level, std::string msg)
+void  Logger::log(Logger::LEVEL level, std::string msg)
 {
   if (level < this->_level)
   {
     if (this->_stdout == true)
-      std::cout << msg << std::endl;
+      std::cout << msg;
     if (this->_file != NULL)
-      *(this->_file) << msg << std::endl;
+      *(this->_file) << msg;
   }
 }
 
-void		Logger::setNextDebugLevel(Logger::LOGLEVEL logLvl)
+void		Logger::setNextDebugLevel(Logger::LEVEL logLvl)
 {
 	this->_nextDebugLevel = logLvl;
 }
 
-template <typename T>
-Logger&		Logger::operator <<(const T& toLog)
+Logger&		Logger::operator<< (Logger::LEVEL lvl)
 {
-	if (this->_nextDebugLevel == UNSET)
-	{
-		this->log(WARN, "Warning: You haven't set a error level for Logger::log\n Setting default value to warning");
-		this->_nextDebugLevel = WARN;
-	}
-	std::ostringstream stream;
-	stream << toLog;
-	this->log(this->_nextDebugLevel, stream.str());
+	this->setNextDebugLevel(lvl);
 	return *this;
+}
+
+Logger&		Logger::operator<< (Logger::UTIL val)
+{
+	if (val == FLUSH)
+	{
+		this->_stream << Zia::Newline;
+		this->log(this->_nextDebugLevel, _stream.str());
+		this->_stream.str("");
+		this->_stream.clear();
+	}
 }
 
 Logger::Logger() : _file(NULL)
