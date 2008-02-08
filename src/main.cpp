@@ -6,10 +6,22 @@
 #include "ZException.h"
 #include "MemoryManager.hpp"
 #include "Init.h"
+#include "IClientSocket.h"
 
 int main(int argc, char **argv)
 {
-	Init		i(argc, argv);
-	Logger::getInstance() << Logger::Info << "Kikoolol";
+	Logger::getInstance() << Logger::Info 
+        << "Kikoolol" << Logger::Flush;
+	//Init		i(argc, argv);
+
+    try
+    {
+        throw ZException<IClientSocket>
+            (INFO, IClientSocket::Error::Send);
+    }
+    catch (ZException<IClientSocket> &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 }
 
