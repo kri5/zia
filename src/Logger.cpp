@@ -36,12 +36,10 @@ void  Logger::log(Logger::LEVEL level, std::string msg)
 {
     if (level < this->_level)
     {
-        this->_logMutex->lock();
         if (this->_stdout == true)
             std::cout << msg;
         if (this->_file != NULL)
             *(this->_file) << msg;
-        this->_logMutex->unlock();
     }
 }
 
@@ -76,14 +74,15 @@ Logger&		Logger::operator<< (Logger::UTIL val)
 
 Logger::Logger() : _file(NULL), _stdout(true), _nextDebugLevel(UNSET)
 {
+    this->_logMutex = static_cast<IMutex*>(new Mutex());
     this->setLogLevel(Logger::ALL);
     this->setOutputFile("test.log");
-    this->_logMutex = static_cast<IMutex*>(new Mutex());
 }
 
 Logger::~Logger()
 {
     if (this->_stream.str() != "")
         this->flush();
-    delete this->_file;
+    if (this->_file != NULL)
+        delete this->_file;
 }

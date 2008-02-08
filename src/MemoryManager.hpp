@@ -89,7 +89,6 @@ class MemoryManager
 					//error msg.
 					Logger::getInstance() << Logger::ERRORLVL << Zia::Newline << " - On " << it->second.file << " at line " << it->second.line
 											<< " undeleted block of " << it->second.size << " bytes";
-					::free(it->first);
 					++it;
 				}
 				Logger::getInstance() << Logger::FLUSH;
