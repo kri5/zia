@@ -5,13 +5,13 @@ INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
 
 SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp 
 	Config.cpp Init.cpp SSLClientSocket.cpp Vhost.cpp XMLDocument.cpp
-	XMLNode.cpp Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp
+	XMLNode.cpp Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp MemoryManager.hpp
     ZException.cpp)
 
 SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
 	IClientSocket.h Init.h Config.h SSLClientSocket.h Vhost.h
 	Address.h Port.h NetworkID.h XMLDocument.h XMLNode.h Port.h
-	MemoryManager.h ZException.h)
+	ZException.h)
 
 IF (WIN32)
 	INCLUDE_DIRECTORIES(../libs/libxml/win32/includes ../libs/iconv/win32/include)

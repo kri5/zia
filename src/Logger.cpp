@@ -70,6 +70,7 @@ Logger&		Logger::operator<< (Logger::UTIL val)
     {
         this->flush();
     }
+	return *this;
 }
 
 Logger::Logger() : _file(NULL), _stdout(true), _nextDebugLevel(UNSET)

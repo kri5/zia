@@ -2,13 +2,13 @@
 
 #include "MemoryManager.hpp"
 
-/// Initialising SSL socket and doing handshake with the client.
+/// Initializing SSL socket and doing handshake with the client.
 SSLClientSocket::SSLClientSocket(int acceptedSocket) : ClientSocket(acceptedSocket)
 {
   int iResult;
   bool no_error = true;
 
-  // Initialising the SSL Method
+  // Initializing the SSL Method
   ctx = SSL_CTX_new(SSLv23_server_method());
   if (!ctx)
   {
@@ -152,9 +152,9 @@ void	SSLClientSocket::logError() const
   unsigned long e;
   static char *buf;
 
-  e = ERR_get_error();
-  buf = ERR_error_string(e, NULL);
-  Logger::getInstance() << Logger::ERRORLVL << "SSL error: " << std::string(buf) << Logger::FLUSH;
+  //e = ERR_get_error();
+  //buf = ERR_error_string(e, NULL);
+  //Logger::getInstance() << Logger::ERRORLVL << "SSL error: " << std::string(buf) << Logger::FLUSH;
 }
 
 
