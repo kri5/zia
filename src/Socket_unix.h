@@ -12,7 +12,6 @@
 class Socket
 {
 public:
-	/// Will create a socket.
 	Socket();
 	/// Close the socket.
 	virtual ~Socket();
@@ -22,7 +21,6 @@ public:
 	int send(const std::string& buf, int length) const;
 	/// Read input data from the client.
 	virtual int	recv(char *buf, int length) const = 0;
-	//virtual int select() const = 0;
 	/// Close the connection with auto-shutdown support.
 	virtual void close(bool shutdown) const;
 protected:

@@ -1,6 +1,9 @@
+#include <iostream>
+
 #include "Init.h"
 #include "NetworkID.h"
-#include <iostream>
+
+#include "MemoryManager.hpp"
 
 Init::Init(int argc, char **argv) : _argc(argc), _argv(argv)
 {

@@ -4,13 +4,10 @@
 #include <unistd.h>
 #include "Socket_unix.h"
 
+#include "MemoryManager.hpp"
+
 Socket::Socket()
 {
-	listenSocket = ::socket(PF_INET, SOCK_STREAM, 0);
-	if (listenSocket == SOCKET_ERROR)
-	{
-		throw 0;
-	}
 }
 
 Socket::~Socket()

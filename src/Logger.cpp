@@ -5,6 +5,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "MemoryManager.hpp"
+
 void  Logger::setLogLevel(Logger::LEVEL level)
 {
 	this->_level = level;

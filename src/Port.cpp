@@ -2,6 +2,8 @@
 #include "Logger.hpp"
 #include "Port.h"
 
+#include "MemoryManager.hpp"
+
 Port::Port(int port)
 {
 	_port = port;

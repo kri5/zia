@@ -1,7 +1,12 @@
 #include "MainSocket_unix.h"
 
-MainSocket::MainSocket(int queue, std::string adress, int port) : Socket()
+#include "MemoryManager.hpp"
+
+MainSocket::MainSocket(int queue, std::string adress, int port)
 {
+	listenSocket = ::socket(PF_INET, SOCK_STREAM, 0);
+	if (listenSocket == SOCKET_ERROR)
+		throw 0;
 	bind(adress, port);
 	listen(queue);
 	_port = port;

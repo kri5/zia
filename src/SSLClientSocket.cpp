@@ -1,5 +1,7 @@
 #include "SSLClientSocket.h"
 
+#include "MemoryManager.hpp"
+
 /// Initialising SSL socket and doing handshake with the client.
 SSLClientSocket::SSLClientSocket(int acceptedSocket) : ClientSocket(acceptedSocket)
 {

@@ -2,6 +2,8 @@
 
 #include "NetworkID.h"
 
+#include "MemoryManager.hpp"
+
 NetworkID::NetworkID(Address* addr, Port* port) : _addr(addr), _port(port)
 {
 }

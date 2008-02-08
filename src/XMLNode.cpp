@@ -1,5 +1,7 @@
 #include "XMLNode.h"
 
+#include "MemoryManager.hpp"
+
 Xml::Node::Node(xmlNode* node, xmlDocPtr doc)
 {
 	_node = node;

@@ -1,5 +1,7 @@
 #include "Config.h"
 
+#include "MemoryManager.hpp"
+
 Config::Config()
 {
 	_params.clear();

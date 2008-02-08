@@ -1,5 +1,7 @@
 #include "IThread_win32.h"
 
+#include "MemoryManager.hpp"
+
 void			IThread::run()
 {
 	// Don't start two threads into the same object

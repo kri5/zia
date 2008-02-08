@@ -1,6 +1,8 @@
 #include "Mutex_win32.h"
 #include <iostream>
 
+#include "MemoryManager.hpp"
+
 Mutex::Mutex()
 {
 	lockCount = 0;

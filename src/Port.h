@@ -20,6 +20,7 @@ class Port : public IWildcard<Port>
 		int		_port;
 };
 
+/// Wildcarded port.
 class PortWildcard : public Port, public Wildcard<Port>
 {
 	public:

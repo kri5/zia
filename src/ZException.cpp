@@ -2,6 +2,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "MemoryManager.hpp"
+
 ZException::ZException(int line = 42, 
         const char* file = "no file",
         const char* msg = "no message")

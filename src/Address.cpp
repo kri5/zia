@@ -1,5 +1,7 @@
 #include "Address.h"
 
+#include "MemoryManager.hpp"
+
 Address::Address(std::string addr)
 {
 	_addr = addr;

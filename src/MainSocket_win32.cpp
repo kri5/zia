@@ -1,7 +1,15 @@
 #include "MainSocket_win32.h"
 
+#include "MemoryManager.hpp"
+
 MainSocket::MainSocket(int queue, std::string address, int port) : Socket()
 {
+	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (listenSocket == INVALID_SOCKET)
+	{
+		WSACleanup();
+		throw 0;
+	}
 	bind(address, port);
 	listen(queue);
 }

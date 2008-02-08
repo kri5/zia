@@ -2,6 +2,8 @@
 #include "Logger.hpp"
 #include <sstream>
 
+#include "MemoryManager.hpp"
+
 Vhost::Vhost(NetworkID* netId) : _netId(netId)
 {
 }

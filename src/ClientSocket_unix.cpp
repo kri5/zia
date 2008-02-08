@@ -1,5 +1,7 @@
 #include "ClientSocket_unix.h"
 
+#include "MemoryManager.hpp"
+
 ClientSocket::ClientSocket(int acceptedSocket) 
 {
 	listenSocket = acceptedSocket;

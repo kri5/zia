@@ -1,5 +1,6 @@
 #include "IThreadbase.h"
 
+#include "MemoryManager.hpp"
 
 IThreadbase::IThreadbase() : running(false), m_pid(0L)
 {

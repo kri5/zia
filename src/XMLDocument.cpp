@@ -1,5 +1,7 @@
 #include "XMLDocument.h"
 
+#include "MemoryManager.hpp"
+
 Xml::Document::Document(const char* filename)
 {
 	_doc = xmlReadFile(filename, NULL, XML_PARSE_RECOVER );

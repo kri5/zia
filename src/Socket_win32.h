@@ -1,12 +1,15 @@
-#ifndef __SOCKET_WIN32_H__
-#define __SOCKET_WIN32_H__
+#ifndef SOCKET_WIN32_H__
+#define SOCKET_WIN32_H__
 
 #include "zia.h"
 
+/// Generic Win32 socket class.
 class Socket
 {
 public:
+	/// Will initialize WSA
 	Socket();
+	/// Clean WSA
 	~Socket();
 	
 	/// Close the connection with auto-shutdown support.

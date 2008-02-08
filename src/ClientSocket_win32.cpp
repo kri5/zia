@@ -1,5 +1,7 @@
 #include "ClientSocket_win32.h"
 
+#include "MemoryManager.hpp"
+
 ClientSocket::ClientSocket(int acceptedSocket) : Socket()
 {
 	listenSocket = acceptedSocket;

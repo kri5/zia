@@ -10,16 +10,18 @@
 #include "Singleton.hpp"
 #include "Logger.hpp"
 
-struct	MemoryBlock
-{
-	int				size;
-	int				line;
-	std::string		file;
-	bool			isArray;
-};
-
+/// Will track memory leaks. Automaticly enabled if NDEBUG isn't set, and if the file is included at the top of the file. Must be last file included.
 class MemoryManager
 {
+	private:
+		struct	MemoryBlock
+		{
+			int				size;
+			int				line;
+			std::string		file;
+			bool			isArray;
+		};
+
 	public:
 		/// Sort of stack singleton.
 		static MemoryManager&	getInstance()
@@ -43,7 +45,7 @@ class MemoryManager
 			newBlock.isArray = isArray;
 			this->_blocks[ptr] = newBlock;
 		
-			Logger::getInstance() << Logger::DEBUGMODE << "Allocation of " << size << " bytes, from " << file << " at line " << line << Logger::FLUSH;
+			//Logger::getInstance() << Logger::DEBUGMODE << "Allocation of " << size << " bytes, from " << file << " at line " << line << Logger::FLUSH;
 			return ptr;
 		}
 
