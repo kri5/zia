@@ -42,6 +42,7 @@ class Logger : public Singleton<Logger>
 		Logger();
 		void 				log(LEVEL, std::string);
 		void				setNextDebugLevel(LEVEL);
+		void				flush();
 		virtual ~Logger();
 
 		// Methods

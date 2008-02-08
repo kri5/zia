@@ -7,9 +7,11 @@ Init::Init(int argc, char **argv) : _argc(argc), _argv(argv)
 	_conf = new Config();
 }
 
+/// Will destroy logger, since this function is supposed to be the last called in this server.
 Init::~Init()
 {
 	delete this->_conf;
+	Logger::deleteInstance();
 }
 
 /// Run the sequential initialization

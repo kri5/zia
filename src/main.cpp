@@ -1,12 +1,15 @@
-#include <iostream>
 #include "zia.h"
-#include "ZException.h"
+
 #include <iostream>
+#include <iostream>
+
+#include "ZException.h"
 #include "MemoryManager.hpp"
+#include "Init.h"
 
 int main(int argc, char **argv)
 {
-	int*	test = new int;
-	delete test;
+	Init		i(argc, argv);
+	Logger::getInstance() << Logger::INFO << "Kikoolol";
 }
 
