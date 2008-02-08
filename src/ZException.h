@@ -18,12 +18,12 @@ class ZException : public std::exception
         std::string             getFile() const;
         std::string             getMessage() const;
         int                     getLine() const;
-        typename T::Error::Code   getCode() const;
+        typename T::Error::Code getCode() const;
     private:
         std::string             _file;
         std::string             _msg;
         int                     _line;
-        typename T::Error::Code   _code;
+        typename T::Error::Code _code;
 };
 
 

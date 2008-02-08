@@ -17,7 +17,8 @@ int main(int argc, char **argv)
     try
     {
         throw ZException<IClientSocket>
-            (INFO, IClientSocket::Error::Send);
+            (INFO, IClientSocket::Error::Send,
+             "error while reading socket");
     }
     catch (ZException<IClientSocket> &e)
     {
