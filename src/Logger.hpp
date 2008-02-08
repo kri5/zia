@@ -2,13 +2,17 @@
 #define LOGGER_HPP__
 
 #include "zia.h"
-
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <ostream>
 #include <iostream>
 
+#ifdef WIN32
+ #include "Mutex_win32.h"
+#else
+ #include "Mutex_unix.h"
+#endif
 #include "Singleton.hpp"
 
 /// Provides Logging capabilities. Only usable with operator <<
@@ -34,11 +38,13 @@ class Logger : public Singleton<Logger>
 			FLUSH
 		};
 	private:
-		Logger::LEVEL	_level;
-		std::ofstream*		_file;
-		bool				_stdout;
-		LEVEL			_nextDebugLevel;
+		Logger::LEVEL	    _level;
+		std::ofstream*	    _file;
+		bool			    _stdout;
+		LEVEL			    _nextDebugLevel;
 		std::ostringstream 	_stream;
+        IMutex*             _logMutex;
+
 		Logger();
 		void 				log(LEVEL, std::string);
 		void				setNextDebugLevel(LEVEL);
