@@ -14,7 +14,7 @@ Mutex::Mutex()
 Mutex::~Mutex()
 {
 	if (lockCount > 0)
-		Logger::getInstance() << Logger::ERRORLVL << "lockCount is more than 0." << Logger::FLUSH;
+		Logger::getInstance() << Logger::Error << "lockCount is more than 0." << Logger::Flush;
 	CloseHandle(ghMutex);
 }
 

@@ -16,7 +16,7 @@ Port::Port(std::string port)
 	{
 		std::string errMsg("Bad port value ");
 		errMsg += port + ")";
-		Logger::getInstance() << Logger::ERRORLVL << "Bad port value (" << port << ')' << Logger::FLUSH;
+		Logger::getInstance() << Logger::Error << "Bad port value (" << port << ')' << Logger::Flush;
 		throw 0;
 	}
 	stream >> _port;

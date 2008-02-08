@@ -90,7 +90,7 @@ int     SSLClientSocket::send(const char *buf, int length) const
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
       case SSL_ERROR_WANT_WRITE:
-	Logger::getInstance() << Logger::DEBUGMODE << "SSL_write: renegociating session." << Logger::FLUSH;
+	Logger::getInstance() << Logger::Debug << "SSL_write: renegociating session." << Logger::Flush;
 	break;
       case SSL_ERROR_WANT_CONNECT:
       case SSL_ERROR_WANT_ACCEPT:
@@ -121,7 +121,7 @@ int     SSLClientSocket::recv(char *buf, int length) const
       case SSL_ERROR_NONE:
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
-	Logger::getInstance() << Logger::DEBUGMODE << "SSL_read: renegociating session." << Logger::FLUSH;
+	Logger::getInstance() << Logger::Debug << "SSL_read: renegociating session." << Logger::Flush;
 	break;
       case SSL_ERROR_WANT_WRITE:
       case SSL_ERROR_WANT_CONNECT:

@@ -24,18 +24,18 @@ class Logger : public Singleton<Logger>
 		enum	LEVEL
 		{
 			/// Default value.
-			UNSET = -1,
-			NONE,
-			INFO,
-			WARN,
-			ERRORLVL,
-			DEBUGMODE, // Modified because of system's #define DEBUG
-			ALL
+			Unset = -1,
+			None,
+			Info,
+			Warning,
+			Error,
+			Debug, // Modified because of system's #define DEBUG
+			All
 		};
 		enum	UTIL
 		{
 			/// Passing this value to Logger will add a carriage return and then flush the output.
-			FLUSH
+			Flush
 		};
 	private:
 		Logger::LEVEL	    _level;
@@ -65,10 +65,10 @@ class Logger : public Singleton<Logger>
 		template <typename T>
 			Logger&	operator<<(T toLog)
 			{
-				if (this->_nextDebugLevel == UNSET)
+				if (this->_nextDebugLevel == Unset)
 				{
-					this->log(WARN, "Warning: You haven't set a error level for Logger::log\n Setting default value to warning\n");
-					this->_nextDebugLevel = ALL;
+					this->log(Warning, "Warning: You haven't set a error level for Logger::log\n Setting default value to warning\n");
+					this->_nextDebugLevel = All;
 				}
 				_stream << toLog;
 				return *this;

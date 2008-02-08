@@ -12,17 +12,17 @@ NetworkID*		NetworkID::factory(std::string addr, std::string port)
 {
 	if (addr == "" && port == "")
 	{
-		Logger::getInstance() << Logger::INFO << "Instanciating wildcard NetworkID" << Logger::FLUSH;
+		Logger::getInstance() << Logger::Info << "Instanciating wildcard NetworkID" << Logger::Flush;
 		return new NetworkIDWildcard(new AddressWildcard(), new PortWildcard());
 	}
 	else if (addr == "" && port != "")
 	{
-		Logger::getInstance() << Logger::ERRORLVL << "Can't have an address wildcard without port !" << Logger::FLUSH;
+		Logger::getInstance() << Logger::Error << "Can't have an address wildcard without port !" << Logger::Flush;
 		throw 0;
 	}
 	else if (addr != "" && port == "")
 	{
-		Logger::getInstance() << Logger::INFO << "Instanciating NetworkID with wildcard port." << Logger::FLUSH;
+		Logger::getInstance() << Logger::Info << "Instanciating NetworkID with wildcard port." << Logger::Flush;
 		return new NetworkID(new Address(addr), new PortWildcard());
 	}
 	return new NetworkID(new Address(addr), new Port(port));

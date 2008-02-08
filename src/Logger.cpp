@@ -66,17 +66,17 @@ void		Logger::flush()
 
 Logger&		Logger::operator<< (Logger::UTIL val)
 {
-    if (val == FLUSH)
+    if (val == Flush)
     {
         this->flush();
     }
 	return *this;
 }
 
-Logger::Logger() : _file(NULL), _stdout(true), _nextDebugLevel(UNSET)
+Logger::Logger() : _file(NULL), _stdout(true), _nextDebugLevel(Unset)
 {
     this->_logMutex = static_cast<IMutex*>(new Mutex());
-    this->setLogLevel(Logger::ALL);
+    this->setLogLevel(Logger::All);
     this->setOutputFile("test.log");
 }
 

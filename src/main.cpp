@@ -10,6 +10,6 @@
 int main(int argc, char **argv)
 {
 	Init		i(argc, argv);
-	Logger::getInstance() << Logger::INFO << "Kikoolol";
+	Logger::getInstance() << Logger::Info << "Kikoolol";
 }
 

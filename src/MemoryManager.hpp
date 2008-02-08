@@ -76,22 +76,22 @@ class MemoryManager
 		{
 			if (this->_blocks.empty())
 			{
-				Logger::getInstance() << Logger::DEBUGMODE << "No memory leak detected." << Logger::FLUSH;
+				Logger::getInstance() << Logger::Debug << "No memory leak detected." << Logger::Flush;
 			}
 			else
 			{
-				Logger::getInstance() << Logger::ERRORLVL << "Warning : memory leaks detected :";
+				Logger::getInstance() << Logger::Error << "Warning : memory leaks detected :";
 
 				std::map<void*, MemoryBlock>::iterator	it;
 				it = this->_blocks.begin();
 				while (it != this->_blocks.end())
 				{
 					//error msg.
-					Logger::getInstance() << Logger::ERRORLVL << Zia::Newline << " - On " << it->second.file << " at line " << it->second.line
+					Logger::getInstance() << Logger::Error << Zia::Newline << " - On " << it->second.file << " at line " << it->second.line
 											<< " undeleted block of " << it->second.size << " bytes";
 					++it;
 				}
-				Logger::getInstance() << Logger::FLUSH;
+				Logger::getInstance() << Logger::Flush;
 				this->_blocks.clear();
 			}
 		}

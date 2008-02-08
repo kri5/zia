@@ -84,7 +84,7 @@ void        Init::initSSL()
 {
   SSL_library_init(); // load encryption & hash algorithms for SSL
   SSL_load_error_strings(); // load the error strings for good error reporting
-  Logger::getInstance() << Logger::INFO << "SSL loaded successfully." << Logger::FLUSH;
+  Logger::getInstance() << Logger::Info << "SSL loaded successfully." << Logger::Flush;
 }
 
 /// Start the server sockets
