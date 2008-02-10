@@ -9,9 +9,9 @@
 #include <iostream>
 
 #ifdef WIN32
- #include "Mutex_win32.h"
+#include "Mutex_win32.h"
 #else
- #include "Mutex_unix.h"
+#include "Mutex_unix.h"
 #endif
 #include "Singleton.hpp"
 
@@ -29,13 +29,15 @@ class Logger : public Singleton<Logger>
 			Info,
 			Warning,
 			Error,
-			Debug, // Modified because of system's #define DEBUG
+			Debug,
 			All
 		};
 		enum	UTIL
 		{
 			/// Passing this value to Logger will add a carriage return and then flush the output.
-			Flush
+			Flush,
+			NoStdOut,
+			PrintStdOut
 		};
 	private:
 		Logger::LEVEL	    _level;
@@ -43,7 +45,8 @@ class Logger : public Singleton<Logger>
 		bool			    _stdout;
 		LEVEL			    _nextDebugLevel;
 		std::ostringstream 	_stream;
-        IMutex*             _logMutex;
+		IMutex*             _logMutex;
+		bool				_defaultStdOut;
 
 		Logger();
 		void 				log(LEVEL, std::string);
@@ -73,6 +76,17 @@ class Logger : public Singleton<Logger>
 				_stream << toLog;
 				return *this;
 			}
+		//	template <>
+		//		Logger&	operator<< <Logger::LEVEL>(Logger::LEVEL lvl)
+		//		{
+		//			std::cout << "Specialisation level" << std::endl;
+		//		}
+
+		//	template <>
+		//		Logger&	operator<< <Logger::Util>(Logger::UTIL)
+		//		{
+		//			std::cout << "plonk" << std::endl;
+		//		}
 		Logger&	operator<<(UTIL);
 		Logger&	operator<<(LEVEL);
 		friend class Singleton<Logger>;

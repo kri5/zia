@@ -61,23 +61,32 @@ void		Logger::flush()
     this->log(this->_nextDebugLevel, _stream.str());
     this->_stream.str("");
     this->_stream.clear();
+	this->_stdout = this->_defaultStdOut;
     this->_logMutex->unlock();
 }
 
 Logger&		Logger::operator<< (Logger::UTIL val)
 {
     if (val == Flush)
-    {
         this->flush();
-    }
+	else if (val == NoStdOut)
+		this->setStdOut(false);
+	else if (val == PrintStdOut)
+		this->setStdOut(true);
 	return *this;
 }
 
 Logger::Logger() : _file(NULL), _stdout(true), _nextDebugLevel(Unset)
 {
-    this->_logMutex = static_cast<IMutex*>(new Mutex());
-    this->setLogLevel(Logger::All);
-    this->setOutputFile("test.log");
+    _logMutex = static_cast<IMutex*>(new Mutex());
+    setLogLevel(Logger::All);
+    setOutputFile("test.log");
+#ifdef NDEBUG
+	_defaultStdOut = false;
+#else
+	_defaultStdOut = true;
+#endif //NDEBUG
+	_stdout = _defaultStdOut;
 }
 
 Logger::~Logger()
@@ -86,4 +95,5 @@ Logger::~Logger()
         this->flush();
     if (this->_file != NULL)
         delete this->_file;
+	delete _logMutex;
 }
