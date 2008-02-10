@@ -10,19 +10,8 @@
 
 int main(int argc, char **argv)
 {
-	Logger::getInstance() << Logger::Info 
-        << "Kikoolol" << Logger::Flush;
-	//Init		i(argc, argv);
-
-    try
-    {
-        throw ZException<IClientSocket>
-            (INFO, IClientSocket::Error::Send,
-             "error while reading socket");
-    }
-    catch (ZException<IClientSocket> &e)
-    {
-        std::cout << e.what() << std::endl;
-    }
+	Init		i(argc, argv);
+	i.run();
+	Logger::deleteInstance();
 }
 

@@ -6,10 +6,9 @@
 #include <list>
 #include <string>
 #include <openssl/ssl.h>
+#include <ticpp.h>
 
 #include "Logger.hpp"
-#include "XMLDocument.h"
-#include "XMLNode.h"
 #include "Vhost.h"
 #include "Config.h"
 
@@ -27,9 +26,8 @@ class Init
         void    initThreads();
 
     private:
-		std::string		getConfigNodeValue(Xml::Node*);
-		void			parseConfigNode(Xml::Node*, Config*);
-		void			addVhost(Xml::Node*);
+		void			parseConfigNode(ticpp::Node*, Config*);
+		void			addVhost(const ticpp::Element&);
 		
 		Config*				_conf;
 		std::list<Vhost*>	_vhosts;

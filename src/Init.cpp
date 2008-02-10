@@ -35,38 +35,33 @@ void        Init::readCommandLine()
 
 }
 
-std::string		Init::getConfigNodeValue(Xml::Node* node)
-{
-	return ("novalue");
-}
-
-void		Init::addVhost(Xml::Node* node)
+void		Init::addVhost(const ticpp::Element& node)
 {
 	std::string		addr;
 	std::string		port;
 
-	addr = node->getAttr("address");
-	port = node->getAttr("port");
+	addr = node.GetAttribute("address");
+	port = node.GetAttribute("port");
 	Vhost*	v = new Vhost(NetworkID::factory(addr, port));
 	this->_binds[v->getAddress()][v->getPort()].push_back(v);
 	this->_vhosts.push_back(v);
 }
 
-void		Init::parseConfigNode(Xml::Node* node, Config* cfg)
+void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 {
-	Xml::Node*		subNode;
-	while (subNode = node->getNextChildNode())
-	{
-		std::string		nodeName = subNode->getName();
+	ticpp::Iterator<ticpp::Element>	it;
 
-		if (nodeName == "VirtualHost")
+	for (it = it.begin(node); it != it.end(); ++it)
+	{
+		//std::cout << *it << std::endl;
+		if (it->Value() == "VirtualHost")
 		{
-			this->addVhost(subNode);
+			this->addVhost(*it);
 		}
 		else
 		{
-			this->_conf->setParam(nodeName, subNode->getValue());
-			std::cout << "Adding " << nodeName << " = " << this->_conf->getParam(nodeName) << " to conf" << std::endl;
+			this->_conf->setParam(it->Value(), it->GetText());
+			std::cout << "Adding " << it->Value() << " = " << this->_conf->getParam(it->Value()) << " to conf" << std::endl;
 		}
 	}
 }
@@ -74,9 +69,19 @@ void		Init::parseConfigNode(Xml::Node* node, Config* cfg)
 /// Read the XML configuration
 void        Init::readConfiguration()
 {
-	Xml::Document* doc = new Xml::Document("zia.conf");
-	Xml::Node* root = doc->getRootNode();
-	this->parseConfigNode(root, this->_conf);
+	try
+	{
+		ticpp::Document	doc("zia.conf");
+		doc.LoadFile();
+
+		ticpp::Node* node =	doc.FirstChild();
+		this->parseConfigNode(node, this->_conf);
+	}
+	catch (ticpp::Exception& ex)
+	{
+		std::cerr << ex.what() << std::endl;
+	}
+	exit(0);
 }
 
 /// Initialize the SSL features

@@ -29,8 +29,8 @@ class ZException : public std::exception
 
 template <class T>
 ZException<T>::ZException(int line, const char* file,
-        typename T::Error::Code code = T::Unknow,
-        const char* msg = "") : 
+	typename T::Error::Code code = T::Error::Unknown,
+    const char* msg = "") : 
     _line(line), _file(file), _code(code), _msg(msg)
 {
     if (!_msg.length())
