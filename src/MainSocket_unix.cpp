@@ -1,4 +1,5 @@
 #include "MainSocket_unix.h"
+#include "ZException.h"
 
 #include "MemoryManager.hpp"
 
@@ -6,7 +7,7 @@ MainSocket::MainSocket(int queue, std::string adress, int port)
 {
 	listenSocket = ::socket(PF_INET, SOCK_STREAM, 0);
 	if (listenSocket == SOCKET_ERROR)
-		throw 0;
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Create);
 	bind(adress, port);
 	listen(queue);
 	_port = port;
@@ -28,7 +29,7 @@ void	MainSocket::bind(std::string adress, int port) const
 
 	if (::bind(listenSocket, (struct sockaddr *)&service, sizeof(service)) == SOCKET_ERROR)
 	{
-		throw 0;
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Bind);
 	}
 }
 
@@ -36,7 +37,7 @@ void	MainSocket::listen(int queue) const
 {
 	if (::listen(listenSocket, queue) == SOCKET_ERROR)
 	{
-		throw 0;
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Listen);
 	}
 }
 
@@ -45,15 +46,12 @@ ClientSocket*	MainSocket::accept()
 	int acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == SOCKET_ERROR)
 	{
-		throw 0;
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Accept);
 	}
 	ClientSocket *ret = new ClientSocket(acceptSocket);
 	return (ret);
 }
-
-int		MainSocket::recv(char *buf, int length) const
+int             MainSocket::recv(char *buf, int length) const
 {
 	; //FIXME
 }
-
-

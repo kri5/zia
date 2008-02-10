@@ -8,7 +8,7 @@ MainSocket::MainSocket(int queue, std::string address, int port) : Socket()
 	if (listenSocket == INVALID_SOCKET)
 	{
 		WSACleanup();
-		throw 0;
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Create);
 	}
 	bind(address, port);
 	listen(queue);
@@ -25,7 +25,7 @@ void MainSocket::bind( std::string address, int port ) const
 	{
 		closesocket(listenSocket);
 		WSACleanup();
-		throw 0;
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Bind);
 	}
 }
 
@@ -35,7 +35,7 @@ void MainSocket::listen( int queue ) const
 	{
 		closesocket(listenSocket);
 		WSACleanup();
-		throw 0;
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Listen);
 	}
 }
 
@@ -46,7 +46,7 @@ ClientSocket *MainSocket::accept()
 	{
 		closesocket(listenSocket);
 		WSACleanup();
-		throw 0;
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Accept);
 	}
 	ClientSocket *ret = new ClientSocket(acceptSocket);
 	return (ret);

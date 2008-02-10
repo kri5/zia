@@ -1,5 +1,5 @@
 #include "ClientSocket_unix.h"
-
+#include "ZException.h"
 #include "MemoryManager.hpp"
 
 ClientSocket::ClientSocket(int acceptedSocket) 
@@ -17,7 +17,7 @@ int		ClientSocket::send(const char *buf, int length) const
 	int iResult = ::send(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
 	{
-		throw 0;
+		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Send);
 	}
 	return (iResult);
 }
@@ -27,7 +27,7 @@ int ClientSocket::recv( char *buf, int length ) const
 	int iResult = ::recv(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
 	{
-		throw 0;
+		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Recv);
 	}
 	return (iResult);
 }

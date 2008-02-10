@@ -18,6 +18,5 @@ AddressWildcard::AddressWildcard() : Address("*")
 
 bool		Address::compare(const Address& right) const
 {
-	//FIXME
-	throw 0;
+	return (this->_addr == right.getAddr());
 }
