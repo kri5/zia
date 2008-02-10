@@ -8,6 +8,12 @@ NetworkID::NetworkID(Address* addr, Port* port) : _addr(addr), _port(port)
 {
 }
 
+NetworkID::~NetworkID()
+{
+	delete this->_addr;
+	delete this->_port;
+}
+
 NetworkID*		NetworkID::factory(std::string addr, std::string port)
 {
 	if (addr == "" && port == "")

@@ -8,6 +8,7 @@
 class Address : public IWildcard<Address> 
 {
 	public:
+		virtual ~Address(){}
 		Address(std::string);
 		std::string		getAddr() const;
 		virtual bool	compare(const Address&) const;

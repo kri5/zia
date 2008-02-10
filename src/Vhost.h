@@ -11,6 +11,7 @@ class Vhost : public Config
 {
 	public:
 		Vhost(NetworkID*);
+		virtual ~Vhost();
 		/// Will return the address the VHost is binded to.
 		Address*		getAddress() const;
 		/// Will return the port the VHost is binded to.

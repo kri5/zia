@@ -8,6 +8,11 @@ Vhost::Vhost(NetworkID* netId) : _netId(netId)
 {
 }
 
+Vhost::~Vhost()
+{
+	delete this->_netId;
+}
+
 Address*			Vhost::getAddress() const
 {
 	return this->_netId->getAddress();

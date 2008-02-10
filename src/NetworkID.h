@@ -9,6 +9,7 @@
 class	NetworkID : public IWildcard<NetworkID> 
 {
 	public:
+		virtual ~NetworkID();
 		/// Factory which will force the developper to use it, and not the constructor.
 		static NetworkID* factory(std::string, std::string);
 		/// Will compare two NetworkID. can be overwritten by Wilcard<NetworkID>

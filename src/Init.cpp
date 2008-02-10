@@ -13,8 +13,15 @@ Init::Init(int argc, char **argv) : _argc(argc), _argv(argv)
 /// Will destroy logger, since this function is supposed to be the last called in this server.
 Init::~Init()
 {
+	std::list<Vhost*>::iterator		it = this->_vhosts.begin();
+	std::list<Vhost*>::iterator		end = this->_vhosts.end();
+	while (it != end)
+	{
+		delete *it;
+		++it;
+	}
+	this->_vhosts.clear();
 	delete this->_conf;
-	Logger::deleteInstance();
 }
 
 /// Run the sequential initialization
@@ -61,9 +68,10 @@ void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 		else
 		{
 			this->_conf->setParam(it->Value(), it->GetText());
-			std::cout << "Adding " << it->Value() << " = " << this->_conf->getParam(it->Value()) << " to conf" << std::endl;
+			Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Adding " << it->Value() << " = " << this->_conf->getParam(it->Value()) << " to conf" << Zia::Newline;
 		}
 	}
+	Logger::getInstance() << Logger::Flush;
 }
 
 /// Read the XML configuration
@@ -81,7 +89,6 @@ void        Init::readConfiguration()
 	{
 		std::cerr << ex.what() << std::endl;
 	}
-	exit(0);
 }
 
 /// Initialize the SSL features
