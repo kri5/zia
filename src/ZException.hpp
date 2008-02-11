@@ -11,7 +11,7 @@ template <class T>
 class ZException : public std::exception
 {
 	public:
-		ZException(int, const char*, typename T::Error::Code, const char*);
+		ZException(int, const char*, typename T::Error::Code, std::string);
 		virtual ~ZException() throw ();
 		virtual const char*     what() const throw();
 
@@ -30,11 +30,13 @@ class ZException : public std::exception
 template <class T>
 ZException<T>::ZException(int line, const char* file,
 		typename T::Error::Code code = T::Error::Unknown,
-		const char* msg = "") : 
+		std::string msg = "") : 
 	_line(line), _file(file), _code(code), _msg(msg)
 {
 	std::ostringstream	stream;
-	stream << T::Error::Msg[_code] << "(" << msg << ")";
+	stream << T::Error::Msg[_code];
+	if (msg.length() > 0)
+		stream << "(" << msg << ")";
 	_msg = stream.str();
 
 	Logger::getInstance() << Logger::Error

@@ -8,6 +8,15 @@
 class Port : public IWildcard<Port>
 {
 	public:
+		struct	Error
+		{
+			enum	Code
+			{
+				Unknown,
+				Invalid
+			};
+			static const char* Msg[];
+		};
 		/// Will construct a Port object with an int as port value.
 		Port(int);
 		/// Will convert std::string to int, then assign this int to _port

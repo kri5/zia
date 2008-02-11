@@ -1,6 +1,8 @@
+#include <sstream>
+
 #include "Vhost.h"
 #include "Logger.hpp"
-#include <sstream>
+#include "ZException.hpp"
 
 #include "MemoryManager.hpp"
 
@@ -26,6 +28,6 @@ Port*			Vhost::getPort() const
 std::string		Vhost::getParam(std::string name) const
 {
 	if (name == "User" || name == "Group")
-		throw 0;
+		throw ZException<Vhost>(INFO, Vhost::Error::InvalidConfig, name);
 	return (Config::getParam(name));
 }

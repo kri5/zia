@@ -62,7 +62,7 @@ class MemoryManager
 			}
 			if (it->second.isArray != isArray)
 			{
-				throw 0;
+				throw std::bad_alloc();
 			}
 			::free(it->first);
 			this->_blocks.erase(it);

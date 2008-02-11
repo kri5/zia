@@ -1,6 +1,8 @@
 #include <sstream>
+
 #include "Logger.hpp"
 #include "Port.h"
+#include "ZException.hpp"
 
 #include "MemoryManager.hpp"
 
@@ -12,14 +14,14 @@ Port::Port(int port)
 Port::Port(std::string port)
 {
 	std::istringstream		stream(port);
+
+	if (stream.good() == false)
+		throw ZException<Port>(INFO, Port::Error::Invalid, port);
+	stream >> _port;
 	if (stream.good() == false)
 	{
-		std::string errMsg("Bad port value ");
-		errMsg += port + ")";
-		Logger::getInstance() << Logger::Error << "Bad port value (" << port << ')' << Logger::Flush;
-		throw 0;
+
 	}
-	stream >> _port;
 }
 
 int		Port::getPort() const
@@ -29,8 +31,7 @@ int		Port::getPort() const
 
 bool	Port::compare(const Port& right) const
 {
-	//FIXME
-	throw 0;
+	return (this->_port == right.getPort());
 }
 
 PortWildcard::PortWildcard() : Port(0)
