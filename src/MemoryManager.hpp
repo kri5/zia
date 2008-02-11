@@ -29,14 +29,14 @@ class MemoryManager : public Singleton<MemoryManager>
 			void*	ptr = malloc(size);
 			if (ptr == NULL)
 				throw std::bad_alloc();
-		
+
 			MemoryBlock 	newBlock;
 			newBlock.size = size;
 			newBlock.line = line;
 			newBlock.file = file;
 			newBlock.isArray = isArray;
 			this->_blocks[ptr] = newBlock;
-		
+
 			//Logger::getInstance() << Logger::DEBUGMODE << "Allocation of " << size << " bytes, from " << file << " at line " << line << Logger::FLUSH;
 			return ptr;
 		}
@@ -45,7 +45,7 @@ class MemoryManager : public Singleton<MemoryManager>
 		void	free(void* ptr, bool isArray)
 		{
 			std::map<void*, MemoryBlock>::iterator		it;
-		
+
 			it = this->_blocks.find(ptr);
 			if (it == this->_blocks.end())
 			{
@@ -80,7 +80,7 @@ class MemoryManager : public Singleton<MemoryManager>
 				{
 					//error msg.
 					Logger::getInstance() << Logger::Error << Zia::Newline << " - On " << it->second.file << " at line " << it->second.line
-											<< " undeleted block of " << it->second.size << " bytes";
+						<< " undeleted block of " << it->second.size << " bytes";
 					++it;
 				}
 				Logger::getInstance() << Logger::Flush;

@@ -8,11 +8,7 @@
 #include <ostream>
 #include <iostream>
 
-#ifdef WIN32
-#include "Mutex_win32.h"
-#else
-#include "Mutex_unix.h"
-#endif
+#include "Mutex.h"
 #include "MutexLock.hpp"
 #include "Singleton.hpp"
 
@@ -27,9 +23,9 @@ class Logger : public Singleton<Logger>
 			/// Default value.
 			Unset = -1,
 			None,
-			Info,
-			Warning,
 			Error,
+			Warning,
+			Info,
 			Debug,
 			All
 		};

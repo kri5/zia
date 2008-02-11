@@ -13,10 +13,10 @@ class	AtExit
 	public:
 		~AtExit()
 		{
-			Logger::deleteInstance();
 #ifndef NDEBUG
 			MemoryManager::deleteInstance();
 #endif //NDEBUG
+			Logger::deleteInstance();
 		}
 };
 

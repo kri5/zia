@@ -12,7 +12,8 @@
 
 int main(int argc, char **argv)
 {
-	Init		i(argc, argv);
+	Init	i(argc, argv);
+	
 	i.run();
 }
 
