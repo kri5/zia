@@ -9,6 +9,15 @@
 class	NetworkID : public IWildcard<NetworkID> 
 {
 	public:
+		struct	Error
+		{
+			enum	Code
+			{
+				Unknown,
+				InvalidConfig
+			};
+			static const char*	Msg[];
+		};
 		virtual ~NetworkID();
 		/// Factory which will force the developper to use it, and not the constructor.
 		static NetworkID* factory(std::string, std::string);

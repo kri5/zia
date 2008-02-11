@@ -33,8 +33,9 @@ ZException<T>::ZException(int line, const char* file,
 		const char* msg = "") : 
 	_line(line), _file(file), _code(code), _msg(msg)
 {
-	if (!_msg.length())
-		_msg = T::Error::Msg[_code];
+	std::ostringstream	stream;
+	stream << T::Error::Msg[_code] << "(" << msg << ")";
+	_msg = stream.str();
 
 	Logger::getInstance() << Logger::Error
 		<< "Exception thrown from file ("

@@ -10,6 +10,15 @@
 class Vhost : public Config
 {
 	public:
+		struct	Error
+		{
+			enum	Code
+			{
+				Unknown,
+				InvalidConfig
+			};
+			static const char* Msg[];
+		};
 		Vhost(NetworkID*);
 		virtual ~Vhost();
 		/// Will return the address the VHost is binded to.

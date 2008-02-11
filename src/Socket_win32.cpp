@@ -6,7 +6,7 @@ Socket::Socket()
 {
 	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != NO_ERROR)
-		throw 0;
+		throw ZException<Socket>(INFO, Socket::Error::Initialize);
 }
 
 Socket::~Socket()

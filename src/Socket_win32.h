@@ -7,6 +7,15 @@
 class Socket
 {
 public:
+	struct	Error
+	{
+		enum	Code
+		{
+			Unknown,
+			Initialize
+		};
+		static const char*	Msg[];
+	};
 	/// Will initialize WSA
 	Socket();
 	/// Clean WSA

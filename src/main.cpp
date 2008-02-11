@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iostream>
 
-#include "ZException.h"
+#include "ZException.hpp"
 #include "MemoryManager.hpp"
 #include "Init.h"
 #include "IClientSocket.h"
