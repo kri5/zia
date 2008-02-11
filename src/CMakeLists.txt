@@ -8,7 +8,7 @@ INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
 SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp 
 	Config.cpp Init.cpp SSLClientSocket.cpp Vhost.cpp
 	Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp
-    MemoryManager.hpp ErrorMsg.cpp Zerror.cpp)
+    MemoryManager.hpp ErrorMsg.cpp Zerror.cpp MutexLock.hpp)
 
 SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
 	IClientSocket.h Init.h Config.h SSLClientSocket.h Vhost.h

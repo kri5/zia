@@ -15,14 +15,13 @@ void  Logger::setOutputFile(const char* file)
 {
     if (this->_file != NULL)
     {
-        this->_logMutex->lock();
+        MutexLock(this->_logMutex);
         if (this->_file != NULL)
         {
             this->_file->close();
             delete this->_file;
             this->_file = NULL;
         }
-        this->_logMutex->unlock();
     }
     this->_file = new std::ofstream(file, std::ios_base::out | std::ios_base::trunc);
 }
@@ -39,7 +38,7 @@ void  Logger::log(Logger::LEVEL level, std::string msg)
         if (this->_stdout == true)
             std::cout << msg;
         if (this->_file != NULL)
-            *(this->_file) << msg;
+            (*(this->_file)) << msg;
     }
 }
 
@@ -56,13 +55,12 @@ Logger&		Logger::operator<< (Logger::LEVEL lvl)
 
 void		Logger::flush()
 {
-    this->_logMutex->lock();
+    MutexLock(this->_logMutex);
     this->_stream << Zia::Newline;
     this->log(this->_nextDebugLevel, _stream.str());
     this->_stream.str("");
     this->_stream.clear();
 	this->_stdout = this->_defaultStdOut;
-    this->_logMutex->unlock();
 }
 
 Logger&		Logger::operator<< (Logger::UTIL val)
@@ -78,7 +76,7 @@ Logger&		Logger::operator<< (Logger::UTIL val)
 
 Logger::Logger() : _file(NULL), _stdout(true), _nextDebugLevel(Unset)
 {
-    _logMutex = static_cast<IMutex*>(new Mutex());
+    _logMutex = new Mutex();
     setLogLevel(Logger::All);
     setOutputFile("test.log");
 #ifdef NDEBUG

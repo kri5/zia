@@ -13,6 +13,7 @@
 #else
 #include "Mutex_unix.h"
 #endif
+#include "MutexLock.hpp"
 #include "Singleton.hpp"
 
 /// Provides Logging capabilities. Only usable with operator <<
@@ -45,7 +46,7 @@ class Logger : public Singleton<Logger>
 		bool			    _stdout;
 		LEVEL			    _nextDebugLevel;
 		std::ostringstream 	_stream;
-		IMutex*             _logMutex;
+		Mutex*              _logMutex;
 		bool				_defaultStdOut;
 
 		Logger();
