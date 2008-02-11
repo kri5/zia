@@ -1,12 +1,15 @@
 #include <iostream>
+#include <new>
 
 #include "Init.h"
 #include "NetworkID.h"
+#include "Zerror.h"
 
 #include "MemoryManager.hpp"
 
 Init::Init(int argc, char **argv) : _argc(argc), _argv(argv)
 {
+    std::set_new_handler(ZNewHandler);
 	_conf = new Config();
 }
 
