@@ -3,15 +3,14 @@
 
 #ifndef NDEBUG
 
-#include "zia.h"
-
 #include <map>
 
+#include "zia.h"
 #include "Singleton.hpp"
 #include "Logger.hpp"
 
 /// Will track memory leaks. Automaticly enabled if NDEBUG isn't set, and if the file is included at the top of the file. Must be last file included.
-class MemoryManager
+class MemoryManager : public Singleton<MemoryManager>
 {
 	private:
 		struct	MemoryBlock
@@ -23,13 +22,6 @@ class MemoryManager
 		};
 
 	public:
-		/// Sort of stack singleton.
-		static MemoryManager&	getInstance()
-		{
-			static MemoryManager	m;
-		
-			return m;
-		}
 
 		/// used for blocks allocation.
 		void*	alloc(std::size_t size, const char* file, int line, bool isArray)
@@ -95,6 +87,8 @@ class MemoryManager
 				this->_blocks.clear();
 			}
 		}
+
+		friend class Singleton<MemoryManager>;
 };
 
 /// Debug overloading of new
