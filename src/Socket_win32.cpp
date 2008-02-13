@@ -1,5 +1,6 @@
 #include "Socket_win32.h"
 
+#include "ZException.hpp"
 #include "MemoryManager.hpp"
 
 Socket::Socket()

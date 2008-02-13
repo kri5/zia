@@ -16,7 +16,7 @@ Port::Port(std::string port)
 	std::istringstream		stream(port);
 
 	if (stream.good() == false)
-		throw ZException<Port>(INFO, Port::Error::Invalid, port);
+		throw ZException<Port>(INFO, Port::Error::Invalid, port.c_str());
 	stream >> _port;
 	if (stream.good() == false)
 	{

@@ -1,5 +1,6 @@
 #include "ClientSocket_win32.h"
 
+#include "ZException.hpp"
 #include "MemoryManager.hpp"
 
 ClientSocket::ClientSocket(int acceptedSocket) : Socket()

@@ -28,6 +28,6 @@ Port*			Vhost::getPort() const
 std::string		Vhost::getParam(std::string name) const
 {
 	if (name == "User" || name == "Group")
-		throw ZException<Vhost>(INFO, Vhost::Error::InvalidConfig, name);
+		throw ZException<Vhost>(INFO, Vhost::Error::InvalidConfig, name.c_str());
 	return (Config::getParam(name));
 }

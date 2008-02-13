@@ -1,5 +1,6 @@
 #include "MainSocket_win32.h"
 
+#include "ZException.hpp"
 #include "MemoryManager.hpp"
 
 MainSocket::MainSocket(int queue, std::string address, int port) : Socket()

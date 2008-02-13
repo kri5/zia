@@ -2,7 +2,7 @@
 #define __MUTEXLOCK_H__
 
 #ifdef WIN32
- #include "Mutex_win.h"
+ #include "Mutex_win32.h"
 #else
  #include "Mutex_unix.h"
 #endif
