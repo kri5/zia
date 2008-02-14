@@ -18,7 +18,8 @@
 	/// Newline for unix
 	namespace Zia
 	{
-		static const char*	Newline = "\n";
+		//This might be unused in some files, but if so we don't care. It's used elsewhere
+		__attribute__((unused)) static const char*	Newline = "\n";
 	}
 #endif //WIN32
 

@@ -22,6 +22,7 @@ class IMainSocket
 			};
 			static const char* Msg[];
 		};
+		virtual ~IMainSocket(){}
 		/// Spawn a new socket for the new client.
 		virtual IClientSocket *accept() = 0;
 		/// Will be user to receive a connection request from a new client.

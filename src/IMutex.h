@@ -4,6 +4,7 @@
 class IMutex
 {
 public:
+	virtual			~IMutex(){}
 	/// Lock the mutex, if the mutex is already locked it will block until release.
 	virtual void	lock() = 0;
 	/// Try to get a lock on the mutex, return true in case of success, false otherwise.

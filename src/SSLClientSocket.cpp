@@ -149,8 +149,8 @@ void    SSLClientSocket::close(bool shutdown) const
 /// Get and send errors (as strings) to the logger.
 void	SSLClientSocket::logError() const
 {
-  unsigned long e;
-  static char *buf;
+  //unsigned long e;
+  //static char *buf;
 
   //e = ERR_get_error();
   //buf = ERR_error_string(e, NULL);

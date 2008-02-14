@@ -16,6 +16,7 @@ class IClientSocket
 			};
 			static const char* Msg[];
 		};
+		virtual ~IClientSocket(){}
 		/// Will receive data from client.
 		virtual int	recv(char *buf, int length) const = 0;
 		/// Will send datas to client.

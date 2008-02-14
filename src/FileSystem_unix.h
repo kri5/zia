@@ -1,18 +1,43 @@
 #ifndef FILESYSTEM_UNIX_H__
 # define FILESYSTEM_UNIX_H__
 
+#include <errno.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include "IFileSystem.h"
+
 class	FileSystem : public IFileSystem
 {
 	public:
+		enum	Rights
+		{
+			Read = R_OK,
+			Exec = X_OK,
+			Write = W_OK
+		};
+		struct	Error
+		{
+			enum	Code
+			{
+				Unknown,
+				OpenDir,
+				ReadDir,
+				Stat
+			};
+			static const char*	Msg[];
+		};
 		FileSystem(std::string);
 		virtual 					~FileSystem();
-		std::list<FileInfo>*		getFileList() const;
-		bool						checkFileExistence() const;
-		bool						checkReadRights() const;
-		bool						checkExecRights() const;
-		bool						checkRights(int) const;
+		std::vector<FileInfo>*		getFileList() const;
+		bool						checkFileExistence(std::string) const;
+		bool						checkReadRights(std::string) const;
+		bool						checkExecRights(std::string) const;
+		bool						checkRights(std::string, int) const;
 	private:
-		std::string					_filename;
+		std::string					_path;
 };
 
 #endif //FILESYSTEM_UNIX_H__

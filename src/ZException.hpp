@@ -29,9 +29,9 @@ class ZException : public std::exception
 
 template <class T>
 ZException<T>::ZException(int line, const char* file,
-		typename T::Error::Code code/* = T::Error::Unknown*/,
-		const char* msg/* = NULL*/) : 
-	_line(line), _file(file), _code(code)
+		typename T::Error::Code code,
+		const char* msg) : 
+	_file(file), _line(line), _code(code)
 {
 	std::ostringstream	stream;
 	stream << T::Error::Msg[_code];

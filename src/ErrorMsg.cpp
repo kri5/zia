@@ -3,6 +3,7 @@
 #include "NetworkID.h"
 #include "Vhost.h"
 #include "Port.h"
+#include "FileSystem.h"
 
 const char* IClientSocket::Error::Msg[] = {
     "Unknown error",
@@ -36,10 +37,19 @@ const char*	Port::Error::Msg[] = {
 
 
 #ifdef WIN32
+
 #include "Socket_win32.h"
 const char*	Socket::Error::Msg[] = {
-	"Unknown config",
+	"Unknown error",
 	"Can't initialize socket librairie (WSAstartup)"
 };
 
+#else
+const char* FileSystem::Error::Msg[] = {
+	"Unknown error",
+	"Can't opendir for reading",
+	"Can't read directory with readdir",
+	"Can't stat file"
+};
 #endif
+

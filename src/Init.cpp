@@ -70,7 +70,7 @@ void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 		}
 		else
 		{
-			this->_conf->setParam(it->Value(), it->GetText());
+			cfg->setParam(it->Value(), it->GetText());
 			Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Adding " << it->Value() << " = " << this->_conf->getParam(it->Value()) << " to conf" << Zia::Newline;
 		}
 	}

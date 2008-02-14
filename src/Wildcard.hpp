@@ -8,6 +8,7 @@ template <class C>
 class	IWildcard
 {
 	public:
+		virtual ~IWildcard(){}
 		virtual bool	compare(const C&) const = 0;
 };
 

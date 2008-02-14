@@ -12,7 +12,7 @@ class Config
 		Config();
 		/// Copy constructor, to allow configuration inheritance.
 		Config(const Config&);
-		~Config();
+		virtual ~Config();
 		/// Will return the param value as a string. May be overide by inherited classes.
 		virtual std::string								getParam(std::string) const;
 		/// Used to set a param, while parsing XML file.

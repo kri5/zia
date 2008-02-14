@@ -104,13 +104,13 @@ inline void*	operator new[](std::size_t size, const char* file, int line)
 }
 
 /// Debug overloading of delete
-inline void		operator delete(void* ptr)
+inline void		operator delete(void* ptr) throw()
 {
 	MemoryManager::getInstance().free(ptr, false);
 }
 
 /// Debug overloading of delete[]
-inline void		operator delete[](void* ptr)
+inline void		operator delete[](void* ptr) throw()
 {
 	MemoryManager::getInstance().free(ptr, true);
 }

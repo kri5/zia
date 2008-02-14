@@ -7,13 +7,14 @@
 #include "MemoryManager.hpp"
 #include "Init.h"
 #include "IClientSocket.h"
+#include "FileSystem.h"
 
 #include "AtExit.hpp"
 
 int main(int argc, char **argv)
 {
-	Init	i(argc, argv);
-	
+	Init		i(argc, argv);
+
 	i.run();
 }
 
