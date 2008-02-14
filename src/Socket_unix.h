@@ -15,12 +15,6 @@ public:
 	Socket();
 	/// Close the socket.
 	virtual ~Socket();
-	/// Send data to the client.
-	int	send(const char *buf, int length) const;
-	/// Overloaded method that take a sring
-	int send(const std::string& buf, int length) const;
-	/// Read input data from the client.
-	virtual int	recv(char *buf, int length) const = 0;
 	/// Close the connection with auto-shutdown support.
 	virtual void close(bool shutdown) const;
 protected:

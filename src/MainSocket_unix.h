@@ -14,7 +14,6 @@ public:
 	~MainSocket();
 	
 	ClientSocket *accept();
-	int	recv(char *buf, int length) const;
 private:
 	void bind(std::string address, int port) const;
 	void listen(int queue) const;

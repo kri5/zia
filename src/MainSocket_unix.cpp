@@ -51,11 +51,4 @@ ClientSocket*	MainSocket::accept()
 	ClientSocket *ret = new ClientSocket(acceptSocket);
 	return (ret);
 }
-int             MainSocket::recv(char *buf, int length) const
-{
-	//ugly, but no more warnings, and it would be great to implement it someday...
-	buf = buf;
-	length = length;
-	; //FIXME
-	return 0;
-}
+
