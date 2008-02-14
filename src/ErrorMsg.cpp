@@ -4,6 +4,7 @@
 #include "Vhost.h"
 #include "Port.h"
 #include "FileSystem.h"
+#include "File.h"
 
 const char* IClientSocket::Error::Msg[] = {
     "Unknown error",
@@ -45,6 +46,12 @@ const char*	Socket::Error::Msg[] = {
 };
 
 #else
+
+const char* File::Error::Msg[] = {
+	"Unknown error",
+	"No such file or directory"
+};
+
 const char* FileSystem::Error::Msg[] = {
 	"Unknown error",
 	"Can't opendir for reading",
