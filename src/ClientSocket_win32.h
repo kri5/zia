@@ -17,6 +17,7 @@ class ClientSocket : public Socket, public IClientSocket
 		~ClientSocket();
 		int	recv(char *buf, int length) const;
 		int send(const char *buf, int length) const;
+		int send(const std::string& buf, int length) const;
 	private:
 };
 
