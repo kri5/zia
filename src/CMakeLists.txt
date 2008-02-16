@@ -9,12 +9,13 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 	Config.cpp Init.cpp SSLClientSocket.cpp Vhost.cpp
 	Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp
 	MemoryManager.hpp ErrorMsg.cpp Zerror.cpp ZException.hpp
-	MutexLock.hpp)
+	MutexLock.hpp File_win32.cpp FileSystem_win32.cpp AtExit.hpp)
 
 
 SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
 	IClientSocket.h Init.h Config.h SSLClientSocket.h Vhost.h
-	Address.h Port.h NetworkID.h Port.h Zerror.h IFile.h)
+	Address.h Port.h NetworkID.h Port.h Zerror.h IFile.h IFileSystem.h File_win32.h FileSystem_win32.h
+	ITime.h)
 
 IF (WIN32)
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
@@ -23,7 +24,7 @@ IF (WIN32)
       ${OPENSSL_EAY_LIBRARIES})
 	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS}  IThread_win32.cpp
 		Mutex_win32.cpp Socket_win32.cpp ClientSocket_win32.cpp
-		MainSocket_win32.cpp )
+		MainSocket_win32.cpp Time_win32.cpp)
 ELSE (WIN32)
 	SET(CMAKE_CXX_FLAGS "-Wall -W -pedantic")
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
@@ -34,7 +35,7 @@ ENDIF (WIN32)
 IF (UNIX)
   SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} Socket_unix.cpp ClientSocket_unix.cpp
 	  MainSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp FileSystem_unix.cpp
-	  File_unix.cpp)
+	  File_unix.cpp Time_unix.cpp)
 ENDIF (UNIX)
 
 ADD_EXECUTABLE (ziahttpd ${ZIAHTTPD_SRCS})

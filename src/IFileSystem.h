@@ -4,18 +4,14 @@
 #include <vector>
 #include <string>
 
+#include "IFile.h"
+
 class	IFileSystem
 {
 	public:
-		struct	FileInfo
-		{
-			std::string		filename;
-			int				size;
-			int				modifDate;
-		};
 		virtual ~IFileSystem(){};
 		/// Will return files as a std::list.
-		virtual std::vector<FileInfo>*		getFileList() const = 0;
+		virtual std::vector<IFile>*		getFileList() const = 0;
 		/// Will return true if the given file exists.
 		virtual bool						checkFileExistence(std::string) const = 0;
 		/// Will return true if given file has read rights.

@@ -1,7 +1,7 @@
 #include "Mutex_win32.h"
 #include <iostream>
 
-#include "MemoryManager.hpp"
+#include "Logger.hpp"
 
 Mutex::Mutex()
 {

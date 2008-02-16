@@ -4,21 +4,27 @@
 #ifndef NDEBUG
 
 #include <map>
+#include <stack>
 
 #include "zia.h"
 #include "Singleton.hpp"
 #include "Logger.hpp"
 
 /// Will track memory leaks. Automaticly enabled if NDEBUG isn't set, and if the file is included at the top of the file. Must be last file included.
-class MemoryManager : public Singleton<MemoryManager>
+class MemoryManager
 {
 	private:
 		struct	MemoryBlock
 		{
 			int				size;
-			int				line;
+			unsigned int	line;
 			std::string		file;
 			bool			isArray;
+		};
+		struct	DeleteInfo
+		{
+			std::string		file;
+			unsigned int	line;
 		};
 
 	public:
@@ -49,7 +55,7 @@ class MemoryManager : public Singleton<MemoryManager>
 			it = this->_blocks.find(ptr);
 			if (it == this->_blocks.end())
 			{
-				::free(ptr);
+				//::free(ptr);
 				return ;
 			}
 			if (it->second.isArray != isArray)
@@ -59,8 +65,23 @@ class MemoryManager : public Singleton<MemoryManager>
 			::free(it->first);
 			this->_blocks.erase(it);
 		}
+
+		void	nextDelete(const char* file, unsigned int line)
+		{
+			DeleteInfo		info;
+			info.file = file;
+			info.line = line;
+			this->_nextDelete.push(info);
+		}
+		static MemoryManager&		getInstance()
+		{
+			static MemoryManager	mem;
+
+			return mem;
+		}
 	private:
 		std::map<void*, MemoryBlock>	_blocks;
+		std::stack<DeleteInfo>			_nextDelete;
 		MemoryManager()
 		{
 		}
@@ -68,7 +89,7 @@ class MemoryManager : public Singleton<MemoryManager>
 		{
 			if (this->_blocks.empty())
 			{
-				Logger::getInstance() << Logger::Debug << "No memory leak detected." << Logger::Flush;
+				std::cout << "No memory leak detected." << std::endl;
 			}
 			else
 			{
@@ -79,16 +100,14 @@ class MemoryManager : public Singleton<MemoryManager>
 				while (it != this->_blocks.end())
 				{
 					//error msg.
-					Logger::getInstance() << Logger::Error << Zia::Newline << " - On " << it->second.file << " at line " << it->second.line
-						<< " undeleted block of " << it->second.size << " bytes";
+					std::cerr << Zia::Newline << " - On " << it->second.file << " at line " << it->second.line
+						<< " undeleted block of " << it->second.size << " bytes\n";
 					++it;
 				}
-				Logger::getInstance() << Logger::Flush;
+				std::cout << std::endl;
 				this->_blocks.clear();
 			}
 		}
-
-		friend class Singleton<MemoryManager>;
 };
 
 /// Debug overloading of new
@@ -129,6 +148,7 @@ inline void		operator delete[](void* ptr, const char*, int)
 
 /// Convenience define, since you don't want to type new (__FILE__, __LINE__) for every allocation ;)
 #define new new(__FILE__, __LINE__)
+#define delete MemoryManager::getInstance().nextDelete(__FILE__, __LINE__), delete
 
 #endif //NDEBUG
 

@@ -41,8 +41,8 @@ class Singleton
         Singleton<T>::_mutex->lock();
         if (Singleton<T>::_instance != NULL)
         {
-          delete  Singleton<T>::_instance;
-          Singleton<T>::_instance = NULL;
+		  delete  Singleton<T>::_instance;
+		  Singleton<T>::_instance = NULL;
         }
         Singleton<T>::_mutex->unlock();
       }

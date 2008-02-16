@@ -1,10 +1,11 @@
 #ifndef FILE_WIN32_H__
 # define FILE_WIN32_H__
 
-#include <unistd.h>
 #include <string>
 
+#include "zia.h"
 #include "IFile.h"
+#include "WinBase.h"
 
 class File : public IFile
 {
@@ -15,16 +16,19 @@ class File : public IFile
 			enum	Code
 			{
 				Unknown,
-				NoSuchFile
+				CantGetAttributes,
+				
 			};
 			static const char*	Msg[];
 		};
 		File(std::string);
 		~File(){};
-		int				getSize() const;
+		std::string		getFileName() const;
+		unsigned int	getSize() const;
 		time_t			getModifDate() const; 
 	private:
-
+		std::string					_filename;
+		WIN32_FILE_ATTRIBUTE_DATA	_attr;
 };
 
 #endif //FILE_WIN32_H__

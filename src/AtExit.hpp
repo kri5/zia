@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "MemoryManager.hpp"
+
 /*
  * /!\ DO NOT INCLUDE THIS ANYWHERE ELSE THAN MAIN.CPP !! /!\
  */
@@ -13,9 +15,6 @@ class	AtExit
 	public:
 		~AtExit()
 		{
-#ifndef NDEBUG
-			MemoryManager::deleteInstance();
-#endif //NDEBUG
 			Logger::deleteInstance();
 		}
 };
