@@ -6,6 +6,7 @@
 #include "zia.h"
 #include "IFile.h"
 #include "WinBase.h"
+#include "ITime.h"
 
 class File : public IFile
 {
@@ -25,7 +26,7 @@ class File : public IFile
 		~File(){};
 		std::string		getFileName() const;
 		unsigned int	getSize() const;
-		time_t			getModifDate() const; 
+		ITime*			getModifDate() const; 
 	private:
 		std::string					_filename;
 		WIN32_FILE_ATTRIBUTE_DATA	_attr;

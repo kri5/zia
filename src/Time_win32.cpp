@@ -31,7 +31,7 @@ time_t		Time::getTimestamp() const
 const char*		Time::getStr() const
 {
 	//Saturday, February 16, 2008 11:57:25 AM
-	return this->_time->Format("%c");
+	return this->_time->Format("%A, %B %d, %Y %I:%M:%S %p");
 }
 
 bool			Time::operator <(const ITime& right) const

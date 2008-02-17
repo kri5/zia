@@ -1,5 +1,6 @@
 #include "File_win32.h"
 #include "ZException.hpp"
+#include "Time.h"
 
 File::File(std::string filename) : _filename(filename)
 {
@@ -19,5 +20,7 @@ unsigned int				File::getSize() const
 	return this->_attr.nFileSizeLow;
 }
 
-//FIXME
-time_t File::getModifDate() const{return 0;}
+ITime*		File::getModifDate() const
+{
+	return static_cast<ITime*>(new Time(this->_attr.ftLastWriteTime));
+}

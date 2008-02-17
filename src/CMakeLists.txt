@@ -15,7 +15,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
 	IClientSocket.h Init.h Config.h SSLClientSocket.h Vhost.h
 	Address.h Port.h NetworkID.h Port.h Zerror.h IFile.h IFileSystem.h File_win32.h FileSystem_win32.h
-	ITime.h)
+	ITime.h Time_win32.h)
 
 IF (WIN32)
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)

@@ -5,7 +5,7 @@
 
 #include "ITime.h"
 
-class Time : ITime
+class Time : public ITime
 {
 	public:
 		struct	Error
