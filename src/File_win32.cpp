@@ -2,10 +2,12 @@
 #include "ZException.hpp"
 #include "Time.h"
 
+#include "MemoryManager.hpp"
+
 File::File(std::string filename) : _filename(filename)
 {
 	if (GetFileAttributesEx(filename.c_str(), GetFileExInfoStandard, &_attr) == 0)
-		throw ZException<File>(INFO, File::Error::CantGetAttributes, (const char*)GetLastError());
+		throw ZException<File>(INFO, File::Error::CantGetAttributes, "Probably because file does not exist");
 }
 
 std::string		File::getFileName() const

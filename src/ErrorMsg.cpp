@@ -56,6 +56,13 @@ const char* File::Error::Msg[] = {
 	"Can't get file's attributes"
 };
 
+#include "FileSystem_win32.h"
+
+const char* FileSystem::Error::Msg[] = {
+	"Unknown error",
+	"Can't have valid file handle"
+};
+
 #include "Time_win32.h"
 
 const char* Time::Error::Msg[] = {

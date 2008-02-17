@@ -11,7 +11,7 @@ class	IFileSystem
 	public:
 		virtual ~IFileSystem(){};
 		/// Will return files as a std::list.
-		virtual std::vector<IFile>*		getFileList() const = 0;
+		virtual std::vector<IFile*>*		getFileList() = 0;
 		/// Will return true if the given file exists.
 		virtual bool						checkFileExistence(std::string) const = 0;
 		/// Will return true if given file has read rights.

@@ -1,6 +1,7 @@
 #include "zia.h"
 
 #include <iostream>
+#include <iomanip>
 #include <cstdlib>
 
 #include "ZException.hpp"
@@ -16,8 +17,18 @@ int main(int argc, char **argv)
 {
 	Init		i(argc, argv);
 
-	File		f("zia.conf");
-	std::cout << f.getModifDate()->getStr() << " " << f.getSize() << std::endl;
+	std::vector<IFile*>*	files;
+	FileSystem		fs(".");
+	files = fs.getFileList();
+
+	std::vector<IFile*>::iterator it = files->begin();
+	while (it != files->end())
+	{
+		std::cout << (*it)->getFileName() << std::endl;
+		++it;
+	}
+
+	std::cout << std::boolalpha << fs.checkRights("zia.conf", FileSystem::Write) << std::endl;
 	i.run();
 	Logger::deleteInstance();
 }
