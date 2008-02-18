@@ -5,23 +5,22 @@
 #include "Socket_unix.h"
 #include "ClientSocket_unix.h"
 #include "IMainSocket.h"
+#include "NetworkID.h"
 
 class MainSocket : public Socket, public IMainSocket
 {
-public:
-	// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
-	MainSocket(int queue, std::string adress, int port);
-	~MainSocket();
-	
-	ClientSocket *accept();
-private:
-	void bind(std::string address, int port) const;
-	void listen(int queue) const;
+	public:
+		// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
+		MainSocket(NetworkID*, int);
+		~MainSocket();
 
-	/// The port the server is listening to.
-	int				_port;
-	/// The address the server will be listening.
-	std::string		_adress;
+		ClientSocket *accept();
+	private:
+		void bind(NetworkID*) const;
+		void listen(int queue) const;
+
+		/// The networkID this socket's listening to
+		NetworkID*			_netId;
 };
 
 #endif //__MAINSOCKET_UNIX_H__

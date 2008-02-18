@@ -3,15 +3,14 @@
 
 #include "MemoryManager.hpp"
 
-MainSocket::MainSocket(int queue, std::string adress, int port)
+MainSocket::MainSocket(NetworkID* netId, int queue)
 {
 	listenSocket = ::socket(PF_INET, SOCK_STREAM, 0);
 	if (listenSocket == SOCKET_ERROR)
-		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Create);
-	bind(adress, port);
+		throw ZException<MainSocket>(INFO, MainSocket::Error::Create);
+	bind(netId);
 	listen(queue);
-	_port = port;
-	_adress = adress;
+	_netId = netId;
 }
 
 MainSocket::~MainSocket()
@@ -19,19 +18,20 @@ MainSocket::~MainSocket()
 	this->close(true);
 }
 
-void	MainSocket::bind(std::string adress, int port) const
+void	MainSocket::bind(NetworkID* netId) const
 {
 	struct sockaddr_in service;
 	memset(&service, 0, sizeof(service));
 	service.sin_family = AF_INET;
-	service.sin_addr.s_addr = inet_addr(adress.c_str());
-	service.sin_port = htons(port);
+	service.sin_addr.s_addr = inet_addr(netId->getAddress()->getAddr().c_str());
+	service.sin_port = htons(netId->getPort()->getPort());
 
 	if (::bind(listenSocket, (struct sockaddr *)&service, sizeof(service)) == SOCKET_ERROR)
 	{
 		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Bind);
 	}
 }
+
 
 void	MainSocket::listen(int queue) const
 {
@@ -46,7 +46,7 @@ ClientSocket*	MainSocket::accept()
 	int acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == SOCKET_ERROR)
 	{
-		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Accept);
+		throw ZException<MainSocket>(INFO, MainSocket::Error::Accept);
 	}
 	ClientSocket *ret = new ClientSocket(acceptSocket);
 	return (ret);

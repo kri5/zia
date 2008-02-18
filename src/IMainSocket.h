@@ -5,7 +5,7 @@
 
 #include "zia.h"
 #include "IClientSocket.h"
-
+#include "NetworkID.h"
 /// Interface for multi platform MainSocket compactibility.
 class IMainSocket
 {
@@ -27,9 +27,11 @@ class IMainSocket
 		virtual IClientSocket *accept() = 0;
 	protected:
 		/// Bind the socket on a specified host and port.
-		virtual void bind(std::string address, int port) const = 0;
+		virtual void bind(NetworkID*) const = 0;
+		//virtual void bind(std::string address, int port) const = 0;
 		/// Listen wait for incoming connections.
 		virtual void listen(int queue) const = 0;
+		virtual void loutre() = 0;
 };
 
 #endif

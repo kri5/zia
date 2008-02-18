@@ -1,5 +1,5 @@
 #include "IClientSocket.h"
-#include "IMainSocket.h"
+#include "MainSocket.h"
 #include "NetworkID.h"
 #include "Vhost.h"
 #include "Port.h"
@@ -13,7 +13,7 @@ const char* IClientSocket::Error::Msg[] = {
     "Disconnect error"
 };
 
-const char* IMainSocket::Error::Msg[] = {
+const char* MainSocket::Error::Msg[] = {
 	"Unknown error",
 	"Can't create socket",
 	"Can't bind socket",
