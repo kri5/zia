@@ -17,19 +17,19 @@ class File : public IFile
 			enum	Code
 			{
 				Unknown,
-				CantGetAttributes,
-				
+				CantGetAttributes
 			};
 			static const char*	Msg[];
 		};
 		File(std::string);
-		~File(){};
+		~File();
 		std::string		getFileName() const;
 		unsigned int	getSize() const;
-		ITime*			getModifDate() const; 
+		ITime*			getModifDate(); 
 	private:
 		std::string					_filename;
 		WIN32_FILE_ATTRIBUTE_DATA	_attr;
+		ITime*						_time;
 };
 
 #endif //FILE_WIN32_H__

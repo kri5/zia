@@ -4,10 +4,15 @@
 
 #include "MemoryManager.hpp"
 
-File::File(std::string filename) : _filename(filename)
+File::File(std::string filename) : _filename(filename), _time(NULL)
 {
 	if (GetFileAttributesEx(filename.c_str(), GetFileExInfoStandard, &_attr) == 0)
 		throw ZException<File>(INFO, File::Error::CantGetAttributes, "Probably because file does not exist");
+}
+
+File::~File()
+{
+	delete this->_time;
 }
 
 std::string		File::getFileName() const
@@ -22,7 +27,9 @@ unsigned int				File::getSize() const
 	return this->_attr.nFileSizeLow;
 }
 
-ITime*		File::getModifDate() const
+ITime*		File::getModifDate()
 {
-	return static_cast<ITime*>(new Time(this->_attr.ftLastWriteTime));
+	if (this->_time == NULL)
+		this->_time = new Time(this->_attr.ftLastWriteTime);
+	return this->_time;
 }
