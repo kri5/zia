@@ -21,13 +21,14 @@ class MemoryManager
 			std::string		file;
 			bool			isArray;
 		};
-		struct	DeleteInfo
-		{
-			std::string		file;
-			unsigned int	line;
-		};
 
 	public:
+		static MemoryManager&		getInstance()
+		{
+			static MemoryManager	mem;
+
+			return mem;
+		}
 
 		/// used for blocks allocation.
 		void*	alloc(std::size_t size, const char* file, int line, bool isArray)
@@ -66,22 +67,8 @@ class MemoryManager
 			this->_blocks.erase(it);
 		}
 
-		void	nextDelete(const char* file, unsigned int line)
-		{
-			DeleteInfo		info;
-			info.file = file;
-			info.line = line;
-			this->_nextDelete.push(info);
-		}
-		static MemoryManager&		getInstance()
-		{
-			static MemoryManager	mem;
-
-			return mem;
-		}
 	private:
 		std::map<void*, MemoryBlock>	_blocks;
-		std::stack<DeleteInfo>			_nextDelete;
 		MemoryManager()
 		{
 		}
@@ -148,7 +135,6 @@ inline void		operator delete[](void* ptr, const char*, int)
 
 /// Convenience define, since you don't want to type new (__FILE__, __LINE__) for every allocation ;)
 #define new new(__FILE__, __LINE__)
-#define delete MemoryManager::getInstance().nextDelete(__FILE__, __LINE__), delete
 
 #endif //NDEBUG
 

@@ -20,11 +20,10 @@ int main(int argc, char **argv)
 	std::vector<IFile*>*	files;
 	FileSystem		fs(".");
 	files = fs.getFileList();
-
 	std::vector<IFile*>::iterator it = files->begin();
 	while (it != files->end())
 	{
-		std::cout << (*it)->getFileName() << std::endl;
+		std::cout << (*it)->getFileName() << " " << (*it)->getModifDate()->getStr() << std::endl;
 		++it;
 	}
 

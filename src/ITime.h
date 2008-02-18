@@ -1,6 +1,11 @@
 #ifndef ITIME_H__
 # define ITIME_H__
 
+// this include isn't required on win32.
+#ifndef WIN32
+#include <time.h>
+#endif
+
 class	ITime
 {
 	public:

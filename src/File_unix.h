@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string>
 
+#include "ITime.h"
 #include "IFile.h"
 
 class File : public IFile
@@ -21,12 +22,15 @@ class File : public IFile
 			};
 			static const char*	Msg[];
 		};
-		File(std::string);
-		~File(){};
-		int				getSize() const;
-		time_t			getModifDate() const; 
+		File(std::string, const char* path = NULL);
+		~File();
+		std::string		getFileName() const;
+		unsigned int	getSize() const;
+		ITime*			getModifDate();
 	private:
+		std::string		_name;
 		struct stat		_stat;
+		ITime*			_modifTime;
 };
 
 #endif //FILE_H__
