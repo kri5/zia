@@ -31,7 +31,7 @@ class Init
 		
 		Config*				_conf;
 		std::list<Vhost*>	_vhosts;
-		std::map<Address*, std::map<Port*, std::vector<Vhost*> > >	_binds;
+		std::map<Port*, std::map<Address*, std::vector<Vhost*> > >	_binds;
 
         int     _argc;
         char**  _argv;  

@@ -23,6 +23,10 @@ class	NetworkID : public IWildcard<NetworkID>
 		static NetworkID* factory(std::string, std::string);
 		/// Will compare two NetworkID. can be overwritten by Wilcard<NetworkID>
 		virtual bool	compare(const NetworkID&) const;
+		virtual bool	compare(const char* c) const;
+		virtual bool	operator==(const NetworkID& c) const {return this->compare(c);}
+		virtual bool	operator==(const char* c) const {return this->compare(c);}
+
 		/// Will return the Address of this network id.
 		Address*		getAddress() const;
 		/// Will return the Port of this network id.

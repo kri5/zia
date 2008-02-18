@@ -53,7 +53,7 @@ void		Init::addVhost(const ticpp::Element& node)
 	addr = node.GetAttribute("address");
 	port = node.GetAttribute("port");
 	Vhost*	v = new Vhost(NetworkID::factory(addr, port));
-	this->_binds[v->getAddress()][v->getPort()].push_back(v);
+	this->_binds[v->getPort()][v->getAddress()].push_back(v);
 	this->_vhosts.push_back(v);
 }
 
@@ -110,18 +110,23 @@ void        Init::initSockets()
 
 	//Browsing the Address* map
 	std::cout << "Starting binding server socket(s)" << std::endl;
-	std::map<Address*, std::map<Port*, std::vector<Vhost*> > >::iterator	itAddr = this->_binds.begin();
-	while (itAddr != this->_binds.end())
+	std::map<Port*, std::map<Address*, std::vector<Vhost*> > >::iterator	itPort = this->_binds.begin();
+	while (itPort != this->_binds.end())
 	{
-		addr = itAddr->first;
-		std::map<Port*, std::vector<Vhost*> >::iterator		itPorts = itAddr->second.begin();
-		while (itPorts != itAddr->second.end())
+		port = itPort->first;
+		std::map<Address*, std::vector<Vhost*> >::iterator		itAddr = itPort->second.begin();
+		while (itAddr != itPort->second.end())
 		{
-			port = itPorts->first;
+			if (*(itAddr->first) == "*")
+			{
+				std::cout << "Wilcard address : binding on INADDR_ANY" << std::endl;
+				break ;
+			}
+			addr = itAddr->first;
 			std::cout << "Binding addr " << addr->getAddr() << ":" << port->getPort() << std::endl;
-			++itPorts;
+			++itAddr;
 		}
-		++itAddr;
+		++itPort;
 	}
 }
 

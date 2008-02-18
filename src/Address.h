@@ -12,6 +12,9 @@ class Address : public IWildcard<Address>
 		Address(std::string);
 		std::string		getAddr() const;
 		virtual bool	compare(const Address&) const;
+		virtual bool	compare(const char* c) const;
+		virtual bool	operator==(const Address& c) const {return this->compare(c);}
+		virtual bool	operator==(const char* c) const {return this->compare(c);}
 	private:
 		std::string		_addr;
 };

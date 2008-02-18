@@ -26,6 +26,9 @@ class Port : public IWildcard<Port>
 		int				getPort() const;
 		/// Will compare 2 Ports, and return true if they match. Will be reimplemented if port is a wildcard port.
 		virtual bool	compare(const Port&) const;
+		virtual bool	compare(const char* c) const;
+		virtual bool	operator==(const Port& c) const {return this->compare(c);}
+		virtual bool	operator==(const char* c) const {return this->compare(c);}
 	protected:
 		int		_port;
 };

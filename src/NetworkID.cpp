@@ -50,6 +50,11 @@ bool			NetworkID::compare(const NetworkID& right) const
 	return (this->_addr->compare(*right.getAddress()) && this->_port->compare(*right.getPort()));
 }
 
+bool			NetworkID::compare(const char* str) const
+{
+	return (this->_addr->compare(str) 
+				&& this->_port->compare(&str[strlen(this->_addr->getAddr().c_str()) + 1]));
+}
 
 NetworkIDWildcard::NetworkIDWildcard(Address* addr, Port* port) : NetworkID(addr, port)
 {
