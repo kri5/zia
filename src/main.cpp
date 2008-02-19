@@ -10,6 +10,7 @@
 #include "FileSystem.h"
 #include "ITime.h"
 #include "File.h"
+#include "Parser.h"
 
 #include "MemoryManager.hpp"
 
@@ -30,5 +31,14 @@ int main(int argc, char **argv)
 	std::cout << std::boolalpha << fs.checkRights("zia.conf", FileSystem::Write) << std::endl;
 	i.run();
 	Logger::deleteInstance();
+    
+    //  For testing purpose (Parser)
+
+    //std::string test("GET / HTTP/1.1\r\nContent-Length:5\r\n\r\n01234");
+    //std::string out;
+    //Parser *p = new Parser();
+    //p->feed(test.c_str());
+    //while (p->readIdentifier(out) == true)
+    //    std::cout << out << std::endl;      
 }
 
