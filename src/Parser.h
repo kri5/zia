@@ -9,6 +9,7 @@
 class	Parser
 {
 	public:
+
 		Parser();
 		virtual				~Parser(){};
 		char				peekChar(); //will consume stream
@@ -21,7 +22,7 @@ class	Parser
 		bool				isEOF() const;
 		bool				isError() const;
 		void				flush();
-        void                                            feed(const char* data)
+        void                feed(const char* data)
         {
             this->_stream.write(data, strlen(data));
             this->extendBuffer();

@@ -10,7 +10,7 @@
 #include "FileSystem.h"
 #include "ITime.h"
 #include "File.h"
-#include "Parser.h"
+#include "HttpParser.h"
 
 #include "MemoryManager.hpp"
 
@@ -34,11 +34,12 @@ int main(int argc, char **argv)
     
     //  For testing purpose (Parser)
 
-    //std::string test("GET / HTTP/1.1\r\nContent-Length:5\r\n\r\n01234");
+    //std::string test("GET /pub/ HTTP/1.1\r\nContent-Length: 42\r\nFrom: thomas.boquet@gmail.com\r\n\r\n01234");
     //std::string out;
-    //Parser *p = new Parser();
+    //HttpParser *p = new HttpParser();
     //p->feed(test.c_str());
-    //while (p->readIdentifier(out) == true)
-    //    std::cout << out << std::endl;      
+    //p->parse();
+//    while (p->readIdentifier(out) == true)
+//        std::cout << out << std::endl;      
 }
 

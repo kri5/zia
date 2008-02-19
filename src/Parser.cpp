@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 #include "Parser.h"
 
@@ -109,8 +110,9 @@ void	Parser::ignore()
 	char	c;
 
 	//std::cout << "Before ignore : [" << (int)this->_buffers[this->_bufferId][this->_i] << ']' << std::endl;
-	while ((c = this->readChar()) == ' ' ||
-		c == '\t' || c == '\n' || c == '\r')
+	while ((c = this->readChar()) == ' ' 
+            || c == '\t' || c == '\n' 
+            || c == '\r')
 	{
 		this->peekChar();
 	}
@@ -126,17 +128,22 @@ bool	Parser::readIdentifier(std::string& output)
 	this->saveContext();
 	c = this->peekChar();
 	//std::cout << "Begining readIdentifier" << c << std::endl;
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '/' || c == '.')
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
+            || (c >= '0' && c <= '9')
+            || c == '/' || c == '.')
 	{
 		identifier += c;
 		c = this->peekChar();
-		while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_' || c == '-' || c == '.' || c == '/' || c == ':')
+		while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
+                || (c >= '0' && c <= '9') 
+                || c == '_' || c == '-' 
+                || c == '.' || c == '/' || c == '@')
 		{
 			identifier += c;
 			this->saveContext();
 			c = this->peekChar();
 		}
-		//this->restoreContext();
+		this->restoreContext();
 		output = identifier;
 		this->ignore();
 		return true;
