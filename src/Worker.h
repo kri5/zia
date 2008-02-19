@@ -12,7 +12,7 @@ public:
 
 private:
     Worker(ClientSocket& socket, Vhost& vhost) : _socket(socket), _vhost(vhost) { }
-    ~Worker() { };
+    ~Worker() { }
     void              code();
 
 protected:
