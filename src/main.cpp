@@ -18,17 +18,6 @@ int main(int argc, char **argv)
 {
 	Init		i(argc, argv);
 
-	std::vector<IFile*>*	files;
-	FileSystem		fs(".");
-	files = fs.getFileList();
-	std::vector<IFile*>::iterator it = files->begin();
-	while (it != files->end())
-	{
-		std::cout << (*it)->getFileName() << " " << (*it)->getModifDate()->getStr() << std::endl;
-		++it;
-	}
-
-	std::cout << std::boolalpha << fs.checkRights("zia.conf", FileSystem::Write) << std::endl;
 	i.run();
 	Logger::deleteInstance();
     

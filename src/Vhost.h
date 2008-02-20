@@ -6,7 +6,7 @@
 #include "NetworkID.h"
 #include "Config.h"
 
-/// Represent a Virtual Host. Mainly used for store configuration.
+/// Represent a Virtual Host. Mainly used for storing configuration.
 class Vhost : public Config
 {
 	public:
@@ -19,17 +19,17 @@ class Vhost : public Config
 			};
 			static const char* Msg[];
 		};
-		Vhost(NetworkID*);
+		Vhost(NetworkID*, Config*);
 		virtual ~Vhost();
 		/// Will return the address the VHost is binded to.
 		Address*		getAddress() const;
 		/// Will return the port the VHost is binded to.
 		Port*			getPort() const;
-
+		/// Will return the complete NetworkID :
+		NetworkID*		getNetworkID() const;
 		/// Param getter overloading, to ensure that some parameters can't be getted (such as login or group for daemon mode)
 		std::string		getParam(std::string) const;
 	private:
-		/// Private constructor, so you can only instantiate via the factory method.
 		NetworkID*		_netId;
 };
 

@@ -39,6 +39,3 @@ bool	Port::compare(const char* str) const
 	return (atoi(str) == this->_port);
 }
 
-PortWildcard::PortWildcard() : Port(0)
-{
-}

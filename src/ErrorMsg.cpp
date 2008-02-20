@@ -23,7 +23,8 @@ const char* MainSocket::Error::Msg[] = {
 
 const char*	NetworkID::Error::Msg[] = {
 	"Unknown error",
-	"Invalid config"
+	"Invalid config",
+	"Port can't be wildcarded"
 };
 
 const char* Vhost::Error::Msg[] = {

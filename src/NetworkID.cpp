@@ -15,22 +15,24 @@ NetworkID::~NetworkID()
 	delete this->_port;
 }
 
+bool			NetworkID::isWildcard(std::string id)
+{
+	return (id == "*");
+}
+
 NetworkID*		NetworkID::factory(std::string addr, std::string port)
 {
-	if (addr == "" && port == "")
+	if (isWildcard(addr) && isWildcard(port))
 	{
-		Logger::getInstance() << Logger::Info << "Instanciating wildcard NetworkID" << Logger::Flush;
-		return new NetworkIDWildcard(new AddressWildcard(), new PortWildcard());
+		throw ZException<NetworkID>(INFO, NetworkID::Error::PortWildcard);
 	}
-	else if (addr == "" && port != "")
+	else if (isWildcard(addr) && !isWildcard(port))
 	{
-		//Logger::getInstance() << Logger::Error << "Can't have an address wildcard without port !" << Logger::Flush; //commented because the exception will also log this message.
-		throw ZException<NetworkID>(INFO, NetworkID::Error::InvalidConfig, "Can't have an address wildcard without port !");
+		return new NetworkID(new AddressWildcard(), new Port(port));
 	}
-	else if (addr != "" && port == "")
+	else if (!isWildcard(addr) && isWildcard(port))
 	{
-		Logger::getInstance() << Logger::Info << "Instanciating NetworkID with wildcard port." << Logger::Flush;
-		return new NetworkID(new Address(addr), new PortWildcard());
+		throw ZException<NetworkID>(INFO, NetworkID::Error::PortWildcard);
 	}
 	return new NetworkID(new Address(addr), new Port(port));
 }
@@ -56,6 +58,3 @@ bool			NetworkID::compare(const char* str) const
 				&& this->_port->compare(&str[strlen(this->_addr->getAddr().c_str()) + 1]));
 }
 
-NetworkIDWildcard::NetworkIDWildcard(Address* addr, Port* port) : NetworkID(addr, port)
-{
-}

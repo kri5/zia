@@ -1,11 +1,10 @@
 #ifndef PORT_H__
 #define PORT_H__
 
-#include "Wildcard.hpp"
 #include <string>
 
 /// Will represent a port, as a part of a NetworkID (network identifier)
-class Port : public IWildcard<Port>
+class Port
 {
 	public:
 		struct	Error
@@ -24,20 +23,13 @@ class Port : public IWildcard<Port>
 		virtual ~Port(){}
 		/// Will return the port as an int.
 		int				getPort() const;
-		/// Will compare 2 Ports, and return true if they match. Will be reimplemented if port is a wildcard port.
+		/// Will compare 2 Ports, and return true if they match.
 		virtual bool	compare(const Port&) const;
 		virtual bool	compare(const char* c) const;
 		virtual bool	operator==(const Port& c) const {return this->compare(c);}
 		virtual bool	operator==(const char* c) const {return this->compare(c);}
 	protected:
 		int		_port;
-};
-
-/// Wildcarded port.
-class PortWildcard : public Port, public Wildcard<Port>
-{
-	public:
-		PortWildcard();
 };
 
 #endif //PORT_H__

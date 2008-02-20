@@ -27,11 +27,13 @@ class Init
 
     private:
 		void			parseConfigNode(ticpp::Node*, Config*);
-		void			addVhost(const ticpp::Element&);
+		void			addVhost(ticpp::Element&);
+		void			addWildcardVhosts();
+		void			addNonWildcardVhosts();
 		
-		Config*				_conf;
-		std::list<Vhost*>	_vhosts;
-		std::map<Port*, std::map<Address*, std::vector<Vhost*> > >	_binds;
+		Config*											_conf;
+		std::list<Vhost*>								_vhosts;
+		std::map<NetworkID*, std::vector<Vhost*> >		_bindList;
 
         int     _argc;
         char**  _argv;  

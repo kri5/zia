@@ -45,15 +45,21 @@ void        Init::readCommandLine()
 
 }
 
-void		Init::addVhost(const ticpp::Element& node)
+void		Init::addVhost(ticpp::Element& node)
 {
 	std::string		addr;
 	std::string		port;
 
 	addr = node.GetAttribute("address");
 	port = node.GetAttribute("port");
-	Vhost*	v = new Vhost(NetworkID::factory(addr, port));
-	this->_binds[v->getPort()][v->getAddress()].push_back(v);
+	if (addr == "" || port == "")
+	{
+		Logger::getInstance() << Logger::Warning << "Can't have VirtualHost without both address and port" << Logger::Flush;
+		return ;
+	}
+	Vhost*	v = new Vhost(NetworkID::factory(addr, port), this->_conf);
+	this->parseConfigNode(static_cast<ticpp::Node*>(&node), static_cast<Config*>(v));
+	//insertion dans la liste des vhosts.
 	this->_vhosts.push_back(v);
 }
 
@@ -74,7 +80,7 @@ void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 			Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Adding " << it->Value() << " = " << this->_conf->getParam(it->Value()) << " to conf" << Zia::Newline;
 		}
 	}
-	Logger::getInstance() << Logger::Flush;
+	Logger::getInstance() << Logger::NoStdOut << Logger::Flush;
 }
 
 /// Read the XML configuration
@@ -102,32 +108,76 @@ void        Init::initSSL()
   Logger::getInstance() << Logger::Info << "SSL loaded successfully." << Logger::Flush;
 }
 
+void		Init::addWildcardVhosts()
+{
+	std::list<Vhost*>::iterator		it = this->_vhosts.begin();
+	std::list<Vhost*>::iterator		end = this->_vhosts.end();
+	std::map<NetworkID*, std::vector<Vhost*> >::iterator	itNet;
+	std::map<NetworkID*, std::vector<Vhost*> >::iterator	endNet;
+
+	while (it != end)
+	{
+		if (*((*it)->getAddress()) == "*")
+		{
+			itNet = this->_bindList.begin();
+			endNet = this->_bindList.end();
+			bool		found = false;
+			while (itNet != endNet)
+			{
+				if (*(itNet->first->getPort()) == *((*it)->getPort()))
+				{
+					found = true;
+					itNet->second.push_back(*it);
+				}
+				++itNet;
+			}
+			if (found == false)
+				this->_bindList[(*it)->getNetworkID()].push_back(*it);
+		}
+		++it;
+	}
+}
+
+void		Init::addNonWildcardVhosts()
+{
+	std::list<Vhost*>::iterator		it = this->_vhosts.begin();
+	std::list<Vhost*>::iterator		end = this->_vhosts.end();
+	std::map<NetworkID*, std::vector<Vhost*> >::iterator	itNet;
+	std::map<NetworkID*, std::vector<Vhost*> >::iterator	endNet;
+
+	while (it != end)
+	{
+		if (!(*((*it)->getAddress()) == "*"))
+		{
+			bool	found = false;
+
+			itNet = this->_bindList.begin();
+			endNet = this->_bindList.end();
+			while (itNet != endNet)
+			{
+				if (*(itNet->first->getAddress()) == "*" && itNet->first->getPort()->getPort() == (*it)->getPort()->getPort())
+				{
+					found = true;
+					itNet->second.push_back(*it);
+				}
+				++itNet;
+			}
+			if (found == false)
+				this->_bindList[(*it)->getNetworkID()].push_back(*it);
+		}
+		++it;
+	}
+	
+}
+
 /// Start the server sockets
 void        Init::initSockets()
 {
-	Address*		addr;
-	Port*			port;
+	std::list<Vhost*>::iterator		it = this->_vhosts.begin();
+	std::list<Vhost*>::iterator		end = this->_vhosts.end();
 
-	//Browsing the Address* map
-	std::cout << "Starting binding server socket(s)" << std::endl;
-	std::map<Port*, std::map<Address*, std::vector<Vhost*> > >::iterator	itPort = this->_binds.begin();
-	while (itPort != this->_binds.end())
-	{
-		port = itPort->first;
-		std::map<Address*, std::vector<Vhost*> >::iterator		itAddr = itPort->second.begin();
-		while (itAddr != itPort->second.end())
-		{
-			if (*(itAddr->first) == "*")
-			{
-				std::cout << "Wilcard address : binding on INADDR_ANY" << std::endl;
-				break ;
-			}
-			addr = itAddr->first;
-			std::cout << "Binding addr " << addr->getAddr() << ":" << port->getPort() << std::endl;
-			++itAddr;
-		}
-		++itPort;
-	}
+	this->addWildcardVhosts();
+	this->addNonWildcardVhosts();
 }
 
 /// Spawn the threads

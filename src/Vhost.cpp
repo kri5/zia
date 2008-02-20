@@ -6,7 +6,7 @@
 
 #include "MemoryManager.hpp"
 
-Vhost::Vhost(NetworkID* netId) : _netId(netId)
+Vhost::Vhost(NetworkID* netId, Config* cfg) : Config(*cfg), _netId(netId) 
 {
 }
 
@@ -23,6 +23,11 @@ Address*			Vhost::getAddress() const
 Port*			Vhost::getPort() const
 {
 	return this->_netId->getPort();
+}
+
+NetworkID*		Vhost::getNetworkID() const
+{
+	return this->_netId;
 }
 
 std::string		Vhost::getParam(std::string name) const

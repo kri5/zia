@@ -12,9 +12,8 @@ Config::~Config()
 	_params.clear();
 }
 
-Config::Config(const Config& right)
+Config::Config(const Config& right) : _params(right._params)
 {
-	_params = right._params;
 }
 
 std::string		Config::getParam(std::string name) const
