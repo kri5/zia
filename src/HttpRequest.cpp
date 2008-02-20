@@ -12,7 +12,7 @@ HttpRequest::~HttpRequest()
 
 }
 
-void            HttpRequest::setCommand(std::string& command)
+void            HttpRequest::setCommand(Command command)
 {
     this->_command = command;
 }
@@ -22,7 +22,7 @@ void            HttpRequest::setUri(std::string& uri)
     this->_uri = uri;
 }
 
-void            HttpRequest::appendOption(std::string& key,
+void            HttpRequest::appendOption(Option key,
                                           std::string& value)
 {
     this->_options[key] = value;
@@ -35,9 +35,9 @@ void            HttpRequest::setProtocol(std::string& protocol)
 
 void            HttpRequest::print()
 {
-    std::map<std::string, std::string>::iterator it
+    std::map<Option, std::string>::iterator it
         = this->_options.begin();
-    std::map<std::string, std::string>::iterator ite
+    std::map<Option, std::string>::iterator ite
         = this->_options.end();
 
     std::cout << "----- HttpRequest -----" << std::endl

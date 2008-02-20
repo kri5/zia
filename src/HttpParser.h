@@ -10,12 +10,28 @@ class HttpParser : public Parser
         HttpParser();
         ~HttpParser() {};
         void            parse();
-        bool            parseCommand();
-        bool            parseUri();
-        bool            parseOption();
-        bool            parseProtocol();
 
     private:
+        bool            parseGetCommand();
+        bool            parsePostCommand();
+        bool            parseUri();
+        bool            parseProtocol();
+
+        bool            parseOption();
+        bool            parseOptionHost();
+        bool            parseOptionContentLength();
+        bool            parseOptionFrom();
+        bool            parseOptionUserAgent();
+        bool            parseOptionContentType();
+        bool            parseOptionDate();
+
+        bool            readEmailAddress(std::string&);
+        bool            readDate(std::string&);
+        bool            readTime(std::string&);
+
+        bool            isWeekOfTheDay(const std::string&) const;
+        bool            isMonthOfTheYear(const std::string&) const;
+
         HttpRequest*    _request;
 };
 

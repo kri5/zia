@@ -17,11 +17,15 @@ class	Parser
 		bool				readIdentifier(std::string& output);
 		bool				readInteger(int& output);
 		bool				readInteger(short& output);
+		bool				readInteger(std::string& output);
 		bool				readDecimal(double& output);
 		bool				readDecimal(float& output);
+        bool                readEmailAddress(std::string&);
 		bool				isEOF() const;
 		bool				isError() const;
 		void				flush();
+        void                saveContextPub();
+        void                restoreContextPub();
         void                feed(const char* data)
         {
             this->_stream.write(data, strlen(data));
@@ -40,7 +44,9 @@ class	Parser
 		int												_i;
 		int												_bufferId;
 		int												_backI;
+        int                                             _backIPub;
 		int												_backBuffer;
+        int                                             _backBufferPub;
 		int												_nbRead;
 };
 

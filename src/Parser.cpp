@@ -65,10 +65,25 @@ void		Parser::saveContext()
 	this->_backI = this->_i;
 }
 
+void        Parser::saveContextPub()
+{
+    this->_backBufferPub = this->_bufferId;
+    this->_backIPub = this->_i;
+}
+
 void		Parser::restoreContext()
 {
 	this->_i = this->_backI >= 0 ? this->_backI : 0;
 	this->_bufferId = this->_backBuffer >= 0 ? this->_backBuffer : 0;
+}
+
+void        Parser::restoreContextPub()
+{
+    this->_i = this->_backIPub >= 0 
+                ? this->_backIPub : 0;
+
+    this->_bufferId = this->_backBufferPub >= 0 
+                        ? this->_backBufferPub : 0;
 }
 
 void		Parser::flush()
@@ -137,7 +152,7 @@ bool	Parser::readIdentifier(std::string& output)
 		while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
                 || (c >= '0' && c <= '9') 
                 || c == '_' || c == '-' 
-                || c == '.' || c == '/' || c == '@')
+                || c == '.' || c == '/')
 		{
 			identifier += c;
 			this->saveContext();
@@ -179,6 +194,31 @@ bool	Parser::readInteger(int& output)
 	return false;
 }
 
+bool	Parser::readInteger(std::string& output)
+{
+	std::string		res("");
+	char			c;
+
+	this->ignore();
+	this->saveContext();
+	c = this->peekChar();
+	if (c >= '0' && c <= '9')
+	{
+		while (c >= '0' && c <= '9')
+		{
+			res += c;
+			this->saveContext();
+			c = this->peekChar();
+		}
+		this->restoreContext();
+		output = res;
+		this->ignore();
+		return true;
+	}
+	this->restoreContext();
+	output = "";
+	return false;
+}
 bool	Parser::readInteger(short& output)
 {
 	int		res;

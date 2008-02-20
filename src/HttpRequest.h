@@ -30,17 +30,15 @@ class HttpRequest
 
         HttpRequest();
         ~HttpRequest();
-        void            setCommand(std::string&);
+        void            setCommand(Command);
         void            setUri(std::string&);
         void            setProtocol(std::string&);
-        void            appendOption(std::string&, std::string&);
+        void            appendOption(Option, std::string&);
         void            print();
 
     private:
-        Command                             _commandA;
-        std::string                         _command;
-        std::map<Option, std::string>       _optionsA;
-        std::map<std::string, std::string>  _options;
+        Command                             _command;
+        std::map<Option, std::string>       _options;
         std::string                         _uri;
         std::string                         _protocol;
 };
