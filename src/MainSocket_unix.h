@@ -19,8 +19,8 @@ class MainSocket : public Socket, public IMainSocket
 
 		ClientSocket *accept();
 	private:
-		void bind(const NetworkID*) const;
-		void listen(int queue) const;
+		void    bind(const NetworkID*) const;
+		void    listen(int queue) const;
 
 		/// The networkID this socket's listening to
 		const NetworkID*			_netId;

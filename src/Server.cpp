@@ -66,6 +66,22 @@ void		Server::run()
 		{
 			continue ;
 		}
-		std::cout << "Data received !" << std::endl;
+        this->checkSockets(ret, fds);
 	}
 }
+
+void            Server::checkSockets(int nbSockets, const fd_set& fds) const
+{
+    int         size = this->_sockets.size();
+    int         i;
+
+    for (i = 0; i < size && nbSockets > 0; ++i)
+    {
+        if (this->_sockets[i]->isSet(fds))
+        {
+            Logger::getInstance() << Logger::Info << "Tying to accept new client" << Logger::Flush;
+            this->_sockets[i]->accept();
+        }
+    }
+}
+

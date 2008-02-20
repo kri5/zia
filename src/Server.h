@@ -29,6 +29,8 @@ class	Server
 		int													_maxFd;
 		const std::map<const NetworkID*, std::vector<Vhost*> >&	_toBind;
 		std::vector<MainSocket*>							_sockets;
+
+        void    checkSockets(int nbSockets, const fd_set& fds) const;
 };
 
 #endif //SERVER_H__

@@ -21,6 +21,7 @@ public:
 	virtual void 	close(bool shutdown) const;
 	int				getNativeSocket() const;
 	const ISocket&	operator>>(fd_set&) const;
+    bool            isSet(const fd_set&) const;
 	int				getSocketValue() const;
 protected:
 	int listenSocket;

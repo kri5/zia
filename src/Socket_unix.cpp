@@ -37,3 +37,9 @@ int				Socket::getSocketValue() const
 {
 	return this->listenSocket;
 }
+
+bool            Socket::isSet(const fd_set& fds) const
+{
+    return FD_ISSET(this->listenSocket, &fds);
+}
+
