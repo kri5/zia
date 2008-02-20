@@ -34,11 +34,13 @@ class HttpRequest
         void            setUri(std::string&);
         void            setProtocol(std::string&);
         void            appendOption(Option, std::string&);
+        void            appendUriArgument(std::string&, std::string&);
         void            print();
 
     private:
         Command                             _command;
         std::map<Option, std::string>       _options;
+        std::map<std::string, std::string>  _uriArguments;
         std::string                         _uri;
         std::string                         _protocol;
 };

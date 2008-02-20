@@ -28,6 +28,13 @@ void            HttpRequest::appendOption(Option key,
     this->_options[key] = value;
 }
 
+void            HttpRequest::appendUriArgument(std::string& key,
+                                            std::string& value)
+{
+    this->_uriArguments[key] = value;
+}
+
+
 void            HttpRequest::setProtocol(std::string& protocol)
 {
     this->_protocol = protocol;
@@ -40,10 +47,24 @@ void            HttpRequest::print()
     std::map<Option, std::string>::iterator ite
         = this->_options.end();
 
+    std::map<std::string, std::string>::iterator uriIt
+        = this->_uriArguments.begin();
+    std::map<std::string, std::string>::iterator uriIte
+        = this->_uriArguments.end();
+
+
     std::cout << "----- HttpRequest -----" << std::endl
         << "Command == " << this->_command << std::endl
         << "Uri == " << this->_uri << std::endl
-        << "Protocol == " << this->_protocol << std::endl
+        << " =[UriArguments]=" << std::endl;
+
+    for (; uriIt != uriIte; ++uriIt)
+        std::cout << "  arg[" << (*uriIt).first
+            << "] == " << (*uriIt).second << std::endl;
+
+
+
+    std::cout << "Protocol == " << this->_protocol << std::endl
         << "-- Options --" << std::endl;;
 
 

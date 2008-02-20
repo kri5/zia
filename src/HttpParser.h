@@ -15,6 +15,7 @@ class HttpParser : public Parser
         bool            parseGetCommand();
         bool            parsePostCommand();
         bool            parseUri();
+        bool            parseUriArgument();
         bool            parseProtocol();
 
         bool            parseOption();

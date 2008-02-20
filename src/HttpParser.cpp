@@ -113,9 +113,47 @@ bool        HttpParser::parseUri()
     if (this->readIdentifier(token))
     {
         this->_request->setUri(token);
+        while (this->parseUriArgument());
         return true;
     }
     return false;
+}
+
+
+/**
+ *  Parses a key => value pair
+ *  in the uri. For now this version
+ *  is too permissive, you're allowed
+ *  to do such ugly things : 
+ *  /index.php?test=42?foo=bar
+ *  needs to be fixed
+ * */
+
+bool        HttpParser::parseUriArgument()
+{
+    std::string     key;
+    std::string     value;
+
+    this->saveContextPub();
+    if (this->readChar() == '?'
+        || this->readChar() == '&')
+    {
+        this->peekChar();
+        if (this->readIdentifier(key))
+        {
+            if (this->readChar() == '=')
+            {
+                this->peekChar();
+                if (this->readIdentifier(value))
+                {
+                    this->_request->appendUriArgument(key, value);
+                    return true;
+                }
+            }
+        }
+    }
+    this->restoreContextPub();
+    return false; 
 }
 
 
