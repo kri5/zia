@@ -2,6 +2,7 @@
 #define PORT_H__
 
 #include <string>
+#include <arpa/inet.h>
 
 /// Will represent a port, as a part of a NetworkID (network identifier)
 class Port
@@ -23,6 +24,7 @@ class Port
 		virtual ~Port(){}
 		/// Will return the port as an int.
 		int				getPort() const;
+		uint16_t		getHtonsPort() const;
 		/// Will compare 2 Ports, and return true if they match.
 		virtual bool	compare(const Port&) const;
 		virtual bool	compare(const char* c) const;

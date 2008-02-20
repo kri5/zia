@@ -15,19 +15,19 @@ Vhost::~Vhost()
 	delete this->_netId;
 }
 
-Address*			Vhost::getAddress() const
+const Address&			Vhost::getAddress() const
 {
 	return this->_netId->getAddress();
 }
 
-Port*			Vhost::getPort() const
+const Port&			Vhost::getPort() const
 {
 	return this->_netId->getPort();
 }
 
-NetworkID*		Vhost::getNetworkID() const
+const NetworkID&	Vhost::getNetworkID() const
 {
-	return this->_netId;
+	return *(this->_netId);
 }
 
 std::string		Vhost::getParam(std::string name) const

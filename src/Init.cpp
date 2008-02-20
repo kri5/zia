@@ -112,19 +112,19 @@ void		Init::addWildcardVhosts()
 {
 	std::list<Vhost*>::iterator		it = this->_vhosts.begin();
 	std::list<Vhost*>::iterator		end = this->_vhosts.end();
-	std::map<NetworkID*, std::vector<Vhost*> >::iterator	itNet;
-	std::map<NetworkID*, std::vector<Vhost*> >::iterator	endNet;
+	std::map<const NetworkID*, std::vector<Vhost*> >::iterator	itNet;
+	std::map<const NetworkID*, std::vector<Vhost*> >::iterator	endNet;
 
 	while (it != end)
 	{
-		if (*((*it)->getAddress()) == "*")
+		if ((*it)->getAddress() == "*")
 		{
 			itNet = this->_bindList.begin();
 			endNet = this->_bindList.end();
 			bool		found = false;
 			while (itNet != endNet)
 			{
-				if (*(itNet->first->getPort()) == *((*it)->getPort()))
+				if (itNet->first->getPort() == (*it)->getPort())
 				{
 					found = true;
 					itNet->second.push_back(*it);
@@ -132,7 +132,7 @@ void		Init::addWildcardVhosts()
 				++itNet;
 			}
 			if (found == false)
-				this->_bindList[(*it)->getNetworkID()].push_back(*it);
+				this->_bindList[&((*it)->getNetworkID())].push_back(*it);
 		}
 		++it;
 	}
@@ -142,12 +142,12 @@ void		Init::addNonWildcardVhosts()
 {
 	std::list<Vhost*>::iterator		it = this->_vhosts.begin();
 	std::list<Vhost*>::iterator		end = this->_vhosts.end();
-	std::map<NetworkID*, std::vector<Vhost*> >::iterator	itNet;
-	std::map<NetworkID*, std::vector<Vhost*> >::iterator	endNet;
+	std::map<const NetworkID*, std::vector<Vhost*> >::iterator	itNet;
+	std::map<const NetworkID*, std::vector<Vhost*> >::iterator	endNet;
 
 	while (it != end)
 	{
-		if (!(*((*it)->getAddress()) == "*"))
+		if (!((*it)->getAddress() == "*"))
 		{
 			bool	found = false;
 
@@ -155,7 +155,7 @@ void		Init::addNonWildcardVhosts()
 			endNet = this->_bindList.end();
 			while (itNet != endNet)
 			{
-				if (*(itNet->first->getAddress()) == "*" && itNet->first->getPort()->getPort() == (*it)->getPort()->getPort())
+				if (itNet->first->getAddress() == "*" && itNet->first->getPort() == (*it)->getPort())
 				{
 					found = true;
 					itNet->second.push_back(*it);
@@ -163,7 +163,7 @@ void		Init::addNonWildcardVhosts()
 				++itNet;
 			}
 			if (found == false)
-				this->_bindList[(*it)->getNetworkID()].push_back(*it);
+				this->_bindList[&((*it)->getNetworkID())].push_back(*it);
 		}
 		++it;
 	}
@@ -186,7 +186,7 @@ void        Init::initThreads()
 
 }
 
-const std::map<NetworkID*, std::vector<Vhost*> >&		Init::getBindList()
+const std::map<const NetworkID*, std::vector<Vhost*> >&		Init::getBindList()
 {
 	return this->_bindList;
 }

@@ -37,19 +37,19 @@ NetworkID*		NetworkID::factory(std::string addr, std::string port)
 	return new NetworkID(new Address(addr), new Port(port));
 }
 
-Address*		NetworkID::getAddress() const
+const Address&		NetworkID::getAddress() const
 {
-	return this->_addr;
+	return *(this->_addr);
 }
 
-Port*			NetworkID::getPort() const
+const Port&			NetworkID::getPort() const
 {
-	return this->_port;
+	return *(this->_port);
 }
 
 bool			NetworkID::compare(const NetworkID& right) const
 {
-	return (this->_addr->compare(*right.getAddress()) && this->_port->compare(*right.getPort()));
+	return (this->_addr->compare(right.getAddress()) && this->_port->compare(right.getPort()));
 }
 
 bool			NetworkID::compare(const char* str) const

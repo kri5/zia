@@ -28,9 +28,9 @@ class	NetworkID
 		virtual bool	operator==(const char* c) const {return this->compare(c);}
 
 		/// Will return the Address of this network id.
-		Address*		getAddress() const;
+		const Address&	getAddress() const;
 		/// Will return the Port of this network id.
-		Port*			getPort() const;
+		const Port&		getPort() const;
 	protected:
 		static bool		isWildcard(std::string);
 		/// Private constructor to ensure instantiation via the factory method.

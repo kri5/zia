@@ -22,11 +22,11 @@ class Vhost : public Config
 		Vhost(NetworkID*, Config*);
 		virtual ~Vhost();
 		/// Will return the address the VHost is binded to.
-		Address*		getAddress() const;
+		const Address&		getAddress() const;
 		/// Will return the port the VHost is binded to.
-		Port*			getPort() const;
+		const Port&			getPort() const;
 		/// Will return the complete NetworkID :
-		NetworkID*		getNetworkID() const;
+		const NetworkID&	getNetworkID() const;
 		/// Param getter overloading, to ensure that some parameters can't be getted (such as login or group for daemon mode)
 		std::string		getParam(std::string) const;
 	private:

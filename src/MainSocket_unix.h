@@ -14,16 +14,16 @@ class MainSocket : public Socket, public IMainSocket
 {
 	public:
 		// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
-		MainSocket(NetworkID*, int, const std::vector<Vhost*>&);
+		MainSocket(const NetworkID*, int, const std::vector<Vhost*>&);
 		~MainSocket();
 
 		ClientSocket *accept();
 	private:
-		void bind(NetworkID*) const;
+		void bind(const NetworkID*) const;
 		void listen(int queue) const;
 
 		/// The networkID this socket's listening to
-		NetworkID*					_netId;
+		const NetworkID*			_netId;
 		const std::vector<Vhost*>	_vhosts;
 };
 

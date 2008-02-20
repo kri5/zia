@@ -7,14 +7,13 @@
 
 #include "MemoryManager.hpp"
 
-MainSocket::MainSocket(NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : _vhosts(vhosts)
+MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : _netId(netId), _vhosts(vhosts)
 {
 	listenSocket = ::socket(PF_INET, SOCK_STREAM, 0);
 	if (listenSocket == SOCKET_ERROR)
 		throw ZException<MainSocket>(INFO, MainSocket::Error::Create);
 	bind(netId);
 	listen(queue);
-	_netId = netId;
 }
 
 MainSocket::~MainSocket()
@@ -22,13 +21,13 @@ MainSocket::~MainSocket()
 	this->close(true);
 }
 
-void	MainSocket::bind(NetworkID* netId) const
+void	MainSocket::bind(const NetworkID* netId) const
 {
 	struct sockaddr_in service;
 	memset(&service, 0, sizeof(service));
 	service.sin_family = AF_INET;
-	service.sin_addr.s_addr = netId->getAddress()->getInAddr();
-	service.sin_port = htons(netId->getPort()->getPort());
+	service.sin_addr.s_addr = netId->getAddress().getInAddr();
+	service.sin_port = netId->getPort().getHtonsPort();
 
 	if (::bind(listenSocket, (struct sockaddr *)&service, sizeof(service)) == SOCKET_ERROR)
 	{
