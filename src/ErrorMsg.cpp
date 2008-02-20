@@ -5,6 +5,7 @@
 #include "Port.h"
 #include "FileSystem.h"
 #include "File.h"
+#include "Server.h"
 
 const char* IClientSocket::Error::Msg[] = {
     "Unknown error",
@@ -37,6 +38,12 @@ const char*	Port::Error::Msg[] = {
 	"Given port is invalid"
 };
 
+const char* Server::Error::Msg[] = {
+	"Unknown error",
+	"Select error"
+};
+
+// Archi dependent part.
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

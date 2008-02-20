@@ -4,7 +4,7 @@
 #include "zia.h"
 
 /// Generic Win32 socket class.
-class Socket
+class Socket : public ISocket
 {
 public:
 	struct	Error
@@ -22,7 +22,8 @@ public:
 	~Socket();
 	
 	/// Close the connection with auto-shutdown support.
-	void close(bool shutdown) const;
+	void 			close(bool shutdown) const;
+	const ISocket&	operator>>(fd_set&) const;
 protected:
 	WSADATA wsaData;
 	SOCKET listenSocket;

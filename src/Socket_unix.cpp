@@ -22,3 +22,18 @@ void Socket::close(bool shutdown) const
 	::close(listenSocket);
 }
 
+int	Socket::getNativeSocket() const
+{
+	return this->listenSocket;
+}
+
+const ISocket&	Socket::operator>>(fd_set& fds) const
+{
+	FD_SET(this->listenSocket, &fds);
+	return *this;
+}
+
+int				Socket::getSocketValue() const
+{
+	return this->listenSocket;
+}

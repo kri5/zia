@@ -1,9 +1,13 @@
+#include <errno.h>
+#include <string.h>
+
 #include "MainSocket_unix.h"
 #include "ZException.hpp"
+#include "Vhost.h"
 
 #include "MemoryManager.hpp"
 
-MainSocket::MainSocket(NetworkID* netId, int queue)
+MainSocket::MainSocket(NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : _vhosts(vhosts)
 {
 	listenSocket = ::socket(PF_INET, SOCK_STREAM, 0);
 	if (listenSocket == SOCKET_ERROR)
@@ -23,12 +27,12 @@ void	MainSocket::bind(NetworkID* netId) const
 	struct sockaddr_in service;
 	memset(&service, 0, sizeof(service));
 	service.sin_family = AF_INET;
-	service.sin_addr.s_addr = inet_addr(netId->getAddress()->getAddr().c_str());
+	service.sin_addr.s_addr = netId->getAddress()->getInAddr();
 	service.sin_port = htons(netId->getPort()->getPort());
 
 	if (::bind(listenSocket, (struct sockaddr *)&service, sizeof(service)) == SOCKET_ERROR)
 	{
-		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Bind);
+		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Bind, strerror(errno));
 	}
 }
 

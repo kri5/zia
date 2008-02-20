@@ -31,7 +31,6 @@ class IMainSocket
 		//virtual void bind(std::string address, int port) const = 0;
 		/// Listen wait for incoming connections.
 		virtual void listen(int queue) const = 0;
-		virtual void loutre() = 0;
 };
 
 #endif

@@ -28,7 +28,7 @@ Init::~Init()
 }
 
 /// Run the sequential initialization
-int         Init::run()
+int         Init::start()
 {
     this->readCommandLine();
     this->readConfiguration();
@@ -184,5 +184,10 @@ void        Init::initSockets()
 void        Init::initThreads()
 {
 
+}
+
+const std::map<NetworkID*, std::vector<Vhost*> >&		Init::getBindList()
+{
+	return this->_bindList;
 }
 
