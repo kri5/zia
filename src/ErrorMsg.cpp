@@ -14,7 +14,7 @@ const char* IClientSocket::Error::Msg[] = {
     "Disconnect error"
 };
 
-const char* MainSocket::Error::Msg[] = {
+const char* IMainSocket::Error::Msg[] = {
 	"Unknown error",
 	"Can't create socket",
 	"Can't bind socket",

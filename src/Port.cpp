@@ -29,7 +29,7 @@ int		Port::getPort() const
 	return this->_port;
 }
 
-uint16_t	Port::getHtonsPort() const
+u_short	Port::getHtonsPort() const
 {
 	return htons(this->_port);
 }

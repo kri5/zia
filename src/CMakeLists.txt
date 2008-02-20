@@ -16,7 +16,7 @@ SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h Mai
 	IClientSocket.h Init.h Config.h SSLClientSocket.h Vhost.h
 	Address.h Port.h NetworkID.h Port.h Zerror.h IFile.h IFileSystem.h File_win32.h FileSystem_win32.h
 	ITime.h Time_win32.h Parser.h HttpParser.h HttpRequest.h IThread.h
-    Worker.h HttpResponse.h)
+    Worker.h HttpResponse.h ISocket.h)
 
 IF (WIN32)
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)

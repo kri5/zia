@@ -2,6 +2,7 @@
 #define SOCKET_WIN32_H__
 
 #include "zia.h"
+#include "ISocket.h"
 
 /// Generic Win32 socket class.
 class Socket : public ISocket

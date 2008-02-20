@@ -26,7 +26,7 @@ bool		Address::compare(const char* str) const
 	return (!strncmp(str, this->_addr.c_str(), strlen(this->_addr.c_str())));
 }
 
-in_addr_t	Address::getInAddr() const
+unsigned long	Address::getInAddr() const
 {
 	return (inet_addr(this->_addr.c_str()));
 }

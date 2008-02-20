@@ -3,7 +3,7 @@
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
 
-MainSocket::MainSocket(int queue, std::string address, int port) : Socket()
+MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : Socket(), _netId(netId), _vhosts(vhosts)
 {
 	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (listenSocket == INVALID_SOCKET)
@@ -11,18 +11,18 @@ MainSocket::MainSocket(int queue, std::string address, int port) : Socket()
 		WSACleanup();
 		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Create);
 	}
-	bind(address, port);
+	bind(netId);
 	listen(queue);
 }
 
-void MainSocket::bind( std::string address, int port ) const
+void MainSocket::bind(const NetworkID* netId) const
 {
 	sockaddr_in service;
 	service.sin_family = AF_INET;
-	service.sin_addr.s_addr = inet_addr(address.c_str());
-	service.sin_port = htons(port);
+	service.sin_addr.s_addr = netId->getAddress().getInAddr();
+	service.sin_port = netId->getPort().getHtonsPort();
 
-	if (::bind(listenSocket, (SOCKADDR*) &service, sizeof(service)) == SOCKET_ERROR)
+	if (::bind(listenSocket, (SOCKADDR*)&service, sizeof(service)) == SOCKET_ERROR)
 	{
 		closesocket(listenSocket);
 		WSACleanup();
@@ -30,7 +30,7 @@ void MainSocket::bind( std::string address, int port ) const
 	}
 }
 
-void MainSocket::listen( int queue ) const
+void MainSocket::listen(int queue) const
 {
 	if (::listen(listenSocket, queue) == SOCKET_ERROR)
 	{

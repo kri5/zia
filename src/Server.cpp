@@ -1,7 +1,10 @@
+#ifndef WIN32
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#endif
 
+#include "zia.h"
 #include "Server.h"
 #include "ZException.hpp"
 

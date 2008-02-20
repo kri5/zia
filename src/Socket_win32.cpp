@@ -21,3 +21,9 @@ void Socket::close(bool shutdown) const
 		::shutdown(listenSocket, SD_BOTH);
 	closesocket(listenSocket);
 }
+
+const ISocket&	Socket::operator >>(fd_set &fds) const
+{
+	FD_SET(this->listenSocket, &fds);
+	return *this;
+}
