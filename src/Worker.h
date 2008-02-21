@@ -20,7 +20,7 @@ private:
 
 protected:
     void                    sendResponse(HttpResponse& response);
-    virtual HttpResponse&   request(HttpRequest& request); 
+    virtual HttpResponse&   request(HttpRequest& request); // This function had to be moved away (in another class) for visibility 
     ClientSocket&           _socket;
     Vhost&                  _vhost;
 };
