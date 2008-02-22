@@ -80,7 +80,7 @@ void            Server::checkSockets(int nbSockets, const fd_set& fds) const
     {
         if (this->_sockets[i]->isSet(fds))
         {
-            Logger::getInstance() << Logger::Info << "Tying to accept new client" << Logger::Flush;
+            Logger::getInstance() << Logger::Info << "Trying to accept new client" << Logger::Flush;
             Worker::create(*this->_sockets[i]->accept(), this->_sockets[i]->getAssociatedVhosts());
         }
     }

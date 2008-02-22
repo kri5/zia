@@ -9,6 +9,7 @@ void          Worker::create(ClientSocket& socket, const std::vector<Vhost*>& vh
 /// Here we are in the first threaded method
 void          Worker::code()
 {
+    Logger::getInstance() << Logger::Info << "Thread #" << this->pid() << " started." << Logger::Flush;
     try
     {
         HttpRequest* req = new HttpRequest();
@@ -19,6 +20,7 @@ void          Worker::code()
     {
         // sendResponse(e.getResponse())
     }
+    Logger::getInstance() << Logger::Info << "Thread #" << this->pid() << " ended." << Logger::Flush;
 }
 
 /// Generate the data to be sent using the HttpResponse object

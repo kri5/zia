@@ -7,6 +7,7 @@
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "HttpError.h"
+#include "Logger.hpp"
 
 class Worker : public IThread
 {
