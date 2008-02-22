@@ -17,6 +17,8 @@ public:
 	// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
 	MainSocket(const NetworkID*, int, const std::vector<Vhost*>&);
 	
+    const std::vector<Vhost*>&   getAssociatedVhosts();
+
 	/// Spawn a new socket for the new client.
 	ClientSocket *accept();
 private:

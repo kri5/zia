@@ -6,6 +6,7 @@
 
 #include "zia.h"
 #include "Server.h"
+#include "Worker.h"
 #include "ZException.hpp"
 
 #include "MemoryManager.hpp"
@@ -80,7 +81,7 @@ void            Server::checkSockets(int nbSockets, const fd_set& fds) const
         if (this->_sockets[i]->isSet(fds))
         {
             Logger::getInstance() << Logger::Info << "Tying to accept new client" << Logger::Flush;
-            this->_sockets[i]->accept();
+            Worker::create(*this->_sockets[i]->accept(), this->_sockets[i]->getAssociatedVhosts());
         }
     }
 }

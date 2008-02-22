@@ -1,9 +1,9 @@
 #include "Worker.h"
 
 /// Launch a new thread that will handle the new client connection
-void          Worker::create(ClientSocket& socket, Vhost& vhost)
+void          Worker::create(ClientSocket& socket, const std::vector<Vhost*>& vhosts)
 {
-    (new Worker(socket, vhost))->run();
+    (new Worker(socket, vhosts))->run();
 }
 
 /// Here we are in the first threaded method
@@ -13,8 +13,7 @@ void          Worker::code()
     {
         HttpRequest* req = new HttpRequest();
         //TODO Filling request object here by reading what the client send to us
-        req = req;
-        //sendResponse(this->request(req));
+        sendResponse(this->request(*req));
     }
     catch (HttpError& e) // HttpError thrown (404, 500, ...)
     {
@@ -34,6 +33,14 @@ void                  Worker::sendResponse(HttpResponse& response)
 HttpResponse&         Worker::request(HttpRequest& request)
 {
     request = request;
+
+    std::ostringstream oss;
+    oss << "Hello from pid " << this->pid() << std::endl;
+
+    std::string msg = oss.str();
+
+    _socket.send(msg.c_str(), msg.size());
+    _socket.close(true);
     HttpResponse* toto = new HttpResponse();
     return *toto;
 }

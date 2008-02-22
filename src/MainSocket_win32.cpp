@@ -53,3 +53,8 @@ ClientSocket *MainSocket::accept()
 	return (ret);
 }
 
+const std::vector<Vhost*>&   MainSocket::getAssociatedVhosts()
+{
+    return _vhosts;
+}
+
