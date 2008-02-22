@@ -2,63 +2,54 @@
 
 using namespace std;
 
-SocketBuf::SocketBuf(int socket) : _socket(socket)
+SocketBuf::SocketBuf(int s) : socket(s)
 {
-    setg(_inBuffer, _inBuffer, _inBuffer);
-    setp(_outBuffer, _outBuffer + 1024);
+    setg(readBuffer, readBuffer, readBuffer);
+    setp(writeBuffer, writeBuffer + sizeof(writeBuffer) - 1);
 }
 
-SocketBuf::~SocketBuf() { }
+SocketBuf::~SocketBuf()
+{
+    sync();
+    // Should we close the buffer here ?
+}
 
 int           SocketBuf::overflow(int x)
 {
-    cout << "SocketBuf::overflow(): " << x << endl;
-    return x;
+    Logger::getInstance() << Logger::Info << "SocketBuf::overflow(): " << x << Logger::Flush; 
+    size_t len = size_t(pptr() - pbase());
+    if (x != traits_type::eof())
+    {
+        *pptr() = x;
+        ++len;
+    }
+
+    if (len > 0)
+    {
+        const void* data = pbase();
+        int res = send(socket, data, len, 0);
+        if (res <= 0)
+            return traits_type::eof();
+        setp(writeBuffer, writeBuffer + sizeof(writeBuffer) - 1);
+    }
+
+    return 0;
 }
 
 int           SocketBuf::underflow()
 {
-    cout << "SocketBuf::underflow()" << endl;
-
-    if (gptr() < egptr()) return *(unsigned char*)gptr();
-
-    int len;
-
-    if (ioctl(_socket, TIOCINQ, &len) < 0)
-    {
-        cout << "SocketBuf error" << endl;
-        len = 1;
-    }
-
-    if (len == 0)
-        len = 1;
-
-    int read = recv(_socket, &_inBuffer, len, 0);
-    if (read > 0)
-    {
-        setg(_inBuffer, _inBuffer, _inBuffer + read);
-    }
-    else
-    {
-        return EOF;
-    }
-
-    return *(unsigned char*)gptr();
+    Logger::getInstance() << Logger::Info << "SocketBuf::underflow()" << Logger::Flush; 
+    int res = recv(socket, readBuffer, sizeof(readBuffer), 0);
+    if (res < 0)
+        return traits_type::eof();
+    setg(readBuffer, readBuffer, readBuffer + res);
+    return readBuffer[0];
 }
 
 int             SocketBuf::sync()
 {
-    cout << "SocketBuf::sync()" << endl;
-
-    if (pbase() == pptr())
-        return 0;
-
-    int len = pptr() - pbase();
-    int rc = send(_socket, pbase(), len, 0);
-    if (rc < 0)
-        return rc;
-
-    setp(_outBuffer, _outBuffer + 1024);
+    Logger::getInstance() << Logger::Info << "SocketBuf::sync()" << Logger::Flush; 
+    overflow(traits_type::eof());
     return 0;
 }
 

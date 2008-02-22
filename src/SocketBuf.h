@@ -4,6 +4,7 @@
 #include <streambuf>
 #include <iostream>
 
+#include "Logger.hpp"
 #include "Socket.h"
 
 #ifndef WIN32
@@ -28,16 +29,16 @@ class     SocketBuf : public streambuf
         int       sync();
 
     private:
-        int       _socket;
-        char      _inBuffer[1024];
-        char      _outBuffer[1024];
+        int       socket;
+        char      writeBuffer[1024];
+        char      readBuffer[1024];
 };
 
 
 class     siostream: public iostream
 {
     public:
-        siostream(int socket) : _buf(socket), iostream(&_buf) { }
+        siostream(int socket) : iostream(&_buf), _buf(socket) { }
 
     private:
         SocketBuf _buf;

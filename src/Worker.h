@@ -1,6 +1,7 @@
 #ifndef __WORKER_H__
 #define __WORKER_H__
 
+#include <fstream>
 #include "IThread.h"
 #include "ClientSocket.h"
 #include "Vhost.h"
@@ -8,6 +9,7 @@
 #include "HttpResponse.h"
 #include "HttpError.h"
 #include "Logger.hpp"
+#include "File.h"
 
 class Worker : public IThread
 {

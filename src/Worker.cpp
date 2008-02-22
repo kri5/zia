@@ -36,12 +36,34 @@ HttpResponse&         Worker::request(HttpRequest& request)
 {
     request = request;
 
-    std::ostringstream oss;
-    oss << "Hello from pid " << this->pid() << std::endl;
+    // TEST ETIX, DON'T REMOVE
+    
+    /*string path("/home/etix/");
+    string file("zia.png");
+    string full = path + file;
 
-    std::string msg = oss.str();
+    File fileinfo(file, path.c_str());
+    ifstream data(full.c_str());
 
-    _socket.send(msg.c_str(), msg.size());
+    _socket << "HTTP/1.1 200 OK\r\n";
+    _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
+    _socket << "Content-Length: " << fileinfo.getSize() << "\r\n";
+    _socket << "Connection: close\r\n";
+    _socket << "Content-Type: image/png\r\n";
+    _socket << "\r\n";
+
+
+    char buf[512];
+    while (data.good() && !data.eof())
+    {
+        //memset(buf, 0, sizeof(buf));
+        data.read(buf, sizeof(buf));
+        //_socket.write(buf, data.gcount());
+        _socket << buf;
+    }
+    _socket.flush();
+    data.close();*/
+
     _socket.close(true);
     HttpResponse* toto = new HttpResponse();
     return *toto;
