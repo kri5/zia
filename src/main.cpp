@@ -17,18 +17,18 @@
 
 int main(int argc, char **argv)
 {
-	Init		i(argc, argv);
-	Server*		srv;
+	//Init		i(argc, argv);
+	//Server*		srv;
 
-	i.start();
-	srv = new Server(i.getBindList());
+	//i.start();
+	//srv = new Server(i.getBindList());
 
-	srv->run();
-	
-	Logger::deleteInstance(); 
+	//srv->run();
+	//
+	//Logger::deleteInstance(); 
     //  For testing purpose (Parser)
 
-    //std::string test("GET /pub/ HTTP/1.1\r\nContent-Length: 42\r\nFrom: thomas.boquet@gmail.com\r\n\r\n01234");
+    //std::string test("GET http://slashdot.org/test.php?t=42&foor=bar HTTP/1.1\r\nContent-Length: 42\r\nFrom: thomas.boquet@gmail.com\r\nDate: Tue, 12 Nov 1994 23:12:31 GMT\r\n\r\n01234");
     //std::string out;
     //HttpParser *p = new HttpParser();
     //p->feed(test.c_str());

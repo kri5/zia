@@ -11,7 +11,7 @@
  *  HttpRequest with all parameters inside
  * */
 
-HttpParser::HttpParser()
+HttpParser::HttpParser() : _isFirstArgument(true)
 {
     _request = new HttpRequest();
 }
@@ -45,24 +45,41 @@ void        HttpParser::parse()
  *      GET HTTP/1.1
  * */
 
+//bool        HttpParser::parseGetCommand()
+//{
+//    std::string     token;
+//
+//    if (this->readIdentifier(token))
+//    {
+//        if (token == "GET")
+//        {
+//            this->_request->setCommand(HttpRequest::Get);
+//            if (this->parseUri())
+//            {
+//                if (this->parseProtocol())
+//                {
+//                    return true;
+//                }
+//            }
+//        }
+//    }
+//    return false;
+//}
+
 bool        HttpParser::parseGetCommand()
 {
-    std::string     token;
+    std::string      token;
 
-    if (this->readIdentifier(token))
+    if (this->readIdentifier(token)
+        && token == "GET"
+        && this->parseUri()
+        && this->parseProtocol())
     {
-        if (token == "GET")
-        {
-            this->_request->setCommand(HttpRequest::Get);
-            if (this->parseUri())
-            {
-                if (this->parseProtocol())
-                {
-                    return true;
-                }
-            }
-        }
+        this->_request->setCommand(HttpRequest::Get);
+        std::cout << "get return true" << std::endl;
+        return true;
     }
+    std::cout << "get return false" << std::endl;
     return false;
 }
 
@@ -82,15 +99,15 @@ bool        HttpParser::parsePostCommand()
 {
     std::string     token;
 
-    if (this->readIdentifier(token))
+    if (this->readIdentifier(token)
+        && token == "POST")
     {
-        if (token == "POST")
+        if (this->parseUri())
         {
-            this->_request->setCommand(HttpRequest::Post);
-            if (this->parseUri())
+            if (this->parseProtocol())
             {
-                if (this->parseProtocol())
-                    return true;
+                this->_request->setCommand(HttpRequest::Post);
+                return true;
             }
         }
     }
@@ -110,12 +127,17 @@ bool        HttpParser::parseUri()
 {
     std::string     token;
 
-    if (this->readIdentifier(token))
+    this->setCommentList("#");
+    this->setComment(true);
+    if (this->readAbsoluteUri(token))
     {
+        this->printI();
         this->_request->setUri(token);
-        while (this->parseUriArgument());
+        this->parseUriArgument();
+        this->setComment(false);
         return true;
     }
+    this->setComment(false);
     return false;
 }
 
@@ -133,28 +155,41 @@ bool        HttpParser::parseUriArgument()
 {
     std::string     key;
     std::string     value;
+    char            c;
 
-    this->saveContextPub();
-    if (this->readChar() == '?'
-        || this->readChar() == '&')
-    {
-        this->peekChar();
-        if (this->readIdentifier(key))
-        {
-            if (this->readChar() == '=')
-            {
-                this->peekChar();
-                if (this->readIdentifier(value))
-                {
-                    this->_request->appendUriArgument(key, value);
-                    return true;
-                }
-            }
-        }
-    }
-    this->restoreContextPub();
-    return false; 
+//    if (this->peekIfEqual('?'))
+//    {
+//        if (this->readIdentifier(key))
+//        {}
+//    }
+    return false;
 }
+
+bool        HttpParser::readUriParam(std::string& key, std::string& value)
+{
+    return false;
+}
+
+//bool        HttpParser::parseUriArgument()
+//{
+//    std::string     key;
+//    std::string     value;
+//    char            c;
+//
+//    this->saveContextPub();
+//    if (this->readChar() == '?'
+//        || (c = this->readChar()) == '&'
+//        && this->readIdentifier(key)
+//        && (c = this->readChar()) == '='
+//        && this->readIdentifier(value))
+//    {
+//        this->_request->appendUriArgument(key, value);
+//        return true;
+//    }
+//    this->restoreContextPub();
+//    return false;
+//}
+
 
 
 /**
@@ -192,19 +227,16 @@ bool        HttpParser::parseOptionHost()
     std::string     token2;
 
     this->saveContextPub();
-    if (this->readIdentifier(token))
+    if (this->readIdentifier(token)
+        && token == "Host")
     {
-        if (token == "Host")
+        if (this->peekChar() == ':')
         {
-            if (this->readChar() == ':')
+            if (this->readIdentifier(token2))
             {
-                this->peekChar();
-                if (this->readIdentifier(token2))
-                {
-                    this->_request->appendOption
-                        (HttpRequest::Host, token2);
-                    return true;
-                }
+                this->_request->appendOption
+                    (HttpRequest::Host, token2);
+                return true;
             }
         }
     }
@@ -229,19 +261,16 @@ bool        HttpParser::parseOptionFrom()
     std::string     token2;
 
     this->saveContextPub();
-    if (this->readIdentifier(token))
+    if (this->readIdentifier(token)
+        && token == "From")
     {
-        if (token == "From")
+        if (this->peekChar() == ':')
         {
-            if (this->readChar() == ':')
+            if (this->readEmailAddress(token2))
             {
-                this->peekChar();
-                if (this->readEmailAddress(token2))
-                {
-                    this->_request->appendOption
-                        (HttpRequest::From, token2);
-                    return true;
-                }
+                this->_request->appendOption
+                    (HttpRequest::From, token2);
+                return true;
             }
         }
     }
@@ -266,19 +295,16 @@ bool        HttpParser::parseOptionContentLength()
     std::string     token2;
 
     this->saveContextPub();
-    if (this->readIdentifier(token))
+    if (this->readIdentifier(token)
+        && token == "Content-Length")
     {
-        if (token == "Content-Length")
+        if (this->peekChar() == ':')
         {
-            if (this->readChar() == ':')
+            if (this->readInteger(token2))
             {
-                this->peekChar();
-                if (this->readInteger(token2))
-                {
-                    this->_request->appendOption
-                        (HttpRequest::ContentLength, token2);
-                    return true;
-                }
+                this->_request->appendOption
+                    (HttpRequest::ContentLength, token2);
+                return true;
             }
         }
     }
@@ -303,19 +329,16 @@ bool        HttpParser::parseOptionUserAgent()
     std::string     token2;
 
     this->saveContextPub();
-    if (this->readIdentifier(token))
+    if (this->readIdentifier(token)
+        && token == "User-Agent")
     {
-        if (token == "User-Agent")
+        if (this->peekChar() == ':')
         {
-            if (this->readChar() == ':')
+            if (this->readIdentifier(token2))
             {
-                this->peekChar();
-                if (this->readIdentifier(token2))
-                {
-                    this->_request->appendOption
-                        (HttpRequest::UserAgent, token2);
-                    return true;
-                }
+                this->_request->appendOption
+                    (HttpRequest::UserAgent, token2);
+                return true;
             }
         }
     }
@@ -340,19 +363,16 @@ bool        HttpParser::parseOptionContentType()
     std::string     token2;
 
     this->saveContextPub();
-    if (this->readIdentifier(token))
+    if (this->readIdentifier(token)
+        && token == "Content-Type")
     {
-        if (token == "Content-Type")
+        if (this->peekChar() == ':')
         {
-            if (this->readChar() == ':')
+            if (this->readIdentifier(token2))
             {
-                this->peekChar();
-                if (this->readIdentifier(token2))
-                {
-                    this->_request->appendOption
-                        (HttpRequest::ContentType, token2);
-                    return true;
-                }
+                this->_request->appendOption
+                    (HttpRequest::ContentType, token2);
+                return true;
             }
         }
     }
@@ -381,9 +401,8 @@ bool        HttpParser::parseOptionDate()
     {
         if (token ==  "Date")
         {
-            if (this->readChar() == ':')
+            if (this->peekChar() == ':')
             {
-                this->peekChar();
                 if (this->readDate(token2))
                 {
                     this->_request->appendOption
@@ -436,9 +455,8 @@ bool        HttpParser::readEmailAddress(std::string& email)
     this->saveContextPub();
     if (this->readIdentifier(token))
     {
-        if (this->readChar() == '@')
+        if (this->peekChar() == '@')
         {
-            this->peekChar();
             if (this->readIdentifier(token2))
             {
                 email = token + '@' + token2;
@@ -450,6 +468,28 @@ bool        HttpParser::readEmailAddress(std::string& email)
     return false;
 }
 
+bool        HttpParser::readAbsoluteUri(std::string& uri)
+{
+    std::string res;
+
+    this->saveContextPub();
+    this->setIgnore(false);
+    if (this->peekIfEqual("http://", res))
+    {
+        if (this->appendIdentifier(res))
+        {
+             while (this->appendIdentifier(res)
+                    || this->peekIfEqual('.', res)
+                    || this->peekIfEqual('/', res));
+             uri = res;
+             this->setIgnore(true);
+             return true;
+        }
+    }
+    this->setIgnore(true);
+    this->restoreContextPub();
+    return false; 
+}
 
 /**
  *  Reads an HTTP date
@@ -468,14 +508,14 @@ bool        HttpParser::readDate(std::string& date)
 
     this->saveContextPub();
     if (this->readIdentifier(tmp)
-        && this->isWeekOfTheDay(tmp))
+        && this->isDayOfTheWeek(tmp))
     {
         res += tmp;
-        if (this->readChar() == ',')
+        if (this->peekChar() == ',')
         {
-            res += this->peekChar();
-            res += ' ';
-            if (this->readInteger(tmp))
+            res += ", ";
+            if (this->readInteger(tmp)
+                && this->isDayOfTheMonth(atoi(tmp.c_str())))
             {
                 res += tmp + ' ';
                 if (this->readIdentifier(tmp)
@@ -519,19 +559,22 @@ bool    HttpParser::readTime(std::string& t)
     std::string res;
 
     this->saveContextPub();
-    if (this->readInteger(tmp))
+    if (this->readInteger(tmp)
+        && this->isHour(atoi(tmp.c_str())))
     {
         res += tmp;
         if (this->readChar() == ':')
         {
             res += this->peekChar();
-            if (this->readInteger(tmp))
+            if (this->readInteger(tmp)
+                && this->isMinute(atoi(tmp.c_str())))
             {
                 res += tmp;
                 if (this->readChar() == ':')
                 {
                     res += this->peekChar();
-                    if (this->readInteger(tmp))
+                    if (this->readInteger(tmp)
+                        && this->isSecond(atoi(tmp.c_str())))
                     {
                         res += tmp;
                         t = res;
@@ -547,19 +590,71 @@ bool    HttpParser::readTime(std::string& t)
 
 
 /**
+ *  Checks if the hour is valid
+ *  (between 0 and 24)
+ * */
+
+bool    HttpParser::isHour(const int h) const
+{
+    if (h >= 0 && h < 24)
+        return true;
+    return false;
+}
+
+
+/**
+ *  Checks if the minut is valid
+ *  (between 0 and 60)
+ * */
+
+bool    HttpParser::isMinute(const int m) const
+{
+    if (m >= 0 && m < 60)
+        return true;
+    return false;
+}
+
+
+/**
+ *  Checks if the second is valid
+ *  (between 0 and 60)
+ * */
+
+bool    HttpParser::isSecond(const int s) const
+{
+    if (s >= 0 && s < 60)
+        return true;
+    return false;
+}
+
+
+/**
+ *  Checks if the day is valid
+ *  (between 1 and 31)
+ * */
+
+bool    HttpParser::isDayOfTheMonth(const int d) const
+{
+    if (d > 0 && d <= 31)
+        return true;
+    return false;
+}
+
+
+/**
  *  Checks whether the passed string
  *  is a day of the week or not
  * */
 
-bool    HttpParser::isWeekOfTheDay(const std::string& d) const
+bool    HttpParser::isDayOfTheWeek(const std::string& d) const
 {
     if (d == "Mon" 
         || d == "Tue"
         || d == "Wed" 
-        || d == "Thr"
+        || d == "Thu"
         || d == "Fri"
         || d == "Sat"
-        || d == "sun")
+        || d == "Sun")
         return true;
     return false;
 }

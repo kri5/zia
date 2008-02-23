@@ -27,13 +27,21 @@ class HttpParser : public Parser
         bool            parseOptionDate();
 
         bool            readEmailAddress(std::string&);
+        bool            readAbsoluteUri(std::string&);
         bool            readDate(std::string&);
         bool            readTime(std::string&);
+        bool            readUriParam(std::string&, std::string&);
 
-        bool            isWeekOfTheDay(const std::string&) const;
+        bool            isDayOfTheMonth(const int) const;
+        bool            isDayOfTheWeek(const std::string&) const;
         bool            isMonthOfTheYear(const std::string&) const;
+        bool            isHour(const int) const;
+        bool            isMinute(const int) const;
+        bool            isSecond(const int) const;
+        
 
         HttpRequest*    _request;
+        bool            _isFirstArgument;
 };
 
 #endif /* !__HTTPPARSER_H__ */

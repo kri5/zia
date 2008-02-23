@@ -6,12 +6,10 @@
 const int BUFF_SIZE = 256;
 const char	COMMENT_CHAR = ';';
 
-Parser::Parser()
+Parser::Parser() :  _i(0), _bufferId(-1),
+                    _backI(0), _backBuffer(0),
+                    _ignore(true), _comment(false)
 {
-	_i = 0;
-	_bufferId = -1;
-	_backI = 0;
-	_backBuffer = 0;
     //TODO:Replace by our excpetion system
 	/*if (extendBuffer() == false)
 		throw Exception("Can't read file");*/
@@ -19,14 +17,10 @@ Parser::Parser()
 
 bool		Parser::extendBuffer()
 {
-//	if (this->_i)
-//		std::cout << "Extending buffer : " << this->_buffers[this->_bufferId][this->_i - 1] << std::endl;
 	if ((int)this->_buffers.size() - 1 > this->_bufferId)
 	{
-		//std::cout << this->_bufferId << " // " << this->_buffers.size() << std::endl;
 		this->_bufferId++;
 		this->_i = 0;
-		//std::cout << "Extended buffer : " << this->_buffers[this->_bufferId][this->_i] << std::endl;
 		return true;
 	}
 	if (this->_stream.good())
@@ -37,11 +31,9 @@ bool		Parser::extendBuffer()
 		this->_nbRead = this->_stream.gcount();
 		if (this->_nbRead <= 0)
 			return false;
-//		std::cout << "Adding buffer " << this->_bufferId + 1 << '(' << buff[0] << buff[1] << ") " << std::endl;
 		this->_buffers.push_back(buff);
 		this->_bufferId++;
 		this->_i = 0;
-//		std::cout << "Extended buffer : " << this->_buffers[this->_bufferId][this->_i] << std::endl;
 		return true;
 	}
 	return false;
@@ -51,15 +43,75 @@ char		Parser::peekChar()
 {
 	char	c;
 
-	if (this->_i >= this->_nbRead|| this->_bufferId < 0)
-		this->extendBuffer();
-	c = this->_buffers[this->_bufferId][this->_i];
+	c = this->readChar();
 	this->_i++;
-	//std::cout << "peekChar : [" << (int)c << "] i = " << this->_i << std::endl;
 	return (c);
 }
 
-void		Parser::saveContext()
+bool        Parser::peekIfEqual(char toFind, std::string& target)
+{
+    if (this->readChar() == toFind)
+    {
+        target += this->peekChar();
+        return true;
+    }
+    return false;
+}
+
+bool        Parser::peekIfEqual(char toFind)
+{
+    if (this->readChar() == toFind)
+    {
+        this->peekChar();
+        return true;
+    }
+    return false;
+}
+
+bool        Parser::peekIfEqual(const std::string& toFind, 
+                                std::string& target)
+{
+    unsigned int     l = toFind.length();
+
+    this->__saveContext();
+    for (unsigned int i = 0; i < l; ++i)
+    {
+        if (!this->peekIfEqual(toFind[i]))
+        {
+            this->__restoreContext();
+            return false;
+        }
+    }
+    target += toFind;
+    return true;
+}
+
+bool        Parser::peekIfEqual(const std::string& toFind) 
+{
+    unsigned int     l = toFind.length();
+
+    this->__saveContext();
+    for (unsigned int i = 0; i < l; ++i)
+    {
+        if (this->peekIfEqual(toFind[i]))
+        {
+            this->__restoreContext();
+            return false;
+        }
+    }
+    return true;
+}
+
+std::string        Parser::peekNChar(int n)
+{
+    std::string     str;
+
+    while (--n)
+        str += this->peekChar();
+    return str;
+}
+
+void		Parser::__saveContext()
 {
 	this->_backBuffer = this->_bufferId;
 	this->_backI = this->_i;
@@ -71,7 +123,7 @@ void        Parser::saveContextPub()
     this->_backIPub = this->_i;
 }
 
-void		Parser::restoreContext()
+void		Parser::__restoreContext()
 {
 	this->_i = this->_backI >= 0 ? this->_backI : 0;
 	this->_bufferId = this->_backBuffer >= 0 ? this->_backBuffer : 0;
@@ -90,20 +142,15 @@ void		Parser::flush()
 {
 	int		i;
 
-//	std::cout << "flushing" << std::endl;
-//	std::cout << "Current buffer : " << this->_bufferId << " " << this->_i << std::endl;
 	for (i = this->_bufferId - 1; i >= 0; --i)
 	{
-//		std::cout << "erasing buffer :" << i << std::endl;
 		this->_buffers.erase(this->_buffers.begin());
 		this->_bufferId--;
 	}
 	if (this->_i == this->_nbRead)
 	{
-//		std::cout << "Flushing first buffer" << std::endl;
 		this->_buffers.erase(this->_buffers.begin());
 		this->_bufferId--;
-//		std::cout << this->_buffers.size() << std::endl;
 	}
 }
 
@@ -111,27 +158,48 @@ char	Parser::readChar()
 {
 	char	c;
 
-	//if (this->_i >= this->_nbRead || this->_bufferId < 0)
+	if (this->_i >= this->_nbRead || this->_bufferId < 0)
         //TODO: Replace by our Exception System
-		//if (!this->extendBuffer())
-		//	throw Exception("Can't read anymore");
+		if (!this->extendBuffer())
+			throw "Can't read anymore";
 	c = this->_buffers[this->_bufferId][this->_i];
-	//std::cout << "readChar : [" << c << ']' << std::endl;
+    if (this->_comment)
+        this->skipComment(c);
 	return (c);
+}
+
+void    Parser::readUpToIgnore()
+{
+    char c = this->_buffers[this->_bufferId][this->_i];
+    while (c != '\n' && c != '\r' 
+            && c != ' ' && c != '\t')
+    {
+        this->_i++;
+        if (this->_i >= this->_nbRead || this->_bufferId < 0)
+            this->extendBuffer();
+        c = this->_buffers[this->_bufferId][this->_i];
+    }
+}
+
+void    Parser::skipComment(char c)
+{
+    if (this->_commentList.find(c) == std::string::npos)
+        return ;
+    this->readUpToIgnore();
 }
 
 void	Parser::ignore()
 {
 	char	c;
 
-	//std::cout << "Before ignore : [" << (int)this->_buffers[this->_bufferId][this->_i] << ']' << std::endl;
+    if (this->_ignore == false)
+        return ;
 	while ((c = this->readChar()) == ' ' 
             || c == '\t' || c == '\n' 
             || c == '\r')
 	{
 		this->peekChar();
 	}
-	//std::cout << "After ignore : " << &this->_buffers[this->_bufferId][this->_i] << std::endl;
 }
 
 bool	Parser::readIdentifier(std::string& output)
@@ -140,32 +208,35 @@ bool	Parser::readIdentifier(std::string& output)
 	char		c;
 
 	this->ignore();
-	this->saveContext();
-	c = this->peekChar();
-	//std::cout << "Begining readIdentifier" << c << std::endl;
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
-            || (c >= '0' && c <= '9')
-            || c == '/' || c == '.')
+	c = this->readChar();
+	if (this->isAlpha(c) || c == '_')
 	{
 		identifier += c;
-		c = this->peekChar();
-		while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
-                || (c >= '0' && c <= '9') 
-                || c == '_' || c == '-' 
-                || c == '.' || c == '/')
+        this->peekChar();
+		c = this->readChar();
+		while (this->isAlphaNum(c)
+                || c == '_')
 		{
 			identifier += c;
-			this->saveContext();
-			c = this->peekChar();
+            this->peekChar();
+			c = this->readChar();
 		}
-		this->restoreContext();
 		output = identifier;
-		this->ignore();
+        this->ignore();
 		return true;
 	}
-    //std::cout << "Exiting readIdentifier failing" << std::endl;
-	this->restoreContext();
 	return false;
+}
+
+bool    Parser::appendIdentifier(std::string& target)
+{
+    std::string tmp;
+    if (this->readIdentifier(tmp))
+    {
+        target += tmp;
+        return true;
+    }
+    return false;
 }
 
 bool	Parser::readInteger(int& output)
@@ -174,22 +245,22 @@ bool	Parser::readInteger(int& output)
 	char			c;
 
 	this->ignore();
-	this->saveContext();
+	this->__saveContext();
 	c = this->peekChar();
-	if (c >= '0' && c <= '9')
+	if (this->isNum(c))
 	{
-		while (c >= '0' && c <= '9')
+		while (this->isNum(c))
 		{
 			res += c;
-			this->saveContext();
+			this->__saveContext();
 			c = this->peekChar();
 		}
-		this->restoreContext();
+		this->__restoreContext();
 		output = atoi(res.c_str());
 		this->ignore();
 		return true;
 	}
-	this->restoreContext();
+	this->__restoreContext();
 	output = 0;
 	return false;
 }
@@ -200,22 +271,22 @@ bool	Parser::readInteger(std::string& output)
 	char			c;
 
 	this->ignore();
-	this->saveContext();
+	this->__saveContext();
 	c = this->peekChar();
-	if (c >= '0' && c <= '9')
+	if (this->isNum(c))
 	{
-		while (c >= '0' && c <= '9')
+		while (this->isNum(c))
 		{
 			res += c;
-			this->saveContext();
+			this->__saveContext();
 			c = this->peekChar();
 		}
-		this->restoreContext();
+		this->__restoreContext();
 		output = res;
 		this->ignore();
 		return true;
 	}
-	this->restoreContext();
+	this->__restoreContext();
 	output = "";
 	return false;
 }
@@ -236,16 +307,16 @@ bool	Parser::readDecimal(double& output)
 
 	this->ignore();
 	c = this->readChar();
-	if ((c >= '0' && c <= '9') || c == '.')
+	if (this->isNum(c) || c == '.')
 	{
 		c = this->peekChar();
-		while ((c >= '0' && c <= '9') || c == '.')
+		while (this->isNum(c) || c == '.')
 		{
 			res += c;
-			this->saveContext();
+			this->__saveContext();
 			c = this->peekChar();
 		}
-		this->restoreContext();
+		this->__restoreContext();
 		output = atof(res.c_str());
 		this->ignore();
 		return true;
@@ -264,12 +335,80 @@ bool	Parser::readDecimal(float& output)
 	return (ret);
 }
 
-bool	Parser::isEOF() const
+//bool	Parser::isEOF() const
+//{
+//	return (this->_stream.eof());
+//}
+//
+//bool	Parser::isError() const
+//{
+//	return (this->_stream.bad() || this->_stream.fail());
+//}
+//
+bool    Parser::isAlpha()
 {
-	return (this->_stream.eof());
+    return this->isAlpha(this->readChar());
 }
 
-bool	Parser::isError() const
+bool    Parser::isAlpha(const char c) const
 {
-	return (this->_stream.bad() || this->_stream.fail());
+    if ((c >= 'a' && c <= 'z')
+        || (c >= 'A' && c <= 'Z'))
+        return true;
+    return false;
+}
+
+bool    Parser::isNum()
+{
+    return this->isNum(this->readChar());
+}
+
+bool    Parser::isNum(const char c) const
+{
+    if (c >= '0' && c <= '9')
+        return true;
+    return false;
+}
+
+bool    Parser::isAlphaNum()
+{
+    return this->isAlphaNum(this->readChar());
+}
+
+bool    Parser::isAlphaNum(const char c) const
+{
+    if (this->isAlpha(c) || this->isNum(c))
+        return true;
+    return false;
+}
+
+void    Parser::printI() const
+{
+    std::cout << "[Parser] this->_i == " << this->_i << std::endl;
+}
+
+bool    Parser::getIgnore() const
+{
+    return this->_ignore;
+}
+
+void    Parser::setIgnore(bool ignore)
+{
+    this->_ignore = ignore;
+}
+
+bool    Parser::getComment() const
+{
+    return this->_comment;
+}
+
+void    Parser::setComment(bool comment)
+{
+    this->_comment = comment;
+}
+
+void    Parser::setCommentList(const char* list)
+{
+    if (list)
+        this->_commentList = list;
 }
