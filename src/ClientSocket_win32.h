@@ -4,11 +4,12 @@
 #include "zia.h"
 #include "Socket_win32.h"
 #include "IClientSocket.h"
+#include "SocketBuf.h"
 
 /** A specialized socket, which will only handle clients, and not connections to server.
  *  For others method than ctor/dtor documentation, refer to IClientSocket.
  */
-class ClientSocket : public Socket, public IClientSocket
+class ClientSocket : public Socket, public IClientSocket, public siostream
 {
 	public:
 		/// Will set the socket from the one returned by MainSocket::accept();

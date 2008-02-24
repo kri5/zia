@@ -28,7 +28,10 @@ void        HttpParser::parse()
 {
     if (this->parseGetCommand()
         || this->parsePostCommand())
-        while (this->parseOption());
+	{
+        while (this->parseOption())
+			;
+	}
     this->_request->print();
 }
 
@@ -231,6 +234,7 @@ bool        HttpParser::parseOption()
         || this->parseOptionContentType()
         || this->parseOptionDate())
         return true;
+	std::cout << "Option return false" << std::endl;
     return false;
 }
 
@@ -319,10 +323,9 @@ bool        HttpParser::parseOptionContentLength()
     std::string     token2;
 
     this->saveContextPub();
-    if (this->readIdentifier(token)
-        && token == "Content-Length")
+    if (this->peekIfEqual("Content-Length"))
     {
-        if (this->peekChar() == ':')
+		if (this->peekChar() == ':')
         {
             if (this->readInteger(token2))
             {

@@ -4,9 +4,19 @@
 
 #include "MemoryManager.hpp"
 
-File::File(std::string filename) : _filename(filename), _time(NULL)
+File::File(const std::string& filename, const char* path) : _filename(filename), _time(NULL)
 {
-	if (GetFileAttributesEx(filename.c_str(), GetFileExInfoStandard, &_attr) == 0)
+	std::string			filePath;
+
+	if (path)
+	{
+		filePath = path;
+		filePath += "/";
+		filePath += filename;
+	}
+	else
+		filePath = filename;
+	if (GetFileAttributesEx(filePath.c_str(), GetFileExInfoStandard, &_attr) == 0)
 		throw ZException<File>(INFO, File::Error::CantGetAttributes, "Probably because file does not exist");
 }
 

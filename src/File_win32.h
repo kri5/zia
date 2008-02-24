@@ -21,7 +21,7 @@ class File : public IFile
 			};
 			static const char*	Msg[];
 		};
-		File(std::string);
+		File(const std::string&, const char* path = NULL);
 		~File();
 		std::string		getFileName() const;
 		unsigned int	getSize() const;
