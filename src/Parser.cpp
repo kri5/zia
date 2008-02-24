@@ -497,3 +497,4 @@ bool	Parser::readAnythingBut(const std::string& forbiden)
 	}
 	return false;
 }
+

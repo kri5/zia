@@ -15,9 +15,7 @@
  #define TIOCINQ FIONREAD
 #endif
 
-using namespace std;
-
-class     SocketBuf : public streambuf
+class     SocketBuf : public std::streambuf
 {
     public:
         SocketBuf(int socket);
@@ -35,10 +33,10 @@ class     SocketBuf : public streambuf
 };
 
 
-class     siostream: public iostream
+class     siostream: public std::iostream
 {
     public:
-        siostream(int socket) : iostream(&_buf), _buf(socket) { }
+        siostream(int socket) : std::iostream(&_buf), _buf(socket) { }
 
     private:
         SocketBuf _buf;

@@ -38,12 +38,12 @@ HttpResponse&         Worker::request(HttpRequest& request)
 
     // TEST ETIX, DON'T REMOVE
     
-    /*string path("/home/etix/");
-    string file("zia.png");
-    string full = path + file;
+    std::string path("/home/chouquette/");
+    std::string file("test.png");
+    std::string full = path + file;
 
     File fileinfo(file, path.c_str());
-    ifstream data(full.c_str());
+    std::ifstream data(full.c_str(), std::ios_base::binary);
 
     _socket << "HTTP/1.1 200 OK\r\n";
     _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
@@ -54,15 +54,18 @@ HttpResponse&         Worker::request(HttpRequest& request)
 
 
     char buf[512];
+
     while (data.good() && !data.eof())
     {
         //memset(buf, 0, sizeof(buf));
         data.read(buf, sizeof(buf));
-        //_socket.write(buf, data.gcount());
-        _socket << buf;
+        _socket.write(buf, data.gcount());
+        //buf[data.gcount()] = 0;
+        //_socket << buf;
     }
     _socket.flush();
-    data.close();*/
+    //_socket << flush;
+    data.close();
 
     _socket.close(true);
     HttpResponse* toto = new HttpResponse();
