@@ -1,7 +1,5 @@
 #include "SocketBuf.h"
 
-using namespace std;
-
 SocketBuf::SocketBuf(int s) : socket(s)
 {
     setg(readBuffer, readBuffer, readBuffer);
