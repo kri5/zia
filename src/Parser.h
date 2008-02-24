@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <string>
 
 class	Parser
 {
@@ -14,20 +15,28 @@ class	Parser
 		virtual				~Parser(){};
 		char				peekChar(); //will consume stream
         std::string         peekNChar(int);
-		char				readChar(); 
+		char				readChar();
         bool                peekIfEqual(char, std::string&);
         bool                peekIfEqual(char);
         bool                peekIfEqual(const std::string&, std::string&);
         bool                peekIfEqual(const std::string&);
 
+		bool				readAnythingBut(const std::string& forbiden, std::string& res);
+		bool				readAnythingBut(const std::string& forbiden);
+
 		bool				readIdentifier(std::string& output);
         bool                appendIdentifier(std::string&);
+
 		bool				readInteger(int& output);
 		bool				readInteger(short& output);
 		bool				readInteger(std::string& output);
+		bool				appendInteger(std::string& output);
+		
 		bool				readDecimal(double& output);
 		bool				readDecimal(float& output);
-        bool                readEmailAddress(std::string&);
+		bool				readDecimal(std::string& output);
+		bool				appendDecimal(std::string& output);
+
 		//bool				isEOF() const;
 		//bool				isError() const;
 
@@ -45,14 +54,12 @@ class	Parser
         bool                getComment() const;
         void                saveContextPub();
         void                restoreContextPub();
-        void                feed(const char* data)
-        {
-            this->_stream.write(data, strlen(data));
-            this->extendBuffer();
-        }
-
+        void                feed(const char* data);
+		void				feed(const std::string&);
         void                        printI() const;
 
+	protected:
+		bool						isIgnore(char c) const;
 
 	private:
 		bool						extendBuffer();

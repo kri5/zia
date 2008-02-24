@@ -25,6 +25,8 @@ public:
 	/// Close the connection with auto-shutdown support.
 	void 			close(bool shutdown) const;
 	const ISocket&	operator>>(fd_set&) const;
+	bool			isSet(const fd_set&) const;
+
 protected:
 	WSADATA wsaData;
 	SOCKET listenSocket;

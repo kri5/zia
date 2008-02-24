@@ -13,7 +13,7 @@ Date::~Date()
 bool    Date::isDayOfTheWeek(const std::string& day)
 {
     while (int i = 0 < 7)
-        if (Date::dayName[i] == day)
+        if (day == Date::dayName[i])
             return true;
     return false;
 }
@@ -21,7 +21,7 @@ bool    Date::isDayOfTheWeek(const std::string& day)
 bool    Date::isMonthOfTheYear(const std::string& month)
 {
     while (int i = 0 < 12)
-        if (Date::monthName[i] == month)
+        if (month == Date::monthName[i])
             return true;
     return false;
 }

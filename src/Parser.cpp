@@ -15,6 +15,17 @@ Parser::Parser() :  _i(0), _bufferId(-1),
 		throw Exception("Can't read file");*/
 }
 
+void		Parser::feed(const char* data)
+{
+    this->_stream.write(data, strlen(data));
+    this->extendBuffer();
+}
+
+void		Parser::feed(const std::string& str)
+{
+	this->feed(str.c_str());
+}
+
 bool		Parser::extendBuffer()
 {
 	if ((int)this->_buffers.size() - 1 > this->_bufferId)
@@ -50,6 +61,7 @@ char		Parser::peekChar()
 
 bool        Parser::peekIfEqual(char toFind, std::string& target)
 {
+	this->ignore();
     if (this->readChar() == toFind)
     {
         target += this->peekChar();
@@ -73,10 +85,11 @@ bool        Parser::peekIfEqual(const std::string& toFind,
 {
     unsigned int     l = toFind.length();
 
-    this->__saveContext();
+    this->ignore();
+	this->__saveContext();
     for (unsigned int i = 0; i < l; ++i)
     {
-        if (!this->peekIfEqual(toFind[i]))
+        if (this->peekIfEqual(toFind[i]) == false)
         {
             this->__restoreContext();
             return false;
@@ -90,10 +103,11 @@ bool        Parser::peekIfEqual(const std::string& toFind)
 {
     unsigned int     l = toFind.length();
 
+	this->ignore();
     this->__saveContext();
     for (unsigned int i = 0; i < l; ++i)
     {
-        if (this->peekIfEqual(toFind[i]))
+        if (this->peekIfEqual(toFind[i]) == false)
         {
             this->__restoreContext();
             return false;
@@ -188,15 +202,19 @@ void    Parser::skipComment(char c)
     this->readUpToIgnore();
 }
 
+bool	Parser::isIgnore(char c) const
+{
+	return (c == ' ' 
+            || c == '\t'
+			|| c == '\n' 
+            || c == '\r');
+}
+
 void	Parser::ignore()
 {
-	char	c;
-
     if (this->_ignore == false)
         return ;
-	while ((c = this->readChar()) == ' ' 
-            || c == '\t' || c == '\n' 
-            || c == '\r')
+	while (this->isIgnore(this->readChar()))
 	{
 		this->peekChar();
 	}
@@ -290,6 +308,19 @@ bool	Parser::readInteger(std::string& output)
 	output = "";
 	return false;
 }
+
+bool	Parser::appendInteger(std::string& output)
+{
+	std::string	tmp;
+
+	if (this->readInteger(tmp))
+	{
+		output += tmp;
+		return true;
+	}
+	return false;
+}
+
 bool	Parser::readInteger(short& output)
 {
 	int		res;
@@ -300,39 +331,48 @@ bool	Parser::readInteger(short& output)
 	return (ret);
 }
 
-bool	Parser::readDecimal(double& output)
+bool	Parser::readDecimal(std::string& output)
 {
-	std::string		res("");
-	char			c;
-
-	this->ignore();
-	c = this->readChar();
-	if (this->isNum(c) || c == '.')
+	if (this->readInteger(output)
+			&& this->peekIfEqual('.')
+				&& this->appendInteger(output))
 	{
-		c = this->peekChar();
-		while (this->isNum(c) || c == '.')
-		{
-			res += c;
-			this->__saveContext();
-			c = this->peekChar();
-		}
-		this->__restoreContext();
-		output = atof(res.c_str());
-		this->ignore();
+		return true;
+	}				
+	output = "0.0";
+	return false;
+}
+
+bool	Parser::appendDecimal(std::string& output)
+{
+	std::string		tmp;
+
+	if (this->readDecimal(tmp))
+	{
+		output += tmp;
 		return true;
 	}
-	output = .0f;
 	return false;
+}
+
+bool	Parser::readDecimal(double& output)
+{
+	std::string		outStr;
+	bool			ret;
+
+	ret = this->readDecimal(outStr);
+	output = atof(outStr.c_str());
+	return ret;
 }
 
 bool	Parser::readDecimal(float& output)
 {
-	double	res;
-	bool	ret;
+	std::string		outStr;
+	bool			ret;
 
-	ret = this->readDecimal(res);
-	output = (float)res;
-	return (ret);
+	ret = this->readDecimal(outStr);
+	output = (float)atof(outStr.c_str());
+	return ret;
 }
 
 //bool	Parser::isEOF() const
@@ -411,4 +451,49 @@ void    Parser::setCommentList(const char* list)
 {
     if (list)
         this->_commentList = list;
+}
+
+bool	Parser::readAnythingBut(const std::string& forbiden, std::string& res)
+{
+	char	c;
+
+	c = this->readChar();
+	if (forbiden.find(c) == std::string::npos
+			&& this->isIgnore(c) == false)
+	{
+		//fixme : I think a do while might do the trick, but I prefer not to try right now :D
+		this->peekChar();
+		res = c;
+		c = this->readChar();
+		while (forbiden.find(c) == std::string::npos
+				&& this->isIgnore(c) == false)
+		{
+			this->peekChar();
+			res += c;
+			c = this->readChar();
+		}
+		return true;
+	}
+	return false;
+}
+
+bool	Parser::readAnythingBut(const std::string& forbiden)
+{
+	char	c;
+
+	c = this->readChar();
+	if (forbiden.find(c) == std::string::npos
+			&& this->isIgnore(c) == false)
+	{
+		this->peekChar();
+		c = this->readChar();
+		while (forbiden.find(c) == std::string::npos
+				&& this->isIgnore(c) == false)
+		{
+			this->peekChar();
+			c = this->readChar();
+		}
+		return true;
+	}
+	return false;
 }

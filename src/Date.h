@@ -2,6 +2,7 @@
 #define __DATE_H__
 
 #include <iostream>
+#include <string>
 
 class   Date
 {

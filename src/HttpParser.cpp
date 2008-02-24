@@ -70,8 +70,7 @@ bool        HttpParser::parseGetCommand()
 {
     std::string      token;
 
-    if (this->readIdentifier(token)
-        && token == "GET"
+	if (this->peekIfEqual("GET")
         && this->parseUri()
         && this->parseProtocol())
     {
@@ -131,13 +130,15 @@ bool        HttpParser::parseUri()
     this->setComment(true);
     if (this->readAbsoluteUri(token))
     {
-        this->printI();
+		this->setIgnore(false);
         this->_request->setUri(token);
         this->parseUriArgument();
         this->setComment(false);
-        return true;
+		this->setIgnore(true);
+		return true;
     }
     this->setComment(false);
+	this->setIgnore(true);
     return false;
 }
 
@@ -155,19 +156,42 @@ bool        HttpParser::parseUriArgument()
 {
     std::string     key;
     std::string     value;
-    char            c;
 
-//    if (this->peekIfEqual('?'))
-//    {
-//        if (this->readIdentifier(key))
-//        {}
-//    }
-    return false;
+	// URI_Argument ::= [ '?' [param]*]?
+    if (this->peekIfEqual('?'))
+    {
+		if (this->readUriParam(key, value))
+		{
+			this->_request->appendUriArgument(key, value);
+			while (this->peekIfEqual('&'))
+			{
+				this->readUriParam(key, value);
+				this->_request->appendUriArgument(key, value);
+			}
+		}
+    }
+    return true;
 }
 
 bool        HttpParser::readUriParam(std::string& key, std::string& value)
 {
-    return false;
+	// URI_Param ::= [ #paramIdentifier '=' #paramIdentifier ]
+	// paramIdentifier ::= [#idenfifier | #integer | #double | "!@$%^&*().<>/\[]{}\"'" | #urlEncodedChar ]
+	// which is anything but "&" and "="
+	// if we made it to an ignore char, we return false (end of the URI params)
+
+	if (this->isIgnore(this->readChar()))
+		return false;
+	if (this->readAnythingBut("#&=", key) && this->peekIfEqual('='))
+	{
+		this->readAnythingBut("#&", value);
+	}
+	else //Going to the hypothetic next 
+	{
+		this->peekIfEqual('=');
+		this->readAnythingBut("#&");
+	}
+	return true;
 }
 
 //bool        HttpParser::parseUriArgument()
@@ -428,13 +452,11 @@ bool        HttpParser::parseProtocol()
 {
     std::string     token;
 
-    if (this->readIdentifier(token))
+    if (this->peekIfEqual("HTTP/1.0", token)
+		|| this->peekIfEqual("HTTP/1.1"))
     {
-        if (token == "HTTP/1.0" || token == "HTTP/1.1")
-        {
-            this->_request->setProtocol(token);
-            return true;
-        }
+        this->_request->setProtocol(token);
+        return true;
     }
     return false;
 }
@@ -472,10 +494,10 @@ bool        HttpParser::readAbsoluteUri(std::string& uri)
 {
     std::string res;
 
-    this->saveContextPub();
-    this->setIgnore(false);
+	this->saveContextPub();
     if (this->peekIfEqual("http://", res))
     {
+		this->setIgnore(false);
         if (this->appendIdentifier(res))
         {
              while (this->appendIdentifier(res)

@@ -27,7 +27,7 @@ int           SocketBuf::overflow(int x)
     if (len > 0)
     {
         const void* data = pbase();
-        int res = send(socket, data, len, 0);
+        int res = send(socket, (char*)data, len, 0);
         if (res <= 0)
             return traits_type::eof();
         setp(writeBuffer, writeBuffer + sizeof(writeBuffer) - 1);

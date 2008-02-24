@@ -27,3 +27,8 @@ const ISocket&	Socket::operator >>(fd_set &fds) const
 	FD_SET(this->listenSocket, &fds);
 	return *this;
 }
+
+bool			Socket::isSet(const fd_set& fds) const
+{
+	return (FD_ISSET(this->listenSocket, &fds) != 0);
+}
