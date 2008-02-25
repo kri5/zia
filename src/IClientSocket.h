@@ -25,6 +25,8 @@ class IClientSocket
 		virtual int send(const char *buf, int length = -1) const = 0;
 		/// Overloaded method that take a string
 		virtual int send(const std::string& buf, int length) const = 0;
+        /// Provided for convenience
+        virtual IClientSocket& operator<<(const std::string& buf) = 0;
 };
 
 #endif //__ICLIENT_SOCKET_H__

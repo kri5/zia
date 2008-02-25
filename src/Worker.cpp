@@ -38,33 +38,30 @@ HttpResponse&         Worker::request(HttpRequest& request)
 
     // TEST ETIX, DON'T REMOVE
     
-    std::string path("/home/chouquette/");
-    std::string file("test.png");
+    std::string path("/media/Stuff/Videos/");
+    std::string file("Doom.avi");
     std::string full = path + file;
 
     File fileinfo(file, path.c_str());
+    std::stringstream ss;
+    ss << fileinfo.getSize();
     std::ifstream data(full.c_str(), std::ios_base::binary);
 
     _socket << "HTTP/1.1 200 OK\r\n";
     _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
-    _socket << "Content-Length: " << fileinfo.getSize() << "\r\n";
+    _socket << "Content-Length: " << ss.str() << "\r\n";
     _socket << "Connection: close\r\n";
-    _socket << "Content-Type: image/png\r\n";
+    _socket << "Content-Type: video/avi\r\n";
     _socket << "\r\n";
 
 
-    char buf[512];
+    char buf[4096];
 
     while (data.good() && !data.eof())
     {
-        //memset(buf, 0, sizeof(buf));
         data.read(buf, sizeof(buf));
-        _socket.write(buf, data.gcount());
-        //buf[data.gcount()] = 0;
-        //_socket << buf;
+        _socket.send(buf, data.gcount());
     }
-    _socket.flush();
-    //_socket << flush;
     data.close();
 
     _socket.close(true);

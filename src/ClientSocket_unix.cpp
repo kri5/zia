@@ -2,7 +2,7 @@
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
 
-ClientSocket::ClientSocket(int acceptedSocket) : siostream(acceptedSocket) 
+ClientSocket::ClientSocket(int acceptedSocket) 
 {
 	listenSocket = acceptedSocket;
 }
@@ -39,9 +39,9 @@ int             ClientSocket::recv(char *buf, int length) const
 	return (iResult);
 }
 
-siostream&      ClientSocket::getStream()
+IClientSocket&   ClientSocket::operator<<(const std::string& buf)
 {
-    siostream* stream = new siostream(this->listenSocket);
-    return *stream;
+    send(buf, buf.size());
+    return *this;
 }
 
