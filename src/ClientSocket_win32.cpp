@@ -43,3 +43,10 @@ int ClientSocket::recv( char *buf, int length ) const
 	}
 	return (iResult);
 }
+
+IClientSocket&   ClientSocket::operator<<(const std::string& buf)
+{
+    send(buf, buf.size());
+    return *this;
+}
+

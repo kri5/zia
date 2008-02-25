@@ -19,6 +19,7 @@ class ClientSocket : public Socket, public IClientSocket, public siostream
 		int	recv(char *buf, int length) const;
 		int send(const char *buf, int length) const;
 		int send(const std::string& buf, int length) const;
+        virtual IClientSocket&  operator<<(const std::string& buf);
 	private:
 };
 
