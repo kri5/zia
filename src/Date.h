@@ -2,9 +2,13 @@
 #define __DATE_H__
 
 #include <iostream>
+#include <sstream>
 #include <string>
+#include <time.h>
 
-class   Date
+#include "Parser.h"
+
+class   Date : public Parser
 {
     public:
         Date(std::string&);
@@ -16,6 +20,16 @@ class   Date
         static  bool    isMinute(int);
         static  bool    isSecond(int);
         static  bool    isBisextile(int);
+        int             getSeconds()    const;
+        int             getMinutes()    const;
+        int             getHours()      const;
+        int             getDay()        const;
+        int             getMonth()      const;
+        int             getYear()       const;
+        void            readTime(std::string& t);
+        int             getMonthFromString(std::string month);
+        std::string     toString();
+        time_t          toTimestamp();
 
         static  const char*     dayName[7];
         static  const char*     monthName[12];

@@ -12,6 +12,7 @@
 #include "File.h"
 #include "HttpParser.h"
 #include "Server.h"
+#include "Date.h"
 
 #include "MemoryManager.hpp"
 
@@ -35,5 +36,7 @@ int main(int argc, char **argv)
     p->parse();
     while (p->readIdentifier(out) == true)
         std::cout << "->" << out << std::endl;      
+    //std::string* dt = new std::string("Date: Tue, 12 Nov 1994 23:12:31 GMT");
+    //Date* t = new Date(*dt);
 }
 
