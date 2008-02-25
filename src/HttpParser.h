@@ -20,12 +20,12 @@ class HttpParser : public Parser
 
         bool            parseOptions();
 		bool			parseOption(const std::string&, HttpRequest::Option);
-		/*bool            parseOptionHost();
-		bool            parseOptionContentLength();
+		bool            parseOptionHost();
+	    bool            parseOptionContentLength();
 		bool            parseOptionFrom();
 		bool            parseOptionUserAgent();
 		bool            parseOptionContentType();
-		bool            parseOptionDate();*/
+		bool            parseOptionDate();
 
         bool            readEmailAddress(std::string&);
         bool            readAbsoluteUri(std::string&);

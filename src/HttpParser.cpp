@@ -48,27 +48,6 @@ void        HttpParser::parse()
  *      GET HTTP/1.1
  * */
 
-//bool        HttpParser::parseGetCommand()
-//{
-//    std::string     token;
-//
-//    if (this->readIdentifier(token))
-//    {
-//        if (token == "GET")
-//        {
-//            this->_request->setCommand(HttpRequest::Get);
-//            if (this->parseUri())
-//            {
-//                if (this->parseProtocol())
-//                {
-//                    return true;
-//                }
-//            }
-//        }
-//    }
-//    return false;
-//}
-
 bool        HttpParser::parseGetCommand()
 {
     std::string      token;
@@ -205,35 +184,191 @@ bool        HttpParser::readUriParam(std::string& key, std::string& value)
 
 bool        HttpParser::parseOptions()
 {
-	if (this->parseOption("Host", HttpRequest::From)
-		|| this->parseOption("Content-Length", HttpRequest::ContentLength)
-		|| this->parseOption("From", HttpRequest::From)
-		|| this->parseOption("User-Agent", HttpRequest::UserAgent)
-		|| this->parseOption("Content-Type", HttpRequest::ContentType)
-		|| this->parseOption("Date", HttpRequest::Date))
+	//if (this->parseOption("Host", HttpRequest::From)
+	//	|| this->parseOption("Content-Length", HttpRequest::ContentLength)
+	//	|| this->parseOption("From", HttpRequest::From)
+	//	|| this->parseOption("User-Agent", HttpRequest::UserAgent)
+	//	|| this->parseOption("Content-Type", HttpRequest::ContentType)
+	//	|| this->parseOption("Date", HttpRequest::Date))
+    //    return true;
+	//std::cout << "Option return false" << std::endl;
+    //return false;
+
+    if (this->parseOptionHost()
+        || this->parseOptionFrom()
+        || this->parseOptionContentLength()
+        || this->parseOptionDate()
+        || this->parseOptionContentType()
+        || this->parseOptionUserAgent())
         return true;
-	std::cout << "Option return false" << std::endl;
     return false;
 }
 
-bool		HttpParser::parseOption(const std::string& token, HttpRequest::Option idOption)
-{
-	std::string     value;
+/**
+*  Parses Host option
+*
+*  synopsis:
+*      "Host" ":" host [ ":" port ]
+*
+*  example:
+*      Host: www.w3c.org\r\n
+* */
 
-	this->saveContextPub();
-	if (this->peekIfEqual(token))
-	{
-		if (this->peekIfEqual(':'))
-		{
-			this->readUntilEndOfLine(value);
-			this->_request->appendOption(idOption, value);
-			std::cout << "Append option " << token << " = " << value << std::endl;
-			return true;
-		}
-	}
-	this->restoreContextPub();
-	return false;
+bool        HttpParser::parseOptionHost()
+{
+    std::string host;
+
+    if (this->peekIfEqual("Host"))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            this->readUntilEndOfLine(host);
+            this->_request->appendOption(HttpRequest::Host,host);
+            return true;
+        }
+    }
+    return false;
 }
+
+/**
+*  Parses From option
+*
+*  synopsis:
+*      "From" ":" mailbox   
+*
+*  example:
+*      From: webmaster@w3.org
+* */
+
+bool        HttpParser::parseOptionFrom()
+{
+    std::string from;
+
+    if (this->peekIfEqual("From"))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            this->readUntilEndOfLine(from);
+            this->_request->appendOption
+                (HttpRequest::From, from);
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+*  Parses Content-Length option
+*
+*  synopsis:
+*      "Content-Length" ":" 1*DIGIT
+*
+*  example:
+*      Content-Length: 3495
+* */
+
+bool        HttpParser::parseOptionContentLength()
+{
+    std::string length;
+
+    if (this->peekIfEqual("Content-Length"))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            if (this->readInteger(length))
+            {
+                this->_request->appendOption
+                    (HttpRequest::ContentLength, length);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
+*  Parses Date option
+*
+*  synopsis:
+*      "Date" ":" HTTP-date
+*
+*  example:
+*      Date: Tue, 15 Nov 1994 08:12:31 GMT
+* */
+
+bool        HttpParser::parseOptionDate()
+{
+    std::string date;
+
+    if (this->peekIfEqual("Date"))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            if (this->readDate(date))
+            {
+                this->_request->appendOption
+                    (HttpRequest::Date, date);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
+*  Parses User-Agent option
+*
+*  synopsis:
+*      "User-Agent" ":" 1*( product | comment )
+*
+*  example:
+*      User-Agent: CERN-LineMode/2.15 libwww/2.17b3
+* */
+
+bool        HttpParser::parseOptionUserAgent()
+{
+    std::string userAgent;
+
+    if (this->peekIfEqual("User-Agent"))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            this->readUntilEndOfLine(userAgent);
+            this->_request->appendOption
+                (HttpRequest::UserAgent, userAgent);
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+*  Parses Content-Type option
+*
+*  synopsis:
+*      "Content-Type" ":" media-type
+*
+*  example:
+*      Content-Type: text/html; charset=ISO-8859-4
+* */
+
+bool        HttpParser::parseOptionContentType()
+{
+    std::string contentType;
+
+    if (this->peekIfEqual("Content-Type"))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            this->readUntilEndOfLine(contentType);
+            this->_request->appendOption
+                (HttpRequest::ContentType, contentType);
+            return true;
+        }
+    }
+    return false;
+}
+
 
 bool        HttpParser::parseProtocol()
 {
