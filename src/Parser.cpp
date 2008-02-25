@@ -65,6 +65,7 @@ bool        Parser::peekIfEqual(char toFind, std::string& target)
     if (this->readChar() == toFind)
     {
         target += this->peekChar();
+		this->ignore();
         return true;
     }
     return false;
@@ -72,9 +73,11 @@ bool        Parser::peekIfEqual(char toFind, std::string& target)
 
 bool        Parser::peekIfEqual(char toFind)
 {
+	this->ignore();
     if (this->readChar() == toFind)
     {
         this->peekChar();
+		this->ignore();
         return true;
     }
     return false;
@@ -95,6 +98,7 @@ bool        Parser::peekIfEqual(const std::string& toFind,
             return false;
         }
     }
+	this->ignore();
     target += toFind;
     return true;
 }
@@ -113,6 +117,7 @@ bool        Parser::peekIfEqual(const std::string& toFind)
             return false;
         }
     }
+	this->ignore();
     return true;
 }
 
@@ -195,11 +200,56 @@ void    Parser::readUpToIgnore()
     }
 }
 
+void    Parser::readUpToIgnore(std::string& output)
+{
+	char c = this->_buffers[this->_bufferId][this->_i];
+
+	output = "";
+	while (c != '\n' && c != '\r' 
+		&& c != ' ' && c != '\t')
+	{
+		output += c;
+		this->_i++;
+		if (this->_i >= this->_nbRead || this->_bufferId < 0)
+			this->extendBuffer();
+		c = this->_buffers[this->_bufferId][this->_i];
+	}
+}
+
+void	Parser::readUntilEndOfLine(std::string& output)
+{
+	output = "";
+	this->setIgnore(false);
+	while (true)
+	{
+		if (this->peekIfEqual("\r\n"))
+		{
+			this->setIgnore(true);
+			return ;
+		}
+		output += this->peekChar();
+	}
+}
+
+void	Parser::readUntilEndOfLine()
+{
+	this->setIgnore(false);
+	while (true)
+	{
+		if (this->peekIfEqual("\r\n"))
+		{
+			this->setIgnore(true);
+			return ;
+		}
+		this->peekChar();
+	}
+}
+
 void    Parser::skipComment(char c)
 {
     if (this->_commentList.find(c) == std::string::npos)
         return ;
-    this->readUpToIgnore();
+    this->readUntilEndOfLine();
 }
 
 bool	Parser::isIgnore(char c) const

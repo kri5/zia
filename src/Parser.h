@@ -24,6 +24,12 @@ class	Parser
 		bool				readAnythingBut(const std::string& forbiden, std::string& res);
 		bool				readAnythingBut(const std::string& forbiden);
 
+		void                readUpToIgnore();
+		void				readUpToIgnore(std::string& output);
+
+		void				readUntilEndOfLine();
+		void				readUntilEndOfLine(std::string& output);
+
 		bool				readIdentifier(std::string& output);
         bool                appendIdentifier(std::string&);
 
@@ -56,7 +62,7 @@ class	Parser
         void                restoreContextPub();
         void                feed(const char* data);
 		void				feed(const std::string&);
-        void                        printI() const;
+        void                printI() const;
 
 	protected:
 		bool						isIgnore(char c) const;
@@ -67,7 +73,6 @@ class	Parser
 		void						__restoreContext();
 		void						trim();
 		void						ignore();
-        void                        readUpToIgnore();
         void                        skipComment(char c);
 
 		//attributes

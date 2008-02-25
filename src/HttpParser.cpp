@@ -29,7 +29,7 @@ void        HttpParser::parse()
     if (this->parseGetCommand()
         || this->parsePostCommand())
 	{
-        while (this->parseOption())
+        while (this->parseOptions())
 			;
 	}
     this->_request->print();
@@ -197,259 +197,43 @@ bool        HttpParser::readUriParam(std::string& key, std::string& value)
 	return true;
 }
 
-//bool        HttpParser::parseUriArgument()
-//{
-//    std::string     key;
-//    std::string     value;
-//    char            c;
-//
-//    this->saveContextPub();
-//    if (this->readChar() == '?'
-//        || (c = this->readChar()) == '&'
-//        && this->readIdentifier(key)
-//        && (c = this->readChar()) == '='
-//        && this->readIdentifier(value))
-//    {
-//        this->_request->appendUriArgument(key, value);
-//        return true;
-//    }
-//    this->restoreContextPub();
-//    return false;
-//}
-
-
-
 /**
  *  Parses Header options :
  *  try to parse every http options
  *  "yet" implemented in the zia
  * */
 
-bool        HttpParser::parseOption()
+bool        HttpParser::parseOptions()
 {
-    if (this->parseOptionHost()
-        || this->parseOptionContentLength()
-        || this->parseOptionFrom()
-        || this->parseOptionUserAgent()
-        || this->parseOptionContentType()
-        || this->parseOptionDate())
+	if (this->parseOption("Host", HttpRequest::From)
+		|| this->parseOption("Content-Length", HttpRequest::ContentLength)
+		|| this->parseOption("From", HttpRequest::From)
+		|| this->parseOption("User-Agent", HttpRequest::UserAgent)
+		|| this->parseOption("Content-Type", HttpRequest::ContentType)
+		|| this->parseOption("Date", HttpRequest::Date))
         return true;
 	std::cout << "Option return false" << std::endl;
     return false;
 }
 
-
-/**
- *  Parses Host option
- *
- *  synopsis:
- *      "Host" ":" host [ ":" port ]
- *
- *  example:
- *      Host: www.w3c.org\r\n
- * */
-
-bool        HttpParser::parseOptionHost()
+bool		HttpParser::parseOption(const std::string& token, HttpRequest::Option idOption)
 {
-    std::string     token;
-    std::string     token2;
+	std::string     value;
 
-    this->saveContextPub();
-    if (this->readIdentifier(token)
-        && token == "Host")
-    {
-        if (this->peekChar() == ':')
-        {
-            if (this->readIdentifier(token2))
-            {
-                this->_request->appendOption
-                    (HttpRequest::Host, token2);
-                return true;
-            }
-        }
-    }
-    this->restoreContextPub();
-    return false;
+	this->saveContextPub();
+	if (this->peekIfEqual(token))
+	{
+		if (this->peekIfEqual(':'))
+		{
+			this->readUntilEndOfLine(value);
+			this->_request->appendOption(idOption, value);
+			std::cout << "Append option " << token << " = " << value << std::endl;
+			return true;
+		}
+	}
+	this->restoreContextPub();
+	return false;
 }
-
-
-/**
- *  Parses From option
- *
- *  synopsis:
- *      "From" ":" mailbox    
- *
- *  example:
- *      From: webmaster@w3.org
- * */
-
-bool        HttpParser::parseOptionFrom()
-{
-    std::string     token;
-    std::string     token2;
-
-    this->saveContextPub();
-    if (this->readIdentifier(token)
-        && token == "From")
-    {
-        if (this->peekChar() == ':')
-        {
-            if (this->readEmailAddress(token2))
-            {
-                this->_request->appendOption
-                    (HttpRequest::From, token2);
-                return true;
-            }
-        }
-    }
-    this->restoreContextPub();
-    return false;
-}
-
-
-/**
- *  Parses Content-Length option
- *
- *  synopsis:
- *      "Content-Length" ":" 1*DIGIT
- *
- *  example:
- *      Content-Length: 3495
- * */
-
-bool        HttpParser::parseOptionContentLength()
-{
-    std::string     token;
-    std::string     token2;
-
-    this->saveContextPub();
-    if (this->peekIfEqual("Content-Length"))
-    {
-		if (this->peekChar() == ':')
-        {
-            if (this->readInteger(token2))
-            {
-                this->_request->appendOption
-                    (HttpRequest::ContentLength, token2);
-                return true;
-            }
-        }
-    }
-    this->restoreContextPub();
-    return false;
-}
-
-
-/**
- *  Parses User-Agent option
- *
- *  synopsis:
- *      "User-Agent" ":" 1*( product | comment )
- *
- *  example:
- *      User-Agent: CERN-LineMode/2.15 libwww/2.17b3
- * */
-
-bool        HttpParser::parseOptionUserAgent()
-{
-    std::string     token;
-    std::string     token2;
-
-    this->saveContextPub();
-    if (this->readIdentifier(token)
-        && token == "User-Agent")
-    {
-        if (this->peekChar() == ':')
-        {
-            if (this->readIdentifier(token2))
-            {
-                this->_request->appendOption
-                    (HttpRequest::UserAgent, token2);
-                return true;
-            }
-        }
-    }
-    this->restoreContextPub();
-    return false;
-}
-
-
-/**
- *  Parses Content-Type option
- *
- *  synopsis:
- *      "Content-Type" ":" media-type
- *
- *  example:
- *      Content-Type: text/html; charset=ISO-8859-4
- * */
-
-bool        HttpParser::parseOptionContentType()
-{
-    std::string     token;
-    std::string     token2;
-
-    this->saveContextPub();
-    if (this->readIdentifier(token)
-        && token == "Content-Type")
-    {
-        if (this->peekChar() == ':')
-        {
-            if (this->readIdentifier(token2))
-            {
-                this->_request->appendOption
-                    (HttpRequest::ContentType, token2);
-                return true;
-            }
-        }
-    }
-    this->restoreContextPub();
-    return false;
-}
-
-
-/**
- *  Parses Date option
- *
- *  synopsis:
- *      "Date" ":" HTTP-date
- *
- *  example:
- *      Date: Tue, 15 Nov 1994 08:12:31 GMT
- * */
-
-bool        HttpParser::parseOptionDate()
-{
-    std::string     token;
-    std::string     token2;
-
-    this->saveContextPub();
-    if (this->readIdentifier(token))
-    {
-        if (token ==  "Date")
-        {
-            if (this->peekChar() == ':')
-            {
-                if (this->readDate(token2))
-                {
-                    this->_request->appendOption
-                        (HttpRequest::Date, token2);
-                    return true;
-                }
-            }
-        }
-    }
-    this->restoreContextPub();
-    return false;
-}
-
-
-/**
- *  Parses protocol
- *  checks whether protocol is
- *  HTTP/1.1 or HTTP/1.0, sets the
- *  found protocol or return false
- * */
 
 bool        HttpParser::parseProtocol()
 {
