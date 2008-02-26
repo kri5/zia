@@ -24,15 +24,17 @@ int             ClientSocket::send(const char *buf, int length) const
 
 int             ClientSocket::send(const std::string& buf, int length) const
 {
+    std::string tmp = buf;
     int ret;
     int remainingSize = length;
     if (length == -1)
-        remainingSize = buf.size();
+        remainingSize = tmp.size();
 
     while (remainingSize > 0)
     {
-        ret = send(buf.c_str(), length);
+        ret = send(tmp.c_str(), remainingSize);
         if (ret == -1) return -1;
+        tmp.erase(0, ret);
         remainingSize -= ret;
     }
     return 0;
