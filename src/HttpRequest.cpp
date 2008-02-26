@@ -40,6 +40,31 @@ void            HttpRequest::setProtocol(std::string& protocol)
     this->_protocol = protocol;
 }
 
+HttpRequest::Command                        HttpRequest::getCommand()
+{
+    return this->_command;
+}
+
+const std::string&                          HttpRequest::getUri()
+{
+    return this->_uri;
+}
+
+const std::string&                          HttpRequest::getProtocol()
+{
+    return this->_protocol;
+}
+
+const std::map<HttpRequest::Option, std::string>&        HttpRequest::getOptions()
+{
+    return this->_options;
+}
+
+const std::map<std::string, std::string>&   HttpRequest::getUriArguments()
+{
+    return this->_uriArguments;
+}
+
 void            HttpRequest::print()
 {
     std::map<Option, std::string>::iterator it
