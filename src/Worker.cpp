@@ -12,8 +12,19 @@ void          Worker::code()
     Logger::getInstance() << Logger::Info << "Thread #" << this->pid() << " started." << Logger::Flush;
     try
     {
-        HttpRequest* req = new HttpRequest();
-        //TODO Filling request object here by reading what the client send to us
+        // Here we read and parse the data
+        std::string test("GET /index.htm HTTP/1.1\r\n");
+        std::string test2("Content-Length: 42\r\n");
+        std::string test3("Host: test.ssh.t0mb.org:8000\r\n\r\n");
+        std::string out;
+        HttpParser p;
+        p.feed(test);
+        p.parse();
+        p.feed(test2);
+        p.feed(test3);
+        p.parse();
+        HttpRequest* req = p.getRequest();
+
         sendResponse(this->request(*req));
     }
     catch (HttpError& e) // HttpError thrown (404, 500, ...)
@@ -34,15 +45,10 @@ void                  Worker::sendResponse(HttpResponse& response)
 /// Transform a request into a response by loading the file the client want, etc...
 HttpResponse&         Worker::request(HttpRequest& request)
 {
-    request = request;
-
-    // TEST ETIX, DON'T REMOVE
     
-    std::string path("/media/Stuff/Videos/");
-    std::string file("Doom.avi");
-    std::string full = path + file;
+    std::string full = "~/www/" + request.getUri();
 
-    File fileinfo(file, path.c_str());
+    File fileinfo(request.getUri(), "~/www/");
     std::stringstream ss;
     ss << fileinfo.getSize();
     std::ifstream data(full.c_str(), std::ios_base::binary);
@@ -51,7 +57,7 @@ HttpResponse&         Worker::request(HttpRequest& request)
     _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
     _socket << "Content-Length: " << ss.str() << "\r\n";
     _socket << "Connection: close\r\n";
-    _socket << "Content-Type: video/avi\r\n";
+    _socket << "Content-Type: text/html\r\n";
     _socket << "\r\n";
 
 

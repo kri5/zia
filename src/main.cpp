@@ -18,18 +18,18 @@
 
 int main(int argc, char **argv)
 {
-	//Init		i(argc, argv);
-	//Server*		srv;
+	Init		i(argc, argv);
+	Server*		srv;
 
-	//i.start();
-	//srv = new Server(i.getBindList());
+	i.start();
+	srv = new Server(i.getBindList());
 
-	//srv->run();
+	srv->run();
 	//
-	//Logger::deleteInstance(); 
+	Logger::deleteInstance(); 
     //  For testing purpose (Parser)
 
-	std::string test("GET /toto/test.php?empty=&t=42&foo=bar HTTP/1.1\r\n");
+	/*std::string test("GET http://slashdot.org/test.php?empty=&t=42&foo=bar HTTP/1.1\r\n");
     std::string test2("Content-Length: 42\r\n");
     std::string test3("Host: test.ssh.t0mb.org:8000\r\n\r\n");
     std::string out;
@@ -45,6 +45,6 @@ int main(int argc, char **argv)
     while (p->readIdentifier(out) == true)
         std::cout << "->" << out << std::endl;
     //std::string* dt = new std::string("Date: Tue, 12 Nov 1994 23:12:31 GMT");
-    //Date* t = new Date(*dt);
+    //Date* t = new Date(*dt);*/
 }
 

@@ -7,6 +7,7 @@
 #include "Vhost.h"
 #include "HttpRequest.h"
 #include "HttpResponse.h"
+#include "HttpParser.h"
 #include "HttpError.h"
 #include "Logger.hpp"
 #include "File.h"
