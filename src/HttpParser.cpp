@@ -399,7 +399,7 @@ bool        HttpParser::parseProtocol()
     std::string     token;
 
     if (this->peekIfEqual("HTTP/1.0", token)
-		|| this->peekIfEqual("HTTP/1.1"))
+		|| this->peekIfEqual("HTTP/1.1", token))
     {
         this->_request->setProtocol(token);
         return true;
@@ -495,10 +495,12 @@ bool        HttpParser::readRelativeUri(std::string& uri)
 
     if (this->peekIfEqual("/", res))
     {
+        this->setIgnore(false);
         while (this->appendIdentifier(res)
                || this->peekIfEqual(".", res)
                || this->peekIfEqual("/", res));
         uri = res;
+        this->setIgnore(true);
         return true;
     }
     return false;
