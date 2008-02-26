@@ -6,48 +6,31 @@
 const int BUFF_SIZE = 256;
 const char	COMMENT_CHAR = ';';
 
-Parser::Parser() :  _i(0), _bufferId(-1),
+Parser::Parser() :  _i(0), _bufferId(0),
                     _backI(0), _backBuffer(0),
-                    _ignore(true), _comment(false)
+                    _ignore(true), _comment(false),
+                    _end(false)
 {
     //TODO:Replace by our excpetion system
 	/*if (extendBuffer() == false)
 		throw Exception("Can't read file");*/
 }
 
-void		Parser::feed(const char* data)
-{
-    this->_stream.write(data, strlen(data));
-    this->extendBuffer();
-}
-
 void		Parser::feed(const std::string& str)
 {
-	this->feed(str.c_str());
+    this->_buffers.push_back(str);
 }
 
 bool		Parser::extendBuffer()
 {
-	if ((int)this->_buffers.size() - 1 > this->_bufferId)
-	{
-		this->_bufferId++;
-		this->_i = 0;
-		return true;
-	}
-	if (this->_stream.good())
-	{
-		char	buff[BUFF_SIZE + 1];
-
-		this->_stream.get(buff, BUFF_SIZE + 1, 0);
-		this->_nbRead = this->_stream.gcount();
-		if (this->_nbRead <= 0)
-			return false;
-		this->_buffers.push_back(buff);
-		this->_bufferId++;
-		this->_i = 0;
-		return true;
-	}
-	return false;
+    // Si on n'a plus assez de donnees, on quite.
+    if (this->_bufferId >= (int)this->_buffers.size() - 1)
+    {
+        return false;
+    }
+    ++this->_bufferId;
+    this->_i = 0;
+    return true;
 }
 
 char		Parser::peekChar()
@@ -166,10 +149,11 @@ void		Parser::flush()
 		this->_buffers.erase(this->_buffers.begin());
 		this->_bufferId--;
 	}
-	if (this->_i == this->_nbRead)
+    //si on est apres la fin du dernier buffer (extendBuffer aurait ete appele au prochain readChar()
+	if (this->_i == this->_buffers[this->_bufferId].length())
 	{
 		this->_buffers.erase(this->_buffers.begin());
-		this->_bufferId--;
+        this->_i = 0;
 	}
 }
 
@@ -177,14 +161,32 @@ char	Parser::readChar()
 {
 	char	c;
 
-	if (this->_i >= this->_nbRead || this->_bufferId < 0)
+	if (this->_i >= this->_buffers[this->_bufferId].length()
+            || this->_bufferId < 0)
         //TODO: Replace by our Exception System
 		if (!this->extendBuffer())
-			throw "Can't read anymore";
+			return 0;
 	c = this->_buffers[this->_bufferId][this->_i];
     if (this->_comment)
         this->skipComment(c);
 	return (c);
+}
+
+bool    Parser::readIfEqual(const std::string& toFind)
+{
+    int l = toFind.length();
+    
+    this->__saveContext(); 
+    for (int i = 0; i < l; ++i, ++this->_i)
+    {
+        if (this->readChar() != toFind[i])
+        {
+            this->__restoreContext();
+            return false;
+        }
+    }
+    this->__restoreContext();
+    return true;
 }
 
 void    Parser::readUpToIgnore()
@@ -194,7 +196,8 @@ void    Parser::readUpToIgnore()
             && c != ' ' && c != '\t')
     {
         this->_i++;
-        if (this->_i >= this->_nbRead || this->_bufferId < 0)
+        if (this->_i >= this->_buffers[this->_bufferId].length()
+                || this->_bufferId < 0)
             this->extendBuffer();
         c = this->_buffers[this->_bufferId][this->_i];
     }
@@ -210,7 +213,8 @@ void    Parser::readUpToIgnore(std::string& output)
 	{
 		output += c;
 		this->_i++;
-		if (this->_i >= this->_nbRead || this->_bufferId < 0)
+		if (this->_i >= this->_buffers[this->_bufferId].length()
+                || this->_bufferId < 0)
 			this->extendBuffer();
 		c = this->_buffers[this->_bufferId][this->_i];
 	}
@@ -222,7 +226,7 @@ void	Parser::readUntilEndOfLine(std::string& output)
 	this->setIgnore(false);
 	while (true)
 	{
-		if (this->peekIfEqual("\r\n"))
+		if (this->readIfEqual("\r\n"))
 		{
 			this->setIgnore(true);
 			return ;
@@ -236,7 +240,7 @@ void	Parser::readUntilEndOfLine()
 	this->setIgnore(false);
 	while (true)
 	{
-		if (this->peekIfEqual("\r\n"))
+		if (this->readIfEqual("\r\n"))
 		{
 			this->setIgnore(true);
 			return ;
@@ -255,9 +259,7 @@ void    Parser::skipComment(char c)
 bool	Parser::isIgnore(char c) const
 {
 	return (c == ' ' 
-            || c == '\t'
-			|| c == '\n' 
-            || c == '\r');
+            || c == '\t');
 }
 
 void	Parser::ignore()
@@ -435,6 +437,18 @@ bool	Parser::readDecimal(float& output)
 //	return (this->_stream.bad() || this->_stream.fail());
 //}
 //
+
+
+bool    Parser::isEOL()
+{
+    return this->peekIfEqual("\r\n");
+}
+
+bool    Parser::isEnd() const
+{
+    return this->_end;
+}
+
 bool    Parser::isAlpha()
 {
     return this->isAlpha(this->readChar());
@@ -470,11 +484,6 @@ bool    Parser::isAlphaNum(const char c) const
     if (this->isAlpha(c) || this->isNum(c))
         return true;
     return false;
-}
-
-void    Parser::printI() const
-{
-    std::cout << "[Parser] this->_i == " << this->_i << std::endl;
 }
 
 bool    Parser::getIgnore() const

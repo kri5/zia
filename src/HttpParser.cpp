@@ -11,7 +11,9 @@
  *  HttpRequest with all parameters inside
  * */
 
-HttpParser::HttpParser() : _isFirstArgument(true)
+HttpParser::HttpParser() :  _isFirstArgument(true),
+                            _isFirstLine(true),
+                            _isValid(true)
 {
     _request = new HttpRequest();
 }
@@ -26,13 +28,20 @@ HttpParser::HttpParser() : _isFirstArgument(true)
 
 void        HttpParser::parse()
 {
-    if (this->parseGetCommand()
-        || this->parsePostCommand())
+    if (this->_isFirstLine)
+    {
+        if (this->parseGetCommand()
+            || this->parsePostCommand())
+            this->_isFirstLine = false;
+        else
+            this->_isValid = false;
+    }
+    else if (this->_isValid)
 	{
         while (this->parseOptions())
 			;
 	}
-    this->_request->print();
+    this->flush();
 }
 
 
@@ -54,13 +63,12 @@ bool        HttpParser::parseGetCommand()
 
 	if (this->peekIfEqual("GET")
         && this->parseUri()
-        && this->parseProtocol())
+        && this->parseProtocol()
+        && this->isEOL())
     {
         this->_request->setCommand(HttpRequest::Get);
-        std::cout << "get return true" << std::endl;
         return true;
     }
-    std::cout << "get return false" << std::endl;
     return false;
 }
 
@@ -80,15 +88,17 @@ bool        HttpParser::parsePostCommand()
 {
     std::string     token;
 
-    if (this->readIdentifier(token)
-        && token == "POST")
+    if (this->peekIfEqual("POST"))
     {
         if (this->parseUri())
         {
             if (this->parseProtocol())
             {
-                this->_request->setCommand(HttpRequest::Post);
-                return true;
+                if (this->isEOL())
+                {
+                    this->_request->setCommand(HttpRequest::Post);
+                    return true;
+                }
             }
         }
     }
@@ -200,7 +210,12 @@ bool        HttpParser::parseOptions()
         || this->parseOptionDate()
         || this->parseOptionContentType()
         || this->parseOptionUserAgent())
-        return true;
+    {
+        if (this->isEOL())
+            return true;
+        else
+            std::cout << " === ERROR === " << std::endl;
+    }
     return false;
 }
 
@@ -222,9 +237,12 @@ bool        HttpParser::parseOptionHost()
     {
         if (this->peekIfEqual(":"))
         {
-            this->readUntilEndOfLine(host);
-            this->_request->appendOption(HttpRequest::Host,host);
-            return true;
+            if (this->readHost(host))
+            {
+                this->_request->appendOption
+                    (HttpRequest::Host,host);
+                return true;
+            }
         }
     }
     return false;
@@ -383,6 +401,36 @@ bool        HttpParser::parseProtocol()
     return false;
 }
 
+/**
+ *  Reads a host
+ *  the host must be formatted as follows
+ *  [identifier][.][identifier][.identifier]*
+ * */
+
+bool        HttpParser::readHost(std::string& host)
+{
+    std::string tmp;
+
+    if (this->appendIdentifier(tmp))
+    {
+        if (this->peekIfEqual(".", tmp))
+        {
+            if (this->appendIdentifier(tmp))
+            {
+                while (this->peekIfEqual(".", tmp)
+                        && this->appendIdentifier(tmp));
+                if (this->peekIfEqual(":", tmp))
+                {
+                    if (!this->appendInteger(tmp))
+                        return false;
+                }
+                host = tmp;
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 /**
  *  Reads an email address.
@@ -625,4 +673,9 @@ bool    HttpParser::isMonthOfTheYear(const std::string& m) const
         || m == "Dec")
         return true;
     return false;
+}
+
+HttpRequest*    HttpParser::getRequest() const
+{
+    return this->_request;
 }

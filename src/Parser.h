@@ -16,6 +16,7 @@ class	Parser
 		char				peekChar(); //will consume stream
         std::string         peekNChar(int);
 		char				readChar();
+        bool                readIfEqual(const std::string&);
         bool                peekIfEqual(char, std::string&);
         bool                peekIfEqual(char);
         bool                peekIfEqual(const std::string&, std::string&);
@@ -45,6 +46,8 @@ class	Parser
 
 		//bool				isEOF() const;
 		//bool				isError() const;
+        bool                isEOL();
+        bool                isEnd() const;
 
         bool                isAlpha();
         bool                isAlpha(const char) const;
@@ -60,9 +63,7 @@ class	Parser
         bool                getComment() const;
         void                saveContextPub();
         void                restoreContextPub();
-        void                feed(const char* data);
 		void				feed(const std::string&);
-        void                printI() const;
 
 	protected:
 		bool						isIgnore(char c) const;
@@ -78,16 +79,16 @@ class	Parser
 		//attributes
 		std::stringstream           _stream;
 		std::vector<std::string>	_buffers;
-		int							_i;
+		unsigned int	    		_i;
 		int							_bufferId;
 		int							_backI;
         int                         _backIPub;
 		int							_backBuffer;
         int                         _backBufferPub;
-		int							_nbRead;
         bool                        _ignore;
         bool                        _comment;
         std::string                 _commentList;
+        bool                        _end;
 };
 
 

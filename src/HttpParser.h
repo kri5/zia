@@ -10,6 +10,7 @@ class HttpParser : public Parser
         HttpParser();
         ~HttpParser() {};
         void            parse();
+        HttpRequest*    getRequest() const;
 
     private:
         bool            parseGetCommand();
@@ -28,6 +29,7 @@ class HttpParser : public Parser
 		bool            parseOptionDate();
 
         bool            readEmailAddress(std::string&);
+        bool            readHost(std::string&);
         bool            readAbsoluteUri(std::string&);
         bool            readDate(std::string&);
         bool            readTime(std::string&);
@@ -39,10 +41,13 @@ class HttpParser : public Parser
         bool            isHour(const int) const;
         bool            isMinute(const int) const;
         bool            isSecond(const int) const;
+
         
 
         HttpRequest*    _request;
         bool            _isFirstArgument;
+        bool            _isFirstLine;
+        bool            _isValid;
 };
 
 #endif /* !__HTTPPARSER_H__ */
