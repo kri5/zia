@@ -32,6 +32,7 @@ class HttpParser : public Parser
         bool            readEmailAddress(std::string&);
         bool            readHost(std::string&);
         bool            readAbsoluteUri(std::string&);
+        bool            readRelativeUri(std::string&);
         bool            readDate(std::string&);
         bool            readTime(std::string&);
         bool            readUriParam(std::string&, std::string&);

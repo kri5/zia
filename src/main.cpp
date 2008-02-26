@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	//Logger::deleteInstance(); 
     //  For testing purpose (Parser)
 
-	std::string test("GET http://slashdot.org/test.php?empty=&t=42&foo=bar HTTP/1.1\r\n");
+	std::string test("GET /toto/test.php?empty=&t=42&foo=bar HTTP/1.1\r\n");
     std::string test2("Content-Length: 42\r\n");
     std::string test3("Host: test.ssh.t0mb.org:8000\r\n\r\n");
     std::string out;

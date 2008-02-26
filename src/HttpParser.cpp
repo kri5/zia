@@ -121,7 +121,8 @@ bool        HttpParser::parseUri()
 
     this->setCommentList("#");
     this->setComment(true);
-    if (this->readAbsoluteUri(token))
+    if (this->readAbsoluteUri(token)
+        || this->readRelativeUri(token))
     {
 		this->setIgnore(false);
         this->_request->setUri(token);
@@ -486,6 +487,21 @@ bool        HttpParser::readAbsoluteUri(std::string& uri)
     this->setIgnore(true);
     this->restoreContextPub();
     return false; 
+}
+
+bool        HttpParser::readRelativeUri(std::string& uri)
+{
+    std::string res;
+
+    if (this->peekIfEqual("/", res))
+    {
+        while (this->appendIdentifier(res)
+               || this->peekIfEqual(".", res)
+               || this->peekIfEqual("/", res));
+        uri = res;
+        return true;
+    }
+    return false;
 }
 
 /**
