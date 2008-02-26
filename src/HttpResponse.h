@@ -7,8 +7,6 @@
 class   HttpResponse
 {
     public:
-        HttpResponse();
-        ~HttpResponse();
         enum    Option
         {
             Date,
@@ -22,7 +20,8 @@ class   HttpResponse
             const char*                 value;
         } keyvalue;
 
-
+        HttpResponse();
+        ~HttpResponse();
         void                            setProtocol(std::string&);
         void                            setResponseStatus(int status);
         void                            setResponseValue(std::string&);

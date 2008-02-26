@@ -65,7 +65,8 @@ HttpResponse::~HttpResponse()
 const char*     HttpResponse::getResponseStatusMessage(int key)
 {
     for (int i = 0; ResponseStatus[i].value; i++)
-        if (ResponseStatus[i].key == key) return ResponseStatus[i].value;
+        if (ResponseStatus[i].key == key)
+            return ResponseStatus[i].value;
     return NULL;
 }
 
@@ -84,7 +85,7 @@ void            HttpResponse::appendOption(HttpResponse::Option opt, std::string
     this->_options[opt] = value;
 }
 
-void            HttpResponse::setContent(std::iostream content)
+void            HttpResponse::setContent(std::iostream)
 {
     ;
 }

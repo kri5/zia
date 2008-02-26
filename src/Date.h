@@ -26,7 +26,7 @@ class   Date : public Parser
         int             getDay()        const;
         int             getMonth()      const;
         int             getYear()       const;
-        void            readTime(std::string& t);
+        void            readTime();
         int             getMonthFromString(std::string month);
         std::string     toString();
         time_t          toTimestamp();

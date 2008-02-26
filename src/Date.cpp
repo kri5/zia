@@ -26,7 +26,7 @@ Date::Date(std::string& date)
                     if (this->readInteger(tmp))
                     {
                         this->_year = atoi(tmp.c_str());
-                        this->readTime(tmp);
+                        this->readTime();
                     }
                 }
             }
@@ -39,7 +39,7 @@ Date::Date(std::string& date)
     //    << ' ' << this->_hours << ':' << this->_minutes << ':' << this->_seconds << std::endl;
 }
 
-void    Date::readTime(std::string& t)
+void    Date::readTime()
 {
     std::string tmp;
 
