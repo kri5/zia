@@ -27,9 +27,18 @@ int ClientSocket::send(const char *buf, int length) const
 
 int   ClientSocket::send(const std::string& buf, int length) const
 {
+    int ret;
+    int remainingSize = length;
     if (length == -1)
-        return send(buf.c_str(), buf.size());
-    return send(buf.c_str(), length);
+        remainingSize = buf.size();
+
+    while (remainingSize > 0)
+    {
+        ret = send(buf.c_str(), length);
+        if (ret == -1) return -1;
+        remainingSize -= ret;
+    }
+    return 0;
 }
 
 int ClientSocket::recv( char *buf, int length ) const
