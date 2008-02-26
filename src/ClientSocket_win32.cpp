@@ -3,7 +3,7 @@
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
 
-ClientSocket::ClientSocket(int acceptedSocket) : Socket(), siostream(acceptedSocket) 
+ClientSocket::ClientSocket(int acceptedSocket) : Socket()
 {
 	listenSocket = acceptedSocket;
 }

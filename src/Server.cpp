@@ -44,8 +44,8 @@ Server::~Server()
 
 void		Server::run()
 {
-	std::vector<MainSocket*>::iterator		it; 
-	std::vector<MainSocket*>::iterator		end = this->_sockets.end();
+	int										i;
+	int										size = this->_sockets.size();
 	fd_set									fds;
 	struct timeval							tval;
 	int										ret;
@@ -56,9 +56,9 @@ void		Server::run()
 		tval.tv_sec = 1;
 		tval.tv_usec = 0;
 		FD_ZERO(&fds);
-		for (it = this->_sockets.begin(); it != end; ++it)
+		for (i = 0; i < size; ++i)
 		{
-			*(*it) >> fds;
+			*(this->_sockets[i]) >> fds;
 		}
 		ret = select(this->_maxFd + 1, &fds, NULL, NULL, &tval);
 		if (ret < 0)
