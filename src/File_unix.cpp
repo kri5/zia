@@ -45,3 +45,8 @@ ITime*		File::getModifDate()
 	return this->_modifTime;
 }
 
+bool        File::isDirectory() const
+{
+    return S_ISDIR(this->_stat.st_mode);
+}
+

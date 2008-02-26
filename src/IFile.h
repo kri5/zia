@@ -11,6 +11,7 @@ class	IFile
 	public:
 		virtual ~IFile(){};
 		virtual std::string				getFileName() const = 0;
+        virtual bool                    isDirectory() const = 0;
 		virtual unsigned int			getSize() const = 0;
 		virtual ITime*					getModifDate() = 0;
 		//virtual std::string		getNextChunk() const = 0;

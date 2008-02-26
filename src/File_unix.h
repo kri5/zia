@@ -25,6 +25,7 @@ class File : public IFile
 		File(std::string, const char* path = NULL);
 		~File();
 		std::string		getFileName() const;
+        bool            isDirectory() const;
 		unsigned int	getSize() const;
 		ITime*			getModifDate();
 	private:
