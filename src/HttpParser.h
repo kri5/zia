@@ -10,6 +10,7 @@ class HttpParser : public Parser
         HttpParser();
         ~HttpParser() {};
         void            parse();
+        bool            done() const;
         HttpRequest*    getRequest() const;
 
     private:
@@ -48,6 +49,7 @@ class HttpParser : public Parser
         bool            _isFirstArgument;
         bool            _isFirstLine;
         bool            _isValid;
+        bool            _isDone;
 };
 
 #endif /* !__HTTPPARSER_H__ */

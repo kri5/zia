@@ -13,7 +13,8 @@
 
 HttpParser::HttpParser() :  _isFirstArgument(true),
                             _isFirstLine(true),
-                            _isValid(true)
+                            _isValid(true),
+                            _isDone(false)
 {
     _request = new HttpRequest();
 }
@@ -212,7 +213,11 @@ bool        HttpParser::parseOptions()
         || this->parseOptionUserAgent())
     {
         if (this->isEOL())
+        {
+            if (this->isEOL())
+                this->_isDone = true;
             return true;
+        }
         else
             std::cout << " === ERROR === " << std::endl;
     }
@@ -678,4 +683,9 @@ bool    HttpParser::isMonthOfTheYear(const std::string& m) const
 HttpRequest*    HttpParser::getRequest() const
 {
     return this->_request;
+}
+
+bool            HttpParser::done() const
+{
+    return this->_isDone;
 }

@@ -38,7 +38,9 @@ int main(int argc, char **argv)
     p->parse();
     p->feed(test2);
     p->feed(test3);
+    std::cout << "parse done == " << p->done() << std::endl;
     p->parse();
+    std::cout << "parse done == " << p->done() << std::endl;
     p->getRequest()->print();
     while (p->readIdentifier(out) == true)
         std::cout << "->" << out << std::endl;
