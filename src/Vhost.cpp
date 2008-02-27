@@ -3,10 +3,11 @@
 #include "Vhost.h"
 #include "Logger.hpp"
 #include "ZException.hpp"
+#include "RootConfig.hpp"
 
 #include "MemoryManager.hpp"
 
-Vhost::Vhost(NetworkID* netId, Config* cfg) : Config(*cfg), _netId(netId) 
+Vhost::Vhost(NetworkID* netId, Config* cfg) : Config(*cfg), _netId(netId)
 {
 }
 
@@ -37,7 +38,7 @@ std::string		Vhost::getParam(std::string name) const
 	return (Config::getParam(name));
 }
 
-const Vhost*	Vhost::getVhost(const std::vector<const Vhost*>& vhosts, const std::string& host)
+const Config*	Vhost::getVhost(const std::vector<const Vhost*>& vhosts, const std::string& host)
 {
 	int		i;
 	int		size = vhosts.size();
@@ -47,6 +48,5 @@ const Vhost*	Vhost::getVhost(const std::vector<const Vhost*>& vhosts, const std:
 		if (vhosts[i]->getParam("ServerName") == host.substr(0, host.find(':')))
 			return vhosts[i];
 	}
-	Logger::getInstance() << Logger::Error << "No such Vhost" << Logger::Flush;
-	return NULL;
+	return RootConfig::getInstance().getConfig();
 }

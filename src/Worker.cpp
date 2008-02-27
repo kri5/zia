@@ -40,7 +40,7 @@ void          Worker::code()
             std::cout << "Tmp: " << tmp << std::endl;
         }
         parser.getRequest()->print();
-		Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
+		const Config* cfg = Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
         HttpRequest* req = parser.getRequest();
         sendResponse(this->request(*req));
     }

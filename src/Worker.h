@@ -21,7 +21,8 @@ public:
     static void                     create(ClientSocket& socket, const std::vector<const Vhost*>& vhosts);
 
 private:
-    Worker(ClientSocket& socket, const std::vector<const Vhost*>& vhosts) : _socket(socket), _vhosts(vhosts) { }
+    Worker(ClientSocket& socket, const std::vector<const Vhost*>& vhosts) : 
+		_socket(socket), _vhosts(vhosts) { }
     virtual ~Worker() { }
     void                            code();
 

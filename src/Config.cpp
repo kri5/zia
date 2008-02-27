@@ -2,7 +2,7 @@
 
 #include "MemoryManager.hpp"
 
-Config::Config()
+Config::Config() : _globalConf(true)
 {
 	_params.clear();
 }
@@ -12,7 +12,7 @@ Config::~Config()
 	_params.clear();
 }
 
-Config::Config(const Config& right) : _params(right._params)
+Config::Config(const Config& right) : _params(right._params), _mime(right._mime), _globalConf(false)
 {
 }
 

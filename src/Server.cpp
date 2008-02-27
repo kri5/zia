@@ -8,15 +8,16 @@
 #include "Server.h"
 #include "Worker.h"
 #include "ZException.hpp"
+#include "RootConfig.hpp"
 
 #include "MemoryManager.hpp"
 
-Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toBind) : _toBind(toBind)
+Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toBind, const Config* rootCfg) : _toBind(toBind)
 {
 	std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		it = this->_toBind.begin();
 	std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		end = this->_toBind.end();
 
-	_sockets.clear();
+	RootConfig::getInstance().setConfig(rootCfg);
 	_maxFd = 0;
 	try
     {
@@ -48,6 +49,7 @@ Server::~Server()
 		++it;
 	}
 	this->_sockets.clear();
+	RootConfig::deleteInstance();
 }
 
 void		Server::run()

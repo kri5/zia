@@ -30,7 +30,7 @@ class Vhost : public Config
 		/// Param getter overloading, to ensure that some parameters can't be getted (such as login or group for daemon mode)
 		std::string			getParam(std::string) const;
 		/// Will return the appropriate Vhost from the server's list, using Host: from Http header
-		static const Vhost*	getVhost(const std::vector<const Vhost*>& vhosts, const std::string& host);
+		static const Config*	getVhost(const std::vector<const Vhost*>& vhosts, const std::string& host);
 	private:
 		NetworkID*		_netId;
 };

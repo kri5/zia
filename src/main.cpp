@@ -14,6 +14,7 @@
 #include "Server.h"
 #include "Date.h"
 #include "Buffer.h"
+#include "RootConfig.hpp"
 
 #include "MemoryManager.hpp"
 
@@ -25,9 +26,9 @@ int main(int argc, char **argv)
 	i.start();
     try
     {
-	    srv = new Server(i.getBindList());
-    }
-    catch (ZException<Server>& ex)
+	    srv = new Server(i.getBindList(), i.getRootConfig());
+	}
+	catch (ZException<Server>& ex)
     {
         Logger::getInstance() << Logger::Error << "Can't start server : " << ex.what() << Logger::Flush;
         return EXIT_FAILURE;

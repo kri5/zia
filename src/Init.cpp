@@ -146,6 +146,8 @@ void		Init::addWildcardVhosts()
 	std::map<const NetworkID*, std::vector<const Vhost*> >::iterator	itNet;
 	std::map<const NetworkID*, std::vector<const Vhost*> >::iterator	endNet;
 
+	//Will just create the element. This is soooo ugly :(
+	this->_bindList[NetworkID::factory("*", this->_conf->getParam("Listen"))];
 	while (it != end)
 	{
 		if ((*it)->getAddress() == "*")
@@ -217,8 +219,12 @@ void        Init::initThreads()
 
 }
 
-const std::map<const NetworkID*, std::vector<const Vhost*> >&		Init::getBindList()
+const std::map<const NetworkID*, std::vector<const Vhost*> >&	Init::getBindList() const
 {
 	return this->_bindList;
 }
 
+const Config* Init::getRootConfig() const
+{
+	return this->_conf;
+}

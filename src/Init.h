@@ -19,7 +19,8 @@ class Init
 		~Init();
 
 		int     start();
-		const std::map<const NetworkID*, std::vector<const Vhost*> >&		getBindList();
+		const std::map<const NetworkID*, std::vector<const Vhost*> >&	getBindList() const;
+		const Config*													getRootConfig() const;
 	private:
 		void    		readCommandLine();
 		void    		readConfiguration(const std::string fileName = "zia.conf", Config* cfg = NULL);
@@ -34,9 +35,9 @@ class Init
 		void			addWildcardVhosts();
 		void			addNonWildcardVhosts();
 
-		Config*											_conf;
-		std::list<Vhost*>								_vhosts;
-		std::map<const NetworkID*, std::vector<const Vhost*> >		_bindList;
+		Config*													_conf;
+		std::list<Vhost*>										_vhosts;
+		std::map<const NetworkID*, std::vector<const Vhost*> >	_bindList;
 
 		int     _argc;
 		char**  _argv;  
