@@ -120,3 +120,13 @@ unsigned int            HttpResponse::getContentLength()
     return _contentLength;
 }
 
+void                    HttpResponse::setMimetype(std::string mimetype)
+{
+    _mimetype = mimetype;
+}
+
+std::string             HttpResponse::getMimetype()
+{
+    return _mimetype;
+}
+

@@ -13,6 +13,7 @@
 #include "File.h"
 #include "ZException.hpp"
 #include "DirectoryBrowser.h"
+#include "RootConfig.hpp"
 #include <exception>
 
 class Worker : public IThread

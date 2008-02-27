@@ -52,5 +52,5 @@ bool        File::isDirectory() const
 
 std::string		File::getExtension() const
 {
-	return this->_filename.substr(this->_filename.rfind("."));
+	return this->_name.substr(this->_name.rfind("."));
 }

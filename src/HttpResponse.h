@@ -28,12 +28,14 @@ class   HttpResponse
         void                            appendOption(HttpResponse::Option, std::string&);
         void                            setContent(std::istream* content);
         void                            setContentLength(unsigned int size);
+        void                            setMimetype(std::string mimetype);
         
         const std::string&              getProtocol();
         int                             getResponseStatus();
         const std::string               getResponseValue();
         std::istream&                   getContent();
         unsigned int                    getContentLength();
+        std::string                     getMimetype();
 
         static keyvalue                 ResponseStatus[];
         static const char*              getResponseStatusMessage(int key);
@@ -44,6 +46,7 @@ class   HttpResponse
         std::map<Option, std::string>   _options;
         std::istream*                   _content;
         unsigned int                    _contentLength;
+        std::string                     _mimetype;
 };
 
 #endif  /* !__HTTPRESPONSE_H__ */

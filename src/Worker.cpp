@@ -40,7 +40,7 @@ void          Worker::code()
             std::cout << "Tmp: " << tmp << std::endl;
         }
         parser.getRequest()->print();
-		const Config* cfg = Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
+		//const Config* cfg = Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
         HttpRequest* req = parser.getRequest();
 		req->setConfig(Vhost::getVhost(this->_vhosts, req->getOption(HttpRequest::Host)));
         sendResponse(this->request(*req));
@@ -65,7 +65,7 @@ void                  Worker::sendResponse(HttpResponse& response)
     _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
     _socket << "Content-Length: " << len.str() << "\r\n";
     _socket << "Connection: close\r\n";
-    _socket << "Content-Type: text/html\r\n";
+    _socket << "Content-Type: " << response.getMimetype() <<  "\r\n";
     _socket << "\r\n";
 
     char buf[1024];
@@ -104,6 +104,7 @@ HttpResponse&         Worker::request(HttpRequest& request)
         std::istream* is = new std::istream(data->rdbuf());
 
         HttpResponse* rep = new HttpResponse();
+        rep->setMimetype(RootConfig::getInstance().getConfig()->getMimeType(request.getUri()));
         rep->setResponseStatus(200); // Optional because 200 is set by default
         rep->setContentLength(fileinfo->getSize());
         rep->setContent(is);
