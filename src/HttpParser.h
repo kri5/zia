@@ -10,6 +10,7 @@ class HttpParser : public Parser
         HttpParser();
         ~HttpParser();
         void            parse();
+        void            parseBody();
         bool            done() const;
         HttpRequest*    getRequest() const;
 
@@ -19,6 +20,7 @@ class HttpParser : public Parser
         bool            parseHeadCommand();
         bool            parseUri();
         bool            parseUriArgument();
+        bool            parseBodyArgument();
         bool            parseProtocol();
 
         bool            parseOptions();
@@ -40,6 +42,7 @@ class HttpParser : public Parser
         bool            readDate(std::string&);
         bool            readTime(std::string&);
         bool            readUriParam(std::string&, std::string&);
+        bool            readBodyParam(std::string&, std::string&);
 
         bool            isDayOfTheMonth(const int) const;
         bool            isDayOfTheWeek(const std::string&) const;

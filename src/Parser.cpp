@@ -529,7 +529,8 @@ bool	Parser::readAnythingBut(const std::string& forbiden, std::string& res)
 		res = c;
 		c = this->readChar();
 		while (forbiden.find(c) == std::string::npos
-				&& this->isIgnore(c) == false)
+				&& this->isIgnore(c) == false
+                && !this->_end)
 		{
 			this->peekChar();
 			res += c;
@@ -545,14 +546,14 @@ bool	Parser::readAnythingBut(const std::string& forbiden)
 	char	c;
 
 	c = this->readChar();
-    std::cout << "pasrser c == " << c << " -- " << (int)c << std::endl;
 	if (forbiden.find(c) == std::string::npos
 			&& this->isIgnore(c) == false)
 	{
 		this->peekChar();
 		c = this->readChar();
 		while (forbiden.find(c) == std::string::npos
-				&& this->isIgnore(c) == false)
+				&& this->isIgnore(c) == false
+                && !this->_end)
 		{
 			this->peekChar();
 			c = this->readChar();

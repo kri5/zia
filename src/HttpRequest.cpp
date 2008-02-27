@@ -34,6 +34,11 @@ void            HttpRequest::appendUriArgument(std::string& key,
     this->_uriArguments[key] = value;
 }
 
+void            HttpRequest::appendBodyArgument(std::string& key,
+                                                std::string& value)
+{
+    this->_bodyArguments[key] = value;
+}
 
 void            HttpRequest::setProtocol(std::string& protocol)
 {
@@ -60,6 +65,11 @@ const std::map<HttpRequest::Option, std::string>&        HttpRequest::getOptions
     return this->_options;
 }
 
+std::string       HttpRequest::getOption(Option option)
+{
+    return this->_options[option];
+}
+
 const std::map<std::string, std::string>&   HttpRequest::getUriArguments()
 {
     return this->_uriArguments;
@@ -76,7 +86,6 @@ void            HttpRequest::print()
         = this->_uriArguments.begin();
     std::map<std::string, std::string>::iterator uriIte
         = this->_uriArguments.end();
-
 
     std::cout << "----- HttpRequest -----" << std::endl
         << "Command == " << this->_command << std::endl
@@ -96,6 +105,16 @@ void            HttpRequest::print()
     for (; it != ite; ++it)
         std::cout << "  option[" << (*it).first 
             << "] = " << (*it).second << std::endl;
-    std::cout << "-- End Option --" << std::endl
+    std::cout << "-- End Option --" << std::endl;
+
+    uriIt = this->_bodyArguments.begin();
+    uriIte = this->_bodyArguments.end();
+
+    std::cout << "---BodyArguments----" << std::endl;
+    for (; uriIt != uriIte; ++uriIt)
+        std::cout << "  option[" << (*uriIt).first
+            << "] = " << (*uriIt).second << std::endl;
+
+    std::cout << "----EndBodyArgts----" << std::endl
         << "----- End HttpResponse -----" << std::endl;
 }

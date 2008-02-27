@@ -35,10 +35,12 @@ class HttpRequest
         void                                        setProtocol(std::string&);
         void                                        appendOption(Option, std::string&);
         void                                        appendUriArgument(std::string&, std::string&);
+        void                                        appendBodyArgument(std::string&, std::string&);
         HttpRequest::Command                        getCommand();
         const std::string&                          getUri();
         const std::string&                          getProtocol();
         const std::map<Option, std::string>&        getOptions();
+        std::string                          getOption(Option);
         const std::map<std::string, std::string>&   getUriArguments(); 
         void                                        print();
 
@@ -46,6 +48,7 @@ class HttpRequest
         Command                                     _command;
         std::map<Option, std::string>               _options;
         std::map<std::string, std::string>          _uriArguments;
+        std::map<std::string, std::string>          _bodyArguments;
         std::string                                 _uri;
         std::string                                 _protocol;
 };

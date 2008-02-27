@@ -41,16 +41,16 @@ void        HttpParser::parse()
             this->_isFirstLine = false;
         else
             this->_isValid = false;
-        std::cout << "firstLine" << std::endl;
     }
     if (this->_isValid)
 	{
-        std::cout << "parsing option header" << std::endl;
         while (!this->isEnd() && this->parseOptions())
 			;
+
+        if (this->_isDone
+            && this->_request->getCommand() == HttpRequest::Post)
+            this->parseBody();
 	}
-    std::cout << "endParsing" << std::endl;
-    std::cout << "done == " << this->done() << std::endl;
     this->flush();
 }
 
@@ -180,6 +180,60 @@ bool        HttpParser::parseUri()
     return false;
 }
 
+/**
+ *  Parses the body of the request
+ *  if there's one.
+ * */
+
+void        HttpParser::parseBody()
+{
+    std::string l;
+
+    l = this->_request->getOption
+        (HttpRequest::ContentLength);
+    if (l.length())
+        this->parseBodyArgument();
+}
+
+/**
+ *  Parses all body argument
+ *  and put them in the HttpRequest
+ *  object
+ * */
+
+bool        HttpParser::parseBodyArgument()
+{
+    std::string key;
+    std::string value;
+
+    if (this->readBodyParam(key, value))
+    {
+        this->_request->appendBodyArgument(key, value);
+        while (this->peekIfEqual('&')
+                && this->readBodyParam(key, value))
+        {
+            this->_request->appendBodyArgument(key, value);
+        }
+    }
+    return true;
+}
+
+/**
+ *  Parses a single key => value
+ *  pair of the body
+ * */
+
+bool        HttpParser::readBodyParam(std::string& key,
+                                      std::string& value)
+{
+    this->readAnythingBut("&=\r\n", key);
+    if (this->peekIfEqual('='))
+    {
+        this->readAnythingBut("&\r\n", value);
+        return true;
+    }
+    return false;
+}
 
 /**
  *  Parses a key => value pair
@@ -210,7 +264,6 @@ bool        HttpParser::parseUriArgument()
     }
     return true;
 }
-
 	// URI_Param ::= [ #paramIdentifier '=' #paramIdentifier ]
 	// paramIdentifier ::= [#idenfifier | #integer | #double 
     // | "!@$%^&*().<>/\[]{}\"'" | #urlEncodedChar ]
@@ -279,15 +332,12 @@ bool        HttpParser::parseOptionGeneric()
     std::string tmp;
 
     this->dump();
-    std::cout << "genOption0" << std::endl;
     this->saveContextPub();
     if (this->readAnythingBut(":"))
     {
-        std::cout << "rc == " << this->readChar() << std::endl;
         if (this->peekIfEqual(":"))
         {
             this->readUntilEndOfLine(tmp);
-            std::cout << "tmp == " << tmp << std::endl;
             return true;
         }
     }
