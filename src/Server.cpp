@@ -11,10 +11,10 @@
 
 #include "MemoryManager.hpp"
 
-Server::Server(const std::map<const NetworkID*, std::vector<Vhost*> >& toBind) : _toBind(toBind)
+Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toBind) : _toBind(toBind)
 {
-	std::map<const NetworkID*, std::vector<Vhost*> >::const_iterator		it = this->_toBind.begin();
-	std::map<const NetworkID*, std::vector<Vhost*> >::const_iterator		end = this->_toBind.end();
+	std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		it = this->_toBind.begin();
+	std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		end = this->_toBind.end();
 
 	_sockets.clear();
 	_maxFd = 0;

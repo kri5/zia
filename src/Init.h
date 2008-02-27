@@ -19,7 +19,7 @@ class Init
 		~Init();
 
 		int     start();
-		const std::map<const NetworkID*, std::vector<Vhost*> >&		getBindList();
+		const std::map<const NetworkID*, std::vector<const Vhost*> >&		getBindList();
 	private:
 		void    		readCommandLine();
 		void    		readConfiguration(const std::string fileName = "zia.conf", Config* cfg = NULL);
@@ -36,7 +36,7 @@ class Init
 
 		Config*											_conf;
 		std::list<Vhost*>								_vhosts;
-		std::map<const NetworkID*, std::vector<Vhost*> >		_bindList;
+		std::map<const NetworkID*, std::vector<const Vhost*> >		_bindList;
 
 		int     _argc;
 		char**  _argv;  

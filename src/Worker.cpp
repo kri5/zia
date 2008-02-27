@@ -2,7 +2,7 @@
 #include "Worker.h"
 
 /// Launch a new thread that will handle the new client connection
-void          Worker::create(ClientSocket& socket, const std::vector<Vhost*>& vhosts)
+void          Worker::create(ClientSocket& socket, const std::vector<const Vhost*>& vhosts)
 {
     (new Worker(socket, vhosts))->run();
 }
@@ -38,7 +38,7 @@ void          Worker::code()
             parser.parse();
         }
         parser.getRequest()->print();
-        
+		Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
         HttpRequest* req = parser.getRequest();
         sendResponse(this->request(*req));
     }

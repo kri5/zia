@@ -15,9 +15,9 @@ class MainSocket : public Socket, public IMainSocket
 {
 public:
 	// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
-	MainSocket(const NetworkID*, int, const std::vector<Vhost*>&);
+	MainSocket(const NetworkID*, int, const std::vector<const Vhost*>&);
 	
-    const std::vector<Vhost*>&   getAssociatedVhosts();
+    const std::vector<const Vhost*>&   getAssociatedVhosts();
 
 	/// Spawn a new socket for the new client.
 	ClientSocket *accept();
@@ -30,7 +30,7 @@ private:
 	
 
 	const NetworkID*			_netId;
-	const std::vector<Vhost*>&	_vhosts;
+	const std::vector<const Vhost*>&	_vhosts;
 };
 
 #endif //__MAINSOCKET_WIN32_H__

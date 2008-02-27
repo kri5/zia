@@ -3,7 +3,7 @@
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
 
-MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : Socket(), _netId(netId), _vhosts(vhosts)
+MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<const Vhost*>& vhosts) : Socket(), _netId(netId), _vhosts(vhosts)
 {
 	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (listenSocket == INVALID_SOCKET)
@@ -53,8 +53,7 @@ ClientSocket *MainSocket::accept()
 	return (ret);
 }
 
-const std::vector<Vhost*>&   MainSocket::getAssociatedVhosts()
+const std::vector<const Vhost*>&   MainSocket::getAssociatedVhosts()
 {
     return _vhosts;
 }
-
