@@ -46,29 +46,42 @@ void    Buffer::packBuffer(size_t begin)
     std::list<char*>::iterator      end = this->_buffers.end();
     std::list<char*>::iterator      next;
 
-    while (it != end)
+    if (begin == 0)
     {
-        next = it;
-        ++next;
-        memcpy((*it), &(*it)[begin], this->_size - begin);
-        if (next != end)
-            memcpy(&(*it)[this->_size - begin], (*next), begin);
-        else
+        delete[] this->_buffers.front();
+        this->_buffers.erase(this->_buffers.begin());
+    }
+    else
+    {
+        while (it != end)
         {
-            if (this->_bufPos < begin)
+            next = it;
+            ++next;
+            memcpy((*it), &(*it)[begin], this->_size - begin);
+            if (next != end)
             {
-                delete[] *it;
-                this->_buffers.erase(it);
-                this->_bufPos += this->_size - begin;
-                break ;
+                memcpy(&(*it)[this->_size - begin], (*next), begin);
             }
-            else if (this->_bufPos >= begin)
+            else
             {
-                memset((*it), 0, this->_size);
-                this->_bufPos = 0;
+                if (this->_bufPos < begin)
+                {
+                    delete[] *it;
+                    this->_buffers.erase(it);
+                    this->_bufPos += this->_size - begin;
+                    break ;
+                }
+                else if (this->_bufPos == begin)
+                {
+                    this->_bufPos = 0;
+                }
+                else
+                {
+                    memset(&(*it)[this->_bufPos - begin], 0, this->_size - (this->_bufPos - begin));
+                }
             }
+            ++it;
         }
-        ++it;
     }
     this->getEolPos();
 }
@@ -145,7 +158,9 @@ void        Buffer::getEolPos()
             else
             {
                 if ((*it)[i] == '\r')
+                {
                     backslashAire = true;
+                }
             } 
         }
     }

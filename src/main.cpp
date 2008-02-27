@@ -13,6 +13,7 @@
 #include "HttpParser.h"
 #include "Server.h"
 #include "Date.h"
+#include "Buffer.h"
 
 #include "MemoryManager.hpp"
 
@@ -22,8 +23,15 @@ int main(int argc, char **argv)
 	Server*		srv;
 
 	i.start();
-	srv = new Server(i.getBindList());
-
+    try
+    {
+	    srv = new Server(i.getBindList());
+    }
+    catch (ZException<Server>& ex)
+    {
+        Logger::getInstance() << Logger::Error << "Can't start server : " << ex.what() << Logger::Flush;
+        return EXIT_FAILURE;
+    }
 	srv->run();
 	//
 	Logger::deleteInstance(); 
@@ -46,5 +54,11 @@ int main(int argc, char **argv)
         std::cout << "->" << out << std::endl;
     //std::string* dt = new std::string("Date: Tue, 12 Nov 1994 23:12:31 GMT");
     //Date* t = new Date(*dt);*/
+//    Buffer      buff(6);
+//
+//    buff.push("abcdefghijk12345", 16);
+//    buff.dump();
+//    buff.get(5);
+//    buff.dump();
 }
 

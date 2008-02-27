@@ -17,6 +17,7 @@ class	Server
 			enum	Code
 			{
 				Unknown,
+                Bind,
 				Select
 			};
 			static const char* Msg[];

@@ -18,7 +18,9 @@ Server::Server(const std::map<const NetworkID*, std::vector<Vhost*> >& toBind) :
 
 	_sockets.clear();
 	_maxFd = 0;
-	while (it != end)
+	try
+    {
+    while (it != end)
 	{
 		MainSocket*		sock = new MainSocket(it->first, 16, it->second);
 #ifndef WIN32
@@ -27,6 +29,12 @@ Server::Server(const std::map<const NetworkID*, std::vector<Vhost*> >& toBind) :
 		_sockets.push_back(sock);
 		++it;
 	}
+    }
+    catch (ZException<IMainSocket>& ex)
+    {
+        Logger::getInstance() << Logger::Error << "Socket error : " << ex.what() << Logger::Flush;
+        throw ZException<Server>(INFO, Server::Error::Bind);
+    }
 }
 
 Server::~Server()

@@ -39,7 +39,7 @@ ZException<T>::ZException(int line, const char* file,
 		stream << "(" << msg << ")";
 	_msg = stream.str();
 
-	Logger::getInstance() << Logger::Error
+	Logger::getInstance() << Logger::Error << Logger::NoStdOut
 		<< "Exception thrown from file ("
 		<< _file << ") at line " << _line
 		<< " with message : " << _msg
@@ -55,13 +55,7 @@ ZException<T>::~ZException() throw()
 	template <class T>
 const char*             ZException<T>::what() const throw()
 {
-	std::ostringstream  er;
-
-	er << "Exception thrown from file (" << _file << ")"
-		<< " at line " << _line 
-		<< " with message : " << _msg << std::endl;
-
-	return er.str().c_str();
+	return this->_msg.c_str();
 }
 
 template <class T>

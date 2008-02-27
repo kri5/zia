@@ -11,7 +11,7 @@ MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhos
 {
 	listenSocket = ::socket(PF_INET, SOCK_STREAM, 0);
 	if (listenSocket == SOCKET_ERROR)
-		throw ZException<MainSocket>(INFO, MainSocket::Error::Create);
+		throw ZException<IMainSocket>(INFO, MainSocket::Error::Create);
 	bind(netId);
 	listen(queue);
 }
@@ -49,7 +49,7 @@ ClientSocket*	MainSocket::accept()
 	int acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == SOCKET_ERROR)
 	{
-		throw ZException<MainSocket>(INFO, MainSocket::Error::Accept);
+		throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept);
 	}
 	ClientSocket *ret = new ClientSocket(acceptSocket);
 	return (ret);

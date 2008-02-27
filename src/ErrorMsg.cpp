@@ -40,6 +40,7 @@ const char*	Port::Error::Msg[] = {
 
 const char* Server::Error::Msg[] = {
 	"Unknown error",
+    "Can't bind socket",
 	"Select error"
 };
 

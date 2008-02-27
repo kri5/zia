@@ -1,3 +1,4 @@
+#include "Buffer.h"
 #include "Worker.h"
 
 /// Launch a new thread that will handle the new client connection
@@ -12,20 +13,26 @@ void          Worker::code()
     Logger::getInstance() << Logger::Info << "Thread #" << this->pid() << " started." << Logger::Flush;
     try
     {
-        // Here we read and parse the data
-        std::string test("GET /index.htm HTTP/1.1\r\n");
-        std::string test2("Content-Length: 42\r\n");
-        std::string test3("Host: test.ssh.t0mb.org:8000\r\n\r\n");
-        std::string out;
-        HttpParser p;
-        p.feed(test);
-        p.parse();
-        p.feed(test2);
-        p.feed(test3);
-        p.parse();
-        HttpRequest* req = p.getRequest();
+        HttpParser      parser;
+        Buffer          buff(1024);
+        char            tmp[1024];
+        char*           line;
+        int             sockRet;
 
-        sendResponse(this->request(*req));
+        while (parser.done() == false)
+        {
+            sockRet = _socket.recv(tmp, 1024);
+            buff.push(tmp, sockRet);
+            while (buff.hasEOL())
+            {
+                line = buff.getLine();
+                std::cout << "line == " << line << std::endl;
+                parser.feed(line);
+                delete[] line;
+            }
+        }
+        parser.getRequest()->print();
+        //sendResponse(this->request(*req));
     }
     catch (HttpError& e) // HttpError thrown (404, 500, ...)
     {
