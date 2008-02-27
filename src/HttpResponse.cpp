@@ -52,7 +52,7 @@ HttpResponse::keyvalue     HttpResponse::ResponseStatus[] =
     { -1, NULL }
 };
 
-HttpResponse::HttpResponse()
+HttpResponse::HttpResponse() : _responseStatus(200)
 {
     ;
 }

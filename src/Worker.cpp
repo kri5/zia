@@ -85,30 +85,28 @@ HttpResponse&         Worker::request(HttpRequest& request)
     {
         throw HttpError(404, request); 
     }
-    std::stringstream ss;
-    ss << fileinfo->getSize();
-    std::ifstream data(full.c_str(), std::ios_base::binary);
 
-    _socket << "HTTP/1.1 200 OK\r\n";
-    _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
-    _socket << "Content-Length: " << ss.str() << "\r\n";
-    _socket << "Connection: close\r\n";
-    _socket << "Content-Type: text/html\r\n";
-    _socket << "\r\n";
-
-
-    char buf[4096];
-
-    while (data.good() && !data.eof())
+    if (!fileinfo->isDirectory())
     {
-        data.read(buf, sizeof(buf));
-        _socket.send(buf, data.gcount());
-    }
-    data.close();
+        std::cout << "[i] Giving a file" << std::endl;
+        std::string filepath("/home/etix/www/" + request.getUri());
+        std::ifstream* data = new std::ifstream(filepath.c_str(), std::ios_base::binary);
 
-    _socket.close(true);
-    delete fileinfo;
-    HttpResponse* toto = new HttpResponse();
-    return *toto;
+        std::istream* is = new std::istream(data->rdbuf());
+
+        HttpResponse* rep = new HttpResponse();
+        rep->setResponseStatus(200); // Optional because 200 is set by default
+        rep->setContentLength(fileinfo->getSize());
+        rep->setContent(is);
+        return *rep;
+    }
+
+    HttpResponse* rep = new HttpResponse();
+
+    if (fileinfo)
+        delete fileinfo;
+    return (*rep);
 }
+
+
 
