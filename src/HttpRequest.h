@@ -11,7 +11,7 @@ class HttpRequest
         {
             Get,
             Post,
-            Header,
+            Head,
             Put,
             Delete,
             Options,

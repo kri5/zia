@@ -36,16 +36,21 @@ void        HttpParser::parse()
     if (this->_isFirstLine)
     {
         if (this->parseGetCommand()
-            || this->parsePostCommand())
+            || this->parsePostCommand()
+            || this->parseHeadCommand())
             this->_isFirstLine = false;
         else
             this->_isValid = false;
+        std::cout << "firstLine" << std::endl;
     }
-    else if (this->_isValid)
+    if (this->_isValid)
 	{
-        while (this->parseOptions())
+        std::cout << "parsing option header" << std::endl;
+        while (!this->isEnd() && this->parseOptions())
 			;
 	}
+    std::cout << "endParsing" << std::endl;
+    std::cout << "done == " << this->done() << std::endl;
     this->flush();
 }
 
@@ -64,19 +69,54 @@ void        HttpParser::parse()
 
 bool        HttpParser::parseGetCommand()
 {
-    std::string      token;
-
-	if (this->peekIfEqual("GET")
-        && this->parseUri()
-        && this->parseProtocol()
-        && this->isEOL())
+    if (this->peekIfEqual("GET"))
     {
-        this->_request->setCommand(HttpRequest::Get);
-        return true;
+        if (this->parseUri())
+        {
+            if (this->parseProtocol())
+            {
+                if (this->isEOL())
+                {
+                    this->_request->setCommand(HttpRequest::Get);
+                    return true;
+                }
+            }
+        }
     }
     return false;
 }
 
+
+/**
+ *  Parses HEAD Command
+ *  
+ *  synopsis:
+ *      HEAD [path] Protocol\r\n
+ *
+ *  examples:
+ *      HEAD /pub/ HTTP/1.1
+ *      HEAD http://slashdot.org/ HTTP/1.1
+ *      HEAD HTTP/1.1
+ * */
+
+bool        HttpParser::parseHeadCommand()
+{
+    if (this->peekIfEqual("HEAD"))
+    {
+        if (this->parseUri())
+        {
+            if (this->parseProtocol())
+            {
+                if (this->isEOL())
+                {
+                    this->_request->setCommand(HttpRequest::Head);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
 
 /**
  *  Parses POST Command
@@ -171,13 +211,16 @@ bool        HttpParser::parseUriArgument()
     return true;
 }
 
-bool        HttpParser::readUriParam(std::string& key, std::string& value)
-{
 	// URI_Param ::= [ #paramIdentifier '=' #paramIdentifier ]
-	// paramIdentifier ::= [#idenfifier | #integer | #double | "!@$%^&*().<>/\[]{}\"'" | #urlEncodedChar ]
+	// paramIdentifier ::= [#idenfifier | #integer | #double 
+    // | "!@$%^&*().<>/\[]{}\"'" | #urlEncodedChar ]
 	// which is anything but "&" and "="
-	// if we made it to an ignore char, we return false (end of the URI params)
+	// if we made it to an ignore char, we return false 
+    // (end of the URI params)
 
+bool        HttpParser::readUriParam(std::string& key, 
+                                     std::string& value)
+{
 	if (this->isIgnore(this->readChar()))
 		return false;
 	if (this->readAnythingBut("#&=", key) && this->peekIfEqual('='))
@@ -224,16 +267,27 @@ bool        HttpParser::parseOptions()
     return false;
 }
 
+/**
+ *  This method just ignore a header option
+ *  that we dont recognize. If all parseOptionXxx
+ *  methods return false, this method is call to
+ *  skip the unknowed option
+ * */
+
 bool        HttpParser::parseOptionGeneric()
 {
     std::string tmp;
 
+    this->dump();
+    std::cout << "genOption0" << std::endl;
     this->saveContextPub();
-    if (this->readIdentifier(tmp))
+    if (this->readAnythingBut(":"))
     {
+        std::cout << "rc == " << this->readChar() << std::endl;
         if (this->peekIfEqual(":"))
         {
-            this->readUntilEndOfLine();
+            this->readUntilEndOfLine(tmp);
+            std::cout << "tmp == " << tmp << std::endl;
             return true;
         }
     }
@@ -435,21 +489,15 @@ bool        HttpParser::readHost(std::string& host)
 
     if (this->appendIdentifier(tmp))
     {
-        if (this->peekIfEqual(".", tmp))
-        {
-            if (this->appendIdentifier(tmp))
-            {
-                while (this->peekIfEqual(".", tmp)
-                        && this->appendIdentifier(tmp));
-                if (this->peekIfEqual(":", tmp))
-                {
-                    if (!this->appendInteger(tmp))
-                        return false;
-                }
-                host = tmp;
-                return true;
-            }
-        }
+         while (this->peekIfEqual(".", tmp)
+                 && this->appendIdentifier(tmp));
+         if (this->peekIfEqual(":", tmp))
+         {
+             if (!this->appendInteger(tmp))
+                 return false;
+         }
+         host = tmp;
+         return true;
     }
     return false;
 }
@@ -509,16 +557,18 @@ bool        HttpParser::readRelativeUri(std::string& uri)
 {
     std::string res;
 
+    this->setIgnore(false);
     if (this->peekIfEqual("/", res))
     {
-        this->setIgnore(false);
         while (this->appendIdentifier(res)
                || this->peekIfEqual(".", res)
-               || this->peekIfEqual("/", res));
+               || this->peekIfEqual("/", res))
+            ;
         uri = res;
         this->setIgnore(true);
         return true;
     }
+    this->setIgnore(true);
     return false;
 }
 

@@ -30,6 +30,7 @@ void          Worker::code()
                 parser.feed(line);
                 delete[] line;
             }
+            parser.parse();
         }
         parser.getRequest()->print();
         

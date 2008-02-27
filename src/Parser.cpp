@@ -19,6 +19,7 @@ Parser::Parser() :  _i(0), _bufferId(0),
 void		Parser::feed(const std::string& str)
 {
     this->_buffers.push_back(str);
+    this->_end = false;
 }
 
 bool		Parser::extendBuffer()
@@ -165,7 +166,10 @@ char	Parser::readChar()
             || this->_bufferId < 0)
         //TODO: Replace by our Exception System
 		if (!this->extendBuffer())
+        {
+            this->_end = true;
 			return 0;
+        }
 	c = this->_buffers[this->_bufferId][this->_i];
     if (this->_comment)
         this->skipComment(c);
@@ -541,6 +545,7 @@ bool	Parser::readAnythingBut(const std::string& forbiden)
 	char	c;
 
 	c = this->readChar();
+    std::cout << "pasrser c == " << c << " -- " << (int)c << std::endl;
 	if (forbiden.find(c) == std::string::npos
 			&& this->isIgnore(c) == false)
 	{
