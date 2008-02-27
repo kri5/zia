@@ -565,7 +565,9 @@ bool	Parser::readAnythingBut(const std::string& forbiden)
 
 void    Parser::dump() const
 {
-    std::cout << "buff == " << this->_buffers[this->_bufferId]
+    std::string t = std::string(this->_buffers[this->_bufferId]);
+
+    std::cout << "buff == " << t
         << std::endl << " i == " << this->_i << std::endl;
 }
 

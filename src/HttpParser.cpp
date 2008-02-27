@@ -38,12 +38,18 @@ void        HttpParser::parse()
         if (this->parseGetCommand()
             || this->parsePostCommand()
             || this->parseHeadCommand())
+        {
+            if (this->isEOL())
+                this->_isDone = true;
             this->_isFirstLine = false;
+        }
         else
             this->_isValid = false;
     }
     if (this->_isValid)
 	{
+        if (this->isEOL())
+            this->_isDone = true;
         while (!this->isEnd() && this->parseOptions())
 			;
 
@@ -331,7 +337,6 @@ bool        HttpParser::parseOptionGeneric()
 {
     std::string tmp;
 
-    this->dump();
     this->saveContextPub();
     if (this->readAnythingBut(":"))
     {
