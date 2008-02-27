@@ -14,7 +14,7 @@ class Config
 		Config(const Config&);
 		virtual ~Config();
 		/// Will return the param value as a string. May be overide by inherited classes.
-		virtual std::string								getParam(std::string) const;
+		virtual std::string						getParam(std::string) const;
 		/// Used to set a param, while parsing XML file.
 		void									setParam(std::string, std::string);
 	protected:

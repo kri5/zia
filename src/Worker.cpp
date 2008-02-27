@@ -21,12 +21,17 @@ void          Worker::code()
 
         while (parser.done() == false)
         {
-            sockRet = _socket.recv(tmp, 1024);
+            sockRet = this->_socket.recv(tmp, 1024);
+            std::cout << sockRet << std::endl;
+            if (sockRet <= 0)
+            {
+                this->_socket.close(false);
+                return ;
+            }
             buff.push(tmp, sockRet);
             while (buff.hasEOL())
             {
                 line = buff.getLine();
-                std::cout << "line == " << line << std::endl;
                 parser.feed(line);
                 delete[] line;
             }
