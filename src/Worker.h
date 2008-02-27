@@ -11,6 +11,8 @@
 #include "HttpError.h"
 #include "Logger.hpp"
 #include "File.h"
+#include "ZException.hpp"
+#include <exception>
 
 class Worker : public IThread
 {

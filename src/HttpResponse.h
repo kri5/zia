@@ -22,11 +22,20 @@ class   HttpResponse
 
         HttpResponse();
         ~HttpResponse();
+        
         void                            setProtocol(std::string&);
         void                            setResponseStatus(int status);
         void                            setResponseValue(std::string&);
         void                            appendOption(HttpResponse::Option, std::string&);
-        void                            setContent(std::iostream content);
+        void                            setContent(std::istream* content);
+        void                            setContentLength(unsigned int size);
+        
+        const std::string&              getProtocol();
+        int                             getResponseStatus();
+        const std::string&              getResponseValue();
+        std::istream&                   getContent();
+        unsigned int                    getContentLength();
+
         static keyvalue                 ResponseStatus[];
         static const char*              getResponseStatusMessage(int key);
 
@@ -35,6 +44,8 @@ class   HttpResponse
         int                             _responseStatus;
         std::string                     _responseValue;
         std::map<Option, std::string>   _options;
+        std::istream*                   _content;
+        unsigned int                    _contentLength;
 };
 
 #endif  /* !__HTTPRESPONSE_H__ */

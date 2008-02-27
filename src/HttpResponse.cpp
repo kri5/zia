@@ -62,7 +62,7 @@ HttpResponse::~HttpResponse()
     ;
 }
 
-const char*     HttpResponse::getResponseStatusMessage(int key)
+const char*             HttpResponse::getResponseStatusMessage(int key)
 {
     for (int i = 0; ResponseStatus[i].value; i++)
         if (ResponseStatus[i].key == key)
@@ -70,28 +70,58 @@ const char*     HttpResponse::getResponseStatusMessage(int key)
     return NULL;
 }
 
-void            HttpResponse::setProtocol(std::string& protocol)
+void                    HttpResponse::setProtocol(std::string& protocol)
 {
     this->_protocol = protocol;
 }
 
-void            HttpResponse::setResponseValue(std::string& value)
+void                    HttpResponse::setResponseValue(std::string& value)
 {
     this->_responseValue = value;
 }
 
-void            HttpResponse::appendOption(HttpResponse::Option opt, std::string& value)
+void                    HttpResponse::appendOption(HttpResponse::Option opt, std::string& value)
 {
     this->_options[opt] = value;
 }
 
-void            HttpResponse::setContent(std::iostream)
+void                    HttpResponse::setContent(std::istream* content)
 {
-    ;
+    this->_content = content;
 }
 
-void            HttpResponse::setResponseStatus(int status)
+void                    HttpResponse::setContentLength(unsigned int size)
 {
-   this->_responseStatus = status; 
+    this->_contentLength = size;
+}
+
+void                    HttpResponse::setResponseStatus(int status)
+{
+    this->_responseStatus = status; 
+}
+
+const std::string&      HttpResponse::getProtocol()
+{
+    return this->_protocol;
+}
+
+int                     HttpResponse::getResponseStatus()
+{
+    return this->_responseStatus;
+}
+
+const std::string&      HttpResponse::getResponseValue()
+{
+    return this->_responseValue;
+}
+
+std::istream&           HttpResponse::getContent()
+{
+    return *_content;
+}
+
+unsigned int            HttpResponse::getContentLength()
+{
+    return _contentLength;
 }
 

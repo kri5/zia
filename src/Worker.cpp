@@ -32,11 +32,13 @@ void          Worker::code()
             }
         }
         parser.getRequest()->print();
-        //sendResponse(this->request(*req));
+        
+        HttpRequest* req = parser.getRequest();
+        sendResponse(this->request(*req));
     }
     catch (HttpError& e) // HttpError thrown (404, 500, ...)
     {
-        // sendResponse(e.getResponse())
+        sendResponse(e.getResponse());
     }
     Logger::getInstance() << Logger::Info << "Thread #" << this->pid() << " ended." << Logger::Flush;
 }
@@ -45,19 +47,45 @@ void          Worker::code()
 /// and send it to the client through a write.
 void                  Worker::sendResponse(HttpResponse& response)
 {
-    response = response;
-    //TODO Sending the response through a blocking write (using stream ?)
+    std::istream& r = response.getContent();
+    std::stringstream ss;
+    ss << response.getContentLength();
+    _socket << "HTTP/1.1 200 OK\r\n";
+    _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
+    _socket << "Content-Length: " << ss.str() << "\r\n";
+    _socket << "Connection: close\r\n";
+    _socket << "Content-Type: text/html\r\n";
+    _socket << "\r\n";
+
+    char buf[1024];
+    while (r.good() && !r.eof())
+    {
+        r.read(buf, sizeof(buf));
+        _socket.send(buf, r.gcount());
+    }
+    _socket.close(true);
+    delete &r;
+    delete &response;
 }
 
 /// Transform a request into a response by loading the file the client want, etc...
 HttpResponse&         Worker::request(HttpRequest& request)
 {
     
-    std::string full = "~/www/" + request.getUri();
+    std::string full = "/home/etix/www/" + request.getUri();
 
-    File fileinfo(request.getUri(), "~/www/");
+    File* fileinfo;
+    try
+    {
+        //throw ZException<File>(INFO);
+        fileinfo = new File(request.getUri(), "/home/etix/www/");
+    }
+    catch (ZException<File>& e)
+    {
+        throw HttpError(404, request); 
+    }
     std::stringstream ss;
-    ss << fileinfo.getSize();
+    ss << fileinfo->getSize();
     std::ifstream data(full.c_str(), std::ios_base::binary);
 
     _socket << "HTTP/1.1 200 OK\r\n";
@@ -78,6 +106,7 @@ HttpResponse&         Worker::request(HttpRequest& request)
     data.close();
 
     _socket.close(true);
+    delete fileinfo;
     HttpResponse* toto = new HttpResponse();
     return *toto;
 }

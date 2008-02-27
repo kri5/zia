@@ -21,7 +21,7 @@ HttpResponse&       HttpError::getResponse() const
     HttpResponse* response = new HttpResponse();
     response->setResponseStatus(_status);
     
-    std::ostringstream* content = new std::ostringstream();
+    std::stringstream* content = new std::stringstream;
     *content << "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n";
     *content << "<html><head>\n";
     *content << "<title>Error " << _status << " " << _message << "</title>\n";
@@ -29,7 +29,9 @@ HttpResponse&       HttpError::getResponse() const
     *content << "<hr>\n<address>ZiaHTTPD Server at _url_ Port _port_</address>\n";
     *content << "</body></html>\n";
 
-    //response->setContent(*content);
+    std::istream* is = new std::istream(content->rdbuf());
+    response->setContent(is);
+    response->setContentLength(content->str().size());
     return *response;
 }
 
