@@ -4,7 +4,7 @@ DirectoryBrowser::DirectoryBrowser(HttpRequest& request) : _request(request)
 {
     // Read directory path from request
     // If it isn't a directory, throw 500
-    _fs = new FileSystem(request.getConfig()->getParam("DocumentRoot"));
+    _fs = new FileSystem(request.getConfig()->getParam("DocumentRoot") + request.getUri());
     _fileList = _fs->getFileList();
 }
 
@@ -28,7 +28,7 @@ HttpResponse&           DirectoryBrowser::getResponse()
    for (unsigned int i = 0; i < _fileList->size(); ++i)
    {
        IFile* f = (*_fileList)[i];
-       *content << "[   ]<a href=\"" << f->getFileName() << "\">" << f->getFileName() << "</a>     ";
+       *content << "[   ]<a href=\"" << _request.getUri() + "/" + f->getFileName() << "\">" << f->getFileName() << "</a>     ";
        *content << "19-Feb-2008 21:54   ";
        *content << "61K  \n";
    }
