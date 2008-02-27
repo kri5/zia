@@ -48,3 +48,8 @@ bool		File::isDirectory() const
 {
 	return ((this->_attr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY);
 }
+
+std::string		File::getExtension() const
+{
+	return this->_filename.substr(this->_filename.rfind("."));
+}

@@ -27,6 +27,7 @@ class File : public IFile
 		unsigned int	getSize() const;
 		ITime*			getModifDate();
 		bool            isDirectory() const;
+		std::string		getExtension() const;
 	private:
 		std::string					_filename;
 		WIN32_FILE_ATTRIBUTE_DATA	_attr;

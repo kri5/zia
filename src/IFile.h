@@ -14,6 +14,7 @@ class	IFile
         virtual bool                    isDirectory() const = 0;
 		virtual unsigned int			getSize() const = 0;
 		virtual ITime*					getModifDate() = 0;
+		virtual std::string				getExtension() const = 0;
 		//virtual std::string		getNextChunk() const = 0;
 };
 

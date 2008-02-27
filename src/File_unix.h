@@ -28,6 +28,7 @@ class File : public IFile
         bool            isDirectory() const;
 		unsigned int	getSize() const;
 		ITime*			getModifDate();
+		std::string		getExtension() const;
 	private:
 		std::string		_name;
 		struct stat		_stat;

@@ -50,3 +50,7 @@ bool        File::isDirectory() const
     return S_ISDIR(this->_stat.st_mode);
 }
 
+std::string		File::getExtension() const
+{
+	return this->_filename.substr(this->_filename.rfind("."));
+}
