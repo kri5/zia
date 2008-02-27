@@ -81,14 +81,14 @@ void                  Worker::sendResponse(HttpResponse& response)
 /// Transform a request into a response by loading the file the client want, etc...
 HttpResponse&         Worker::request(HttpRequest& request)
 {
-    
-    std::string full = "/home/etix/www/" + request.getUri();
+    const Config* cfg = Vhost::getVhost(this->_vhosts, request.getOption(HttpRequest::Host));
+    std::string full = cfg->getParam("DocumentRoot") + request.getUri();
 
     File* fileinfo;
     try
     {
         //throw ZException<File>(INFO);
-        fileinfo = new File(request.getUri(), "/home/etix/www/");
+        fileinfo = new File(request.getUri(), cfg->getParam("DocumentRoot").c_str());
     }
     catch (ZException<File>& e)
     {
@@ -98,7 +98,7 @@ HttpResponse&         Worker::request(HttpRequest& request)
     if (!fileinfo->isDirectory())
     {
         std::cout << "[i] Giving a file" << std::endl;
-        std::string filepath("/home/etix/www/" + request.getUri());
+        std::string filepath(cfg->getParam("DocumentRoot") + request.getUri());
         std::ifstream* data = new std::ifstream(filepath.c_str(), std::ios_base::binary);
 
         std::istream* is = new std::istream(data->rdbuf());
