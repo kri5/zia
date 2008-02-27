@@ -20,6 +20,10 @@ HttpParser::HttpParser() :  _isFirstArgument(true),
 }
 
 
+HttpParser::~HttpParser()
+{
+    delete _request;
+}
 
 /**
  *  tries to parse any implemented
@@ -196,32 +200,44 @@ bool        HttpParser::readUriParam(std::string& key, std::string& value)
 
 bool        HttpParser::parseOptions()
 {
-	//if (this->parseOption("Host", HttpRequest::From)
-	//	|| this->parseOption("Content-Length", HttpRequest::ContentLength)
-	//	|| this->parseOption("From", HttpRequest::From)
-	//	|| this->parseOption("User-Agent", HttpRequest::UserAgent)
-	//	|| this->parseOption("Content-Type", HttpRequest::ContentType)
-	//	|| this->parseOption("Date", HttpRequest::Date))
-    //    return true;
-	//std::cout << "Option return false" << std::endl;
-    //return false;
-
     if (this->parseOptionHost()
         || this->parseOptionFrom()
         || this->parseOptionContentLength()
         || this->parseOptionDate()
         || this->parseOptionContentType()
-        || this->parseOptionUserAgent())
+        || this->parseOptionUserAgent()
+        || this->parseOptionGeneric())
     {
         if (this->isEOL())
         {
             if (this->isEOL())
+            {
                 this->_isDone = true;
+                return false;
+            }
             return true;
         }
         else
             std::cout << " === ERROR === " << std::endl;
     }
+    this->readUntilEndOfLine();
+    return false;
+}
+
+bool        HttpParser::parseOptionGeneric()
+{
+    std::string tmp;
+
+    this->saveContextPub();
+    if (this->readIdentifier(tmp))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            this->readUntilEndOfLine();
+            return true;
+        }
+    }
+    this->restoreContextPub();
     return false;
 }
 

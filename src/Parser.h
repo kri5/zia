@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include "MemoryManager.hpp"
 
 class	Parser
 {
@@ -64,6 +65,7 @@ class	Parser
         void                saveContextPub();
         void                restoreContextPub();
 		void				feed(const std::string&);
+        void                dump() const;
 
 	protected:
 		bool						isIgnore(char c) const;

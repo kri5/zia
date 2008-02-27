@@ -8,7 +8,7 @@ class HttpParser : public Parser
 {
     public:
         HttpParser();
-        ~HttpParser() {};
+        ~HttpParser();
         void            parse();
         bool            done() const;
         HttpRequest*    getRequest() const;
@@ -21,13 +21,16 @@ class HttpParser : public Parser
         bool            parseProtocol();
 
         bool            parseOptions();
-		bool			parseOption(const std::string&, HttpRequest::Option);
+		bool			parseOption(const std::string&, 
+                                    HttpRequest::Option);
+
 		bool            parseOptionHost();
 	    bool            parseOptionContentLength();
 		bool            parseOptionFrom();
 		bool            parseOptionUserAgent();
 		bool            parseOptionContentType();
 		bool            parseOptionDate();
+        bool            parseOptionGeneric();
 
         bool            readEmailAddress(std::string&);
         bool            readHost(std::string&);

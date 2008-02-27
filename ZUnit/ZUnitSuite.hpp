@@ -17,8 +17,9 @@ class ZUnitSuite : public IZUnitSuite
 
     struct Test
     {
-      Test(const std::string& _name, 
-          TestMethod _method) : name(_name), method(_method){}
+      Test(const std::string& _name, TestMethod _method) 
+            : name(_name), method(_method){}
+
       std::string   name;
       TestMethod    method;
     };
@@ -126,11 +127,9 @@ class ZUnitSuite : public IZUnitSuite
  *  @param name the name of the suite
  * */
 template<class T>
-ZUnitSuite<T>::ZUnitSuite(const std::string& name)
+ZUnitSuite<T>::ZUnitSuite(const std::string& name) 
+                : _name(name), _out(0), _target(0)
 {
-  _name = name;
-  _out = 0;
-  _target = 0;
 }
 
 /**
