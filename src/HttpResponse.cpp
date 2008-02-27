@@ -75,11 +75,6 @@ void                    HttpResponse::setProtocol(std::string& protocol)
     this->_protocol = protocol;
 }
 
-void                    HttpResponse::setResponseValue(std::string& value)
-{
-    this->_responseValue = value;
-}
-
 void                    HttpResponse::appendOption(HttpResponse::Option opt, std::string& value)
 {
     this->_options[opt] = value;
@@ -110,9 +105,9 @@ int                     HttpResponse::getResponseStatus()
     return this->_responseStatus;
 }
 
-const std::string&      HttpResponse::getResponseValue()
+const std::string      HttpResponse::getResponseValue()
 {
-    return this->_responseValue;
+    return std::string(getResponseStatusMessage(this->_responseStatus));
 }
 
 std::istream&           HttpResponse::getContent()

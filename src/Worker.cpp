@@ -54,11 +54,13 @@ void          Worker::code()
 void                  Worker::sendResponse(HttpResponse& response)
 {
     std::istream& r = response.getContent();
-    std::stringstream ss;
-    ss << response.getContentLength();
-    _socket << "HTTP/1.1 200 OK\r\n";
+    std::stringstream status;
+    status << response.getResponseStatus();
+    std::stringstream len;
+    len << response.getContentLength();
+    _socket << "HTTP/1.1 " << status.str() << " " << response.getResponseValue() << "\r\n";
     _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
-    _socket << "Content-Length: " << ss.str() << "\r\n";
+    _socket << "Content-Length: " << len.str() << "\r\n";
     _socket << "Connection: close\r\n";
     _socket << "Content-Type: text/html\r\n";
     _socket << "\r\n";
