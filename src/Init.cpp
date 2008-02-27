@@ -72,11 +72,10 @@ void		Init::addVhost(ticpp::Element& node)
 
 void		Init::addMimeType(ticpp::Element& node, Config* cfg)
 {
-	std::string& fileExts = node.GetAttribute("file");
+	std::string fileExts = node.GetAttribute("file");
 
 	if (fileExts == "")
 		return ;
-	size_t	len = fileExts.length();
 	size_t	begin = 0;
 	size_t	end;
 	while ((end = fileExts.find(';', begin)) != std::string::npos)

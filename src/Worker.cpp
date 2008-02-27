@@ -36,6 +36,8 @@ void          Worker::code()
                 delete[] line;
             }
             parser.parse();
+            std::cout << "Done: " << parser.done() << std::endl;
+            std::cout << "Tmp: " << tmp << std::endl;
         }
         parser.getRequest()->print();
 		Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
@@ -105,14 +107,18 @@ HttpResponse&         Worker::request(HttpRequest& request)
         rep->setResponseStatus(200); // Optional because 200 is set by default
         rep->setContentLength(fileinfo->getSize());
         rep->setContent(is);
+        delete fileinfo;
         return *rep;
     }
+    else
+    {
+        std::cout << "[i] Giving a directory listing" << std::endl;
+        DirectoryBrowser d(request);
+        HttpResponse& rep = d.getResponse();
+        return rep;
+    }
 
-    HttpResponse* rep = new HttpResponse();
-
-    if (fileinfo)
-        delete fileinfo;
-    return (*rep);
+    throw HttpError(500, request);
 }
 
 

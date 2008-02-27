@@ -53,3 +53,4 @@ std::string	Config::getMimeType(std::string ext) const
 		return it->second;
 	return "text/plain";
 }
+

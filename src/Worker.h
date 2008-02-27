@@ -12,6 +12,7 @@
 #include "Logger.hpp"
 #include "File.h"
 #include "ZException.hpp"
+#include "DirectoryBrowser.h"
 #include <exception>
 
 class Worker : public IThread
