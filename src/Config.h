@@ -17,6 +17,9 @@ class Config
 		virtual std::string						getParam(std::string) const;
 		/// Used to set a param, while parsing XML file.
 		void									setParam(std::string, std::string);
+
+		void									addMimeType(std::string ext, std::string type);
+		std::string								getMimeType(std::string ext) const;
 	protected:
 		/// Default port values :
 		enum DefaultPort
@@ -28,6 +31,7 @@ class Config
 		int			getDefaultPort() const;
 		/// The param list, stocked as name => value
 		std::map<std::string, std::string>		_params;
+		std::map<std::string, std::string>		_mime;
 };
 
 #endif //CONFIG_H__

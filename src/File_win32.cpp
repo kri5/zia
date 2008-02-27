@@ -43,3 +43,8 @@ ITime*		File::getModifDate()
 		this->_time = new Time(this->_attr.ftLastWriteTime);
 	return this->_time;
 }
+
+bool		File::isDirectory() const
+{
+	return ((this->_attr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY);
+}

@@ -40,3 +40,16 @@ int		Config::getDefaultPort() const
 	return Config::_SslPort;
 }
 
+void	Config::addMimeType(std::string ext, std::string type)
+{
+	this->_mime[ext] = type;
+}
+
+std::string	Config::getMimeType(std::string ext) const
+{
+	std::map<std::string, std::string>::const_iterator	it = this->_mime.find(ext);
+
+	if (it != this->_mime.end())
+		return it->second;
+	return "text/plain";
+}

@@ -22,13 +22,15 @@ class Init
 		const std::map<const NetworkID*, std::vector<Vhost*> >&		getBindList();
 	private:
 		void    		readCommandLine();
-		void    		readConfiguration();
+		void    		readConfiguration(const std::string fileName = "zia.conf", Config* cfg = NULL);
 		void    		initSSL();
 		void    		initSockets();
 		void    		initThreads();
+		void			includeConfigFile(std::string fileName, Config* cfg);
 
 		void			parseConfigNode(ticpp::Node*, Config*);
 		void			addVhost(ticpp::Element&);
+		void			addMimeType(ticpp::Element& node, Config* cfg);
 		void			addWildcardVhosts();
 		void			addNonWildcardVhosts();
 

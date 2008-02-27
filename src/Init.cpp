@@ -1,5 +1,5 @@
 #include <iostream>
-#include <new>
+#include <string.h>
 
 #include "Init.h"
 #include "NetworkID.h"
@@ -31,7 +31,14 @@ Init::~Init()
 int         Init::start()
 {
     this->readCommandLine();
-    this->readConfiguration();
+	try
+	{
+		this->readConfiguration();
+	}
+	catch (ticpp::Exception& ex)
+	{
+		Logger::getInstance() << Logger::Warning << "Can't load configuration file" << ex.what() << Logger::Flush;
+	}
     this->initSSL();
     this->initSockets();
     this->initThreads();
@@ -63,17 +70,47 @@ void		Init::addVhost(ticpp::Element& node)
 	this->_vhosts.push_back(v);
 }
 
+void		Init::addMimeType(ticpp::Element& node, Config* cfg)
+{
+	std::string& fileExts = node.GetAttribute("file");
+
+	if (fileExts == "")
+		return ;
+	size_t	len = fileExts.length();
+	size_t	begin = 0;
+	size_t	end;
+	while ((end = fileExts.find(';', begin)) != std::string::npos)
+	{
+		cfg->addMimeType(fileExts.substr(begin, end - begin), node.GetText());
+		begin = end + 1;
+	}
+}
+
+void		Init::includeConfigFile(std::string fileName, Config* cfg)
+{
+	try
+	{
+		this->readConfiguration(fileName, cfg);
+	}
+	catch (ticpp::Exception& ex)
+	{
+		Logger::getInstance() << Logger::Warning << "Can't include file " << fileName << ex.what() << Logger::Flush;
+	}
+}
+
 void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 {
 	ticpp::Iterator<ticpp::Element>	it;
 
 	for (it = it.begin(node); it != it.end(); ++it)
 	{
-		//std::cout << *it << std::endl;
 		if (it->Value() == "VirtualHost")
-		{
 			this->addVhost(*it);
-		}
+		else if (it->Value() == "Include")
+			this->includeConfigFile(it->GetText(), cfg);
+		else if (it->Value() == "type")
+			this->addMimeType(*it, cfg);
+		// Generic parameters
 		else
 		{
 			cfg->setParam(it->Value(), it->GetText());
@@ -84,20 +121,15 @@ void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 }
 
 /// Read the XML configuration
-void        Init::readConfiguration()
+void        Init::readConfiguration(const std::string fileName, Config* cfg)
 {
-	try
-	{
-		ticpp::Document	doc("zia.conf");
-		doc.LoadFile();
+	if (!cfg)
+		cfg = this->_conf;
+	ticpp::Document	doc(fileName);
+	doc.LoadFile();
 
-		ticpp::Node* node =	doc.FirstChild();
-		this->parseConfigNode(node, this->_conf);
-	}
-	catch (ticpp::Exception& ex)
-	{
-		std::cerr << ex.what() << std::endl;
-	}
+	ticpp::Node* node =	doc.FirstChild();
+	this->parseConfigNode(node, cfg);
 }
 
 /// Initialize the SSL features
