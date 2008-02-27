@@ -42,6 +42,7 @@ void          Worker::code()
         parser.getRequest()->print();
 		const Config* cfg = Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
         HttpRequest* req = parser.getRequest();
+		req->setConfig(Vhost::getVhost(this->_vhosts, req->getOption(HttpRequest::Host)));
         sendResponse(this->request(*req));
     }
     catch (HttpError& e) // HttpError thrown (404, 500, ...)
@@ -81,14 +82,13 @@ void                  Worker::sendResponse(HttpResponse& response)
 /// Transform a request into a response by loading the file the client want, etc...
 HttpResponse&         Worker::request(HttpRequest& request)
 {
-    const Config* cfg = Vhost::getVhost(this->_vhosts, request.getOption(HttpRequest::Host));
-    std::string full = cfg->getParam("DocumentRoot") + request.getUri();
+    std::string full = request.getConfig()->getParam("DocumentRoot") + request.getUri();
 
     File* fileinfo;
     try
     {
         //throw ZException<File>(INFO);
-        fileinfo = new File(request.getUri(), cfg->getParam("DocumentRoot").c_str());
+        fileinfo = new File(request.getUri(), request.getConfig()->getParam("DocumentRoot").c_str());
     }
     catch (ZException<File>& e)
     {
@@ -98,7 +98,7 @@ HttpResponse&         Worker::request(HttpRequest& request)
     if (!fileinfo->isDirectory())
     {
         std::cout << "[i] Giving a file" << std::endl;
-        std::string filepath(cfg->getParam("DocumentRoot") + request.getUri());
+        std::string filepath(request.getConfig()->getParam("DocumentRoot") + request.getUri());
         std::ifstream* data = new std::ifstream(filepath.c_str(), std::ios_base::binary);
 
         std::istream* is = new std::istream(data->rdbuf());

@@ -22,6 +22,11 @@ void            HttpRequest::setUri(std::string& uri)
     this->_uri = uri;
 }
 
+void			HttpRequest::setConfig(const Config* cfg)
+{
+	this->_cfg = const_cast<Config*>(cfg);
+}
+
 void            HttpRequest::appendOption(Option key,
                                           std::string& value)
 {
@@ -68,6 +73,11 @@ const std::map<HttpRequest::Option, std::string>&        HttpRequest::getOptions
 std::string       HttpRequest::getOption(Option option)
 {
     return this->_options[option];
+}
+
+const Config*	HttpRequest::getConfig() const
+{
+	return this->_cfg;
 }
 
 const std::map<std::string, std::string>&   HttpRequest::getUriArguments()

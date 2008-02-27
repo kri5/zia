@@ -4,7 +4,7 @@ DirectoryBrowser::DirectoryBrowser(HttpRequest& request) : _request(request)
 {
     // Read directory path from request
     // If it isn't a directory, throw 500
-    _fs = new FileSystem("/home/etix/www/");
+    _fs = new FileSystem(request.getConfig()->getParam("DocumentRoot"));
     _fileList = _fs->getFileList();
 }
 

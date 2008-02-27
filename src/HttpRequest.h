@@ -4,6 +4,8 @@
 #include <map>
 #include <string>
 
+#include "Config.h"
+
 class HttpRequest
 {
     public:
@@ -33,6 +35,7 @@ class HttpRequest
         void                                        setCommand(Command);
         void                                        setUri(std::string&);
         void                                        setProtocol(std::string&);
+		void										setConfig(const Config* cfg);
         void                                        appendOption(Option, std::string&);
         void                                        appendUriArgument(std::string&, std::string&);
         void                                        appendBodyArgument(std::string&, std::string&);
@@ -40,7 +43,8 @@ class HttpRequest
         const std::string&                          getUri();
         const std::string&                          getProtocol();
         const std::map<Option, std::string>&        getOptions();
-        std::string                          getOption(Option);
+        std::string									getOption(Option);
+		const Config*								getConfig() const;
         const std::map<std::string, std::string>&   getUriArguments(); 
         void                                        print();
 
@@ -51,6 +55,7 @@ class HttpRequest
         std::map<std::string, std::string>          _bodyArguments;
         std::string                                 _uri;
         std::string                                 _protocol;
+		Config*										_cfg;
 };
 
 #endif /* !__HTTPREQUEST_H__ */
