@@ -104,7 +104,7 @@ HttpResponse&         Worker::request(HttpRequest& request)
         std::istream* is = new std::istream(data->rdbuf());
 
         HttpResponse* rep = new HttpResponse();
-        rep->setMimetype(RootConfig::getInstance().getConfig()->getMimeType(request.getUri()));
+        rep->setMimetype(RootConfig::getInstance().getConfig()->getMimeType(fileinfo->getExtension()));
         rep->setResponseStatus(200); // Optional because 200 is set by default
         rep->setContentLength(fileinfo->getSize());
         rep->setContent(is);

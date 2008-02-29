@@ -15,6 +15,7 @@ class RootConfig : public Singleton<RootConfig>
 			return this->_cfg;
 		}
 	private:
+        RootConfig() : _cfg(NULL){}
 		 Config*		_cfg;
 	friend class Singleton<RootConfig>;
 };

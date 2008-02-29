@@ -83,6 +83,7 @@ void		Init::addMimeType(ticpp::Element& node, Config* cfg)
 		cfg->addMimeType(fileExts.substr(begin, end - begin), node.GetText());
 		begin = end + 1;
 	}
+    cfg->addMimeType(fileExts.substr(begin, end - begin), node.GetText());
 }
 
 void		Init::includeConfigFile(std::string fileName, Config* cfg)

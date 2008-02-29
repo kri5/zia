@@ -34,6 +34,8 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 	srv->run();
+
+    delete srv;
 	////
 	//Logger::deleteInstance(); 
     //  For testing purpose (Parser)
