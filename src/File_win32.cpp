@@ -4,25 +4,28 @@
 
 #include "MemoryManager.hpp"
 
-File::File(const std::string& filename, const char* path) : _filename(filename), _time(NULL)
+File::File(const std::string& filename, const char* path) : _filename(filename), _time(NULL), _stream(NULL), _closed(false)
 {
-	std::string			filePath;
-
 	if (path)
 	{
-		filePath = path;
-		filePath += "/";
-		filePath += filename;
+		_filePath = path;
+		_filePath += "/";
+		_filePath += filename;
 	}
 	else
-		filePath = filename;
-	if (GetFileAttributesEx(filePath.c_str(), GetFileExInfoStandard, &_attr) == 0)
+		_filePath = filename;
+	if (GetFileAttributesEx(_filePath.c_str(), GetFileExInfoStandard, &_attr) == 0)
 		throw ZException<File>(INFO, File::Error::CantGetAttributes, "Probably because file does not exist");
 }
 
 File::~File()
 {
 	delete this->_time;
+	if (this->_stream)
+	{
+		this->close();
+		delete this->_stream;
+	}
 }
 
 std::string		File::getFileName() const
@@ -52,4 +55,34 @@ bool		File::isDirectory() const
 std::string		File::getExtension() const
 {
 	return this->_filename.substr(this->_filename.rfind("."));
+}
+
+void			File::open()
+{
+	this->_stream = new std::ifstream(this->_filePath.c_str(), std::ios_base::binary);
+}
+
+void			File::close()
+{
+	if (this->_closed == false && this->_stream)
+	{
+		this->_stream->close();
+		this->_closed = true;
+	}
+}
+
+std::streamsize	File::get(char *buff, size_t len)
+{
+	this->_stream->read(buff, len);
+	return this->_stream->gcount();
+}
+
+bool			File::good() const
+{
+	return this->_stream->good();
+}
+
+bool			File::eof() const
+{
+	return this->_stream->eof();
 }

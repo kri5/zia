@@ -28,10 +28,18 @@ class File : public IFile
 		ITime*			getModifDate();
 		bool            isDirectory() const;
 		std::string		getExtension() const;
+		void			open();
+		void			close();
+		std::streamsize	get(char* buff, size_t len);
+		bool			good() const;
+		bool			eof() const;
 	private:
 		std::string					_filename;
+		std::string					_filePath;
 		WIN32_FILE_ATTRIBUTE_DATA	_attr;
 		ITime*						_time;
+		std::ifstream*				_stream;
+		bool						_closed;
 };
 
 #endif //FILE_WIN32_H__
