@@ -17,12 +17,12 @@ SSLClientSocket::SSLClientSocket(int acceptedSocket) : ClientSocket(acceptedSock
   }
 
   // Load the certificate and the private key
-  if (SSL_CTX_use_certificate_file(ctx, "../ssl/public.crt", SSL_FILETYPE_PEM) < 1)
+  if (SSL_CTX_use_certificate_file(ctx, "ssl/server.crt", SSL_FILETYPE_PEM) < 1)
   {
     this->logError();
     return;
   }
-  if (SSL_CTX_use_PrivateKey_file(ctx, "../ssl/private.key", SSL_FILETYPE_PEM) < 1)
+  if (SSL_CTX_use_PrivateKey_file(ctx, "ssl/server.key.unsecure", SSL_FILETYPE_PEM) < 1)
   {
     this->logError();
     return;
@@ -149,12 +149,12 @@ void    SSLClientSocket::close(bool shutdown)
 /// Get and send errors (as strings) to the logger.
 void	SSLClientSocket::logError() const
 {
-  //unsigned long e;
-  //static char *buf;
+  unsigned long e;
+  static char *buf;
 
-  //e = ERR_get_error();
-  //buf = ERR_error_string(e, NULL);
-  //Logger::getInstance() << Logger::ERRORLVL << "SSL error: " << std::string(buf) << Logger::FLUSH;
+  e = ERR_get_error();
+  buf = ERR_error_string(e, NULL);
+  Logger::getInstance() << Logger::Error << "SSL " << std::string(buf) << Logger::Flush;
 }
 
 

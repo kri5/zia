@@ -52,6 +52,8 @@ ClientSocket*	MainSocket::accept()
 		throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
 	}
 	ClientSocket *ret = new ClientSocket(acceptSocket);
+    // In case of SSL
+    //ClientSocket *ret = new SSLClientSocket(acceptSocket);
 	return (ret);
 }
 

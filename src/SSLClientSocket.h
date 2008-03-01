@@ -12,10 +12,10 @@ class SSLClientSocket : public ClientSocket
 {
   public:
     SSLClientSocket(int acceptedSocket);
-    ~SSLClientSocket();
-    int     send(const char *buf, int length) const;
-    int     recv(char *buf, int length) const;
-    void    close(bool shutdown);
+    virtual ~SSLClientSocket();
+    virtual int     send(const char *buf, int length) const;
+    virtual int     recv(char *buf, int length) const;
+    virtual void    close(bool shutdown);
 
   protected:
     SSL_CTX* ctx;
