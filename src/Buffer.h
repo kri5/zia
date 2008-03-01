@@ -8,6 +8,7 @@ class Buffer
 {
     public:
         Buffer(size_t size);
+        ~Buffer();
 
         bool        hasEOL() const;
         char*       getLine();

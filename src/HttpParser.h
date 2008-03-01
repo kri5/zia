@@ -8,7 +8,7 @@ class HttpParser : public Parser
 {
     public:
         HttpParser();
-        ~HttpParser();
+        virtual ~HttpParser();
         void            parse();
         void            parseBody();
         bool            done() const;

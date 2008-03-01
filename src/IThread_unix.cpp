@@ -12,6 +12,8 @@ void			IThread::run()
 	// Creating an OS specific thread, using the static callback.
     if (pthread_create(&m_pid, NULL, IThread::dispatch, this) != 0)
     {
+        std::cout << "Errno == " << errno << std::endl;
+        std::cout << "EAGAIN == " << EAGAIN << " EINVAL == " << EINVAL << " EPERM == " << EPERM << std::endl;
         std::cerr << strerror(errno) << std::endl;
         exit(0);
     }

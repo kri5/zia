@@ -13,7 +13,7 @@ class	Parser
 	public:
 
 		Parser();
-		virtual				~Parser(){};
+		virtual				~Parser();
 		char				peekChar(); //will consume stream
         std::string         peekNChar(int);
 		char				readChar();

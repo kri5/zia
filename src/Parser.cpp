@@ -16,6 +16,11 @@ Parser::Parser() :  _i(0), _bufferId(0),
 		throw Exception("Can't read file");*/
 }
 
+Parser::~Parser()
+{
+    this->_buffers.clear();
+}
+
 void		Parser::feed(const std::string& str)
 {
     this->_buffers.push_back(str);

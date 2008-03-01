@@ -1,7 +1,6 @@
 #include "Buffer.h"
 #include "Worker.h"
 
-
 Worker::~Worker()
 {
     delete &(this->_socket);
@@ -10,7 +9,20 @@ Worker::~Worker()
 /// Launch a new thread that will handle the new client connection
 void          Worker::create(ClientSocket& socket, const std::vector<const Vhost*>& vhosts)
 {
-    (new Worker(socket, vhosts))->run();
+    Worker* w;
+    try
+    {
+        w = new Worker(socket, vhosts);
+    }
+    catch (std::exception& ex)
+    {
+        std::cerr << ex.what()<< std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown exception" << std::endl;
+    }
+    w->run();
 }
 
 /// Here we are in the first threaded method

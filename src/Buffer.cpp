@@ -9,6 +9,11 @@ Buffer::Buffer(size_t size) : _size(size), _eol(-1), _bufPos(0)
     _buffers.push_back(new char[size]);
 }
 
+Buffer::~Buffer()
+{
+    this->_buffers.clear();
+}
+
 bool    Buffer::hasEOL() const
 {
     return this->_eol >= 0;

@@ -17,7 +17,7 @@
 #include "DirectoryBrowser.h"
 #include "RootConfig.hpp"
 
-
+extern int nbthreads;
 class Worker : public IThread
 {
 public:
@@ -25,7 +25,7 @@ public:
 
 private:
     Worker(ClientSocket& socket, const std::vector<const Vhost*>& vhosts) : 
-		_socket(socket), _vhosts(vhosts) { }
+		_socket(socket), _vhosts(vhosts) {}
     virtual ~Worker(); 
     void                            code();
 

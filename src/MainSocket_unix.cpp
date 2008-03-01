@@ -29,6 +29,13 @@ void	MainSocket::bind(const NetworkID* netId) const
 	service.sin_addr.s_addr = netId->getAddress().getInAddr();
 	service.sin_port = netId->getPort().getHtonsPort();
 
+    int yes = 1;
+    if (setsockopt(this->listenSocket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
+    {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+
 	if (::bind(listenSocket, (struct sockaddr *)&service, sizeof(service)) == SOCKET_ERROR)
 	{
 		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Bind, strerror(errno));
