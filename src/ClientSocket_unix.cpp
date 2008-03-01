@@ -1,3 +1,5 @@
+#include <errno.h>
+
 #include "ClientSocket_unix.h"
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
@@ -17,7 +19,7 @@ int             ClientSocket::send(const char *buf, int length) const
 	int iResult = ::send(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
 	{
-		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Send);
+		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Send, strerror(errno));
 	}
 	return (iResult);
 }
@@ -45,7 +47,7 @@ int             ClientSocket::recv(char *buf, int length) const
 	int iResult = ::recv(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
 	{
-		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Recv);
+		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Recv, strerror(errno));
 	}
 	return (iResult);
 }

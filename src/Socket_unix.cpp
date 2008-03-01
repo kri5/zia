@@ -2,12 +2,13 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "Socket_unix.h"
 
 #include "MemoryManager.hpp"
 
-Socket::Socket()
+Socket::Socket() : _closed(false)
 {
 }
 
@@ -15,11 +16,17 @@ Socket::~Socket()
 {
 }
 
-void Socket::close(bool shutdown) const
+void Socket::close(bool shutdown)
 {
-	if (shutdown)
-		::shutdown(listenSocket, SHUT_RDWR);
-	::close(listenSocket);
+    if (this->_closed == false)
+    {
+	    if (shutdown)
+            if (::shutdown(listenSocket, SHUT_RDWR))
+                Logger::getInstance() << Logger::Error << "Can't shutdown socket : " << strerror(errno) << Logger::Flush;
+    	if (::close(listenSocket) < 0)
+            Logger::getInstance() << Logger::Error << "Can't close socket : " << strerror(errno) << Logger::Flush;
+        this->_closed = true;
+    }
 }
 
 int	Socket::getNativeSocket() const

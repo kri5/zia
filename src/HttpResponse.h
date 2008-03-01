@@ -4,6 +4,8 @@
 #include <iostream>
 #include <map>
 
+#include "IFile.h"
+
 class   HttpResponse
 {
     public:
@@ -26,6 +28,7 @@ class   HttpResponse
         void                            setProtocol(std::string&);
         void                            setResponseStatus(int status);
         void                            appendOption(HttpResponse::Option, std::string&);
+        void                            setContent(IFile* file);
         void                            setContent(std::istream* content);
         void                            setContentLength(unsigned int size);
         void                            setMimetype(std::string mimetype);
@@ -33,6 +36,7 @@ class   HttpResponse
         const std::string&              getProtocol();
         int                             getResponseStatus();
         const std::string               getResponseValue();
+        IFile&                          getFileContent();
         std::istream&                   getContent();
         unsigned int                    getContentLength();
         std::string                     getMimetype();
@@ -44,6 +48,7 @@ class   HttpResponse
         std::string                     _protocol;
         int                             _responseStatus;
         std::map<Option, std::string>   _options;
+        IFile*                          _fileContent;
         std::istream*                   _content;
         unsigned int                    _contentLength;
         std::string                     _mimetype;

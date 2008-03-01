@@ -80,6 +80,11 @@ void                    HttpResponse::appendOption(HttpResponse::Option opt, std
     this->_options[opt] = value;
 }
 
+void                    HttpResponse::setContent(IFile* content)
+{
+    this->_fileContent = content;
+}
+
 void                    HttpResponse::setContent(std::istream* content)
 {
     this->_content = content;
@@ -110,9 +115,14 @@ const std::string      HttpResponse::getResponseValue()
     return std::string(getResponseStatusMessage(this->_responseStatus));
 }
 
+IFile&                 HttpResponse::getFileContent()
+{
+    return *_fileContent;
+}
+
 std::istream&           HttpResponse::getContent()
 {
-    return *_content;
+    return *this->_content;
 }
 
 unsigned int            HttpResponse::getContentLength()

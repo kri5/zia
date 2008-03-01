@@ -140,7 +140,7 @@ int     SSLClientSocket::recv(char *buf, int length) const
   return iResult;
 }
 
-void    SSLClientSocket::close(bool shutdown) const
+void    SSLClientSocket::close(bool shutdown)
 {
   SSL_shutdown(ssl);
   ClientSocket::close(shutdown);

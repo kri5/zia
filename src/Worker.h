@@ -2,6 +2,8 @@
 #define __WORKER_H__
 
 #include <fstream>
+#include <exception>
+
 #include "IThread.h"
 #include "ClientSocket.h"
 #include "Vhost.h"
@@ -14,7 +16,7 @@
 #include "ZException.hpp"
 #include "DirectoryBrowser.h"
 #include "RootConfig.hpp"
-#include <exception>
+
 
 class Worker : public IThread
 {
@@ -24,12 +26,13 @@ public:
 private:
     Worker(ClientSocket& socket, const std::vector<const Vhost*>& vhosts) : 
 		_socket(socket), _vhosts(vhosts) { }
-    virtual ~Worker() { }
+    virtual ~Worker(); 
     void                            code();
 
 protected:
     void								sendResponse(HttpResponse& response);
-    virtual HttpResponse&				request(HttpRequest& request); // This function had to be moved away (in another class) for visibility 
+    void								sendResponseFile(HttpResponse& response);
+    void                                request(HttpRequest& request); // This function had to be moved away (in another class) for visibility 
     ClientSocket&						_socket;
     const std::vector<const Vhost*>&    _vhosts;
 };

@@ -18,13 +18,14 @@ public:
 	/// Close the socket.
 	virtual ~Socket();
 	/// Close the connection with auto-shutdown support.
-	virtual void 	close(bool shutdown) const;
+	virtual void 	close(bool shutdown);
 	int				getNativeSocket() const;
 	const ISocket&	operator>>(fd_set&) const;
     bool            isSet(const fd_set&) const;
 	int				getSocketValue() const;
 protected:
-	int listenSocket;
+	int             listenSocket;
+    bool            _closed;
 	static const int SOCKET_ERROR = -1;
 };
 

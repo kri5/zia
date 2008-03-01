@@ -5,7 +5,7 @@ class ISocket
 {
 	public:
 		virtual ~ISocket(){}
-		virtual void 			close(bool) const = 0;
+		virtual void 			close(bool) = 0;
 		virtual const ISocket&	operator>>(fd_set&) const = 0;
         virtual bool            isSet(const fd_set&) const = 0;
 };

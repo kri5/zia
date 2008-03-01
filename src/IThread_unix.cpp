@@ -1,3 +1,5 @@
+#include <errno.h>
+
 #include "IThread_unix.h"
 
 #include "MemoryManager.hpp"
@@ -8,7 +10,11 @@ void			IThread::run()
 	if (running) return;
 
 	// Creating an OS specific thread, using the static callback.
-	pthread_create(&m_pid, NULL, IThread::dispatch, this); 
+    if (pthread_create(&m_pid, NULL, IThread::dispatch, this) != 0)
+    {
+        std::cerr << strerror(errno) << std::endl;
+        exit(0);
+    }
 	running = true;
 }
 
@@ -18,6 +24,8 @@ void      IThread::stop()
 	if (!running) return;
 
 	// Stopping the thread.
-	pthread_cancel(m_pid);
+    pthread_cancel(m_pid);
+    //pthread_exit(NULL);
+    //pthread_stop()
 	running = false;
 }

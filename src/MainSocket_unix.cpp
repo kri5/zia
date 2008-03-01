@@ -49,7 +49,7 @@ ClientSocket*	MainSocket::accept()
 	int acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == SOCKET_ERROR)
 	{
-		throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept);
+		throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
 	}
 	ClientSocket *ret = new ClientSocket(acceptSocket);
 	return (ret);

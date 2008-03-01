@@ -1,6 +1,12 @@
 #include "Buffer.h"
 #include "Worker.h"
 
+
+Worker::~Worker()
+{
+    delete &(this->_socket);
+}
+
 /// Launch a new thread that will handle the new client connection
 void          Worker::create(ClientSocket& socket, const std::vector<const Vhost*>& vhosts)
 {
@@ -10,7 +16,7 @@ void          Worker::create(ClientSocket& socket, const std::vector<const Vhost
 /// Here we are in the first threaded method
 void          Worker::code()
 {
-    Logger::getInstance() << Logger::Info << "Thread #" << this->pid() << " started." << Logger::Flush;
+    Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Thread #" << this->pid() << " started." << Logger::Flush;
     try
     {
         HttpParser      parser;
@@ -22,7 +28,6 @@ void          Worker::code()
         while (parser.done() == false)
         {
             sockRet = this->_socket.recv(tmp, 1024);
-            std::cout << sockRet << std::endl;
             if (sockRet <= 0)
             {
                 this->_socket.close(false);
@@ -36,51 +41,78 @@ void          Worker::code()
                 delete[] line;
             }
             parser.parse();
-            std::cout << "Done: " << parser.done() << std::endl;
-            std::cout << "Tmp: " << tmp << std::endl;
         }
-        parser.getRequest()->print();
+        //parser.getRequest()->print();
 		//const Config* cfg = Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
         HttpRequest* req = parser.getRequest();
 		req->setConfig(Vhost::getVhost(this->_vhosts, req->getOption(HttpRequest::Host)));
-        sendResponse(this->request(*req));
+        this->request(*req);
     }
     catch (HttpError& e) // HttpError thrown (404, 500, ...)
     {
         sendResponse(e.getResponse());
     }
-    Logger::getInstance() << Logger::Info << "Thread #" << this->pid() << " ended." << Logger::Flush;
+    Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Thread #" << this->pid() << " ended." << Logger::Flush;
+}
+
+
+void                    Worker::sendResponse(HttpResponse& response)
+{
+   std::istream& r = response.getContent();
+   std::stringstream status;
+   status << response.getResponseStatus();
+   std::stringstream len;
+   len << response.getContentLength();
+   _socket << "HTTP/1.1 " << status.str() << " " << response.getResponseValue() << "\r\n";
+   _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
+   _socket << "Content-Length: " << len.str() << "\r\n";
+   _socket << "Connection: close\r\n";
+   _socket << "Content-Type: " << response.getMimetype() <<  "\r\n";
+   _socket << "\r\n";
+
+   char buf[1024];
+   while (r.good() && !r.eof())
+   {
+       r.read(buf, sizeof(buf));
+       _socket.send(buf, r.gcount());
+   }
+   _socket.close(true);
+   delete &r;
+   delete &response; 
 }
 
 /// Generate the data to be sent using the HttpResponse object
 /// and send it to the client through a write.
-void                  Worker::sendResponse(HttpResponse& response)
+void                  Worker::sendResponseFile(HttpResponse& response)
 {
-    std::istream& r = response.getContent();
-    std::stringstream status;
-    status << response.getResponseStatus();
-    std::stringstream len;
-    len << response.getContentLength();
-    _socket << "HTTP/1.1 " << status.str() << " " << response.getResponseValue() << "\r\n";
+    IFile& file = response.getFileContent();
+    std::ostringstream           str;
+
+    str << response.getResponseStatus();
+    _socket << "HTTP/1.1 " << str.str() << " " << response.getResponseValue() << "\r\n";
     _socket << "Server: ziahttpd/0.1 (Unix)  (Gentoo!)\r\n";
-    _socket << "Content-Length: " << len.str() << "\r\n";
+    str.str("");
+    str << file.getSize();
+    _socket << "Content-Length: " << str.str() << "\r\n";
     _socket << "Connection: close\r\n";
     _socket << "Content-Type: " << response.getMimetype() <<  "\r\n";
     _socket << "\r\n";
 
     char buf[1024];
-    while (r.good() && !r.eof())
+    std::streamsize     ret;
+    file.open();
+    while (file.good() && !file.eof())
     {
-        r.read(buf, sizeof(buf));
-        _socket.send(buf, r.gcount());
+        ret = file.get(buf, sizeof(buf));
+        _socket.send(buf, ret);
     }
     _socket.close(true);
-    delete &r;
+    file.close();
     delete &response;
 }
 
 /// Transform a request into a response by loading the file the client want, etc...
-HttpResponse&         Worker::request(HttpRequest& request)
+void         Worker::request(HttpRequest& request)
 {
     std::string full = request.getConfig()->getParam("DocumentRoot") + request.getUri();
 
@@ -97,26 +129,23 @@ HttpResponse&         Worker::request(HttpRequest& request)
 
     if (!fileinfo->isDirectory())
     {
-        std::cout << "[i] Giving a file" << std::endl;
         std::string filepath(request.getConfig()->getParam("DocumentRoot") + request.getUri());
-        std::ifstream* data = new std::ifstream(filepath.c_str(), std::ios_base::binary);
-
-        std::istream* is = new std::istream(data->rdbuf());
 
         HttpResponse* rep = new HttpResponse();
         rep->setMimetype(RootConfig::getInstance().getConfig()->getMimeType(fileinfo->getExtension()));
         rep->setResponseStatus(200); // Optional because 200 is set by default
         rep->setContentLength(fileinfo->getSize());
-        rep->setContent(is);
+        rep->setContent(fileinfo);
+        this->sendResponseFile(*rep);
         delete fileinfo;
-        return *rep;
+        return ;
     }
     else
     {
-        std::cout << "[i] Giving a directory listing" << std::endl;
         DirectoryBrowser d(request);
         HttpResponse& rep = d.getResponse();
-        return rep;
+        this->sendResponse(rep);
+        return ;
     }
 
     throw HttpError(500, request);

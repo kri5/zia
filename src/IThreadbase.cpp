@@ -12,6 +12,7 @@ void*			IThreadbase::dispatch(void* thread_obj)
 	((IThreadbase*)thread_obj)->code();
 
 	// When code return, kill the thread object.
+    ((IThreadbase*)thread_obj)->stop();
 	delete (IThreadbase*)thread_obj;
 	return (0);
 }

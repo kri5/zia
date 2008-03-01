@@ -28,11 +28,19 @@ class File : public IFile
         bool            isDirectory() const;
 		unsigned int	getSize() const;
 		ITime*			getModifDate();
+        std::streamsize get(char* buff, size_t len);
 		std::string		getExtension() const;
+        bool            good() const;
+        bool            eof() const;
+        void            open();
+        void            close();
 	private:
 		std::string		_name;
+        std::string     _filePath;
 		struct stat		_stat;
 		ITime*			_modifTime;
+        std::ifstream*  _stream;
+        bool            _closed;
 };
 
 #endif //FILE_H__

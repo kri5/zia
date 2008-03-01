@@ -7,6 +7,7 @@
 class IThread : public IThreadbase
 {
 public:
+    virtual ~IThread(){}
 	void			run();
 	void			stop();
 	virtual void	code() = 0;
