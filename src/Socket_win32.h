@@ -23,7 +23,7 @@ public:
 	~Socket();
 	
 	/// Close the connection with auto-shutdown support.
-	void 			close(bool shutdown) const;
+	void 			close(bool shutdown);
 	const ISocket&	operator>>(fd_set&) const;
 	bool			isSet(const fd_set&) const;
 

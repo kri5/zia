@@ -15,7 +15,7 @@ Socket::~Socket()
 	WSACleanup();
 }
 
-void Socket::close(bool shutdown) const
+void Socket::close(bool shutdown)
 {
 	if (shutdown)
 		::shutdown(listenSocket, SD_BOTH);
