@@ -1,7 +1,7 @@
 #ifndef IFILESYSTEM_H__
 # define IFILESYSTEM_H__
 
-#include <vector>
+#include <list>
 #include <string>
 
 #include "IFile.h"
@@ -11,7 +11,7 @@ class	IFileSystem
 	public:
 		virtual ~IFileSystem(){};
 		/// Will return files as a std::list.
-		virtual std::vector<IFile*>*		getFileList() = 0;
+		virtual std::list<IFile*>*		getFileList() = 0;
 		/// Will return true if the given file exists.
 		virtual bool						checkFileExistence(std::string) const = 0;
 		/// Will return true if given file has read rights.

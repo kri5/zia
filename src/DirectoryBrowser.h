@@ -1,7 +1,7 @@
 #ifndef __DIRECTORYBROWSER_H__
 #define __DIRECTORYBROWSER_H__
 
-#include <vector>
+#include <list>
 #include <sstream>
 #include "HttpRequest.h"
 #include "HttpResponse.h"
@@ -18,7 +18,7 @@ class DirectoryBrowser
     private:
         HttpRequest&            _request;
         FileSystem*             _fs;
-        std::vector<IFile*>*    _fileList;
+        std::list<IFile*>*      _fileList;
 };
 
 #endif // __DIRECTORYBROWSER_H__

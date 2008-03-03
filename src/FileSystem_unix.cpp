@@ -14,8 +14,8 @@ FileSystem::~FileSystem()
 {
 	if (this->_files != NULL)
 	{
-		std::vector<IFile*>::iterator		it = this->_files->begin();
-		std::vector<IFile*>::iterator		end = this->_files->end();
+		std::list<IFile*>::iterator		it = this->_files->begin();
+		std::list<IFile*>::iterator		end = this->_files->end();
 
 		while (it != end)
 		{
@@ -27,7 +27,7 @@ FileSystem::~FileSystem()
 	}
 }
 
-std::vector<IFile*>*		FileSystem::getFileList()
+std::list<IFile*>*		FileSystem::getFileList()
 {
 	if (this->_files == NULL)
 	{
@@ -39,7 +39,7 @@ std::vector<IFile*>*		FileSystem::getFileList()
 			closedir(dir);
 			throw ZException<FileSystem>(INFO, FileSystem::Error::OpenDir, strerror(errno));
 		}
-		this->_files = new std::vector<IFile*>;
+		this->_files = new std::list<IFile*>;
 		while ((file = readdir(dir)))
 		{
 			if (file->d_name[0] == '.' &&

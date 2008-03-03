@@ -10,8 +10,8 @@ DirectoryBrowser::DirectoryBrowser(HttpRequest& request) : _request(request)
 
 DirectoryBrowser::~DirectoryBrowser()
 {
-    std::vector<IFile*>::iterator       it = _fileList->begin();
-    std::vector<IFile*>::iterator       end = _fileList->end();
+    std::list<IFile*>::iterator       it = _fileList->begin();
+    std::list<IFile*>::iterator       end = _fileList->end();
 
     while (it != end)
     {
@@ -46,16 +46,19 @@ HttpResponse&           DirectoryBrowser::getResponse()
    *content << "<pre>Name                    Last modified      Size  Description<hr>\n";
    *content << "<a href=\"" << parent << "\">Parent Directory</a>                            -\n";
    
-   unsigned int     size = _fileList->size();
-   for (unsigned int i = 0; i < size; ++i)
+   std::list<IFile*>::iterator      it = this->_fileList->begin();
+   std::list<IFile*>::iterator      ite = this->_fileList->end();
+
+   while (it != ite)
    {
        std::string path;
        if (_request.getUri() != "/")
            path = _request.getUri() + "/";
-       IFile* f = (*_fileList)[i];
+       IFile* f = (*it);
        *content << "[   ]<a href=\"" << path + f->getFileName() << "\">" << f->getFileName() << "</a>     ";
        *content << f->getModifDate()->getStr() << "   ";
        *content << f->getSize() << "  \n";
+       ++it;
    }
    
    *content << "<hr></pre><address>ZiaHttpd Server at _HOST_ Port _PORT_</address>\n</body></html>";
