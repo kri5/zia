@@ -1,6 +1,8 @@
 #include "Buffer.h"
 #include "Worker.h"
 
+#include "MemoryManager.hpp"
+
 Worker::~Worker()
 {
     delete &(this->_socket);
@@ -28,7 +30,6 @@ void          Worker::create(ClientSocket& socket, const std::vector<const Vhost
 /// Here we are in the first threaded method
 void          Worker::code()
 {
-    Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Thread #" << this->pid() << " started." << Logger::Flush;
     try
     {
         HttpParser      parser;
@@ -64,7 +65,6 @@ void          Worker::code()
     {
         sendResponse(e.getResponse());
     }
-    Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Thread #" << this->pid() << " ended." << Logger::Flush;
 }
 
 
@@ -120,7 +120,6 @@ void                  Worker::sendResponseFile(HttpResponse& response)
     }
     _socket.close(true);
     file.close();
-    delete &response;
 }
 
 /// Transform a request into a response by loading the file the client want, etc...
@@ -149,6 +148,7 @@ void         Worker::request(HttpRequest& request)
         rep->setContentLength(fileinfo->getSize());
         rep->setContent(fileinfo);
         this->sendResponseFile(*rep);
+        delete rep;
         delete fileinfo;
         return ;
     }
@@ -157,6 +157,7 @@ void         Worker::request(HttpRequest& request)
         DirectoryBrowser d(request);
         HttpResponse& rep = d.getResponse();
         this->sendResponse(rep);
+        delete fileinfo;
         return ;
     }
 

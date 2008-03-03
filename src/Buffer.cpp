@@ -4,6 +4,8 @@
 
 #include "Buffer.h"
 
+#include "MemoryManager.hpp"
+
 Buffer::Buffer(size_t size) : _size(size), _eol(-1), _bufPos(0)
 {
     _buffers.push_back(new char[size]);
@@ -11,6 +13,15 @@ Buffer::Buffer(size_t size) : _size(size), _eol(-1), _bufPos(0)
 
 Buffer::~Buffer()
 {
+    //FIXME : memory allocation
+    std::list<char*>::iterator      it = this->_buffers.begin();
+    std::list<char*>::iterator      ite = this->_buffers.end();
+
+    while (it != ite)
+    {
+        delete[] *it;
+        ++it;
+    }
     this->_buffers.clear();
 }
 

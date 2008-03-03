@@ -55,11 +55,17 @@ int main(int argc, char **argv)
     //p->getRequest()->print();
     //std::string* dt = new std::string("Date: Tue, 12 Nov 1994 23:12:31 GMT");
     //Date* t = new Date(*dt);*/
-//    Buffer      buff(6);
+//    Buffer      *buff = new Buffer(6);
 //
-//    buff.push("abcdefghijk12345", 16);
-//    buff.dump();
-//    buff.get(5);
-//    buff.dump();
+//    buff->push("abcdefghijk12345", 16);
+//    buff->push("01234567890123456789012345678901234567890123456789", 50);
+//    char* line;
+//    while ((line = buff->getLine()))
+//    {
+//        delete[] line;
+//    }
+//    delete buff;
+//    //buff.dump();
+//    //buff.dump();
 }
 

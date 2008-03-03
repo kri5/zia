@@ -10,7 +10,15 @@ DirectoryBrowser::DirectoryBrowser(HttpRequest& request) : _request(request)
 
 DirectoryBrowser::~DirectoryBrowser()
 {
+    std::vector<IFile*>::iterator       it = _fileList->begin();
+    std::vector<IFile*>::iterator       end = _fileList->end();
 
+    while (it != end)
+    {
+        delete *it;
+        ++it;
+    }
+    this->_fileList->clear();
 }
 
 HttpResponse&           DirectoryBrowser::getResponse()
@@ -38,7 +46,8 @@ HttpResponse&           DirectoryBrowser::getResponse()
    *content << "<pre>Name                    Last modified      Size  Description<hr>\n";
    *content << "<a href=\"" << parent << "\">Parent Directory</a>                            -\n";
    
-   for (unsigned int i = 0; i < _fileList->size(); ++i)
+   unsigned int     size = _fileList->size();
+   for (unsigned int i = 0; i < size; ++i)
    {
        std::string path;
        if (_request.getUri() != "/")
@@ -54,6 +63,8 @@ HttpResponse&           DirectoryBrowser::getResponse()
    std::istream* is = new std::istream(content->rdbuf());
    response->setContent(is);
    response->setContentLength(content->str().size());
+    //FIXME : "is" can't be deleted.
+   //delete is;
    return *response;
 }
 
