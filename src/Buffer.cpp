@@ -120,6 +120,7 @@ char*   Buffer::get(size_t length)
             ++it;
             if (it == end)
             {
+                this->_readCount = nb;
                 res[nb] = 0;
                 return res;
             }
@@ -129,6 +130,7 @@ char*   Buffer::get(size_t length)
         ++i;
     }
     res[nb] = 0;
+    this->_readCount = nb;
     return res;
 }
 
@@ -214,6 +216,11 @@ void    Buffer::flush(size_t length)
     this->packBuffer(i);
 }
 
+void    Buffer::flush()
+{
+    this->flush(this->gcount());
+}
+
 void    Buffer::clear()
 {
     std::list<char*>::iterator      it = this->_buffers.begin();
@@ -227,4 +234,8 @@ void    Buffer::clear()
     this->_buffers.clear();
 }
 
+size_t  Buffer::gcount() const
+{
+    return this->_readCount;
+}
 

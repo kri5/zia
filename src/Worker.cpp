@@ -52,6 +52,7 @@ void          Worker::code()
                 line = buff.getLine();
                 parser.feed(line);
                 delete[] line;
+                buff.flush();
             }
             parser.parse();
         }

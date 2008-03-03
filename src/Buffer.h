@@ -17,12 +17,15 @@ class Buffer
         size_t      getSize() const;
         void        dump();
         void        flush(size_t);
+        void        flush();
         void        clear();
+        size_t      gcount() const;
     private:
         size_t              _size;
         int                 _eol;
         size_t              _bufPos;
         std::list<char*>    _buffers;
+        size_t              _readCount;
 
         void                packBuffer(size_t);
         void                getEolPos();
