@@ -117,13 +117,10 @@ char*   Buffer::get(size_t length)
     {
         if (i == this->_size)
         {
-            delete[] *it;
-            it = this->_buffers.erase(it);
-            end = this->_buffers.end();
+            ++it;
             if (it == end)
             {
                 res[nb] = 0;
-                this->_eol = -1;
                 return res;
             }
             i = 0;
@@ -132,7 +129,6 @@ char*   Buffer::get(size_t length)
         ++i;
     }
     res[nb] = 0;
-    this->packBuffer(i % this->_size);
     return res;
 }
 
@@ -192,4 +188,43 @@ char*   Buffer::getLine()
     }
     return NULL;
 }
+
+void    Buffer::flush(size_t length)
+{
+    std::list<char*>::iterator      it = this->_buffers.begin();
+    std::list<char*>::iterator      end = this->_buffers.end();
+    size_t                          nb;
+    size_t                          i;
+
+    for (nb = 0; it != end; )
+    {
+        for (i = 0; i < this->_size; ++i, ++nb)
+        {
+            if (nb == length)
+            {
+                this->packBuffer(i);
+                return ;
+            }
+            if (i == this->_size)
+                break ;
+        }
+        delete[] *it;
+        it = this->_buffers.erase(it);
+    }
+    this->packBuffer(i);
+}
+
+void    Buffer::clear()
+{
+    std::list<char*>::iterator      it = this->_buffers.begin();
+    std::list<char*>::iterator      end = this->_buffers.end();
+
+    while (it != end)
+    {
+        delete[] *it;
+        ++it;
+    }
+    this->_buffers.clear();
+}
+
 

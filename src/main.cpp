@@ -58,14 +58,20 @@ int main(int argc, char **argv)
 //    Buffer      *buff = new Buffer(6);
 //
 //    buff->push("abcdefghijk12345", 16);
-//    buff->push("01234567890123456789012345678901234567890123456789", 50);
+//    buff->push("0123456789abcdefghij012345678901234567890123456789", 50);
 //    char* line;
-//    while ((line = buff->getLine()))
-//    {
-//        delete[] line;
-//    }
+//    line = buff->get(17);
+//    std::cout << line << std::endl;
+//    delete[] line;
+//
+//    buff->flush(17);
+//
+//    line = buff->get(17);
+//    std::cout << line << std::endl;
+//    delete[] line;
+//    buff->clear();
+//    buff->dump();
 //    delete buff;
-//    //buff.dump();
 //    //buff.dump();
 }
 

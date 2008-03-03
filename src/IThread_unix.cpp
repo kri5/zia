@@ -18,6 +18,7 @@ void			IThread::run()
         std::cout << "Err == " << ret << std::endl;
         std::cout << "EAGAIN == " << EAGAIN << " EINVAL == " << EINVAL << " EPERM == " << EPERM << std::endl;
         std::cerr << strerror(errno) << std::endl;
+        sleep(60);
         exit(0);
     }
 	running = true;

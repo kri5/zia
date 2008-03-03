@@ -55,8 +55,6 @@ void          Worker::code()
             }
             parser.parse();
         }
-        //parser.getRequest()->print();
-		//const Config* cfg = Vhost::getVhost(this->_vhosts, parser.getRequest()->getOption(HttpRequest::Host));
         HttpRequest* req = parser.getRequest();
 		req->setConfig(Vhost::getVhost(this->_vhosts, req->getOption(HttpRequest::Host)));
         this->request(*req);

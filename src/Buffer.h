@@ -16,6 +16,8 @@ class Buffer
         void        push(char* data, size_t size);
         size_t      getSize() const;
         void        dump();
+        void        flush(size_t);
+        void        clear();
     private:
         size_t              _size;
         int                 _eol;
