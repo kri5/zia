@@ -38,7 +38,10 @@ int         Init::start()
 	catch (ticpp::Exception& ex)
 	{
 		Logger::getInstance() << Logger::Warning << "Can't load configuration file" << ex.what() << Logger::Flush;
+        return EXIT_FAILURE;
 	}
+    if (this->checkConfig() == false)
+        return EXIT_FAILURE;
     this->initSSL();
     this->initSockets();
     this->initThreads();
@@ -66,8 +69,20 @@ void		Init::addVhost(ticpp::Element& node)
 	}
 	Vhost*	v = new Vhost(NetworkID::factory(addr, port), this->_conf);
 	this->parseConfigNode(static_cast<ticpp::Node*>(&node), static_cast<Config*>(v));
-	//insertion dans la liste des vhosts.
-	this->_vhosts.push_back(v);
+    if (v->isSet("ServerName") == false)
+    {
+        Logger::getInstance() << Logger::Warning << "This vhost (" << addr << ':' << port << ") doesn't have a ServerName." << Zia::Newline
+            << "It will not be used" << Logger::Flush;
+        delete v;
+    }
+    else if (v->isSet("DocumentRoot") == false)
+    {
+        Logger::getInstance() << Logger::Warning << "This vhost (" << addr << ':' << port << ") doesn't have a DocumentRoot." << Zia::Newline
+            << "It will not be used" << Logger::Flush;
+        delete v;
+    }
+    else //insertion dans la liste des vhosts.
+	    this->_vhosts.push_back(v);
 }
 
 void		Init::addMimeType(ticpp::Element& node, Config* cfg)
@@ -228,4 +243,15 @@ const std::map<const NetworkID*, std::vector<const Vhost*> >&	Init::getBindList(
 const Config* Init::getRootConfig() const
 {
 	return this->_conf;
+}
+
+bool    Init::checkConfig() const
+{
+    //Feel free to add some :)
+    if (this->_conf->isSet("Listen") == false)
+    {
+        Logger::getInstance() << Logger::Error << "You must specify a port to listen to. Shuting down." << Logger::Flush;
+        return false;
+    }
+    return true;
 }

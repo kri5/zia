@@ -20,6 +20,7 @@ class Config
 
 		void									addMimeType(std::string ext, std::string type);
 		std::string								getMimeType(std::string ext) const;
+        bool                                    isSet(std::string name) const;
 	protected:
 		/// Default port values :
 		enum DefaultPort
@@ -29,6 +30,7 @@ class Config
 		};
 		/// Will return the default port, depending on UseSSL value.
 		int			getDefaultPort() const;
+        void        removeParameter(std::string name);
 		/// The param list, stocked as name => value
 		std::map<std::string, std::string>		_params;
 		std::map<std::string, std::string>		_mime;

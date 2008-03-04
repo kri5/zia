@@ -34,6 +34,7 @@ class Init
 		void			addMimeType(ticpp::Element& node, Config* cfg);
 		void			addWildcardVhosts();
 		void			addNonWildcardVhosts();
+        bool            checkConfig() const;
 
 		Config*													_conf;
 		std::list<Vhost*>										_vhosts;

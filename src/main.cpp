@@ -23,7 +23,8 @@ int main(int argc, char **argv)
 	Init		i(argc, argv);
 	Server*		srv;
 
-	i.start();
+	if (i.start() == EXIT_FAILURE)
+        return EXIT_FAILURE;
     try
     {
 	    srv = new Server(i.getBindList(), i.getRootConfig());

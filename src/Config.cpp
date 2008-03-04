@@ -12,8 +12,22 @@ Config::~Config()
 	_params.clear();
 }
 
-Config::Config(const Config& right) : _params(right._params), _mime(right._mime), _globalConf(false)
+Config::Config(const Config& right) : _mime(right._mime), _globalConf(false)
 {
+    //some parameters shouldn't be herited :
+    std::map<std::string, std::string>::const_iterator    it = right._params.begin();
+    std::map<std::string, std::string>::const_iterator    ite = right._params.end();
+
+    while (it != ite)
+    {
+        if (it->first != "ServerName"
+                && it->first != "Listen"
+                && it->first != "LogLevel"
+                && it->first != "UserDir"
+                && it->first != "ErrorLog") //to be continued
+            _params[it->first] = it->second;
+        ++it;
+    }
 }
 
 std::string		Config::getParam(std::string name) const
@@ -52,5 +66,15 @@ std::string	Config::getMimeType(std::string ext) const
 	if (it != this->_mime.end())
 		return it->second;
 	return "text/plain";
+}
+
+bool        Config::isSet(std::string name) const
+{
+    return (this->_params.find(name) != this->_params.end());
+}
+
+void        Config::removeParameter(std::string name)
+{
+    this->_params.erase(name);
 }
 
