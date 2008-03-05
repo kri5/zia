@@ -7,24 +7,29 @@
 // You don't wan't to include memorymanager here. Since the Logger is deleted after the MemoryManager (MManager uses the logger),
 // if you do so, there always be 2 memory leaks in the logger.
 
+Logger& Logger::getInstance()
+{
+    Logger& ret = Singleton<Logger>::getInstance();
+    ret._logMutex->lock();
+    return ret;
+}
+
 void  Logger::setLogLevel(Logger::LEVEL level)
 {
 	this->_level = level;
+    this->_logMutex->unlock();
 }
 
 void  Logger::setOutputFile(const char* file)
 {
     if (this->_file != NULL)
     {
-        MutexLock(this->_logMutex);
-        if (this->_file != NULL)
-        {
-            this->_file->close();
-            delete this->_file;
-            this->_file = NULL;
-        }
+        this->_file->close();
+        delete this->_file;
+        this->_file = NULL;
     }
     this->_file = new std::ofstream(file, std::ios_base::out | std::ios_base::trunc);
+    this->_logMutex->unlock();
 }
 
 void  Logger::setStdOut(bool value)
@@ -56,7 +61,6 @@ Logger&		Logger::operator<< (Logger::LEVEL lvl)
 
 void		Logger::flush()
 {
-    MutexLock(this->_logMutex);
 
 	this->_stream << Zia::Newline;
 	this->log(this->_nextDebugLevel, _stream.str());
@@ -65,6 +69,7 @@ void		Logger::flush()
 	this->_stream.clear();
 
 	this->_stdout = this->_defaultStdOut;
+    this->_logMutex->unlock();
 }
 
 Logger&		Logger::operator<< (Logger::UTIL val)
@@ -75,6 +80,8 @@ Logger&		Logger::operator<< (Logger::UTIL val)
 		this->setStdOut(false);
 	else if (val == PrintStdOut)
 		this->setStdOut(true);
+    else if (val == End)
+        this->_logMutex->unlock();
 	return *this;
 }
 

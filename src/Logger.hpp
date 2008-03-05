@@ -34,7 +34,8 @@ class Logger : public Singleton<Logger>
 			/// Passing this value to Logger will add a carriage return and then flush the output.
 			Flush,
 			NoStdOut,
-			PrintStdOut
+			PrintStdOut,
+            End
 		};
 	private:
 		Logger::LEVEL	    _level;
@@ -84,6 +85,7 @@ class Logger : public Singleton<Logger>
 		//		{
 		//			std::cout << "plonk" << std::endl;
 		//		}
+        static  Logger& getInstance();
 		Logger&	operator<<(UTIL);
 		Logger&	operator<<(LEVEL);
 		friend class Singleton<Logger>;
