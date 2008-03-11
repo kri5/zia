@@ -1,0 +1,17 @@
+Revision 175:
+
+Benchmark with 25 clients:
+Lifting the server siege...      done.
+Transactions:		      237066 hits
+Availability:		       99.96 %
+Elapsed time:		      242.36 secs
+Data transferred:	      437.25 MB
+Response time:		        0.02 secs
+Transaction rate:	      978.16 trans/sec
+Throughput:		        1.80 MB/sec
+Concurrency:		       23.89
+Successful transactions:      237066
+Failed transactions:	         100
+Longest transaction:	        3.02
+Shortest transaction:	        0.00
+
