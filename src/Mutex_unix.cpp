@@ -38,3 +38,7 @@ void		Mutex::unlock()
 	pthread_mutex_unlock(&mutex);
 }
 
+pthread_mutex_t&    Mutex::getMutex()
+{
+    return this->mutex;
+}

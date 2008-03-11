@@ -13,14 +13,17 @@ class Buffer
         bool        hasEOL() const;
         char*       getLine();
         char*       get(size_t length);
-        void        push(char* data, size_t size);
-        size_t      getSize() const;
+        void        push(const char* data, size_t size);
+        size_t      capacity() const;
+        size_t      size() const;
         void        dump();
         void        flush(size_t);
         void        flush();
         void        clear();
         size_t      gcount() const;
+        bool        empty() const;
     private:
+        size_t              _capacity;
         size_t              _size;
         int                 _eol;
         size_t              _bufPos;

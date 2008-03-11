@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string>
+#include <fstream>
 
 #include "ITime.h"
 #include "IFile.h"
@@ -12,18 +13,9 @@
 class File : public IFile
 {
 	public:
-		/// Error definitions for File class.
-		struct	Error
-		{
-			enum	Code
-			{
-				Unknown,
-				NoSuchFile
-			};
-			static const char*	Msg[];
-		};
 		File(std::string, const char* path = NULL);
 		~File();
+        Error::Code     getError() const;
 		std::string		getFileName() const;
         bool            isDirectory() const;
 		unsigned int	getSize() const;
@@ -34,13 +26,15 @@ class File : public IFile
         bool            eof() const;
         void            open();
         void            close();
+        std::iostream*  getStream();
 	private:
 		std::string		_name;
         std::string     _filePath;
 		struct stat		_stat;
 		ITime*			_modifTime;
-        std::ifstream*  _stream;
+        std::fstream*   _stream;
         bool            _closed;
+        Error::Code     _errorCode;
 };
 
 #endif //FILE_H__

@@ -12,7 +12,8 @@
 
 #include "MemoryManager.hpp"
 
-Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toBind, const Config* rootCfg) : _toBind(toBind)
+Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toBind, 
+                const Config* rootCfg, Pool* pool) : _toBind(toBind), _pool(pool)
 {
 	std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		it = this->_toBind.begin();
 	std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		end = this->_toBind.end();
@@ -91,7 +92,9 @@ void            Server::checkSockets(int nbSockets, const fd_set& fds) const
         if (this->_sockets[i]->isSet(fds))
         {
             Logger::getInstance() << Logger::Info << "Trying to accept new client" << Logger::Flush;
-            Worker::create(*this->_sockets[i]->accept(), this->_sockets[i]->getAssociatedVhosts());
+            //Worker::create(*this->_sockets[i]->accept(), this->_sockets[i]->getAssociatedVhosts());
+            this->_pool->addTask(new Task(this->_sockets[i]->accept(), 
+                                    this->_sockets[i]->getAssociatedVhosts()));
         }
     }
 }

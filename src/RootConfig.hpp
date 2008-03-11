@@ -2,6 +2,7 @@
 # define ROOT_CONFIG_HPP__
 
 #include "Singleton.hpp"
+#include "Config.h"
 
 class RootConfig : public Singleton<RootConfig>
 {

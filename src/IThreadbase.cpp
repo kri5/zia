@@ -2,19 +2,28 @@
 
 #include "MemoryManager.hpp"
 
-IThreadbase::IThreadbase() : running(false), m_pid(0L)
+IThreadbase::IThreadbase() : _running(false), m_pid(0L)
 {
 }
 
-void*			IThreadbase::dispatch(void* thread_obj)
+void*			IThreadbase::dispatch(void* threadParam)
 {
-    Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Thread #" << ((IThreadbase*)thread_obj)->pid() << " started." << Logger::Flush;
-	// Call the thread code
-	((IThreadbase*)thread_obj)->code();
+    IThreadbase*    ptr = static_cast<IThreadbase*>(threadParam);
+    Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Thread #" << ptr->pid() << " started." << Logger::Flush;
 
-    Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Thread #" << ((IThreadbase*)thread_obj)->pid() << " ended." << Logger::Flush;
+	// Call the thread code
+    ptr->code();
+
+    Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Thread #" << ptr->pid() << " ended." << Logger::Flush;
+
 	// When code return, kill the thread object.
-    ((IThreadbase*)thread_obj)->stop();
-	delete (IThreadbase*)thread_obj;
+    ptr->stop();
+	delete ptr;
 	return (0);
 }
+
+bool        IThreadbase::sleeping() const
+{
+    return this->_asleep;
+}
+

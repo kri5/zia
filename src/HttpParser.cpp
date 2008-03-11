@@ -11,18 +11,17 @@
  *  HttpRequest with all parameters inside
  * */
 
-HttpParser::HttpParser() :  _isFirstArgument(true),
+HttpParser::HttpParser(HttpRequest* req) : _request(req),
+                            _isFirstArgument(true),
                             _isFirstLine(true),
                             _isValid(true),
                             _isDone(false)
 {
-    _request = new HttpRequest();
 }
 
 
 HttpParser::~HttpParser()
 {
-    delete _request;
 }
 
 /**

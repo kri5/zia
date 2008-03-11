@@ -39,13 +39,13 @@ class HttpRequest
         void                                        appendOption(Option, std::string&);
         void                                        appendUriArgument(std::string&, std::string&);
         void                                        appendBodyArgument(std::string&, std::string&);
-        HttpRequest::Command                        getCommand();
-        const std::string&                          getUri();
-        const std::string&                          getProtocol();
-        const std::map<Option, std::string>&        getOptions();
-        std::string									getOption(Option);
+        HttpRequest::Command                        getCommand() const;
+        const std::string&                          getUri() const;
+        const std::string&                          getProtocol() const;
+        const std::map<Option, std::string>&        getOptions() const;
+        std::string									getOption(Option) const;
 		const Config*								getConfig() const;
-        const std::map<std::string, std::string>&   getUriArguments(); 
+        const std::map<std::string, std::string>&   getUriArguments() const; 
         bool                                        isUriRelative() const;
         void                                        print();
 

@@ -59,29 +59,32 @@ void            HttpRequest::setProtocol(std::string& protocol)
     this->_protocol = protocol;
 }
 
-HttpRequest::Command                        HttpRequest::getCommand()
+HttpRequest::Command                        HttpRequest::getCommand() const
 {
     return this->_command;
 }
 
-const std::string&                          HttpRequest::getUri()
+const std::string&                          HttpRequest::getUri() const
 {
     return this->_uri;
 }
 
-const std::string&                          HttpRequest::getProtocol()
+const std::string&                          HttpRequest::getProtocol() const
 {
     return this->_protocol;
 }
 
-const std::map<HttpRequest::Option, std::string>&        HttpRequest::getOptions()
+const std::map<HttpRequest::Option, std::string>&        HttpRequest::getOptions() const
 {
     return this->_options;
 }
 
-std::string       HttpRequest::getOption(Option option)
+std::string       HttpRequest::getOption(Option option) const
 {
-    return this->_options[option];
+    std::map<HttpRequest::Option, std::string>::const_iterator    it = this->_options.find(option);
+    if (it != this->_options.end())
+        return it->second;
+    return "";
 }
 
 const Config*	HttpRequest::getConfig() const
@@ -94,7 +97,7 @@ bool            HttpRequest::isUriRelative() const
     return this->_relativeUri;
 }
 
-const std::map<std::string, std::string>&   HttpRequest::getUriArguments()
+const std::map<std::string, std::string>&   HttpRequest::getUriArguments() const
 {
     return this->_uriArguments;
 }
@@ -143,3 +146,4 @@ void            HttpRequest::print()
     std::cout << "----EndBodyArgts----" << std::endl
         << "----- End HttpResponse -----" << std::endl;
 }
+

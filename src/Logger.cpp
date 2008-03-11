@@ -61,7 +61,6 @@ Logger&		Logger::operator<< (Logger::LEVEL lvl)
 
 void		Logger::flush()
 {
-
 	this->_stream << Zia::Newline;
 	this->log(this->_nextDebugLevel, _stream.str());
 	this->_file->flush();

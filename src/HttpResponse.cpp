@@ -1,6 +1,6 @@
 #include "HttpResponse.h"
 
-HttpResponse::keyvalue     HttpResponse::ResponseStatus[] =
+HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
 {
     // Informational
     { 100, "Continue" },
@@ -54,12 +54,10 @@ HttpResponse::keyvalue     HttpResponse::ResponseStatus[] =
 
 HttpResponse::HttpResponse() : _responseStatus(200)
 {
-    ;
 }
 
 HttpResponse::~HttpResponse()
 {
-    ;
 }
 
 const char*             HttpResponse::getResponseStatusMessage(int key)
@@ -75,24 +73,9 @@ void                    HttpResponse::setProtocol(std::string& protocol)
     this->_protocol = protocol;
 }
 
-void                    HttpResponse::appendOption(HttpResponse::Option opt, std::string& value)
+void                    HttpResponse::appendOption(std::string opt, std::string& value)
 {
     this->_options[opt] = value;
-}
-
-void                    HttpResponse::setContent(IFile* content)
-{
-    this->_fileContent = content;
-}
-
-void                    HttpResponse::setContent(std::istream* content)
-{
-    this->_content = content;
-}
-
-void                    HttpResponse::setContentLength(unsigned int size)
-{
-    this->_contentLength = size;
 }
 
 void                    HttpResponse::setResponseStatus(int status)
@@ -100,43 +83,23 @@ void                    HttpResponse::setResponseStatus(int status)
     this->_responseStatus = status; 
 }
 
-const std::string&      HttpResponse::getProtocol()
+const std::string&      HttpResponse::getProtocol() const
 {
     return this->_protocol;
 }
 
-int                     HttpResponse::getResponseStatus()
+int                     HttpResponse::getResponseStatus() const
 {
     return this->_responseStatus;
 }
 
-const std::string      HttpResponse::getResponseValue()
+const std::string      HttpResponse::getResponseValue() const
 {
     return std::string(getResponseStatusMessage(this->_responseStatus));
 }
 
-IFile&                 HttpResponse::getFileContent()
+const std::map<std::string, std::string>&   HttpResponse::getOptions() const
 {
-    return *_fileContent;
-}
-
-std::istream&           HttpResponse::getContent()
-{
-    return *this->_content;
-}
-
-unsigned int            HttpResponse::getContentLength()
-{
-    return _contentLength;
-}
-
-void                    HttpResponse::setMimetype(std::string mimetype)
-{
-    _mimetype = mimetype;
-}
-
-std::string             HttpResponse::getMimetype()
-{
-    return _mimetype;
+    return this->_options;
 }
 

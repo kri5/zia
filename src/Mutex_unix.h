@@ -10,9 +10,10 @@ class Mutex : public IMutex
 public:
 	Mutex();
 	~Mutex();
-	void			lock();
-	bool			trylock();
-	void			unlock();
+	void			    lock();
+	bool			    trylock();
+	void			    unlock();
+    pthread_mutex_t&    getMutex();
 protected:
 private:
 	pthread_mutex_t		mutex;

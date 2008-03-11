@@ -1,38 +1,65 @@
 #include <errno.h>
 
 #include "IThread_unix.h"
+#include "MutexLock.hpp"
 
 #include "MemoryManager.hpp"
 
-int     nb = 0;
+IThread::IThread()
+{
+    _mutex = new Mutex();
+    pthread_cond_init(&_cond, NULL);
+}
 
 void			IThread::run()
 {
 	// Don't start two threads into the same object
-	if (running) return;
+	if (_running) return;
 
 	// Creating an OS specific thread, using the static callback.
     int ret;
+	_running = true;
     if ((ret = pthread_create(&m_pid, NULL, IThread::dispatch, this)) != 0)
     {
         std::cout << "Err == " << ret << std::endl;
         std::cout << "EAGAIN == " << EAGAIN << " EINVAL == " << EINVAL << " EPERM == " << EPERM << std::endl;
         std::cerr << strerror(errno) << std::endl;
-        sleep(60);
+        //::sleep(60);
         exit(0);
     }
-	running = true;
 }
 
 void      IThread::stop()
 {
 	// Don't stop a thread already stopped.
-	if (!running) return;
+	if (!_running) return;
 
 	// Stopping the thread.
     pthread_cancel(m_pid);
     //pthread_exit(NULL);
     //pthread_stop()
-	running = false;
+	_running = false;
     //--nb;
+}
+
+void    IThread::sleep()
+{
+    this->_sleepScheduled = true;
+}
+
+void    IThread::awake()
+{
+    pthread_cond_signal(&(this->_cond));
+    this->_asleep = false;
+}
+
+void    IThread::checkSleep(bool forceSleep)
+{
+    if (forceSleep || this->_sleepScheduled)
+    {
+        MutexLock   lock(this->_mutex);
+        this->_asleep = true;
+        this->_sleepScheduled = false;
+        pthread_cond_wait(&(this->_cond), &(this->_mutex->getMutex()));
+    }
 }

@@ -78,3 +78,14 @@ void        Config::removeParameter(std::string name)
     this->_params.erase(name);
 }
 
+void        Config::dump() const
+{
+    std::map<std::string, std::string>::const_iterator it = this->_params.begin();
+    std::map<std::string, std::string>::const_iterator ite = this->_params.end();
+
+    while (it != ite)
+    {
+        std::cout << it->first << " => " << it->second << std::endl;
+        ++it;
+    }
+}

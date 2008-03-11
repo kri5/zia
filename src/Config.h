@@ -21,6 +21,7 @@ class Config
 		void									addMimeType(std::string ext, std::string type);
 		std::string								getMimeType(std::string ext) const;
         bool                                    isSet(std::string name) const;
+        void                                    dump() const;
 	protected:
 		/// Default port values :
 		enum DefaultPort

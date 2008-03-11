@@ -6,14 +6,13 @@
 
 #include "MemoryManager.hpp"
 
-Buffer::Buffer(size_t size) : _size(size), _eol(-1), _bufPos(0)
+Buffer::Buffer(size_t capacity) : _capacity(capacity), _eol(-1), _bufPos(0)
 {
-    _buffers.push_back(new char[size]);
+    _buffers.push_back(new char[capacity]);
 }
 
 Buffer::~Buffer()
 {
-    //FIXME : memory allocation
     std::list<char*>::iterator      it = this->_buffers.begin();
     std::list<char*>::iterator      ite = this->_buffers.end();
 
@@ -30,24 +29,30 @@ bool    Buffer::hasEOL() const
     return this->_eol >= 0;
 }
 
-size_t  Buffer::getSize() const
+size_t  Buffer::capacity() const
+{
+    return this->_capacity;
+}
+
+size_t  Buffer::size() const
 {
     return this->_size;
 }
 
-void    Buffer::push(char* data, size_t size)
+void    Buffer::push(const char* data, size_t size)
 {
     int  dataPos = 0;
     int  bakSize = size;
 
-    while (this->_bufPos + size > this->_size)
+    this->_size += size;
+    while (this->_bufPos + size > this->_capacity)
     {
         memcpy(this->_buffers.back() + this->_bufPos,
                 data + dataPos,
-                this->_size - this->_bufPos);
-        dataPos += this->_size - this->_bufPos;
-        this->_buffers.push_back(new char[this->_size]);
-        size -= this->_size - this->_bufPos;
+                this->_capacity - this->_bufPos);
+        dataPos += this->_capacity - this->_bufPos;
+        this->_buffers.push_back(new char[this->_capacity]);
+        size -= this->_capacity - this->_bufPos;
         this->_bufPos = 0;
     }
     memcpy(this->_buffers.back() + this->_bufPos,
@@ -74,10 +79,10 @@ void    Buffer::packBuffer(size_t begin)
         {
             next = it;
             ++next;
-            memcpy((*it), &(*it)[begin], this->_size - begin);
+            memcpy((*it), &(*it)[begin], this->_capacity - begin);
             if (next != end)
             {
-                memcpy(&(*it)[this->_size - begin], (*next), begin);
+                memcpy(&(*it)[this->_capacity - begin], (*next), begin);
             }
             else
             {
@@ -85,7 +90,7 @@ void    Buffer::packBuffer(size_t begin)
                 {
                     delete[] *it;
                     this->_buffers.erase(it);
-                    this->_bufPos += this->_size - begin;
+                    this->_bufPos += this->_capacity - begin;
                     break ;
                 }
                 else if (this->_bufPos == begin)
@@ -94,7 +99,7 @@ void    Buffer::packBuffer(size_t begin)
                 }
                 else
                 {
-                    memset(&(*it)[this->_bufPos - begin], 0, this->_size - (this->_bufPos - begin));
+                    memset(&(*it)[this->_bufPos - begin], 0, this->_capacity - (this->_bufPos - begin));
                 }
             }
             ++it;
@@ -115,7 +120,7 @@ char*   Buffer::get(size_t length)
     i = 0;
     for (nb = 0; nb < length; ++nb)
     {
-        if (i == this->_size)
+        if (i == this->_capacity)
         {
             ++it;
             if (it == end)
@@ -125,6 +130,12 @@ char*   Buffer::get(size_t length)
                 return res;
             }
             i = 0;
+        }
+        else if (nb == this->_size)
+        {
+            this->_readCount = nb;
+            res[nb] = 0;
+            return res;
         }
         res[nb] = (*it)[i];
         ++i;
@@ -141,7 +152,7 @@ void    Buffer::dump()
 
     for (it = this->_buffers.begin(); it != this->_buffers.end(); ++it)
     {
-        std::cout << "#" << i << " " << std::string(*it, this->_size) << '|' << std::endl;
+        std::cout << "#" << i << ">|" << std::string(*it, this->_capacity) << "|<" << std::endl;
         ++i;
     }
 }
@@ -156,9 +167,9 @@ void        Buffer::getEolPos()
 
     for (nb = 0; it != end; ++it)
     {
-        for (i = 0; i < this->_size; ++i, ++nb)
+        for (i = 0; i < this->_capacity; ++i, ++nb)
         {
-            if (i == this->_size)
+            if (i == this->_capacity)
                 break ;
             if (backslashAire == true)
             {
@@ -200,19 +211,21 @@ void    Buffer::flush(size_t length)
 
     for (nb = 0; it != end; )
     {
-        for (i = 0; i < this->_size; ++i, ++nb)
+        for (i = 0; i < this->_capacity; ++i, ++nb)
         {
             if (nb == length)
             {
                 this->packBuffer(i);
+                this->_size -= length;
                 return ;
             }
-            if (i == this->_size)
+            if (i == this->_capacity)
                 break ;
         }
         delete[] *it;
         it = this->_buffers.erase(it);
     }
+    this->_size = 0;
     this->packBuffer(i);
 }
 
@@ -232,6 +245,10 @@ void    Buffer::clear()
         ++it;
     }
     this->_buffers.clear();
+    this->_bufPos = 0;
+    this->_eol = -1;
+    _buffers.push_back(new char[this->_capacity]);
+    memset(*(this->_buffers.begin()), 0, this->_capacity);
 }
 
 size_t  Buffer::gcount() const
@@ -239,3 +256,7 @@ size_t  Buffer::gcount() const
     return this->_readCount;
 }
 
+bool    Buffer::empty() const
+{
+    return (this->_size == 0);
+}

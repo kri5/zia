@@ -1,10 +1,12 @@
+#include <unistd.h>
+
 #include "File_unix.h"
 #include "ZException.hpp"
 #include "Time.h"
 
 #include "MemoryManager.hpp"
 
-File::File(std::string filename, const char* path) : _name(filename), _modifTime(NULL), _stream(NULL), _closed(false)
+File::File(std::string filename, const char* path) : _name(filename), _modifTime(NULL), _stream(NULL), _closed(false), _errorCode(Error::None)
 {
 	if (path)
 	{
@@ -17,8 +19,12 @@ File::File(std::string filename, const char* path) : _name(filename), _modifTime
 
 	if (stat(_filePath.c_str(), &_stat) < 0)
 	{
-		throw ZException<File>(INFO, File::Error::NoSuchFile, filename.c_str());
+        _errorCode = Error::NoSuchFile;
 	}
+    else if (access(_filePath.c_str(), R_OK) < 0)
+    {
+        _errorCode = Error::PermissionDenied;
+    }
 }
 
 File::~File()
@@ -30,6 +36,11 @@ File::~File()
         this->close();
         delete this->_stream;
     }
+}
+
+IFile::Error::Code     File::getError() const
+{
+    return this->_errorCode;
 }
 
 std::string		File::getFileName() const
@@ -62,7 +73,7 @@ std::string		File::getExtension() const
 void                File::open()
 {
     if (this->_stream == NULL)
-        this->_stream = new std::ifstream(this->_filePath.c_str(), std::ios_base::binary);
+        this->_stream = new std::fstream(this->_filePath.c_str(), std::ios_base::in | std::ios_base::binary);
 }
 
 void                File::close()
@@ -76,18 +87,25 @@ void                File::close()
 
 std::streamsize      File::get(char* buff, size_t len)
 {
+    if (this->_stream == NULL)
+        return 0;
     this->_stream->read(buff, len);
-    //std::cout << len << " // " << ret << std::endl;
     return this->_stream->gcount();
 }
 
 bool                File::good() const
 {
-    return this->_stream->good();
+    return (this->_stream != NULL && this->_stream->good());
 }
 
 bool                File::eof() const
 {
-    return this->_stream->eof();
+    return (this->_stream == NULL || this->_stream->eof());
+}
+
+std::iostream*       File::getStream()
+{
+    this->open();
+    return this->_stream;
 }
 

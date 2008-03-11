@@ -9,6 +9,7 @@
 #include "MainSocket.h"
 #include "Vhost.h"
 #include "Config.h"
+#include "Pool.h"
 
 class	Server
 {
@@ -23,7 +24,7 @@ class	Server
 			};
 			static const char* Msg[];
 		};
-		Server(const std::map<const NetworkID*, std::vector<const Vhost*> >&, const Config* rootCfg);
+		Server(const std::map<const NetworkID*, std::vector<const Vhost*> >&, const Config* rootCfg, Pool* pool);
 		~Server();
 		void			run();
 
@@ -31,6 +32,7 @@ class	Server
 		int																_maxFd;
 		const std::map<const NetworkID*, std::vector<const Vhost*> >&	_toBind;
 		std::vector<MainSocket*>										_sockets;
+        Pool*                                                           _pool;
 		const Config*													_rootCfg;
 
         void    checkSockets(int nbSockets, const fd_set& fds) const;

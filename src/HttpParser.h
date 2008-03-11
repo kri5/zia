@@ -7,7 +7,7 @@
 class HttpParser : public Parser
 {
     public:
-        HttpParser();
+        HttpParser(HttpRequest*);
         virtual ~HttpParser();
         void            parse();
         void            parseBody();

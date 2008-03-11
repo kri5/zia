@@ -11,6 +11,7 @@
 #include "Logger.hpp"
 #include "Vhost.h"
 #include "Config.h"
+#include "Pool.h"
 
 class Init
 {
@@ -21,6 +22,7 @@ class Init
 		int     start();
 		const std::map<const NetworkID*, std::vector<const Vhost*> >&	getBindList() const;
 		const Config*													getRootConfig() const;
+        Pool*                                                           getPool() const;
 	private:
 		void    		readCommandLine();
 		void    		readConfiguration(const std::string fileName = "zia.conf", Config* cfg = NULL);
@@ -39,6 +41,7 @@ class Init
 		Config*													_conf;
 		std::list<Vhost*>										_vhosts;
 		std::map<const NetworkID*, std::vector<const Vhost*> >	_bindList;
+        Pool*                                                   _pool;
 
 		int     _argc;
 		char**  _argv;  

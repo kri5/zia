@@ -25,6 +25,7 @@ Init::~Init()
 	}
 	this->_vhosts.clear();
 	delete this->_conf;
+    delete this->_pool;
 }
 
 /// Run the sequential initialization
@@ -82,7 +83,9 @@ void		Init::addVhost(ticpp::Element& node)
         delete v;
     }
     else //insertion dans la liste des vhosts.
-	    this->_vhosts.push_back(v);
+    {
+        this->_vhosts.push_back(v);
+    }
 }
 
 void		Init::addMimeType(ticpp::Element& node, Config* cfg)
@@ -216,7 +219,6 @@ void		Init::addNonWildcardVhosts()
 		}
 		++it;
 	}
-	
 }
 
 /// Start the server sockets
@@ -232,7 +234,9 @@ void        Init::initSockets()
 /// Spawn the threads
 void        Init::initThreads()
 {
-
+    //FIXME : adapt the number of threads from the config.
+    _pool = new Pool(5);
+    _pool->init();
 }
 
 const std::map<const NetworkID*, std::vector<const Vhost*> >&	Init::getBindList() const
@@ -254,4 +258,9 @@ bool    Init::checkConfig() const
         return false;
     }
     return true;
+}
+
+Pool*   Init::getPool() const
+{
+    return this->_pool;
 }

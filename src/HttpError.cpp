@@ -1,37 +1,40 @@
+#include <sstream>
+
 #include "HttpError.h"
 
 HttpError::HttpError(int status, HttpRequest& request) : _request(request)
 {
     this->_status = status;
     this->_message = HttpResponse::getResponseStatusMessage(_status);
+    _content = new std::stringstream;
+}
+
+HttpError::HttpError(int status, HttpRequest* request) : _request(*request)
+{
+    this->_status = status;
+    this->_message = HttpResponse::getResponseStatusMessage(_status);
+    _content = new std::stringstream;
 }
 
 HttpError::~HttpError() throw()
 {
-
+    delete this->_content;
 }
 
-const char*         HttpError::what() const throw()
+std::iostream&      HttpError::getContent()
 {
-    return HttpResponse::getResponseStatusMessage(this->_status); 
+    this->_content->str("");
+    *this->_content << "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n";
+    *this->_content << "<html><head>\n";
+    *this->_content << "<title>Error " << _status << " " << _message << "</title>\n";
+    *this->_content << "</head><body>\n<h1><b>" << _status << "</b> " << _message << "</h1>\n";
+    *this->_content << "<hr>\n<address>ZiaHTTPD Server at _url_ Port _port_</address>\n";
+    *this->_content << "</body></html>\n";
+    this->appendOption("ContentLength", this->_content->str().size());
+    return *this->_content;
 }
 
-HttpResponse&       HttpError::getResponse() const
+bool                HttpError::completed() const
 {
-    HttpResponse* response = new HttpResponse();
-    response->setResponseStatus(_status);
-    
-    std::stringstream* content = new std::stringstream;
-    *content << "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n";
-    *content << "<html><head>\n";
-    *content << "<title>Error " << _status << " " << _message << "</title>\n";
-    *content << "</head><body>\n<h1><b>" << _status << "</b> " << _message << "</h1>\n";
-    *content << "<hr>\n<address>ZiaHTTPD Server at _url_ Port _port_</address>\n";
-    *content << "</body></html>\n";
-
-    std::istream* is = new std::istream(content->rdbuf());
-    response->setContent(is);
-    response->setContentLength(content->str().size());
-    return *response;
+    return this->_content->eof();
 }
-
