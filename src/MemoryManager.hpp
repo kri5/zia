@@ -9,6 +9,8 @@
 #include "zia.h"
 #include "Singleton.hpp"
 #include "Logger.hpp"
+#include "Mutex.h"
+#include "MutexLock.hpp"
 
 /// Will track memory leaks. Automaticly enabled if NDEBUG isn't set, and if the file is included at the top of the file. Must be last file included.
 class MemoryManager
@@ -33,6 +35,7 @@ class MemoryManager
 		/// used for blocks allocation.
 		void*	alloc(std::size_t size, const char* file, int line, bool isArray)
 		{
+            MutexLock(&(this->_mutex));
 			void*	ptr = malloc(size);
 			if (ptr == NULL)
 				throw std::bad_alloc();
@@ -44,13 +47,14 @@ class MemoryManager
 			newBlock.isArray = isArray;
 			this->_blocks[ptr] = newBlock;
 
-			//Logger::getInstance() << Logger::DEBUGMODE << "Allocation of " << size << " bytes, from " << file << " at line " << line << Logger::FLUSH;
+			//Logger::getInstance() << Logger::PrintStdOut << Logger::Debug << "Allocation of " << size << " bytes, from " << file << " at line " << line << Logger::Flush;
 			return ptr;
 		}
 
 		/// Will free a block, since delete is overloaded.
 		void	free(void* ptr, bool isArray)
 		{
+            MutexLock(&(this->_mutex));
 			std::map<void*, MemoryBlock>::iterator		it;
 
 			it = this->_blocks.find(ptr);
@@ -74,6 +78,7 @@ class MemoryManager
 		}
 		~MemoryManager()
 		{
+            MutexLock(&(this->_mutex));
 			if (this->_blocks.empty())
 			{
 				std::cout << "No memory leak detected." << std::endl;
@@ -95,6 +100,7 @@ class MemoryManager
 				this->_blocks.clear();
 			}
 		}
+        Mutex   _mutex;
 };
 
 /// Debug overloading of new
