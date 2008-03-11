@@ -23,10 +23,10 @@ public:
 	const ISocket&	operator>>(fd_set&) const;
     bool            isSet(const fd_set&) const;
 	int				getSocketValue() const;
+	static const int SOCKET_ERROR = -1;
 protected:
 	int             listenSocket;
     bool            _closed;
-	static const int SOCKET_ERROR = -1;
 };
 
 #endif

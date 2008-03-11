@@ -22,7 +22,7 @@ class Task
         bool            buildResponse();
         bool            sendResponse();
         void            sendError();
-        void            sendBuffer();
+        bool            sendBuffer();
 
         HttpRequest*    _req;
         HttpResponse*   _res;

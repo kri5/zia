@@ -47,6 +47,7 @@ void    Pool::addSleepingThread(IThread* thread)
 Task*   Pool::popTask()
 {
     MutexLock(this->_mutex);
+    std::cout << this->_tasks.size() << std::endl;
     if (this->_tasks.size() > 0)
     {
         Task* task = this->_tasks.front();

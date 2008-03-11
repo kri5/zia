@@ -16,11 +16,9 @@ ClientSocket::~ClientSocket()
 
 int             ClientSocket::send(const char *buf, int length) const
 {
-	int iResult = ::send(listenSocket, buf, length, 0);
+	int iResult = ::send(listenSocket, buf, length, MSG_NOSIGNAL);
 	if (iResult == SOCKET_ERROR)
-	{
-		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Send, strerror(errno));
-	}
+        Logger::getInstance() << Logger::Error << "Send error : " << strerror(errno) << Logger::Flush;
 	return (iResult);
 }
 
@@ -46,9 +44,7 @@ int             ClientSocket::recv(char *buf, int length) const
 {
 	int iResult = ::recv(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
-	{
-		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Recv, strerror(errno));
-	}
+        Logger::getInstance() << Logger::Error << "Receive error : " << strerror(errno) << Logger::Flush;
 	return (iResult);
 }
 

@@ -5,6 +5,7 @@
 #include <errno.h>
 
 #include "Socket_unix.h"
+#include "Logger.hpp"
 
 #include "MemoryManager.hpp"
 

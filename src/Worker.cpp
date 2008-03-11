@@ -22,19 +22,17 @@ void          Worker::code()
 {
     while (this->_running)
     {
-        if (this->_pool->empty())
+        Task* t = this->_pool->popTask();
+        if (t != NULL)
         {
-            //std::cout << "Worker : nothing left to do." << std::endl;
-            this->_pool->addSleepingThread(this);
-            this->checkSleep(true);
+            t->execute();
+            std::cout << "Task finished" << std::endl;
+            delete t;
         }
         else
         {
-            Task* t = this->_pool->popTask();
-            //std::cout << "Found task" << std::endl;
-            //std::cout << t << std::endl;
-            t->execute();
-            //std::cout << "ok" << std::endl;
+            this->_pool->addSleepingThread(this);
+            this->checkSleep(true);
         }
     }
 }

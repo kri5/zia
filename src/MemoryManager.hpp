@@ -1,6 +1,7 @@
 #ifndef MEMORYMANAGER_H__
 # define MEMORYMANAGER_H__
 
+#define NDEBUG
 #ifndef NDEBUG
 
 #include <map>

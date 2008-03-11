@@ -9,6 +9,7 @@
 Buffer::Buffer(size_t capacity) : _capacity(capacity), _eol(-1), _bufPos(0)
 {
     _buffers.push_back(new char[capacity]);
+    _size = 0;
 }
 
 Buffer::~Buffer()

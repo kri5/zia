@@ -1,4 +1,5 @@
 #include "IThreadbase.h"
+#include "Logger.hpp"
 
 #include "MemoryManager.hpp"
 

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Config.h"
 
 #include "MemoryManager.hpp"
@@ -89,3 +91,4 @@ void        Config::dump() const
         ++it;
     }
 }
+

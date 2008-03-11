@@ -6,7 +6,7 @@
 #include "HttpResponseDir.h"
 
 Task::Task(ClientSocket* clt, const std::vector<const Vhost*> vhosts) :
-    _socket(clt), _vhosts(vhosts)
+    _res(NULL), _socket(clt), _vhosts(vhosts)
 {
     _req = new HttpRequest();
     _readBuffer = new Buffer(1024);
@@ -23,6 +23,10 @@ Task::~Task()
 
     delete this->_req;
 
+    if (this->_res)
+        delete this->_res;
+    //FIXME
+    delete this->_socket;
     //selon le keep-alive : delete _socket;
 }
 
@@ -51,10 +55,7 @@ bool    Task::parseRequest()
     {
         sockRet = this->_socket->recv(tmp, 1024);
         if (sockRet <= 0)
-        {
-            this->_socket->close(false);
             return false;
-        }
         this->_readBuffer->push(tmp, sockRet);
         while (this->_readBuffer->hasEOL())
         {
@@ -116,8 +117,10 @@ bool    Task::sendResponse()
     }
     header << "\r\n";
     const std::string& str = header.str();
+    //this->_writeBuffer->clear();
     this->_writeBuffer->push(str.c_str(), str.length());
-    this->sendBuffer();
+    if (this->sendBuffer() == false)
+        return false;
     //From here, header is complete and send.
     std::iostream& stream = this->_res->getContent();
     char    buff[1024];
@@ -125,13 +128,14 @@ bool    Task::sendResponse()
     {
         stream.read(buff, sizeof(buff));
         this->_writeBuffer->push(buff, stream.gcount());
-        this->sendBuffer();
+        if (this->sendBuffer() == false)
+            return false;
     } while (this->_res->completed() == false);
-    this->_socket->close(true);
+    //this->_socket->close(true);
     return true;
 }
 
-void    Task::sendBuffer()
+bool        Task::sendBuffer()
 {
     char*   line;
     int     ret;
@@ -140,9 +144,15 @@ void    Task::sendBuffer()
     {
         line = this->_writeBuffer->get(1024);
         ret = this->_socket->send(line, this->_writeBuffer->gcount());
+        if (ret == Socket::SOCKET_ERROR)
+        {
+            delete[] line;
+            return false;
+        }
         this->_writeBuffer->flush(ret);
         delete[] line;
     }
     this->_writeBuffer->clear();
+    return true;
 }
 

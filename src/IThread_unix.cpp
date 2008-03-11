@@ -2,6 +2,7 @@
 
 #include "IThread_unix.h"
 #include "MutexLock.hpp"
+#include "Logger.hpp"
 
 #include "MemoryManager.hpp"
 
@@ -21,11 +22,8 @@ void			IThread::run()
 	_running = true;
     if ((ret = pthread_create(&m_pid, NULL, IThread::dispatch, this)) != 0)
     {
-        std::cout << "Err == " << ret << std::endl;
-        std::cout << "EAGAIN == " << EAGAIN << " EINVAL == " << EINVAL << " EPERM == " << EPERM << std::endl;
-        std::cerr << strerror(errno) << std::endl;
-        //::sleep(60);
-        exit(0);
+        Logger::getInstance() << Logger::Error << "Can't create new thread" << Logger::Flush;
+        _running = false;
     }
 }
 
