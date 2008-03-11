@@ -59,6 +59,7 @@ class	Parser
 		void				flush();
         void                setIgnore(bool);
         bool                getIgnore() const;
+        char                getLastReadChar() const;
         void                setComment(bool);
         void                setCommentList(const char* list);
         bool                getComment() const;
@@ -91,6 +92,7 @@ class	Parser
         bool                        _comment;
         std::string                 _commentList;
         bool                        _end;
+        char                        _lastReadChar;
 };
 
 

@@ -168,14 +168,15 @@ bool        HttpParser::parsePostCommand()
 bool        HttpParser::parseUri()
 {
     std::string     token;
+    bool            relative;
 
     this->setCommentList("#");
     this->setComment(true);
-    if (this->readAbsoluteUri(token)
-        || this->readRelativeUri(token))
+    if (this->readAbsoluteUri(token, relative)
+        || this->readRelativeUri(token, relative))
     {
 		this->setIgnore(false);
-        this->_request->setUri(token);
+        this->_request->setUri(token, relative);
         this->parseUriArgument();
         this->setComment(false);
 		this->setIgnore(true);
@@ -585,9 +586,11 @@ bool        HttpParser::readEmailAddress(std::string& email)
     return false;
 }
 
-bool        HttpParser::readAbsoluteUri(std::string& uri)
+bool        HttpParser::readAbsoluteUri(std::string& uri,
+                                        bool& relative)
 {
     std::string res;
+    std::string host;
 
 	this->saveContextPub();
     if (this->peekIfEqual("http://", res))
@@ -597,8 +600,17 @@ bool        HttpParser::readAbsoluteUri(std::string& uri)
         {
              while (this->appendIdentifier(res)
                     || this->peekIfEqual('.', res)
-                    || this->peekIfEqual('/', res));
+                    || this->peekIfEqual('/', res))
+             {
+                if (this->getLastReadChar() == '/')
+                {
+                    host = res.substr(7, res.length() - 8);
+                    this->_request->appendOption(HttpRequest::Host,
+                                                host);
+                }
+             }
              uri = res;
+             relative = false;
              this->setIgnore(true);
              return true;
         }
@@ -608,7 +620,8 @@ bool        HttpParser::readAbsoluteUri(std::string& uri)
     return false; 
 }
 
-bool        HttpParser::readRelativeUri(std::string& uri)
+bool        HttpParser::readRelativeUri(std::string& uri,
+                                        bool& relative)
 {
     std::string res;
 
@@ -620,6 +633,7 @@ bool        HttpParser::readRelativeUri(std::string& uri)
                || this->peekIfEqual("/", res))
             ;
         uri = res;
+        relative = true;
         this->setIgnore(true);
         return true;
     }

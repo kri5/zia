@@ -9,7 +9,7 @@ const char	COMMENT_CHAR = ';';
 Parser::Parser() :  _i(0), _bufferId(0),
                     _backI(0), _backBuffer(0),
                     _ignore(true), _comment(false),
-                    _end(false)
+                    _end(false), _lastReadChar(0)
 {
     //TODO:Replace by our excpetion system
 	/*if (extendBuffer() == false)
@@ -44,6 +44,7 @@ char		Parser::peekChar()
 	char	c;
 
 	c = this->readChar();
+    this->_lastReadChar = c;
 	this->_i++;
 	return (c);
 }
@@ -447,6 +448,10 @@ bool	Parser::readDecimal(float& output)
 //}
 //
 
+char    Parser::getLastReadChar() const
+{
+    return this->_lastReadChar;
+}
 
 bool    Parser::isEOL()
 {

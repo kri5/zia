@@ -1,8 +1,9 @@
 #include "HttpRequest.h"
 
 #include <iostream>
+#include <iomanip>
 
-HttpRequest::HttpRequest()
+HttpRequest::HttpRequest() : _relativeUri(true) 
 {
 
 }
@@ -17,9 +18,17 @@ void            HttpRequest::setCommand(Command command)
     this->_command = command;
 }
 
-void            HttpRequest::setUri(std::string& uri)
+void            HttpRequest::setUri(std::string& uri, bool relative)
 {
     this->_uri = uri;
+    this->_relativeUri = relative;
+    if (!this->_relativeUri)
+        this->addDefaultHost();
+}
+
+void            HttpRequest::addDefaultHost()
+{
+   ; 
 }
 
 void			HttpRequest::setConfig(const Config* cfg)
@@ -80,6 +89,11 @@ const Config*	HttpRequest::getConfig() const
 	return this->_cfg;
 }
 
+bool            HttpRequest::isUriRelative() const
+{
+    return this->_relativeUri;
+}
+
 const std::map<std::string, std::string>&   HttpRequest::getUriArguments()
 {
     return this->_uriArguments;
@@ -100,6 +114,7 @@ void            HttpRequest::print()
     std::cout << "----- HttpRequest -----" << std::endl
         << "Command == " << this->_command << std::endl
         << "Uri == " << this->_uri << std::endl
+        << "UriRelative == " << std::boolalpha << this->_relativeUri << std::endl 
         << " =[UriArguments]=" << std::endl;
 
     for (; uriIt != uriIte; ++uriIt)
