@@ -22,6 +22,7 @@ class	Parser
         bool                peekIfEqual(char);
         bool                peekIfEqual(const std::string&, std::string&);
         bool                peekIfEqual(const std::string&);
+        bool                peekIfNum(std::string&);
 
 		bool				readAnythingBut(const std::string& forbiden, std::string& res);
 		bool				readAnythingBut(const std::string& forbiden);

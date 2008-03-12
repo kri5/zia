@@ -1,6 +1,7 @@
 #include "Buffer.h"
 #include "Worker.h"
 
+#include "Logger.hpp"
 #include "MemoryManager.hpp"
 
 Worker::~Worker()
@@ -27,15 +28,19 @@ void            Worker::code()
         t = this->_pool->popTask();
         if (t != NULL)
         {
+            Logger::getInstance() << Logger::Info << "Starting task" << Logger::Flush;
             t->execute();
-            std::cout << "Task finished " << t->_taskId << std::endl;
-            //delete t;
+            delete t;
+            Logger::getInstance() << Logger::Info << "Task finished. remaining " << this->_pool->getTaskNbr() << Logger::Flush;
         }
         else
         {
             this->_pool->addSleepingThread(this);
+            Logger::getInstance() << Logger::Info << "No more task to pop. thread is now asleep" << Logger::Flush;
             this->checkSleep(true);
         }
     }
+    std::cout << "Thread is dying" << std::endl;
+    exit(1);
 }
 

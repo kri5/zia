@@ -91,10 +91,15 @@ void            Server::checkSockets(int nbSockets, const fd_set& fds) const
     {
         if (this->_sockets[i]->isSet(fds))
         {
-            Logger::getInstance() << Logger::Info << "Trying to accept new client" << Logger::Flush;
             //Worker::create(*this->_sockets[i]->accept(), this->_sockets[i]->getAssociatedVhosts());
-            this->_pool->addTask(new Task(this->_sockets[i]->accept(), 
-                                    this->_sockets[i]->getAssociatedVhosts()));
+            Task*   t = new Task(this->_sockets[i]->accept(), 
+                                    this->_sockets[i]->getAssociatedVhosts());
+            if (this->_pool->addTask(t) == false)
+            {
+                //delete t;
+                std::cout << "should be closing connection" << std::endl;
+                std::cout << "task nbr  == " << this->_pool->getTaskNbr() << std::endl;
+            }
         }
     }
 }

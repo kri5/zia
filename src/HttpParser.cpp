@@ -629,7 +629,8 @@ bool        HttpParser::readRelativeUri(std::string& uri,
     {
         while (this->appendIdentifier(res)
                || this->peekIfEqual(".", res)
-               || this->peekIfEqual("/", res))
+               || this->peekIfEqual("/", res)
+               || this->peekIfNum(res))
             ;
         uri = res;
         relative = true;

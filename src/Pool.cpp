@@ -32,7 +32,8 @@ bool        Pool::addTask(Task* task)
             this->_manager->awake();
         }
         else
-            //std::cout << "No need to awake manager" << std::endl;
+            std::cout << "No need to awake manager" << std::endl;
+        std::cout << "tasks size == " << this->_tasks.size() << std::endl;
         return true;
     }
     else
@@ -53,10 +54,8 @@ Task*   Pool::popTask()
     MutexLock   get_lock(*this->_mutex);
     if (this->_tasks.size() > 0)
     {
-        Logger::getInstance() << Logger::Info << this->_tasks.size() << Logger::Flush;
         Task* task = this->_tasks.front();
         this->_tasks.pop();
-        Logger::getInstance() << Logger::Info << "poped task #" << task->_taskId << Logger::Flush;
         return task;
     }
     return NULL;

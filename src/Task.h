@@ -33,9 +33,6 @@ class Task
         Buffer*         _readBuffer;
         ITime*          _time; //FIXME
         static IMutex*  _mutex;
-        //debug:
-    public:
-        int             _taskId;
 
 
         const std::vector<const Vhost*>&    _vhosts;

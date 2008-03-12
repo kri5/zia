@@ -61,6 +61,16 @@ bool        Parser::peekIfEqual(char toFind, std::string& target)
     return false;
 }
 
+bool        Parser::peekIfNum(std::string& target)
+{
+    if (this->isNum(this->readChar()))
+    {
+        target += this->peekChar();
+        return true;
+    }
+    return false;
+}
+
 bool        Parser::peekIfEqual(char toFind)
 {
 	this->ignore();
