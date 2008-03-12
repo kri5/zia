@@ -2,20 +2,21 @@
 #define __MUTEXLOCK_H__
 
 #include "IMutex.h"
+#include <iostream>
 
 class   MutexLock
 {
     public:
-        MutexLock(IMutex* mutex) : _mutex(mutex)
+        MutexLock(IMutex& mutex) : _mutex(mutex)
         {
-            this->_mutex->lock();
+            _mutex.lock();
         }
         ~MutexLock()
         {
-            this->_mutex->unlock();
+            this->_mutex.unlock();
         }
     private:
-        IMutex*  _mutex;
+        IMutex&  _mutex;
 };
 
 #endif  /*!__MUTEXLOCK_H__*/

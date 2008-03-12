@@ -1,3 +1,6 @@
+#include <errno.h>
+#include <iostream>
+
 #include "Mutex_unix.h"
 
 #include "MemoryManager.hpp"
@@ -19,6 +22,8 @@ void		Mutex::lock()
 {
 	if (pthread_mutex_lock(&mutex) == 0)
 		lockCount += 1;
+    else
+        std::cerr << "ERROR::::::>>>>" << strerror(errno) << std::endl;
 }
 
 bool		Mutex::trylock()

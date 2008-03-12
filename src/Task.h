@@ -9,11 +9,13 @@
 #include "Vhost.h"
 #include "Buffer.h"
 #include "HttpError.h"
+#include "IMutex.h"
+#include "Mutex.h"
 
 class Task
 {
     public:
-        Task(ClientSocket*, const std::vector<const Vhost*>);
+        Task(ClientSocket*, const std::vector<const Vhost*>&);
         virtual ~Task();
         void    execute();
 
@@ -30,6 +32,11 @@ class Task
         Buffer*         _writeBuffer;
         Buffer*         _readBuffer;
         ITime*          _time; //FIXME
+        static IMutex*  _mutex;
+        //debug:
+    public:
+        int             _taskId;
+
 
         const std::vector<const Vhost*>&    _vhosts;
 };

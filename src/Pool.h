@@ -26,7 +26,7 @@ class   Pool
         std::queue<Task*>       _tasks;
         std::queue<IThread*>    _threads;
         unsigned int            _nbThreads;
-        IMutex*                  _mutex;
+        IMutex*                 _mutex;
         class   Manager : public IThread
         {
             public:

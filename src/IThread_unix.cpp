@@ -55,7 +55,7 @@ void    IThread::checkSleep(bool forceSleep)
 {
     if (forceSleep || this->_sleepScheduled)
     {
-        MutexLock   lock(this->_mutex);
+        MutexLock   lock(*this->_mutex);
         this->_asleep = true;
         this->_sleepScheduled = false;
         pthread_cond_wait(&(this->_cond), &(this->_mutex->getMutex()));

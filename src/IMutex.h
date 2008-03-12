@@ -14,6 +14,7 @@ public:
 	virtual void	unlock() = 0;
 protected:
 	/// How much time a thread has been locked by the same thread.
+    //FIXME : this has to go from here !
 	int				lockCount;
 private:
 };

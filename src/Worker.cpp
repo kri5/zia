@@ -18,16 +18,18 @@ Worker*          Worker::create(Pool* pool)
 }
 
 /// Here we are in the first threaded method
-void          Worker::code()
+void            Worker::code()
 {
+    Task*       t;
+
     while (this->_running)
     {
-        Task* t = this->_pool->popTask();
+        t = this->_pool->popTask();
         if (t != NULL)
         {
             t->execute();
-            std::cout << "Task finished" << std::endl;
-            delete t;
+            std::cout << "Task finished " << t->_taskId << std::endl;
+            //delete t;
         }
         else
         {

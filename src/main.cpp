@@ -17,6 +17,9 @@
 #include "RootConfig.hpp"
 #include "IThread.h"
 #include "Worker.h"
+#include "Mutex.h"
+#include "IMutex.h"
+#include "MutexLock.hpp"
 
 #include "MemoryManager.hpp"
 
@@ -44,25 +47,5 @@ int main(int argc, char **argv)
 
 
 
-//    Buffer      *buff = new Buffer(6);
-//    
-//    buff->push("0123456789abcdefghij012345678901234567890123456789", 50);
-//    buff->clear();
-//    std::cout << "<<<<" << std::endl;
-//    buff->push("abcdef", 6);
-//    std::cout << ">>>>" << std::endl;
-//    char* line;
-//    line = buff->get(6);
-//    std::cout << line << std::endl;
-//    delete[] line;
-//    
-//    //buff->flush(17);
-//    
-//    //line = buff->get(17);
-//    //std::cout << line << std::endl;
-//    //delete[] line;
-//    buff->clear();
-//    buff->dump();
-//    delete buff;
 }
 

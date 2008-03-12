@@ -36,7 +36,7 @@ class MemoryManager
 		/// used for blocks allocation.
 		void*	alloc(std::size_t size, const char* file, int line, bool isArray)
 		{
-            MutexLock(&(this->_mutex));
+            MutexLock   get_lock(this->_mutex);
 			void*	ptr = malloc(size);
 			if (ptr == NULL)
 				throw std::bad_alloc();
@@ -55,7 +55,7 @@ class MemoryManager
 		/// Will free a block, since delete is overloaded.
 		void	free(void* ptr, bool isArray)
 		{
-            MutexLock(&(this->_mutex));
+            MutexLock   get_lock(this->_mutex);
 			std::map<void*, MemoryBlock>::iterator		it;
 
 			it = this->_blocks.find(ptr);
@@ -79,7 +79,7 @@ class MemoryManager
 		}
 		~MemoryManager()
 		{
-            MutexLock(&(this->_mutex));
+            MutexLock   get_lock(this->_mutex);
 			if (this->_blocks.empty())
 			{
 				std::cout << "No memory leak detected." << std::endl;

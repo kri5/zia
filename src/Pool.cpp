@@ -1,4 +1,5 @@
 #include "Pool.h"
+#include "Logger.hpp"
 #include "MutexLock.hpp"
 #include "Worker.h"
 
@@ -9,7 +10,6 @@ Pool::Pool(unsigned int nbThreads) : _nbThreads(nbThreads)
 
 void        Pool::init()
 {
-    //FIXME: create threads.
     for (unsigned int i = 0; i < this->_nbThreads; ++i)
     {
         Worker* w = Worker::create(this);
@@ -20,7 +20,7 @@ void        Pool::init()
 
 bool        Pool::addTask(Task* task)
 {
-    MutexLock(this->_mutex);
+    MutexLock   get_lock(*this->_mutex);
     //FIXME : adjust this limit and set it in the conf file.
     if (this->_tasks.size() < 150)
     {
@@ -35,23 +35,28 @@ bool        Pool::addTask(Task* task)
             //std::cout << "No need to awake manager" << std::endl;
         return true;
     }
+    else
+    {
+        std::cout << "Warning : dropping task !!!" << std::endl;
+    }
     return false;
 }
 
 void    Pool::addSleepingThread(IThread* thread)
 {
-    MutexLock(this->_mutex);
+    MutexLock   get_lock(*this->_mutex);
     this->_threads.push(thread);
 }
 
 Task*   Pool::popTask()
 {
-    MutexLock(this->_mutex);
-    std::cout << this->_tasks.size() << std::endl;
+    MutexLock   get_lock(*this->_mutex);
     if (this->_tasks.size() > 0)
     {
+        Logger::getInstance() << Logger::Info << this->_tasks.size() << Logger::Flush;
         Task* task = this->_tasks.front();
         this->_tasks.pop();
+        Logger::getInstance() << Logger::Info << "poped task #" << task->_taskId << Logger::Flush;
         return task;
     }
     return NULL;
@@ -59,7 +64,7 @@ Task*   Pool::popTask()
 
 IThread*    Pool::popFreeThread()
 {
-    MutexLock(this->_mutex);
+    MutexLock   get_lock(*this->_mutex);
     if (this->_threads.size() > 0)
     {
         IThread* thread = this->_threads.front();
@@ -81,23 +86,25 @@ void        Pool::killThread()
 
 unsigned int    Pool::getNbThreads() const
 {
+    MutexLock   get_lock(*this->_mutex);
     return this->_nbThreads;
 }
 
 unsigned int    Pool::getFreeThreadsNbr() const
 {
-    MutexLock(this->_mutex);
+    MutexLock   get_lock(*this->_mutex);
     return this->_threads.size();
 }
 
 unsigned int    Pool::getTaskNbr() const
 {
-    MutexLock(this->_mutex);
+    MutexLock   get_lock(*this->_mutex);
     return this->_tasks.size();
 }
 
 bool            Pool::empty() const
 {
-    MutexLock(this->_mutex);
+    MutexLock   get_lock(*this->_mutex);
     return this->_tasks.empty();
 }
+

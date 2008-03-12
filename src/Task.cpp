@@ -4,17 +4,28 @@
 #include "HttpParser.h"
 #include "HttpResponseFile.h"
 #include "HttpResponseDir.h"
+#include "MutexLock.hpp"
 
-Task::Task(ClientSocket* clt, const std::vector<const Vhost*> vhosts) :
+int     taskId = 0;
+#include "IMutex.h"
+#include "Mutex.h"
+
+IMutex*     Task::_mutex = new Mutex();
+
+Task::Task(ClientSocket* clt, const std::vector<const Vhost*>& vhosts) :
     _res(NULL), _socket(clt), _vhosts(vhosts)
 {
     _req = new HttpRequest();
     _readBuffer = new Buffer(1024);
     _writeBuffer = new Buffer(1024);
+    MutexLock   lock(*Task::_mutex);
+    _taskId = taskId;
+    ++taskId;
 }
 
 Task::~Task()
 {
+    std::cout << "deleting task " << this->_taskId << std::endl;
     this->_writeBuffer->clear();
     delete this->_writeBuffer;
 
@@ -32,6 +43,7 @@ Task::~Task()
 
 void    Task::execute()
 {
+    std::cout << "executing task " << this->_taskId << std::endl;
     if (this->parseRequest() == true)
     {
         if (this->buildResponse() == true)
@@ -66,9 +78,12 @@ bool    Task::parseRequest()
         }
         parser.parse();
     }
-    //TODO: check host.
-    this->_req->setConfig(Vhost::getVhost(this->_vhosts, 
-                this->_req->getOption(HttpRequest::Host)));
+    {
+        MutexLock   lock(*(Task::_mutex));
+        //TODO: check host.
+        this->_req->setConfig(Vhost::getVhost(this->_vhosts, 
+                    this->_req->getOption(HttpRequest::Host)));
+    }
     return true;
 }
 
@@ -131,7 +146,7 @@ bool    Task::sendResponse()
         if (this->sendBuffer() == false)
             return false;
     } while (this->_res->completed() == false);
-    //this->_socket->close(true);
+    this->_socket->close(true);
     return true;
 }
 
