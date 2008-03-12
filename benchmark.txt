@@ -15,3 +15,22 @@ Failed transactions:	         100
 Longest transaction:	        3.02
 Shortest transaction:	        0.00
 
+---------------------------------------------
+Revision 177:
+
+Benchmark with 150 clients on Rino page
+
+Lifting the server siege...      done.
+Transactions:                 118712 hits
+Availability:                 100.00 %
+Elapsed time:                8851.26 secs
+Data transferred:           53134.56 MB
+Response time:                 11.18 secs
+Transaction rate:              13.41 trans/sec
+Throughput:                     6.00 MB/sec
+Concurrency:                  149.91
+Successful transactions:      118712
+Failed transactions:               0
+Longest transaction:           25.11
+Shortest transaction:           0.07
+
