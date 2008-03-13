@@ -3,7 +3,7 @@
 
 #include "Singleton.hpp"
 #include "Config.h"
-#include <iostream> //remove me
+#include <iostream>
 class RootConfig : public Singleton<RootConfig>
 {
 	public:
@@ -17,7 +17,6 @@ class RootConfig : public Singleton<RootConfig>
 		}
         static std::string  getParam(std::string name)
         {
-            std::cout << RootConfig::getConfig() << std::endl;
             return RootConfig::getConfig()->getParam(name);
         }
 	private:

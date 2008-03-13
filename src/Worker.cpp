@@ -10,7 +10,6 @@ Worker::Worker(Pool* pool) : _pool(pool), _task(NULL)
 {
     _time = new Time();
     _timeoutDelay = atoi(RootConfig::getParam("Timeout").c_str());
-    std::cout << "delay for timeout == " << _timeoutDelay << std::endl;
 }
 
 Worker::~Worker()

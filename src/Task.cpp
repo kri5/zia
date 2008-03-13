@@ -44,6 +44,7 @@ void    Task::execute(ITime* timer)
     this->_time->init();
     if (this->parseRequest() == true)
     {
+        this->_time->init();
         if (this->buildResponse() == true)
         {
             //just for the moment :
@@ -154,6 +155,7 @@ bool        Task::sendBuffer()
     {
         line = this->_writeBuffer->get(1024);
         ret = this->_socket->send(line, this->_writeBuffer->gcount());
+        this->_time->init();
         if (ret == Socket::SOCKET_ERROR)
         {
             delete[] line;
