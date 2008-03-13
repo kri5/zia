@@ -1,6 +1,8 @@
 #SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_BUILD_TYPE Debug)
 
+ADD_SUBDIRECTORY(modules)
+
 ADD_DEFINITIONS(-DTIXML_USE_TICPP)
 
 INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
@@ -35,13 +37,13 @@ ELSE (WIN32)
 	SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic")
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
 	LINK_DIRECTORIES(../libs/unix/)
-	SET(ZIAHTTPD_LIBS pthread ticpp ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
+	SET(ZIAHTTPD_LIBS pthread ticpp dl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
 ENDIF (WIN32)
 
 IF (UNIX)
   SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} Socket_unix.cpp ClientSocket_unix.cpp
 	  MainSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp FileSystem_unix.cpp
-	  File_unix.cpp Time_unix.cpp)
+	  File_unix.cpp Time_unix.cpp Modules_unix.cpp ModuleInfo_unix.cpp)
 ENDIF (UNIX)
 
 ADD_EXECUTABLE (ziahttpd ${ZIAHTTPD_SRCS})

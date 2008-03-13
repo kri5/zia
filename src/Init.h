@@ -12,6 +12,7 @@
 #include "Vhost.h"
 #include "Config.h"
 #include "Pool.h"
+#include "Modules.h"
 
 class Init
 {
@@ -26,6 +27,7 @@ class Init
 	private:
 		void    		readCommandLine();
 		void    		readConfiguration(const std::string fileName = "zia.conf", Config* cfg = NULL);
+        void            initModules();
 		void    		initSSL();
 		void    		initSockets();
 		void    		initThreads();

@@ -43,6 +43,7 @@ int         Init::start()
 	}
     if (this->checkConfig() == false)
         return EXIT_FAILURE;
+    this->initModules();
     this->initSSL();
     this->initSockets();
     this->initThreads();
@@ -148,6 +149,12 @@ void        Init::readConfiguration(const std::string fileName, Config* cfg)
 
 	ticpp::Node* node =	doc.FirstChild();
 	this->parseConfigNode(node, cfg);
+}
+
+void        Init::initModules()
+{
+    Modules m; // Ugly, only for dev :)
+    m.load("bin/modules/libhelloworld.so");
 }
 
 /// Initialize the SSL features
