@@ -13,12 +13,11 @@
 #include "MemoryManager.hpp"
 
 Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toBind, 
-                const Config* rootCfg, Pool* pool) : _toBind(toBind), _pool(pool)
+                Pool* pool) : _toBind(toBind), _pool(pool)
 {
 	std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		it = this->_toBind.begin();
 	std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		end = this->_toBind.end();
 
-	RootConfig::getInstance().setConfig(rootCfg);
 	_maxFd = 0;
 	try
     {

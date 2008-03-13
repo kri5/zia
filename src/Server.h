@@ -24,7 +24,7 @@ class	Server
 			};
 			static const char* Msg[];
 		};
-		Server(const std::map<const NetworkID*, std::vector<const Vhost*> >&, const Config* rootCfg, Pool* pool);
+		Server(const std::map<const NetworkID*, std::vector<const Vhost*> >&, Pool* pool);
 		~Server();
 		void			run();
 

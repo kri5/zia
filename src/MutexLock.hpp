@@ -7,16 +7,20 @@
 class   MutexLock
 {
     public:
-        MutexLock(IMutex& mutex) : _mutex(mutex)
+        MutexLock(IMutex* mutex) : _mutex(mutex)
         {
-            _mutex.lock();
+            mutex->lock();
+        }
+        MutexLock(IMutex& mutex) : _mutex(&mutex)
+        {
+            mutex.lock();
         }
         ~MutexLock()
         {
-            this->_mutex.unlock();
+            this->_mutex->unlock();
         }
     private:
-        IMutex&  _mutex;
+        IMutex*     _mutex;
 };
 
 #endif  /*!__MUTEXLOCK_H__*/

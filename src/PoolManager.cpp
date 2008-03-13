@@ -21,7 +21,7 @@ void    Pool::Manager::code()
         if (this->_pool->empty())
         {
             //Logger::getInstance() << Logger::PrintStdOut << Logger::Info << "No more task, Manager's going to bed" << Logger::Flush;
-            this->checkSleep(true);
+            //this->checkSleep(true);
         }
         else
         {
@@ -41,5 +41,7 @@ void    Pool::Manager::code()
                 //  non : a voir pour un algo de recreation de thread.
             }
         }
+        //We check for request no matter task stack is empty or not.
+        this->_pool->checkTimeouts();
     }
 }

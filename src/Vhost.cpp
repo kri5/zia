@@ -4,8 +4,11 @@
 #include "Logger.hpp"
 #include "ZException.hpp"
 #include "RootConfig.hpp"
+#include "Mutex.h"
 
 #include "MemoryManager.hpp"
+
+IMutex* Vhost::_mutex = new Mutex();
 
 Vhost::Vhost(NetworkID* netId, Config* cfg) : Config(*cfg), _netId(netId)
 {
@@ -40,6 +43,7 @@ std::string		Vhost::getParam(std::string name) const
 
 const Config*	Vhost::getVhost(const std::vector<const Vhost*>& vhosts, const std::string& host)
 {
+    MutexLock   lock(Vhost::_mutex);
 	int		i;
 	int		size = vhosts.size();
 

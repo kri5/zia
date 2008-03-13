@@ -2,10 +2,14 @@
 # define POOL_H__
 
 #include <queue>
+#include <list>
 
 #include "Task.h"
 #include "IThread.h"
+#include "Worker.h"
 #include "Mutex.h"
+
+class Worker;
 
 class   Pool
 {
@@ -13,18 +17,24 @@ class   Pool
         Pool(unsigned int nbThreads);
         void                    init();
         bool                    addTask(Task*);
-        void                    addSleepingThread(IThread*);
+        void                    addSleepingThread(Worker*);
         Task*                   popTask();
-        IThread*                popFreeThread();
+        Worker*                 popFreeThread();
+        void                    checkTimeouts();
         bool                    createThread();
         void                    killThread();
+        void                    relaunchThread(Worker*);
         unsigned int            getNbThreads() const;
         unsigned int            getFreeThreadsNbr() const;
         unsigned int            getTaskNbr() const;
         bool                    empty() const;
     private:
+        ///Must be launched from a thread safe environment.
+        void                    __createThread();
+
         std::queue<Task*>       _tasks;
-        std::queue<IThread*>    _threads;
+        std::queue<Worker*>     _threads;
+        std::list<Worker*>      _workingThreads;
         unsigned int            _nbThreads;
         IMutex*                 _mutex;
         class   Manager : public IThread

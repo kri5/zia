@@ -22,7 +22,6 @@ class Init
 
 		int     start();
 		const std::map<const NetworkID*, std::vector<const Vhost*> >&	getBindList() const;
-		const Config*													getRootConfig() const;
         Pool*                                                           getPool() const;
 	private:
 		void    		readCommandLine();

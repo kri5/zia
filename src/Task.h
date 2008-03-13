@@ -17,7 +17,7 @@ class Task
     public:
         Task(ClientSocket*, const std::vector<const Vhost*>&);
         virtual ~Task();
-        void    execute();
+        void    execute(ITime*);
 
     private:
         bool            parseRequest();
@@ -31,9 +31,8 @@ class Task
         ClientSocket*   _socket;
         Buffer*         _writeBuffer;
         Buffer*         _readBuffer;
-        ITime*          _time; //FIXME
-        static IMutex*  _mutex;
-
+        ITime*          _time;
+        IMutex*         _mutex;
 
         const std::vector<const Vhost*>&    _vhosts;
 };

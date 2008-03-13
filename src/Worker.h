@@ -6,19 +6,26 @@
 
 #include "IThread.h"
 #include "Pool.h"
+#include "ITime.h"
+#include "Task.h"
+
+class Pool;
 
 class Worker : public IThread
 {
 public:
     static Worker*      create(Pool*);
-
-private:
-    Worker(Pool* pool) : _pool(pool) {}
     virtual ~Worker(); 
+
+    bool                checkTimeout();
+private:
+    Worker(Pool* pool);
     void                code();
 
     Pool*               _pool;
-protected:
+    ITime*              _time;
+    Task*               _task;
+    int                 _timeoutDelay;
 };
 
 #endif // WORKER_H

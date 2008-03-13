@@ -12,8 +12,10 @@ class Time : public ITime
 		Time(time_t);
 		virtual ~Time();
 
+        void        init();
 		time_t		getTimestamp() const;
 		const char*	getStr() const;
+        bool        elapsed(time_t seconds) const;
 		bool		operator<(const ITime&) const;
 		bool		operator>(const ITime&) const;
 		bool		operator<=(const ITime&) const;

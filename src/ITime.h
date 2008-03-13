@@ -10,8 +10,10 @@ class	ITime
 {
 	public:
 		virtual ~ITime(){}
+        virtual void                init() = 0;
 		virtual time_t				getTimestamp() const = 0;
 		virtual const char*			getStr() const = 0;
+        virtual bool                elapsed(time_t seconds) const = 0;
 		virtual bool				operator<(const ITime&) const = 0;
 		virtual bool				operator>(const ITime&) const = 0;
 		virtual bool				operator<=(const ITime&) const = 0;

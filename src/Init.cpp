@@ -4,6 +4,7 @@
 #include "Init.h"
 #include "NetworkID.h"
 #include "Zerror.h"
+#include "RootConfig.hpp"
 
 #include "MemoryManager.hpp"
 
@@ -251,11 +252,6 @@ const std::map<const NetworkID*, std::vector<const Vhost*> >&	Init::getBindList(
 	return this->_bindList;
 }
 
-const Config* Init::getRootConfig() const
-{
-	return this->_conf;
-}
-
 bool    Init::checkConfig() const
 {
     //Feel free to add some :)
@@ -264,6 +260,12 @@ bool    Init::checkConfig() const
         Logger::getInstance() << Logger::Error << "You must specify a port to listen to. Shuting down." << Logger::Flush;
         return false;
     }
+    else if (this->_conf->isSet("Timeout") == false) //FIXME : check if timeout is a number.
+    {
+        Logger::getInstance() << Logger::Error << "You must specify a port to timeout delay. Shuting down." << Logger::Flush;
+        return false;
+    }
+	RootConfig::getInstance().setConfig(this->_conf);
     return true;
 }
 

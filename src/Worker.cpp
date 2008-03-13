@@ -3,9 +3,21 @@
 
 #include "Logger.hpp"
 #include "MemoryManager.hpp"
+#include "Time.h"
+#include "RootConfig.hpp"
+
+Worker::Worker(Pool* pool) : _pool(pool), _task(NULL)
+{
+    _time = new Time();
+    _timeoutDelay = atoi(RootConfig::getParam("Timeout").c_str());
+    std::cout << "delay for timeout == " << _timeoutDelay << std::endl;
+}
 
 Worker::~Worker()
 {
+    if (this->_task)
+        delete this->_task;
+    delete this->_time;
 }
 
 /// Launch a new thread that will handle the new client connection
@@ -21,26 +33,34 @@ Worker*          Worker::create(Pool* pool)
 /// Here we are in the first threaded method
 void            Worker::code()
 {
-    Task*       t;
-
     while (this->_running)
     {
-        t = this->_pool->popTask();
-        if (t != NULL)
+        this->_task = this->_pool->popTask();
+        if (this->_task != NULL)
         {
-            Logger::getInstance() << Logger::Info << "Starting task" << Logger::Flush;
-            t->execute();
-            delete t;
-            Logger::getInstance() << Logger::Info << "Task finished. remaining " << this->_pool->getTaskNbr() << Logger::Flush;
+            this->_task->execute(this->_time);
+            delete this->_task;
+            this->_task = NULL;
         }
         else
         {
             this->_pool->addSleepingThread(this);
-            Logger::getInstance() << Logger::Info << "No more task to pop. thread is now asleep" << Logger::Flush;
             this->checkSleep(true);
         }
     }
+    //FIXME : can't let this on prod.
     std::cout << "Thread is dying" << std::endl;
     exit(1);
 }
+
+bool    Worker::checkTimeout()
+{
+    if (this->_time->elapsed(this->_timeoutDelay))
+    {
+        std::cout << "Client has timeout" << std::endl;
+        return true;
+    }
+    return false;
+}
+
 

@@ -3,7 +3,7 @@
 
 #include "Singleton.hpp"
 #include "Config.h"
-
+#include <iostream> //remove me
 class RootConfig : public Singleton<RootConfig>
 {
 	public:
@@ -11,10 +11,15 @@ class RootConfig : public Singleton<RootConfig>
 		{
 			this->_cfg = const_cast<Config*>(cfg);
 		}
-		const Config*	getConfig() const
+		static const Config*	getConfig()
 		{
-			return this->_cfg;
+			return RootConfig::getInstance()._cfg;
 		}
+        static std::string  getParam(std::string name)
+        {
+            std::cout << RootConfig::getConfig() << std::endl;
+            return RootConfig::getConfig()->getParam(name);
+        }
 	private:
         RootConfig() : _cfg(NULL){}
 		 Config*		_cfg;

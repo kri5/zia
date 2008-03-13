@@ -32,7 +32,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     try
     {
-	    srv = new Server(i.getBindList(), i.getRootConfig(), i.getPool());
+	    srv = new Server(i.getBindList(), i.getPool());
 	}
 	catch (ZException<Server>& ex)
     {

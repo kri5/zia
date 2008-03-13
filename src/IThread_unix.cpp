@@ -12,6 +12,10 @@ IThread::IThread()
     pthread_cond_init(&_cond, NULL);
 }
 
+IThread::~IThread()
+{
+}
+
 void			IThread::run()
 {
 	// Don't start two threads into the same object
@@ -34,10 +38,7 @@ void      IThread::stop()
 
 	// Stopping the thread.
     pthread_cancel(m_pid);
-    //pthread_exit(NULL);
-    //pthread_stop()
 	_running = false;
-    //--nb;
 }
 
 void    IThread::sleep()

@@ -5,6 +5,7 @@
 
 #include "NetworkID.h"
 #include "Config.h"
+#include "IMutex.h"
 
 /// Represent a Virtual Host. Mainly used for storing configuration.
 class Vhost : public Config
@@ -32,6 +33,7 @@ class Vhost : public Config
 		/// Will return the appropriate Vhost from the server's list, using Host: from Http header
 		static const Config* getVhost(const std::vector<const Vhost*>& vhosts, const std::string& host);
 	private:
+        static IMutex*      _mutex;
         NetworkID*		    _netId;
 };
 

@@ -11,7 +11,6 @@
 
 #include "MemoryManager.hpp"
 
-IMutex* Task::_mutex = new Mutex();
 
 Task::Task(ClientSocket* clt, const std::vector<const Vhost*>& vhosts) :
     _res(NULL), _socket(clt), _vhosts(vhosts)
@@ -19,6 +18,7 @@ Task::Task(ClientSocket* clt, const std::vector<const Vhost*>& vhosts) :
     _req = new HttpRequest();
     _readBuffer = new Buffer(1024);
     _writeBuffer = new Buffer(1024);
+    _mutex = new Mutex();
 }
 
 Task::~Task()
@@ -38,15 +38,14 @@ Task::~Task()
     //selon le keep-alive : delete _socket;
 }
 
-void    Task::execute()
+void    Task::execute(ITime* timer)
 {
-    Logger::getInstance() << Logger::Info << "starting to handle request" << Logger::Flush;
+    this->_time = timer;
+    this->_time->init();
     if (this->parseRequest() == true)
     {
-        Logger::getInstance() << Logger::Info << "building response" << Logger::Flush;
         if (this->buildResponse() == true)
         {
-            Logger::getInstance() << Logger::Info << "sending response" << Logger::Flush;
             //just for the moment :
             this->_res->appendOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
             this->_res->appendOption("Connection", "close");
@@ -58,7 +57,7 @@ void    Task::execute()
 bool    Task::parseRequest()
 {
     HttpParser      parser(this->_req);
-    char            tmp[1024 + 1];
+    char            tmp[1024];
     int             sockRet;
     char*           line;
 
@@ -66,10 +65,7 @@ bool    Task::parseRequest()
     {
         sockRet = this->_socket->recv(tmp, 1024);
         if (sockRet <= 0)
-        {
-            std::cout << "socket error : return false" << std::endl;
             return false;
-        }
         this->_readBuffer->push(tmp, sockRet);
         while (this->_readBuffer->hasEOL())
         {
@@ -80,7 +76,6 @@ bool    Task::parseRequest()
         }
         parser.parse();
     }
-    MutexLock   lock(*(Task::_mutex));
     //TODO: check host.
     this->_req->setConfig(Vhost::getVhost(this->_vhosts, 
                 this->_req->getOption(HttpRequest::Host)));
@@ -141,7 +136,6 @@ bool    Task::sendResponse()
     char    buff[1024];
     do
     {
-        std::cout <<"waiting datas from clients" << std::endl;
         stream.read(buff, sizeof(buff));
         this->_writeBuffer->push(buff, stream.gcount());
         if (this->sendBuffer() == false)
@@ -159,7 +153,6 @@ bool        Task::sendBuffer()
     while (this->_writeBuffer->empty() == false)
     {
         line = this->_writeBuffer->get(1024);
-        std::cout << "sending buffer" << std::endl;
         ret = this->_socket->send(line, this->_writeBuffer->gcount());
         if (ret == Socket::SOCKET_ERROR)
         {

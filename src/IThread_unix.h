@@ -8,7 +8,7 @@ class IThread : public IThreadbase
 {
 public:
     IThread();
-    virtual ~IThread(){}
+    virtual ~IThread();
 	void			run();
 	void			stop();
     void            sleep();
