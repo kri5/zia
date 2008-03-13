@@ -42,6 +42,6 @@ void    Pool::Manager::code()
             }
         }
         //We check for request no matter task stack is empty or not.
-        this->_pool->checkTimeouts();
+        //this->_pool->checkTimeouts();
     }
 }

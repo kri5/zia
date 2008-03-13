@@ -54,11 +54,13 @@ void    IThread::awake()
 
 void    IThread::checkSleep(bool forceSleep)
 {
-    if (forceSleep || this->_sleepScheduled)
+    if (!this->_asleep && (forceSleep || this->_sleepScheduled))
     {
+        Logger::getInstance() << Logger::Info << "putting thread #" << this->m_pid << " to bed" << Logger::Flush;
         MutexLock   lock(*this->_mutex);
         this->_asleep = true;
         this->_sleepScheduled = false;
+        Logger::getInstance() << Logger::Info << "  MutexLockPassed in thread #"  << this->m_pid << Logger::Flush;
         pthread_cond_wait(&(this->_cond), &(this->_mutex->getMutex()));
     }
 }

@@ -9,7 +9,8 @@ const char	COMMENT_CHAR = ';';
 Parser::Parser() :  _i(0), _bufferId(0),
                     _backI(0), _backBuffer(0),
                     _ignore(true), _comment(false),
-                    _end(false), _lastReadChar(0)
+                    _end(false), _lastReadChar(0),
+                    _isFed(false)
 {
     //TODO:Replace by our excpetion system
 	/*if (extendBuffer() == false)
@@ -25,6 +26,12 @@ void		Parser::feed(const std::string& str)
 {
     this->_buffers.push_back(str);
     this->_end = false;
+    this->_isFed = true;
+}
+
+bool        Parser::isFed() const
+{
+    return this->_isFed;
 }
 
 bool		Parser::extendBuffer()
@@ -181,11 +188,13 @@ char	Parser::readChar()
 	if (this->_i >= this->_buffers[this->_bufferId].length()
             || this->_bufferId < 0)
         //TODO: Replace by our Exception System
+    {
 		if (!this->extendBuffer())
         {
             this->_end = true;
 			return 0;
         }
+    }
 	c = this->_buffers[this->_bufferId][this->_i];
     if (this->_comment)
         this->skipComment(c);
@@ -287,9 +296,7 @@ void	Parser::ignore()
     if (this->_ignore == false)
         return ;
 	while (this->isIgnore(this->readChar()))
-	{
 		this->peekChar();
-	}
 }
 
 bool	Parser::readIdentifier(std::string& output)
@@ -305,7 +312,8 @@ bool	Parser::readIdentifier(std::string& output)
         this->peekChar();
 		c = this->readChar();
 		while (this->isAlphaNum(c)
-                || c == '_')
+                || c == '_'
+                || c == '-')
 		{
 			identifier += c;
             this->peekChar();
@@ -406,7 +414,7 @@ bool	Parser::readInteger(short& output)
 bool	Parser::readDecimal(std::string& output)
 {
 	if (this->readInteger(output)
-			&& this->peekIfEqual('.')
+			&& this->peekIfEqual('.', output)
 				&& this->appendInteger(output))
 	{
 		return true;

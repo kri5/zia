@@ -1,5 +1,7 @@
 #include "HttpParser.h"
 #include "HttpRequest.h"
+#include "Logger.hpp"
+
 #include <string>
 
 
@@ -32,6 +34,8 @@ HttpParser::~HttpParser()
 
 void        HttpParser::parse()
 {
+    if (!this->isFed())
+        return ;
     if (this->_isFirstLine)
     {
         if (this->parseGetCommand()
@@ -50,7 +54,7 @@ void        HttpParser::parse()
         if (this->isEOL())
             this->_isDone = true;
         while (!this->isEnd() && this->parseOptions())
-			;
+            ;
 
         if (this->_isDone
             && this->_request->getCommand() == HttpRequest::Post)
@@ -303,6 +307,7 @@ bool        HttpParser::readUriParam(std::string& key,
 bool        HttpParser::parseOptions()
 {
     if (this->parseOptionHost()
+        || this->parseOptionConnection()
         || this->parseOptionFrom()
         || this->parseOptionContentLength()
         || this->parseOptionDate()
@@ -347,6 +352,123 @@ bool        HttpParser::parseOptionGeneric()
         }
     }
     this->restoreContextPub();
+    return false;
+}
+
+/**
+ * Parses Accept option
+ *
+ * synopsis:
+ *  "Accept" ":" #( media-range [ accept-params ] )
+ *  media-range    = ( "*\/\*"
+ *                   | ( type "/" "*" )
+ *                   | ( type "/" subtype )
+ *                   ) *( ";" parameter )
+ *  accept-params  = ";" "q" "=" qvalue *( accept-extension )
+ *  accept-extension = ";" token [ "=" ( token | quoted-string ) ]
+ *
+ *  examples:
+ *      Accept: audio\/\*; q=0.2, audio/basic
+ *      Accept: text\/\*, text/html, text/html;level=1, *\\/\*
+ * */
+
+bool        HttpParser::parseOptionAccept()
+{
+    std::string     token;
+
+    if (this->peekIfEqual("Accept"))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            if (this->readAcceptType(token))
+            {
+                while (this->peekIfEqual(",", token)
+                        && this->readAcceptType(token))
+                    ;
+                this->_request->appendOption
+                    (HttpRequest::Accept, token);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool        HttpParser::readAcceptType(std::string& token)
+{
+    std::string tmp = "";
+    std::string tmpTok;
+
+    if (this->readIdentifier(tmpTok)
+        || this->peekIfEqual("*", tmpTok))
+    {
+        tmp += tmpTok;
+        tmpTok = "";
+        if (this->peekIfEqual("/", tmp))
+        {
+            if (this->readIdentifier(tmpTok)
+                || this->peekIfEqual("*", tmpTok))
+            {
+                tmp += tmpTok;
+                token += tmp;
+                while (this->readAcceptParam(token));
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool        HttpParser::readAcceptParam(std::string& token)
+{
+    std::string     tmp;
+    std::string     tmpTok;
+
+    if (this->peekIfEqual(";", tmp))
+    {
+        if (this->readIdentifier(tmpTok))
+        {
+            tmp += tmpTok;
+            if (this->peekIfEqual("=", tmp))
+            {
+                if (this->readIdentifier(tmpTok)
+                    || this->readDecimal(tmpTok))
+                {
+                    tmp += tmpTok;
+                    token += tmp;
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+/**
+ *  Parses Host connection
+ *
+ *  synopsis:
+ *      "Connection" ":" 1#(connection-token)
+ *  example:
+ *      Connection: close
+ * */
+
+bool        HttpParser::parseOptionConnection()
+{
+    std::string token;
+
+    if (this->peekIfEqual("Connection"))
+    {
+        if (this->peekIfEqual(":"))
+        {
+            if (this->readIdentifier(token))
+            {
+                this->_request->appendOption
+                    (HttpRequest::Connection, token);
+                return true;
+            }
+        }
+    }
     return false;
 }
 
@@ -585,6 +707,15 @@ bool        HttpParser::readEmailAddress(std::string& email)
     return false;
 }
 
+/**
+ *  Reads and Absolute Uri
+ *  Basic synosis must look like this :
+ *  http://identifier[identifier|'.'|'/']
+ *
+ * This method also append e Host option 
+ * to the request object
+ * */
+
 bool        HttpParser::readAbsoluteUri(std::string& uri,
                                         bool& relative)
 {
@@ -618,6 +749,12 @@ bool        HttpParser::readAbsoluteUri(std::string& uri,
     this->restoreContextPub();
     return false; 
 }
+
+/**
+ *  Reads a relative Uri
+ *  Basic synosis must look like this :
+ *  /[identifier|num|'.'|'/']
+ * */
 
 bool        HttpParser::readRelativeUri(std::string& uri,
                                         bool& relative)

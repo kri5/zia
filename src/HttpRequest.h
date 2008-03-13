@@ -27,7 +27,9 @@ class HttpRequest
             UserAgent,
             ContentType,
             ContentLength,
-            Date
+            Date,
+            Accept,
+            Connection
         };
 
         HttpRequest();

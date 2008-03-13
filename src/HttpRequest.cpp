@@ -143,7 +143,7 @@ void            HttpRequest::print()
         std::cout << "  option[" << (*uriIt).first
             << "] = " << (*uriIt).second << std::endl;
 
-    std::cout << "----EndBodyArgts----" << std::endl
+    std::cout << "---EndBodyArgts----" << std::endl
         << "----- End HttpResponse -----" << std::endl;
 }
 

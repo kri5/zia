@@ -45,7 +45,13 @@ int main(int argc, char **argv)
 	
 	Logger::deleteInstance(); 
 
+    //HttpRequest* req = new HttpRequest();
+    //HttpParser* parser = new HttpParser(req);
 
+    //std::string str = "GET / HTTP/1.1\r\nAccept: */*;q=0.2;level=sdf, text/plain, text/html;q=sdf\r\nConnection: keep-alive\r\n\r\n";
+    //parser->feed(str);
+    //parser->parse();
+    //req->print();
 
 }
 

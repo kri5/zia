@@ -67,6 +67,7 @@ class	Parser
         void                saveContextPub();
         void                restoreContextPub();
 		void				feed(const std::string&);
+        bool                isFed() const;
         void                dump() const;
 
 	protected:
@@ -94,6 +95,7 @@ class	Parser
         std::string                 _commentList;
         bool                        _end;
         char                        _lastReadChar;
+        bool                        _isFed;
 };
 
 

@@ -27,6 +27,8 @@ class HttpParser : public Parser
 		bool			parseOption(const std::string&, 
                                     HttpRequest::Option);
 
+        bool            parseOptionAccept();
+        bool            parseOptionConnection();
 		bool            parseOptionHost();
 	    bool            parseOptionContentLength();
 		bool            parseOptionFrom();
@@ -36,6 +38,8 @@ class HttpParser : public Parser
         bool            parseOptionGeneric();
 
         bool            readEmailAddress(std::string&);
+        bool            readAcceptType(std::string&);
+        bool            readAcceptParam(std::string&);
         bool            readHost(std::string&);
         bool            readAbsoluteUri(std::string&, bool&);
         bool            readRelativeUri(std::string&, bool&);

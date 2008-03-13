@@ -89,7 +89,7 @@ Logger::Logger() : _file(NULL), _nextDebugLevel(Unset)
     _logMutex = new Mutex();
 
 #ifdef NDEBUG
-	setLogLevel(Logger::Warning);
+	setLogLevel(Logger::All);
 	_defaultStdOut = false;
 #else
 	setLogLevel(Logger::All);
