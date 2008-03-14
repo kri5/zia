@@ -17,7 +17,7 @@ class Task
     public:
         Task(ClientSocket*, const std::vector<const Vhost*>&);
         virtual ~Task();
-        void    execute(ITime*);
+        void    execute();
 
     private:
         bool            parseRequest();
@@ -25,6 +25,7 @@ class Task
         bool            sendResponse();
         void            sendError();
         bool            sendBuffer();
+        bool            checkTimeout();
 
         HttpRequest*    _req;
         HttpResponse*   _res;
@@ -32,7 +33,7 @@ class Task
         Buffer*         _writeBuffer;
         Buffer*         _readBuffer;
         ITime*          _time;
-        IMutex*         _mutex;
+        int             _timeoutDelay;
 
         const std::vector<const Vhost*>&    _vhosts;
 };

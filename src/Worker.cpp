@@ -4,19 +4,15 @@
 #include "Logger.hpp"
 #include "MemoryManager.hpp"
 #include "Time.h"
-#include "RootConfig.hpp"
 
 Worker::Worker(Pool* pool) : _pool(pool), _task(NULL)
 {
-    _time = new Time();
-    _timeoutDelay = atoi(RootConfig::getParam("Timeout").c_str());
 }
 
 Worker::~Worker()
 {
     if (this->_task)
         delete this->_task;
-    delete this->_time;
 }
 
 /// Launch a new thread that will handle the new client connection
@@ -37,13 +33,14 @@ void            Worker::code()
         this->_task = this->_pool->popTask();
         if (this->_task != NULL)
         {
-            this->_task->execute(this->_time);
+            this->_task->execute();
             delete this->_task;
             this->_task = NULL;
         }
         else
         {
             this->_pool->addSleepingThread(this);
+            Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "Sending thread " << this->m_pid << " to bed" << Logger::Flush;
             this->checkSleep(true);
         }
     }
@@ -51,15 +48,4 @@ void            Worker::code()
     std::cout << "Thread is dying" << std::endl;
     exit(1);
 }
-
-bool    Worker::checkTimeout()
-{
-    if (this->_time->elapsed(this->_timeoutDelay))
-    {
-        std::cout << "Client has timeout" << std::endl;
-        return true;
-    }
-    return false;
-}
-
 

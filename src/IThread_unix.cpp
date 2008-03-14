@@ -43,24 +43,28 @@ void      IThread::stop()
 
 void    IThread::sleep()
 {
+    MutexLock   get_lock(this->_mutex);
     this->_sleepScheduled = true;
 }
 
 void    IThread::awake()
 {
+    MutexLock   get_lock(this->_mutex);
     pthread_cond_signal(&(this->_cond));
+    //Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "Removing thread " << this->m_pid << " from bed" << Logger::Flush;
     this->_asleep = false;
 }
 
 void    IThread::checkSleep(bool forceSleep)
 {
+    this->_mutex->lock();
     if (!this->_asleep && (forceSleep || this->_sleepScheduled))
     {
-        Logger::getInstance() << Logger::Info << "putting thread #" << this->m_pid << " to bed" << Logger::Flush;
-        MutexLock   lock(*this->_mutex);
+        //Logger::getInstance() << Logger::Info << "putting thread #" << this->m_pid << " to bed" << Logger::Flush;
         this->_asleep = true;
         this->_sleepScheduled = false;
-        Logger::getInstance() << Logger::Info << "  MutexLockPassed in thread #"  << this->m_pid << Logger::Flush;
         pthread_cond_wait(&(this->_cond), &(this->_mutex->getMutex()));
+        //Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "Thread " << this->m_pid << " is awake" << Logger::Flush;
     }
+    this->_mutex->unlock();
 }

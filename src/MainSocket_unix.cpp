@@ -56,7 +56,8 @@ ClientSocket*	MainSocket::accept()
 	int acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == SOCKET_ERROR)
 	{
-		throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
+        Logger::getInstance() << Logger::Warning << "Can't accept client (" << strerror(errno) << ')' << Logger::Flush;
+		//throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
 	}
 	ClientSocket *ret = new ClientSocket(acceptSocket);
     // In case of SSL

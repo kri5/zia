@@ -20,7 +20,6 @@ class   Pool
         void                    addSleepingThread(Worker*);
         Task*                   popTask();
         Worker*                 popFreeThread();
-        void                    checkTimeouts();
         bool                    createThread();
         void                    killThread();
         void                    relaunchThread(Worker*);

@@ -27,8 +27,6 @@ void    Pool::Manager::code()
         {
             //si on arrive ici, c'est qu'aucun thread n'est actuellement libre, ou il sont tous endormis.
             //reste-t-il des threads libre (il seraient alors tous endormis)
-            //Logger::getInstance() << Logger::Info << "nbTread " << this->_pool->getFreeThreadsNbr() << Logger::Flush;
-            //Logger::getInstance() << Logger::Info << "Nb Task " << this->_pool->getTaskNbr() << Logger::Flush;
             if (this->_pool->getFreeThreadsNbr() > 0)
             {
                 //  oui : on pop le premier thread libre, il se chargera de trouver la task.
@@ -41,7 +39,7 @@ void    Pool::Manager::code()
                 //  non : a voir pour un algo de recreation de thread.
             }
         }
-        //We check for request no matter task stack is empty or not.
-        //this->_pool->checkTimeouts();
+       // Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "nbTread " << this->_pool->getFreeThreadsNbr() << Logger::Flush;
+       // Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "Nb Task " << this->_pool->getTaskNbr() << Logger::Flush;
     }
 }

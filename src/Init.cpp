@@ -243,7 +243,7 @@ void        Init::initSockets()
 void        Init::initThreads()
 {
     //FIXME : adapt the number of threads from the config.
-    _pool = new Pool(10);
+    _pool = new Pool(5);
     _pool->init();
 }
 

@@ -7,6 +7,10 @@
 ClientSocket::ClientSocket(int acceptedSocket) 
 {
 	listenSocket = acceptedSocket;
+    struct timeval tv;
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
+    setsockopt(listenSocket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
 }
 
 ClientSocket::~ClientSocket()

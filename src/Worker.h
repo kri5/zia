@@ -13,19 +13,17 @@ class Pool;
 
 class Worker : public IThread
 {
-public:
-    static Worker*      create(Pool*);
-    virtual ~Worker(); 
+    public:
+        static Worker*      create(Pool*);
+        virtual ~Worker(); 
 
-    bool                checkTimeout();
-private:
-    Worker(Pool* pool);
-    void                code();
+    private:
+        Worker(Pool* pool);
+        void                code();
 
-    Pool*               _pool;
-    ITime*              _time;
-    Task*               _task;
-    int                 _timeoutDelay;
+        Pool*               _pool;
+        Task*               _task;
+        int                 _timeoutDelay;
 };
 
 #endif // WORKER_H

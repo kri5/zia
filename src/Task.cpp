@@ -8,17 +8,19 @@
 #include "IMutex.h"
 #include "Mutex.h"
 #include "Logger.hpp"
+#include "RootConfig.hpp"
+#include "Time.h"
 
 #include "MemoryManager.hpp"
 
 
 Task::Task(ClientSocket* clt, const std::vector<const Vhost*>& vhosts) :
-    _res(NULL), _socket(clt), _vhosts(vhosts)
+    _res(NULL), _socket(clt), _time(NULL), _vhosts(vhosts)
 {
     _req = new HttpRequest();
     _readBuffer = new Buffer(1024);
     _writeBuffer = new Buffer(1024);
-    _mutex = new Mutex();
+    _timeoutDelay = atoi(RootConfig::getParam("Timeout").c_str());
 }
 
 Task::~Task()
@@ -33,15 +35,16 @@ Task::~Task()
 
     if (this->_res)
         delete this->_res;
+    if (this->_time)
+        delete this->_time;
     //FIXME
     delete this->_socket;
     //selon le keep-alive : delete _socket;
 }
 
-void    Task::execute(ITime* timer)
+void    Task::execute()
 {
-    this->_time = timer;
-    this->_time->init();
+    _time = new Time();
     if (this->parseRequest() == true)
     {
         this->_time->init();
@@ -64,9 +67,17 @@ bool    Task::parseRequest()
 
     while (parser.done() == false)
     {
-        sockRet = this->_socket->recv(tmp, 1024);
-        if (sockRet <= 0)
+        if (this->checkTimeout())
             return false;
+        sockRet = this->_socket->recv(tmp, 1024);
+        if (sockRet < 0) //check recv timeout / error
+        {
+            if (errno == EAGAIN)
+                continue ; //recv timeout.
+            return false;
+        }
+        else if (sockRet == 0)
+            return false; //connection closed.
         this->_readBuffer->push(tmp, sockRet);
         while (this->_readBuffer->hasEOL())
         {
@@ -155,7 +166,6 @@ bool        Task::sendBuffer()
     {
         line = this->_writeBuffer->get(1024);
         ret = this->_socket->send(line, this->_writeBuffer->gcount());
-        this->_time->init();
         if (ret == Socket::SOCKET_ERROR)
         {
             delete[] line;
@@ -166,5 +176,15 @@ bool        Task::sendBuffer()
     }
     this->_writeBuffer->clear();
     return true;
+}
+
+bool    Task::checkTimeout()
+{
+    if (this->_time->elapsed(this->_timeoutDelay))
+    {
+        Logger::getInstance() << Logger::Info << "Client has timeout" << Logger::Flush;
+        return true;
+    }
+    return false;
 }
 
