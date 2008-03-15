@@ -6,6 +6,7 @@
 #include "FileSystem.h"
 #include "File.h"
 #include "Server.h"
+#include "Config.h"
 
 const char* IClientSocket::Error::Msg[] = {
     "Unknown error",
@@ -42,6 +43,11 @@ const char* Server::Error::Msg[] = {
 	"Unknown error",
     "Can't bind socket",
 	"Select error"
+};
+
+const char*	Config::Error::Msg[] = {
+	"Unknown error",
+	"Can't access this out of root config"
 };
 
 // Archi dependent part.

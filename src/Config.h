@@ -9,6 +9,15 @@
 class Config
 {
 	public:
+		struct	Error
+		{
+			enum Code
+			{
+				Unknown,
+				NotRootConfig
+			};
+			static const char*	Msg[];
+		};
 		Config();
 		/// Copy constructor, to allow configuration inheritance.
 		Config(const Config&);
@@ -34,7 +43,7 @@ class Config
         void        removeParameter(std::string name);
 		/// The param list, stocked as name => value
 		std::map<std::string, std::string>		_params;
-		std::map<std::string, std::string>		_mime;
+		std::map<std::string, std::string>*		_mime;
 		bool									_globalConf;
 };
 

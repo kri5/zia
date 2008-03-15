@@ -1,20 +1,24 @@
 #include <iostream>
 
 #include "Config.h"
+#include "ZException.hpp"
 
 #include "MemoryManager.hpp"
 
 Config::Config() : _globalConf(true)
 {
 	_params.clear();
+	_mime = new std::map<std::string, std::string>;
 }
 
 Config::~Config()
 {
+	if (this->_mime != NULL)
+		delete this->_mime;
 	_params.clear();
 }
 
-Config::Config(const Config& right) : _mime(right._mime), _globalConf(false)
+Config::Config(const Config& right) : _mime(NULL), _globalConf(false)
 {
     //some parameters shouldn't be herited :
     std::map<std::string, std::string>::const_iterator    it = right._params.begin();
@@ -58,14 +62,16 @@ int		Config::getDefaultPort() const
 
 void	Config::addMimeType(std::string ext, std::string type)
 {
-	this->_mime[ext] = type;
+	(*this->_mime)[ext] = type;
 }
 
 std::string	Config::getMimeType(std::string ext) const
 {
-	std::map<std::string, std::string>::const_iterator	it = this->_mime.find(ext);
+	if (this->_mime == NULL)
+		throw ZException<Config>(INFO, Error::NotRootConfig);
+	std::map<std::string, std::string>::const_iterator	it = this->_mime->find(ext);
 
-	if (it != this->_mime.end())
+	if (it != this->_mime->end())
 		return it->second;
 	return "text/plain";
 }
