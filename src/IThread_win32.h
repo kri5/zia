@@ -7,10 +7,14 @@
 class IThread : public IThreadbase
 {
 public:
+	IThread();
 	void			run();
 	void			stop();
 	virtual void	code() = 0;
+	void			sleep();
+	void			awake();
 protected:
+	void			checkSleep(bool forceSleep = false);
 private:
 	HANDLE			hThread;
 };

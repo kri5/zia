@@ -3,9 +3,9 @@
 
 #include "MemoryManager.hpp"
 
-Time::Time()
+Time::Time() : _time(NULL)
 {
-	_time = new CTime(time(NULL));
+	init();
 }
 
 Time::Time(const FILETIME& right)
@@ -20,7 +20,15 @@ Time::Time(const SYSTEMTIME& right)
 
 Time::~Time()
 {
-	delete this->_time;
+	if (this->_time)
+		delete this->_time;
+}
+
+void		Time::init()
+{
+	if (_time)
+		delete _time;
+	_time = new CTime(time(NULL));
 }
 
 time_t		Time::getTimestamp() const
@@ -52,4 +60,9 @@ bool			Time::operator <=(const ITime& right) const
 bool			Time::operator >=(const ITime& right) const
 {
 	return *this >= right;
+}
+
+bool			Time::elapsed(time_t seconds) const
+{
+	return ((time(NULL) - this->getTimestamp()) >= seconds);
 }

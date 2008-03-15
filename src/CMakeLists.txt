@@ -1,7 +1,8 @@
 #SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_BUILD_TYPE Debug)
 
-ADD_SUBDIRECTORY(modules)
+#doesn't work on win32 :
+#ADD_SUBDIRECTORY(modules)
 
 ADD_DEFINITIONS(-DTIXML_USE_TICPP)
 

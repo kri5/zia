@@ -3,7 +3,7 @@
 
 #include "MemoryManager.hpp"
 
-IThreadbase::IThreadbase() : _running(false), m_pid(0L)
+IThreadbase::IThreadbase() : _running(false), m_pid(0L), _sleepScheduled(false), _asleep(false)
 {
 }
 

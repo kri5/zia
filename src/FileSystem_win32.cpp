@@ -15,8 +15,8 @@ FileSystem::~FileSystem()
 {
 	if (this->_files)
 	{
-		std::vector<IFile*>::iterator		it = this->_files->begin();
-		std::vector<IFile*>::iterator		end = this->_files->end();
+		std::list<IFile*>::iterator		it = this->_files->begin();
+		std::list<IFile*>::iterator		end = this->_files->end();
 		while (it != end)
 		{
 			delete *it;
@@ -27,7 +27,7 @@ FileSystem::~FileSystem()
 	}
 }
 
-std::vector<IFile*>*			FileSystem::getFileList()
+std::list<IFile*>*				FileSystem::getFileList()
 {
 	if (this->_files == NULL)
 	{
@@ -36,13 +36,13 @@ std::vector<IFile*>*			FileSystem::getFileList()
 		BOOL					res;
 		std::string				fileName = this->_path + "/*";
 		
-		this->_files = new std::vector<IFile*>;
-		if ((search = FindFirstFile("*", &files)) == INVALID_HANDLE_VALUE)
+		this->_files = new std::list<IFile*>;
+		if ((search = FindFirstFile(fileName.c_str(), &files)) == INVALID_HANDLE_VALUE)
 			throw ZException<FileSystem>(INFO, FileSystem::Error::InvalidHandle, "Probably because file does not exist.");
 		res = TRUE;
 		while (res)
 		{
-			this->_files->push_back(new File(files.cFileName));
+			this->_files->push_back(new File(this->_path + "/" + files.cFileName));
 			res = FindNextFile(search, &files);
 		}
 		FindClose(search);
@@ -64,7 +64,7 @@ bool		FileSystem::checkFileExistence(std::string name) const
 
 bool		FileSystem::checkReadRights(std::string name) const
 {
-	return this->checkRights(name, FileSystem::Existence);
+	return this->checkRights(name, FileSystem::Read);
 }
 
 bool		FileSystem::checkExecRights(std::string name) const

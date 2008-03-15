@@ -3,14 +3,13 @@
 
 #include "Init.h"
 #include "NetworkID.h"
-#include "Zerror.h"
 #include "RootConfig.hpp"
+#include "Modules.h"
 
 #include "MemoryManager.hpp"
 
 Init::Init(int argc, char **argv) : _argc(argc), _argv(argv)
 {
- //   std::set_new_handler(ZNewHandler);
 	_conf = new Config();
 }
 
@@ -154,8 +153,8 @@ void        Init::readConfiguration(const std::string fileName, Config* cfg)
 
 void        Init::initModules()
 {
-    Modules m; // Ugly, only for dev :)
-    m.load("bin/modules/libhelloworld.so");
+    //Modules m; // Ugly, only for dev :)
+    //m.load("bin/modules/libhelloworld.so");
 }
 
 /// Initialize the SSL features

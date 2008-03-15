@@ -1,5 +1,5 @@
 #ifndef MODULES_H
-#define MODULES_H
+# define MODULES_H
 
 #ifdef WIN32
     // Not in use for now 

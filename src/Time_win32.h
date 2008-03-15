@@ -23,12 +23,14 @@ class Time : public ITime
 		Time(const SYSTEMTIME&);
 		virtual ~Time();
 
+		void				init();
 		time_t				getTimestamp() const;
 		const char*			getStr() const;
 		bool				operator<(const ITime&) const;
 		bool				operator>(const ITime&) const;
 		bool				operator<=(const ITime&) const;
 		bool				operator>=(const ITime&) const;
+		bool				elapsed(time_t seconds) const;
 
 	private:
 		CTime*				_time;

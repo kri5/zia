@@ -4,6 +4,8 @@
 #include "zia.h"
 #include "Mutex.h"
 
+#undef sleep
+
 class IThreadbase
 {
 public:
@@ -25,6 +27,7 @@ public:
     /// Will check if thread is sleeping.
     bool            sleeping() const;
 protected:
+	virtual void	checkSleep(bool forceSleep) = 0;
 	IThreadbase();
 	/// Entry point of the thread.
 	virtual void	code() = 0;

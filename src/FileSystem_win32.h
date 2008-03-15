@@ -30,14 +30,14 @@ class	FileSystem : public IFileSystem
 		FileSystem(std::string);
 		virtual 					~FileSystem();
 		/// Don't bother with getFileList() memory allocation, FileSystem::~FileSystem() will do it automaticaly.
-		std::vector<IFile*>*		getFileList();
+		std::list<IFile*>*			getFileList();
 		bool						checkFileExistence(std::string) const;
 		bool						checkReadRights(std::string) const;
 		bool						checkExecRights(std::string) const;
 		bool						checkRights(std::string, int) const;
 	private:
 		std::string					_path;
-		std::vector<IFile*>*		_files;
+		std::list<IFile*>*			_files;
 };
 
 #endif //FILESYSTEM_WIN32_H__

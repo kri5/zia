@@ -1,10 +1,14 @@
+#include <io.h>
+
 #include "File_win32.h"
 #include "ZException.hpp"
 #include "Time.h"
+#include "FileSystem_win32.h"
 
 #include "MemoryManager.hpp"
 
-File::File(const std::string& filename, const char* path) : _filename(filename), _time(NULL), _stream(NULL), _closed(false)
+File::File(const std::string& filename, const char* path) : 
+		_filename(filename), _time(NULL), _stream(NULL), _closed(false), _errorCode(Error::None)
 {
 	if (path)
 	{
@@ -15,7 +19,13 @@ File::File(const std::string& filename, const char* path) : _filename(filename),
 	else
 		_filePath = filename;
 	if (GetFileAttributesEx(_filePath.c_str(), GetFileExInfoStandard, &_attr) == 0)
-		throw ZException<File>(INFO, File::Error::CantGetAttributes, "Probably because file does not exist");
+		_errorCode = Error::NoSuchFile;
+	else
+	{
+		if ((_attr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY) //access can only be used on files.
+			if (_access_s(_filePath.c_str(), FileSystem::Read) != 0) //Directory always has write/read access. Now is a good time to laugh at windows.
+				_errorCode = Error::PermissionDenied;
+	}
 }
 
 File::~File()
@@ -36,7 +46,7 @@ std::string		File::getFileName() const
 unsigned int				File::getSize() const
 {
 	if (this->_attr.nFileSizeHigh != 0)
-		Logger::getInstance() << Logger::Warning << "Asked for file greater than 4G !" << Zia::Newline;
+		Logger::getInstance() << Logger::Warning << "Asked for file greater than 4G !" << Logger::Flush;
 	return this->_attr.nFileSizeLow;
 }
 
@@ -59,7 +69,8 @@ std::string		File::getExtension() const
 
 void			File::open()
 {
-	this->_stream = new std::ifstream(this->_filePath.c_str(), std::ios_base::binary);
+	if (this->_stream == NULL)
+		this->_stream = new std::fstream(this->_filePath.c_str(), std::ios_base::in | std::ios_base::binary);
 }
 
 void			File::close()
@@ -85,4 +96,15 @@ bool			File::good() const
 bool			File::eof() const
 {
 	return this->_stream->eof();
+}
+
+IFile::Error::Code	File::getError() const
+{
+	return this->_errorCode;
+}
+
+std::iostream*		File::getStream()
+{
+	this->open();
+	return this->_stream;
 }

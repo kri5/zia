@@ -26,7 +26,6 @@ public:
 	void 			close(bool shutdown);
 	const ISocket&	operator>>(fd_set&) const;
 	bool			isSet(const fd_set&) const;
-
 protected:
 	WSADATA wsaData;
 	SOCKET listenSocket;

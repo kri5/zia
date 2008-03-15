@@ -1,4 +1,7 @@
+#include <errno.h>
+
 #include "ClientSocket_win32.h"
+#include "Logger.hpp"
 
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
@@ -17,14 +20,10 @@ int ClientSocket::send(const char *buf, int length) const
 {
 	int iResult = ::send(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
-	{
-		closesocket(listenSocket);
-		WSACleanup();
-		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Send);
-	}
+		Logger::getInstance() << Logger::Warning << "Can't send data (" << strerror(WSAGetLastError()) << ')' << Logger::Flush;
 	return (iResult);
 }
-
+//FIXME : what's this for ?
 int   ClientSocket::send(const std::string& buf, int length) const
 {
     std::string tmp = buf;
@@ -47,11 +46,7 @@ int ClientSocket::recv( char *buf, int length ) const
 {
 	int iResult = ::recv(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
-	{
-		closesocket(listenSocket);
-		WSACleanup();
-		throw ZException<IClientSocket>(INFO, IClientSocket::Error::Recv);
-	}
+		Logger::getInstance() << Logger::Warning << "Can't receive data (" << strerror(WSAGetLastError()) << ')' << Logger::Flush;
 	return (iResult);
 }
 

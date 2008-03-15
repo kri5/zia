@@ -9,6 +9,7 @@
 IThread::IThread()
 {
     _mutex = new Mutex();
+	_asleep = false;
     pthread_cond_init(&_cond, NULL);
 }
 

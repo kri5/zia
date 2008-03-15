@@ -149,12 +149,12 @@ void    SSLClientSocket::close(bool shutdown)
 /// Get and send errors (as strings) to the logger.
 void	SSLClientSocket::logError() const
 {
-  unsigned long e;
+  /*unsigned long e;
   static char *buf;
 
   e = ERR_get_error();
   buf = ERR_error_string(e, NULL);
-  Logger::getInstance() << Logger::Error << "SSL " << std::string(buf) << Logger::Flush;
+  Logger::getInstance() << Logger::Error << "SSL " << std::string(buf) << Logger::Flush;*/
 }
 
 

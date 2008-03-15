@@ -99,6 +99,7 @@ void        Pool::__createThread()
 bool        Pool::createThread()
 {
     //FIXME
+	return true;
 }
 
 void        Pool::relaunchThread(Worker* w)

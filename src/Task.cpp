@@ -166,7 +166,7 @@ bool        Task::sendBuffer()
     {
         line = this->_writeBuffer->get(1024);
         ret = this->_socket->send(line, this->_writeBuffer->gcount());
-        if (ret == Socket::SOCKET_ERROR)
+        if (ret < 0)
         {
             delete[] line;
             return false;

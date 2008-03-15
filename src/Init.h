@@ -12,7 +12,6 @@
 #include "Vhost.h"
 #include "Config.h"
 #include "Pool.h"
-#include "Modules.h"
 
 class Init
 {
