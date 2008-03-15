@@ -13,6 +13,8 @@ class Buffer
         bool        hasEOL() const;
         char*       getLine();
         char*       get(size_t length);
+		/// Buff needs to be length + 1 char.
+		void		get(char* buff, size_t length);
         void        push(const char* data, size_t size);
         size_t      capacity() const;
         size_t      size() const;

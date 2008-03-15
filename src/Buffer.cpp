@@ -109,41 +109,45 @@ void    Buffer::packBuffer(size_t begin)
     this->getEolPos();
 }
 
+void	Buffer::get(char* res, size_t length)
+{
+	size_t  i;
+	size_t  nb;
+	std::list<char*>::iterator      it = this->_buffers.begin();
+	std::list<char*>::iterator      end = this->_buffers.end();
+
+	i = 0;
+	for (nb = 0; nb < length; ++nb)
+	{
+		if (i == this->_capacity)
+		{
+			++it;
+			if (it == end)
+			{
+				this->_readCount = nb;
+				res[nb] = 0;
+				return ;
+			}
+			i = 0;
+		}
+		else if (nb == this->_size)
+		{
+			this->_readCount = nb;
+			res[nb] = 0;
+			return ;
+		}
+		res[nb] = (*it)[i];
+		++i;
+	}
+	res[nb] = 0;
+	this->_readCount = nb;
+}
+
 char*   Buffer::get(size_t length)
 {
-    size_t  i;
-    size_t  nb;
-    char*   res;
-    std::list<char*>::iterator      it = this->_buffers.begin();
-    std::list<char*>::iterator      end = this->_buffers.end();
-
-    res = new char[length + 1];
-    i = 0;
-    for (nb = 0; nb < length; ++nb)
-    {
-        if (i == this->_capacity)
-        {
-            ++it;
-            if (it == end)
-            {
-                this->_readCount = nb;
-                res[nb] = 0;
-                return res;
-            }
-            i = 0;
-        }
-        else if (nb == this->_size)
-        {
-            this->_readCount = nb;
-            res[nb] = 0;
-            return res;
-        }
-        res[nb] = (*it)[i];
-        ++i;
-    }
-    res[nb] = 0;
-    this->_readCount = nb;
-    return res;
+    char* res = new char[length + 1];
+	this->get(res, length);
+	return res;
 }
 
 void    Buffer::dump()

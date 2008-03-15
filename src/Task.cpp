@@ -159,20 +159,16 @@ bool    Task::sendResponse()
 
 bool        Task::sendBuffer()
 {
-    char*   line;
+    char	line[1025];
     int     ret;
 
     while (this->_writeBuffer->empty() == false)
     {
-        line = this->_writeBuffer->get(1024);
+        this->_writeBuffer->get(line, 1024);
         ret = this->_socket->send(line, this->_writeBuffer->gcount());
         if (ret < 0)
-        {
-            delete[] line;
             return false;
-        }
         this->_writeBuffer->flush(ret);
-        delete[] line;
     }
     this->_writeBuffer->clear();
     return true;
