@@ -89,7 +89,19 @@ void		Init::addVhost(ticpp::Element& node)
     }
 }
 
-void		Init::addMimeType(ticpp::Element& node, Config* cfg)
+void        Init::addModule(ticpp::Element& node)
+{
+    std::string name = node.GetAttribute("name");
+
+    if (name == "")
+    {
+        Logger::getInstance() << Logger::Warning << "Can't have unnamed module." << Logger::Flush;
+        return ;
+    }
+    this->_conf->addModule(name, node.GetText());
+}
+
+void		Init::addMimeType(ticpp::Element& node)
 {
 	std::string fileExts = node.GetAttribute("file");
 
@@ -99,10 +111,10 @@ void		Init::addMimeType(ticpp::Element& node, Config* cfg)
 	size_t	end;
 	while ((end = fileExts.find(';', begin)) != std::string::npos)
 	{
-		cfg->addMimeType(fileExts.substr(begin, end - begin), node.GetText());
+		this->_conf->addMimeType(fileExts.substr(begin, end - begin), node.GetText());
 		begin = end + 1;
 	}
-    cfg->addMimeType(fileExts.substr(begin, end - begin), node.GetText());
+    this->_conf->addMimeType(fileExts.substr(begin, end - begin), node.GetText());
 }
 
 void		Init::includeConfigFile(std::string fileName, Config* cfg)
@@ -113,7 +125,7 @@ void		Init::includeConfigFile(std::string fileName, Config* cfg)
 	}
 	catch (ticpp::Exception& ex)
 	{
-		Logger::getInstance() << Logger::Warning << "Can't include file " << fileName << ex.what() << Logger::Flush;
+		Logger::getInstance() << Logger::Warning << "Can't include file " << fileName << ": " << Zia::Newline << ex.what() << Logger::Flush;
 	}
 }
 
@@ -125,10 +137,12 @@ void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 	{
 		if (it->Value() == "VirtualHost")
 			this->addVhost(*it);
+        else if (it->Value() == "module")
+            this->addModule(*it);
 		else if (it->Value() == "Include")
 			this->includeConfigFile(it->GetText(), cfg);
 		else if (it->Value() == "type")
-			this->addMimeType(*it, cfg);
+			this->addMimeType(*it); 
 		// Generic parameters
 		else
 		{

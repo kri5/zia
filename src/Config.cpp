@@ -9,16 +9,19 @@ Config::Config() : _globalConf(true)
 {
 	_params.clear();
 	_mime = new std::map<std::string, std::string>;
+	_modules = new std::map<std::string, std::string>;
 }
 
 Config::~Config()
 {
 	if (this->_mime != NULL)
 		delete this->_mime;
+	if (this->_modules != NULL)
+		delete this->_modules;
 	_params.clear();
 }
 
-Config::Config(const Config& right) : _mime(NULL), _globalConf(false)
+Config::Config(const Config& right) : _mime(NULL), _modules(NULL), _globalConf(false)
 {
     //some parameters shouldn't be herited :
     std::map<std::string, std::string>::const_iterator    it = right._params.begin();
@@ -72,6 +75,23 @@ std::string	Config::getMimeType(std::string ext) const
 	std::map<std::string, std::string>::const_iterator	it = this->_mime->find(ext);
 
 	if (it != this->_mime->end())
+		return it->second;
+	return "text/plain";
+}
+
+void	Config::addModule(std::string name, std::string location)
+{
+    Logger::getInstance() << Logger::Info << "Adding module \"" << name << "\". Library file is : \"" << location << '"' << Logger::Flush;
+	(*this->_modules)[name] = location;
+}
+
+std::string	Config::getModule(std::string ext) const
+{
+	if (this->_modules == NULL)
+		throw ZException<Config>(INFO, Error::NotRootConfig);
+	std::map<std::string, std::string>::const_iterator	it = this->_modules->find(ext);
+
+	if (it != this->_modules->end())
 		return it->second;
 	return "text/plain";
 }

@@ -6,23 +6,23 @@
 #include <iostream>
 class RootConfig : public Singleton<RootConfig>
 {
-	public:
-		void		setConfig(const Config* cfg)
-		{
-			this->_cfg = const_cast<Config*>(cfg);
-		}
-		static const Config*	getConfig()
-		{
-			return RootConfig::getInstance()._cfg;
-		}
+    public:
+        void		setConfig(const Config* cfg)
+        {
+            this->_cfg = const_cast<Config*>(cfg);
+        }
+        static const Config*	getConfig()
+        {
+            return RootConfig::getInstance()._cfg;
+        }
         static std::string  getParam(std::string name)
         {
             return RootConfig::getConfig()->getParam(name);
         }
-	private:
+    private:
         RootConfig() : _cfg(NULL){}
-		 Config*		_cfg;
-	friend class Singleton<RootConfig>;
+        Config*		_cfg;
+        friend class Singleton<RootConfig>;
 };
 
 #endif //ROOT_CONFIG_HPP__

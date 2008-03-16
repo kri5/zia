@@ -29,6 +29,8 @@ class Config
 
 		void									addMimeType(std::string ext, std::string type);
 		std::string								getMimeType(std::string ext) const;
+        void                                    addModule(std::string name, std::string location);
+        std::string                             getModule(std::string name) const;
         bool                                    isSet(std::string name) const;
         void                                    dump() const;
 	protected:
@@ -44,6 +46,7 @@ class Config
 		/// The param list, stocked as name => value
 		std::map<std::string, std::string>		_params;
 		std::map<std::string, std::string>*		_mime;
+        std::map<std::string, std::string>*     _modules;
 		bool									_globalConf;
 };
 
