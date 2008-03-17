@@ -71,7 +71,6 @@ void		Server::run()
 		ret = poll(pfds, size, 1000);
 		if (ret < 0)
 		{
-			ret = WSAGetLastError();
 			throw ZException<Server>(INFO, Error::Select);
 		}
 		if (ret == 0)
