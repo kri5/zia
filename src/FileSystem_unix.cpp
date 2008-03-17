@@ -37,7 +37,7 @@ std::list<IFile*>*		FileSystem::getFileList()
 		if (!dir)
 		{
 			closedir(dir);
-			throw ZException<FileSystem>(INFO, FileSystem::Error::OpenDir, strerror(errno));
+			return NULL;
 		}
 		this->_files = new std::list<IFile*>;
 		while ((file = readdir(dir)))

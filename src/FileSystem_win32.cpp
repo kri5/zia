@@ -38,7 +38,10 @@ std::list<IFile*>*				FileSystem::getFileList()
 		
 		this->_files = new std::list<IFile*>;
 		if ((search = FindFirstFile(fileName.c_str(), &files)) == INVALID_HANDLE_VALUE)
-			throw ZException<FileSystem>(INFO, FileSystem::Error::InvalidHandle, "Probably because file does not exist.");
+        {
+            //FIXME : check if handle needs to be closed.
+            return NULL;
+        }
 		res = TRUE;
 		while (res)
 		{
