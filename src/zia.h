@@ -8,6 +8,7 @@
   #undef FD_SETSIZE
  #endif
  #define FD_SETSIZE 512 // By default on windows FD are limited to 64.
+ #define poll WSAPoll
  #define sleep(x) Sleep((x)*1000)
 	/// Newline for Win32
 	namespace Zia

@@ -35,10 +35,12 @@ int	Socket::getNativeSocket() const
 	return this->listenSocket;
 }
 
-const ISocket&	Socket::operator>>(fd_set& fds) const
+
+const ISocket&  Socket::operator>>(struct pollfd& pfds) const
 {
-	FD_SET(this->listenSocket, &fds);
-	return *this;
+  pfds.fd = this->listenSocket;
+  pfds.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+  return *this;
 }
 
 int				Socket::getSocketValue() const
@@ -46,8 +48,9 @@ int				Socket::getSocketValue() const
 	return this->listenSocket;
 }
 
-bool            Socket::isSet(const fd_set& fds) const
+bool            Socket::isSet(const struct pollfd& pfds) const
 {
-    return FD_ISSET(this->listenSocket, &fds);
+  if (pfds.revents & (POLLOUT | POLLIN | POLLERR | POLLHUP))
+    return true;
+  return false;
 }
-

@@ -22,13 +22,16 @@ void Socket::close(bool shutdown)
 	closesocket(listenSocket);
 }
 
-const ISocket&	Socket::operator >>(fd_set &fds) const
+const ISocket&	Socket::operator>>(struct pollfd& pdfs) const
 {
-	FD_SET(this->listenSocket, &fds);
+	pdfs.fd = this->listenSocket;
+	pdfs.events = POLLRDNORM | POLLWRNORM;
 	return *this;
 }
 
-bool			Socket::isSet(const fd_set& fds) const
+bool            Socket::isSet(const struct pollfd& pdfs) const
 {
-	return (FD_ISSET(this->listenSocket, &fds) != 0);
+	if (pdfs.revents & (POLLRDNORM | POLLWRNORM))
+		return true;
+	return false;
 }

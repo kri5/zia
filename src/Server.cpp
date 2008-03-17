@@ -54,41 +54,43 @@ Server::~Server()
 
 void		Server::run()
 {
-	int										i;
-	int										size = this->_sockets.size();
-	fd_set									fds;
-	struct timeval							tval;
-	int										ret;
+	int					i;
+	int					size = this->_sockets.size();
+	struct pollfd*		pfds;
+	int					ret;
 
 	Logger::getInstance() << Logger::Info << "All sockets initialized, starting main loop" << Logger::Flush;
+	pfds = new struct pollfd[size];
 	while (true)
 	{
-		tval.tv_sec = 1;
-		tval.tv_usec = 0;
-		FD_ZERO(&fds);
+		memset(pfds, 0, sizeof(*pfds) * size);
 		for (i = 0; i < size; ++i)
 		{
-			*(this->_sockets[i]) >> fds;
+			*(this->_sockets[i]) >> pfds[i];
 		}
-		ret = select(this->_maxFd + 1, &fds, NULL, NULL, &tval);
+		ret = poll(pfds, size, 1000);
 		if (ret < 0)
+		{
+			ret = WSAGetLastError();
 			throw ZException<Server>(INFO, Error::Select);
+		}
 		if (ret == 0)
 		{
 			continue ;
 		}
-        this->checkSockets(ret, fds);
+    this->checkSockets(ret, pfds);
 	}
+	delete[]	pfds;
 }
 
-void            Server::checkSockets(int nbSockets, const fd_set& fds) const
+void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) const
 {
     int         size = this->_sockets.size();
     int         i;
 
     for (i = 0; i < size && nbSockets > 0; ++i)
     {
-        if (this->_sockets[i]->isSet(fds))
+        if (this->_sockets[i]->isSet(pfds[i]))
         {
             //Worker::create(*this->_sockets[i]->accept(), this->_sockets[i]->getAssociatedVhosts());
             ClientSocket*  clt = this->_sockets[i]->accept();
