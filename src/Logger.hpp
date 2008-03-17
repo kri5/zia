@@ -1,8 +1,6 @@
 #ifndef LOGGER_HPP__
 #define LOGGER_HPP__
 
-#define NDEBUG
-
 #include "zia.h"
 #include <fstream>
 #include <sstream>
