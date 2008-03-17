@@ -91,14 +91,7 @@ void		Init::addVhost(ticpp::Element& node)
 
 void        Init::addModule(ticpp::Element& node)
 {
-    std::string name = node.GetAttribute("name");
-
-    if (name == "")
-    {
-        Logger::getInstance() << Logger::Warning << "Can't have unnamed module." << Logger::Flush;
-        return ;
-    }
-    this->_conf->addModule(name, node.GetText());
+    this->_conf->addModule(node.GetText());
 }
 
 void		Init::addMimeType(ticpp::Element& node)

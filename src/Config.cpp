@@ -9,7 +9,7 @@ Config::Config() : _globalConf(true)
 {
 	_params.clear();
 	_mime = new std::map<std::string, std::string>;
-	_modules = new std::map<std::string, std::string>;
+	_modules = new std::list<std::string>;
 }
 
 Config::~Config()
@@ -79,21 +79,17 @@ std::string	Config::getMimeType(std::string ext) const
 	return "text/plain";
 }
 
-void	Config::addModule(std::string name, std::string location)
+void	Config::addModule(std::string location)
 {
-    Logger::getInstance() << Logger::Info << "Adding module \"" << name << "\". Library file is : \"" << location << '"' << Logger::Flush;
-	(*this->_modules)[name] = location;
+    Logger::getInstance() << Logger::Info << "Adding module \"" << location << '"' << Logger::Flush;
+	this->_modules->push_back(location);
 }
 
-std::string	Config::getModule(std::string ext) const
+const std::list<std::string>&	Config::getModules() const
 {
 	if (this->_modules == NULL)
 		throw ZException<Config>(INFO, Error::NotRootConfig);
-	std::map<std::string, std::string>::const_iterator	it = this->_modules->find(ext);
-
-	if (it != this->_modules->end())
-		return it->second;
-	return "text/plain";
+    return *(this->_modules);
 }
 
 bool        Config::isSet(std::string name) const

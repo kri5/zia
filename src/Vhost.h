@@ -2,6 +2,7 @@
  #define VHOST_H__
 
 #include <string>
+#include <vector>
 
 #include "NetworkID.h"
 #include "Config.h"
