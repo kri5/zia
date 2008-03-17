@@ -3,7 +3,7 @@
 #include "MutexLock.hpp"
 #include "Worker.h"
 
-Pool::Pool(unsigned int nbThreads) : _nbThreads(nbThreads)
+Pool::Pool(unsigned int nbThreads, unsigned int nbTasks) : _nbThreads(nbThreads), _nbTasks(nbTasks)
 {
     _mutex = new Mutex();
 }
@@ -17,24 +17,27 @@ void        Pool::init()
         //Automatically adding thread to sleeping pool.
         this->_workingThreads.push_back(w);
     }
+    for (unsigned int i = 0; i < this->_nbTasks; ++i)
+    {
+        this->_freeTasks.push(new Task());
+    }
     this->_manager = Pool::Manager::create(this);
 }
 
-bool        Pool::addTask(Task* task)
+bool        Pool::addTask(ClientSocket* clt, const std::vector<const Vhost*>* vhosts)
 {
     //std::cout << "before addtask lock" << std::endl;
     MutexLock   get_lock(*this->_mutex);
     //std::cout << "after addtask lock" << std::endl;
     //FIXME : adjust this limit and set it in the conf file.
-    if (this->_tasks.size() < 150)
+    if (this->_freeTasks.size() > 0)
     {
-        this->_tasks.push(task);
-        //if (this->_manager->sleeping())
-        //{
-        //    this->_manager->awake();
-        //}
-        //else
-        //    std::cout << "No need to awake manager" << std::endl;
+        Task*   t = this->_freeTasks.front();
+        this->_freeTasks.pop();
+        t->init(clt, vhosts);
+        this->_tasks.push(t);
+        std::cout << "task pushed" << std::endl;
+        std::cout << "task size == " << this->_tasks.size() << std::endl;
         return true;
     }
     std::cout << "Warning : dropping task !!!" << std::endl;
@@ -64,7 +67,7 @@ void    Pool::addSleepingThread(Worker* thread)
 Task*   Pool::popTask()
 {
     //std::cout << "Before popTask lock" << std::endl;
-    MutexLock   get_lock(*this->_mutex);
+    MutexLock   get_lock(this->_mutex);
     //std::cout << "after popTask lock" << std::endl;
     if (this->_tasks.size() > 0)
     {
@@ -75,10 +78,17 @@ Task*   Pool::popTask()
     return NULL;
 }
 
+void        Pool::finishTask(Task* t)
+{
+    MutexLock   get_lock(this->_mutex);
+
+    this->_freeTasks.push(t);
+}
+
 Worker*    Pool::popFreeThread()
 {
     //std::cout << "before popFreeThreadlock" << std::endl;
-    MutexLock   get_lock(*this->_mutex);
+    MutexLock   get_lock(this->_mutex);
     //std::cout << "after popFreeThreadlock" << std::endl;
     if (this->_threads.size() > 0)
     {

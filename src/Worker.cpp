@@ -5,14 +5,12 @@
 #include "MemoryManager.hpp"
 #include "Time.h"
 
-Worker::Worker(Pool* pool) : _pool(pool), _task(NULL)
+Worker::Worker(Pool* pool) : _pool(pool)
 {
 }
 
 Worker::~Worker()
 {
-    if (this->_task)
-        delete this->_task;
 }
 
 /// Launch a new thread that will handle the new client connection
@@ -30,17 +28,16 @@ void            Worker::code()
 {
     while (this->_running)
     {
-        this->_task = this->_pool->popTask();
-        if (this->_task != NULL)
+        Task*   t = this->_pool->popTask();
+        if (t != NULL)
         {
-            this->_task->execute();
-            delete this->_task;
-            this->_task = NULL;
+            t->execute();
+            this->_pool->finishTask(t);
         }
         else
         {
             this->_pool->addSleepingThread(this);
-            Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "Sending thread " << this->m_pid << " to bed" << Logger::Flush;
+            //Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "Sending thread " << this->m_pid << " to bed" << Logger::Flush;
             this->checkSleep(true);
         }
     }

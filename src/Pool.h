@@ -14,12 +14,13 @@ class Worker;
 class   Pool
 {
     public:
-        Pool(unsigned int nbThreads);
+        Pool(unsigned int nbThreads, unsigned int);
         void                    init();
-        bool                    addTask(Task*);
+        bool                    addTask(ClientSocket*, const std::vector<const Vhost*>*);
         void                    addSleepingThread(Worker*);
         Task*                   popTask();
         Worker*                 popFreeThread();
+        void                    finishTask(Task*);
         bool                    createThread();
         void                    killThread();
         void                    relaunchThread(Worker*);
@@ -32,9 +33,11 @@ class   Pool
         void                    __createThread();
 
         std::queue<Task*>       _tasks;
+        std::queue<Task*>       _freeTasks;
         std::queue<Worker*>     _threads;
         std::list<Worker*>      _workingThreads;
         unsigned int            _nbThreads;
+        unsigned int            _nbTasks;
         IMutex*                 _mutex;
         class   Manager : public IThread
         {

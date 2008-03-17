@@ -14,10 +14,9 @@
 #include "MemoryManager.hpp"
 
 
-Task::Task(ClientSocket* clt, const std::vector<const Vhost*>& vhosts) :
-    _res(NULL), _socket(clt), _time(NULL), _vhosts(vhosts)
+Task::Task() :
+    _res(NULL), _socket(NULL), _time(NULL), _vhosts(NULL)
 {
-    _req = new HttpRequest();
     _readBuffer = new Buffer(1024);
     _writeBuffer = new Buffer(1024);
     _timeoutDelay = atoi(RootConfig::getParam("Timeout").c_str());
@@ -42,6 +41,31 @@ Task::~Task()
     //selon le keep-alive : delete _socket;
 }
 
+void    Task::init(ClientSocket* clt,
+                    const std::vector<const Vhost*>* vhosts)
+{
+    this->_vhosts = vhosts;
+    this->_socket = clt;
+    this->_req = new HttpRequest();
+    this->_res = NULL;
+}
+
+void    Task::clear()
+{
+    this->_writeBuffer->clear();
+    this->_readBuffer->clear();
+    delete this->_req;
+    if (this->_res)
+        delete this->_res;
+}
+
+bool    Task::finalize(bool succeded)
+{
+    delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
+    this->clear();
+    return succeded;
+}
+
 void    Task::execute()
 {
     _time = new Time();
@@ -53,9 +77,14 @@ void    Task::execute()
             //just for the moment :
             this->_res->appendOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
             this->_res->appendOption("Connection", "close");
-            this->sendResponse();
+            if (this->sendResponse())
+            {
+                this->finalize(true);
+                return ;
+            }
         }
     }
+    this->finalize(false);
 }
 
 bool    Task::parseRequest()
@@ -83,7 +112,7 @@ bool    Task::parseRequest()
         this->_readBuffer->flush();
     }
     //TODO: check host.
-    this->_req->setConfig(Vhost::getVhost(this->_vhosts, 
+    this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getOption(HttpRequest::Host)));
     return true;
 }

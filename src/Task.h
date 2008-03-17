@@ -15,14 +15,17 @@
 class Task
 {
     public:
-        Task(ClientSocket*, const std::vector<const Vhost*>&);
+        Task();
         virtual ~Task();
         void    execute();
+        void    clear();
+        void    init(ClientSocket*, const std::vector<const Vhost*>*);
 
     private:
         bool            parseRequest();
         bool            buildResponse();
         bool            sendResponse();
+        bool            finalize(bool);
         void            sendError();
         bool            sendBuffer();
         bool            checkTimeout();
@@ -35,7 +38,7 @@ class Task
         ITime*          _time;
         int             _timeoutDelay;
 
-        const std::vector<const Vhost*>&    _vhosts;
+        const std::vector<const Vhost*>*    _vhosts;
 };
 
 #endif //TASK_H__

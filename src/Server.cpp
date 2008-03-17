@@ -94,10 +94,9 @@ void            Server::checkSockets(int nbSockets, const fd_set& fds) const
             ClientSocket*  clt = this->_sockets[i]->accept();
             if (clt)
             {
-                Task*   t = new Task(clt, this->_sockets[i]->getAssociatedVhosts());
-                if (this->_pool->addTask(t) == false)
+                if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())))
                 {
-                    delete t;
+                    Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
                 }
             }
         }

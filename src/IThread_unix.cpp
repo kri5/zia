@@ -69,3 +69,4 @@ void    IThread::checkSleep(bool forceSleep)
     }
     this->_mutex->unlock();
 }
+

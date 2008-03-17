@@ -22,7 +22,6 @@ class Worker : public IThread
         void                code();
 
         Pool*               _pool;
-        Task*               _task;
         int                 _timeoutDelay;
 };
 
