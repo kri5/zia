@@ -26,9 +26,7 @@ void        Pool::init()
 
 bool        Pool::addTask(ClientSocket* clt, const std::vector<const Vhost*>* vhosts)
 {
-    //std::cout << "before addtask lock" << std::endl;
     MutexLock   get_lock(*this->_mutex);
-    //std::cout << "after addtask lock" << std::endl;
     //FIXME : adjust this limit and set it in the conf file.
     if (this->_freeTasks.size() > 0)
     {
@@ -36,8 +34,6 @@ bool        Pool::addTask(ClientSocket* clt, const std::vector<const Vhost*>* vh
         this->_freeTasks.pop();
         t->init(clt, vhosts);
         this->_tasks.push(t);
-        std::cout << "task pushed" << std::endl;
-        std::cout << "task size == " << this->_tasks.size() << std::endl;
         return true;
     }
     std::cout << "Warning : dropping task !!!" << std::endl;
@@ -46,9 +42,7 @@ bool        Pool::addTask(ClientSocket* clt, const std::vector<const Vhost*>* vh
 
 void    Pool::addSleepingThread(Worker* thread)
 {
-    //std::cout << "before addSleepingThread lock" << std::endl;
     MutexLock   get_lock(*this->_mutex);
-    //std::cout << "after addSleepingThread lock" << std::endl;
     this->_threads.push(thread);
     //retirer le thread de la pile de thread actif
     std::list<Worker*>::iterator  it = this->_workingThreads.begin();
@@ -66,9 +60,7 @@ void    Pool::addSleepingThread(Worker* thread)
 
 Task*   Pool::popTask()
 {
-    //std::cout << "Before popTask lock" << std::endl;
     MutexLock   get_lock(this->_mutex);
-    //std::cout << "after popTask lock" << std::endl;
     if (this->_tasks.size() > 0)
     {
         Task* task = this->_tasks.front();
@@ -87,9 +79,7 @@ void        Pool::finishTask(Task* t)
 
 Worker*    Pool::popFreeThread()
 {
-    //std::cout << "before popFreeThreadlock" << std::endl;
     MutexLock   get_lock(this->_mutex);
-    //std::cout << "after popFreeThreadlock" << std::endl;
     if (this->_threads.size() > 0)
     {
         Worker* thread = this->_threads.front();
@@ -124,33 +114,25 @@ void        Pool::killThread()
 
 unsigned int    Pool::getNbThreads() const
 {
-    //std::cout << "before getNbThreads" << std::endl;
     MutexLock   get_lock(*this->_mutex);
-    //std::cout << "after getNbThreads" << std::endl;
     return this->_nbThreads;
 }
 
 unsigned int    Pool::getFreeThreadsNbr() const
 {
-    //std::cout << "before getFreeThreadsNbr" << std::endl;
     MutexLock   get_lock(*this->_mutex);
-    //std::cout << "after getFreeThreadsNbr" << std::endl;
     return this->_threads.size();
 }
 
 unsigned int    Pool::getTaskNbr() const
 {
-    //std::cout << "before getTaskNbr" << std::endl;
     MutexLock   get_lock(*this->_mutex);
-    //std::cout << "after getTaskNbr" << std::endl;
     return this->_tasks.size();
 }
 
 bool            Pool::empty() const
 {
-    //std::cout << "before empty" << std::endl;
     MutexLock   get_lock(*this->_mutex);
-    //std::cout << "after empty" << std::endl;
     return this->_tasks.empty();
 }
 
