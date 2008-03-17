@@ -1,7 +1,7 @@
 #ifndef HELLOWORLD_H
 #define HELLOWORLD_H
 
-#include "../IModule.h"
+#include "Modules/IModule.h"
 #include <iostream>
 
 class helloworld : public IModule

@@ -160,8 +160,11 @@ void        Init::readConfiguration(const std::string fileName, Config* cfg)
 
 void        Init::initModules()
 {
-    //Modules m; // Ugly, only for dev :)
-    //m.load("bin/modules/libhelloworld.so");
+    const std::list<std::string>& modulesList = RootConfig::getConfig()->getModules();
+    std::list<std::string>::const_iterator begin = modulesList.begin();
+    std::list<std::string>::const_iterator end = modulesList.end();
+    for (; begin != end; ++begin)
+        Modules::getInstance().load(*begin);
 }
 
 /// Initialize the SSL features

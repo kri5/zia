@@ -2,7 +2,7 @@
 SET(CMAKE_BUILD_TYPE Debug)
 
 #doesn't work on win32 :
-#ADD_SUBDIRECTORY(modules)
+ADD_SUBDIRECTORY(modules)
 
 ADD_DEFINITIONS(-DTIXML_USE_TICPP)
 

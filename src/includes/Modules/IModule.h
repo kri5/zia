@@ -9,7 +9,7 @@
 class   IModule
 {
     public:
-        ~IModule();
+        virtual ~IModule() {};
 
 };
 
