@@ -53,7 +53,7 @@ void        HttpParser::parse()
 	{
         if (this->isEOL())
             this->_isDone = true;
-        while (!this->isEnd() && this->parseOptions())
+        while (!this->isEnd() && this->hasEOL() && this->parseOptions())
             ;
 
         if (this->_isDone

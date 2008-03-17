@@ -102,6 +102,17 @@ const std::map<std::string, std::string>&   HttpRequest::getUriArguments() const
     return this->_uriArguments;
 }
 
+void            HttpRequest::clear()
+{
+    this->_options.clear();
+    this->_uriArguments.clear();
+    this->_bodyArguments.clear();
+
+    this->_uri.clear();
+    this->_protocol.clear();
+    this->_relativeUri = false;
+}
+
 void            HttpRequest::print()
 {
     std::map<Option, std::string>::iterator it

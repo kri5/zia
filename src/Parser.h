@@ -48,6 +48,7 @@ class	Parser
 
 		//bool				isEOF() const;
 		//bool				isError() const;
+        bool                hasEOL();
         bool                isEOL();
         bool                isEnd() const;
 

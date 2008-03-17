@@ -49,6 +49,7 @@ class HttpRequest
 		const Config*								getConfig() const;
         const std::map<std::string, std::string>&   getUriArguments() const; 
         bool                                        isUriRelative() const;
+        void                                        clear();
         void                                        print();
 
     private:

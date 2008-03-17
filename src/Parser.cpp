@@ -476,6 +476,27 @@ bool    Parser::isEOL()
     return this->peekIfEqual("\r\n");
 }
 
+bool    Parser::hasEOL()
+{
+    bool    firstStep = false;
+    char    c;
+
+    this->__saveContext();
+    while (!this->isEnd())
+    {
+        c = this->peekChar();
+        if (c == '\r')
+            firstStep = true;
+        if (firstStep && c == '\n')
+        {
+            this->__restoreContext();
+            return true;
+        }
+    }
+    this->__restoreContext();
+    return false;
+}
+
 bool    Parser::isEnd() const
 {
     return this->_end;
