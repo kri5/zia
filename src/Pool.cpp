@@ -1,7 +1,7 @@
-#include "Pool.h"
+#include "Workflow/Pool.h"
 #include "Logger.hpp"
 #include "MutexLock.hpp"
-#include "Worker.h"
+#include "Workflow/Worker.h"
 
 Pool::Pool(unsigned int nbThreads, unsigned int nbTasks) : _nbThreads(nbThreads), _nbTasks(nbTasks)
 {

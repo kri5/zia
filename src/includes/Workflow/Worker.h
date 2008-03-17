@@ -4,10 +4,10 @@
 #include <fstream>
 #include <exception>
 
-#include "IThread.h"
-#include "Pool.h"
-#include "ITime.h"
-#include "Task.h"
+#include "Threads/IThread.h"
+#include "Workflow/Pool.h"
+#include "Workflow/Task.h"
+#include "Time/ITime.h"
 
 class Pool;
 

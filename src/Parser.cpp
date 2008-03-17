@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 
-#include "Parser.h"
+#include "Workflow/Parser.h"
 
 const int BUFF_SIZE = 256;
 const char	COMMENT_CHAR = ';';

@@ -2,9 +2,9 @@
 #include <string.h>
 
 #include "Init.h"
-#include "NetworkID.h"
+#include "Network/NetworkID.h"
 #include "RootConfig.hpp"
-#include "Modules.h"
+#include "Modules/Modules.h"
 
 #include "MemoryManager.hpp"
 

@@ -9,9 +9,9 @@
 #include <ticpp.h>
 
 #include "Logger.hpp"
-#include "Vhost.h"
+#include "Network/Vhost.h"
 #include "Config.h"
-#include "Pool.h"
+#include "Workflow/Pool.h"
 
 class Init
 {

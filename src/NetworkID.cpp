@@ -1,6 +1,6 @@
 #include "Logger.hpp"
 
-#include "NetworkID.h"
+#include "Network/NetworkID.h"
 #include "ZException.hpp"
 
 #include "MemoryManager.hpp"

@@ -1,8 +1,8 @@
 #ifndef __HTTPPARSER_H__
 # define __HTTPPARSER_H__
 
-#include "Parser.h"
-#include "HttpRequest.h"
+#include "Workflow/Parser.h"
+#include "Http/HttpRequest.h"
 
 class HttpParser : public Parser
 {

@@ -1,5 +1,5 @@
-#include "HttpParser.h"
-#include "HttpRequest.h"
+#include "Http/HttpParser.h"
+#include "Http/HttpRequest.h"
 #include "Logger.hpp"
 
 #include <string>

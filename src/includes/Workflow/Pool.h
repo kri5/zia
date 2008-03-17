@@ -5,9 +5,9 @@
 #include <list>
 
 #include "Task.h"
-#include "IThread.h"
-#include "Worker.h"
-#include "Mutex.h"
+#include "Threads/IThread.h"
+#include "Workflow/Worker.h"
+#include "Mutex/Mutex.h"
 
 class Worker;
 

@@ -3,7 +3,7 @@
 
 #include <pthread.h>
 #include "zia.h"
-#include "IMutex.h"
+#include "Mutex/IMutex.h"
 
 class Mutex : public IMutex
 {

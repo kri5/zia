@@ -1,7 +1,7 @@
 #ifndef __MUTEXLOCK_H__
 #define __MUTEXLOCK_H__
 
-#include "IMutex.h"
+#include "Mutex/IMutex.h"
 #include <iostream>
 
 class   MutexLock

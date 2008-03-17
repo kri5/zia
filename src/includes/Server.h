@@ -5,11 +5,11 @@
 #include <vector>
 
 #include "zia.h"
-#include "NetworkID.h"
-#include "MainSocket.h"
-#include "Vhost.h"
 #include "Config.h"
-#include "Pool.h"
+#include "Network/NetworkID.h"
+#include "Sockets/MainSocket.h"
+#include "Network/Vhost.h"
+#include "Workflow/Pool.h"
 
 class	Server
 {

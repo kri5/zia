@@ -4,8 +4,8 @@
 #include <string>
 
 #include "zia.h"
-#include "IClientSocket.h"
-#include "NetworkID.h"
+#include "Sockets/IClientSocket.h"
+#include "Network/NetworkID.h"
 /// Interface for multi platform MainSocket compactibility.
 class IMainSocket
 {

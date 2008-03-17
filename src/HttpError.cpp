@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "HttpError.h"
+#include "Http/HttpError.h"
 
 HttpError::HttpError(int status, HttpRequest& request) : _request(request)
 {

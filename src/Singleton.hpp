@@ -2,9 +2,9 @@
 #define __SINGLETON_HPP__
 
 #ifdef WIN32
- #include "Mutex_win32.h"
+ #include "Mutex/Mutex_win32.h"
 #else
- #include "Mutex_unix.h"
+ #include "Mutex/Mutex_unix.h"
 #endif
 
 template <typename T>

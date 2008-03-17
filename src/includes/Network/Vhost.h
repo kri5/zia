@@ -6,7 +6,7 @@
 
 #include "NetworkID.h"
 #include "Config.h"
-#include "IMutex.h"
+#include "Mutex/IMutex.h"
 
 /// Represent a Virtual Host. Mainly used for storing configuration.
 class Vhost : public Config

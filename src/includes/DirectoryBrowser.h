@@ -4,9 +4,9 @@
 #include <list>
 #include <sstream>
 
-#include "HttpRequest.h"
-#include "HttpResponse.h"
-#include "FileSystem.h"
+#include "Http/HttpRequest.h"
+#include "Http/HttpResponse.h"
+#include "FileSystem/FileSystem.h"
 
 class DirectoryBrowser
 {

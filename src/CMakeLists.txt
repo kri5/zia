@@ -6,12 +6,12 @@ SET(CMAKE_BUILD_TYPE Debug)
 
 ADD_DEFINITIONS(-DTIXML_USE_TICPP)
 
-INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR} includes/ ./)
 
 SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp 
 	Config.cpp Init.cpp SSLClientSocket.cpp Vhost.cpp
 	Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp
-	MemoryManager.hpp ErrorMsg.cpp Zerror.cpp ZException.hpp
+	MemoryManager.hpp ErrorMsg.cpp ZException.hpp
 	MutexLock.hpp AtExit.hpp Parser.cpp HttpParser.cpp HttpRequest.cpp
     HttpResponse.cpp Server.cpp HttpError.cpp Date.cpp
     Buffer.cpp DirectoryBrowser.cpp HttpResponseFile.cpp HttpResponseDir.cpp
@@ -19,7 +19,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 
 SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
 	IClientSocket.h Init.h Config.h SSLClientSocket.h Vhost.h
-	Address.h Port.h NetworkID.h Port.h Zerror.h IFile.h IFileSystem.h File_win32.h FileSystem_win32.h
+	Address.h Port.h NetworkID.h Port.h IFile.h IFileSystem.h File_win32.h FileSystem_win32.h
 	ITime.h Time_win32.h Parser.h HttpParser.h HttpRequest.h IThread.h
     HttpResponse.h HttpError.h ISocket.h Date.h Server.h
     Buffer.h RootConfig.hpp DirectoryBrowser.h Task.h HttpResponseFile.h

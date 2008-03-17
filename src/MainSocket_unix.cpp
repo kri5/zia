@@ -1,9 +1,9 @@
 #include <errno.h>
 #include <string.h>
 
-#include "MainSocket_unix.h"
+#include "Sockets/MainSocket_unix.h"
 #include "ZException.hpp"
-#include "Vhost.h"
+#include "Network/Vhost.h"
 
 #include "MemoryManager.hpp"
 

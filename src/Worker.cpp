@@ -1,9 +1,9 @@
-#include "Buffer.h"
-#include "Worker.h"
+#include "Utils/Buffer.h"
+#include "Workflow/Worker.h"
 
 #include "Logger.hpp"
 #include "MemoryManager.hpp"
-#include "Time.h"
+#include "Time/Time.h"
 
 Worker::Worker(Pool* pool) : _pool(pool)
 {

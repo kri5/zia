@@ -7,8 +7,8 @@
 #include <string>
 #include <fstream>
 
-#include "ITime.h"
-#include "IFile.h"
+#include "Time/ITime.h"
+#include "File/IFile.h"
 
 class File : public IFile
 {

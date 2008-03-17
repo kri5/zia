@@ -6,7 +6,7 @@
 
 #include "zia.h"
 #include "Server.h"
-#include "Worker.h"
+#include "Workflow/Worker.h"
 #include "ZException.hpp"
 #include "RootConfig.hpp"
 

@@ -7,8 +7,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "IFile.h"
-#include "IFileSystem.h"
+#include "File/IFile.h"
+#include "FileSystem/IFileSystem.h"
 
 class	FileSystem : public IFileSystem
 {

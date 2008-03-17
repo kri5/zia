@@ -3,14 +3,14 @@
 
 #include <vector>
 
-#include "ClientSocket.h"
-#include "HttpRequest.h"
-#include "HttpResponse.h"
-#include "Vhost.h"
-#include "Buffer.h"
-#include "HttpError.h"
-#include "IMutex.h"
-#include "Mutex.h"
+#include "Sockets/ClientSocket.h"
+#include "Http/HttpRequest.h"
+#include "Http/HttpResponse.h"
+#include "Http/HttpError.h"
+#include "Network/Vhost.h"
+#include "Utils/Buffer.h"
+#include "Mutex/IMutex.h"
+#include "Mutex/Mutex.h"
 
 class Task
 {

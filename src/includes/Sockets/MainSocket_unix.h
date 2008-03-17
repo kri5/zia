@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 
-#include "Socket_unix.h"
-#include "ClientSocket_unix.h"
-#include "SSLClientSocket.h"
-#include "IMainSocket.h"
-#include "NetworkID.h"
-#include "Vhost.h"
+#include "Sockets/Socket_unix.h"
+#include "Sockets/ClientSocket_unix.h"
+#include "Sockets/SSLClientSocket.h"
+#include "Sockets/IMainSocket.h"
+#include "Network/NetworkID.h"
+#include "Network/Vhost.h"
 
 class MainSocket : public Socket, public IMainSocket
 {

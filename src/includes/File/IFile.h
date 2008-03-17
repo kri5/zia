@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "ITime.h"
+#include "Time/ITime.h"
 
 /// File interface, for having file informations
 class	IFile

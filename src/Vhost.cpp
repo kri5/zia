@@ -1,10 +1,10 @@
 #include <sstream>
 
-#include "Vhost.h"
+#include "Network/Vhost.h"
 #include "Logger.hpp"
 #include "ZException.hpp"
 #include "RootConfig.hpp"
-#include "Mutex.h"
+#include "Mutex/Mutex.h"
 
 #include "MemoryManager.hpp"
 

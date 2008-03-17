@@ -8,7 +8,7 @@
 #include <ostream>
 #include <iostream>
 
-#include "Mutex.h"
+#include "Mutex/Mutex.h"
 #include "MutexLock.hpp"
 #include "Singleton.hpp"
 

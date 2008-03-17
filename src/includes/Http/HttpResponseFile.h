@@ -3,8 +3,8 @@
 
 #include <istream>
 
-#include "HttpResponse.h"
-#include "IFile.h"
+#include "Http/HttpResponse.h"
+#include "File/IFile.h"
 
 class HttpResponseFile : public HttpResponse
 {

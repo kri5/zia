@@ -2,7 +2,7 @@
 #define ITHREADBASE_H__
 
 #include "zia.h"
-#include "Mutex.h"
+#include "Mutex/Mutex.h"
 
 #undef sleep
 
