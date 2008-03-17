@@ -63,7 +63,6 @@ bool    Task::parseRequest()
     HttpParser      parser(this->_req);
     char            tmp[1024];
     int             sockRet;
-    char*           line;
 
     while (parser.done() == false)
     {
@@ -79,14 +78,9 @@ bool    Task::parseRequest()
         else if (sockRet == 0)
             return false; //connection closed.
         this->_readBuffer->push(tmp, sockRet);
-        while (this->_readBuffer->hasEOL())
-        {
-            line = this->_readBuffer->getLine();
-            parser.feed(line);
-            delete[] line;
-            this->_readBuffer->flush();
-        }
+        parser.feed(this->_readBuffer->get(sockRet));
         parser.parse();
+        this->_readBuffer->flush();
     }
     //TODO: check host.
     this->_req->setConfig(Vhost::getVhost(this->_vhosts, 
