@@ -37,7 +37,7 @@ Les donnees sont donc recu, concatenees dans un buffer, puis envoyees au parser 
 A noter que la reception de donnees est non bloquante afin de rendre possible la detection d'un eventuel timeout.
 
 \subsection {Reception d'un contenu post-header}
-//FIXME
+Il est possible de recevoir un contenu post-header dans certain cas, qui pourra etre utiliser par la suite pour la construction de la reponse.
 
 \subsection {Creation d'un header de reponse}
 A partir de l'instance de HttpRequest cree lors du parsing de la requete, une instance de la classe HttpResponse est generee. C'est cette classe qui permettra de renvoyer la reponse au client.
