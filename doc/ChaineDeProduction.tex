@@ -1,0 +1,22 @@
+On peut decouper les grandes phases de fonctionnement du serveur en trois parties
+
+\begin{enumerate}
+    \item L'initialistation du serveur
+    \item La chaine de traitement des requetes
+    \item L'arret du serveur
+\end{enumerate}
+
+\section{La chaine de production}
+Le traitement des requetes peut se scinder en 7 etapes distinctes, ce qui permettera aux modules de se greffer entre ces differentes etapes :
+        \begin{enumerate}
+            \item Connection d'un client, avant de recevoir des donnees de ce dernier
+            \item Reception d'un header HTTP
+            \item Reception d'un enventuel contenu apres le header (multipart/form-data par exemple)
+            \item Parsing de la requete
+            \item Creation d'un header de reponse
+            \item Envoi du corps de la reponse
+            \item Fin du traitement de la requete
+        \end{enumerate}
+
+        Les modules pourront ainsi agir a differentes etapes de la chaine de production afin d'en modifier son comportement.
+ 
