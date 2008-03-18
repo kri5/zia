@@ -1,2 +1,27 @@
-  \chapter{Intégration des modules dans le serveur}
+\chapter{Intégration des modules dans le serveur}
 \section{Chargement des modules}
+    Le chargement d'un module s'effectue suivant le shema suivant:
+    \begin{enumerate}
+        \item Lecture de l'emplacement du module depuis la configuration.
+        \item Verification des symboles exportés.
+        \item Identification des interfaces utilisées.
+        \item Création et déploiement des instances correspondantes.
+    \end{enumerate}
+    
+    \subsection{Configuration}
+    Afin qu'un module soit dynamiquement chargé il doit être présent dans le fichier \textit{modules.conf} (inclus depuis \textit{zia.conf}). Il s'agit d'un arbre XML contenant les chemins vers les librairies dynamique (\textit{so} sous Linux ou \textit{dll} sous Windows).
+    
+    \subsection{Verification des symboles}
+    Un certain nombre de symboles doivent être obligatoirement exportés afin de permettre un socle commun permettant l'intéraction avec le serveur:
+    \begin{description}
+        \item[create] permet de créer une nouvelle instance du module (plus precisement de sa classe principale).
+        \item[destroy] détruie l'instance du module passée en paramètre.
+        \item[name] retourne le nom du module.
+    \end{description}
+    Si l'un de ces symboles n'est pas correctement exporté le module ne pourra pas être chargé et une erreur sera retournée.
+
+    \subsection{Identification des interfaces}
+    L'API propose diverses interfaces pouvant être implémentées par les modules, ces interfaces contiennent diverses méthodes qui seront appelées à des points stratégiques du serveur. Elles sont toutes optionnelles et peuvent être héritées par les modules pour supporter tel ou tel évenement.
+
+
+    Ces héritages sont donc utilisés conjointement avec des \textit{dynamic\_cast} pour déterminer quels évenements sont supportés par le module et ainsi l'inscrire aux différents points clés. 
