@@ -21,7 +21,12 @@
     Si l'un de ces symboles n'est pas correctement exporté le module ne pourra pas être chargé et une erreur sera retournée.
 
     \subsection{Identification des interfaces}
-    L'API propose diverses interfaces pouvant être implémentées par les modules, ces interfaces contiennent diverses méthodes qui seront appelées à des points stratégiques du serveur. Elles sont toutes optionnelles et peuvent être héritées par les modules pour supporter tel ou tel évenement.
+    L'API propose plusieurs interfaces pouvant être implémentées par les modules, ces interfaces contiennent diverses méthodes qui seront appelées à des points stratégiques du serveur. Elles sont toutes optionnelles et peuvent être héritées par les modules pour supporter tel ou tel évenement.
 
 
     Ces héritages sont donc utilisés conjointement avec des \textit{dynamic\_cast} pour déterminer quels évenements sont supportés par le module et ainsi l'inscrire aux différents points clés. 
+
+    \subsection{Mise en place des instances}
+    Certains évenements, du fait de leur nature, sont déclenchés à l'intérieur de threads. Pour gêrer la problématique de concurence et optimiser les resources processeurs, le serveur dispose d'une instance de chaque module dans chaque thread.
+    Ces instances sont crées au lancement des pools de threads, tâches, etc... par l'appel au système de gestion de modules (disponible sous forme de Singleton dans l'Application).
+    Dès lors, il suffit d'appeler de manière consécutive toute les instances des modules présent sur l'évenement l'une de leurs méthode afin de donner au module la possibilité de traiter le message.
