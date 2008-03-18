@@ -10,17 +10,51 @@ On peut decouper les grandes phases de fonctionnement du serveur en trois partie
 \section{La chaine de production}
 Le traitement des requetes peut se scinder en 7 etapes distinctes, 
 ce qui permettera aux modules de se greffer entre ces differentes etapes :
-        \begin{enumerate}
-            \item Connection d'un client, avant de recevoir des donnees de ce dernier
-            \item Reception d'un header HTTP
-            \item Reception d'un enventuel contenu apres le header (multipart/form-data par exemple)
-            \item Parsing de la requete
-            \item Creation d'un header de reponse
-            \item Envoi du corps de la reponse
-            \item Fin du traitement de la requete
-        \end{enumerate}
+\begin{enumerate}
+    \item Connection d'un client, avant de recevoir des donnees de ce dernier
+    \item Reception et parsing d'une requete HTTP
+    \item Reception d'un enventuel contenu post header (multipart/form-data par exemple)
+    \item Creation d'un header de reponse
+    \item Envoie du header de la reponse
+    \item Envoi du corps de la reponse
+    \item Fin du traitement de la requete
+\end{enumerate}
 
 Le decoupage du traitement d'une requete en differentes etapes nous permet
 donc de venir rajouter des modules avant ou apres ces etapes, qui 
 effectueront des diverses actions. Ces differents modules pourront agir 
 sur une ou plusieurs etapes de la chaine de production.
+
+\subsection{Connection d'un client}
+Lors de la connection d'un client, son socket est associe a une tache, puis cette tache ajoutee a la pile des taches a executer.
+Cette operation est realisee par le thread principal dans le cas d'une nouvelle connection, ou bien par le Pool Manager dans le cas d'un client en KeepAlive qui enverrait une nouvelle requete.
+Le traitement de cette requete se fera par la suite, dans un thread dedie a cette tache.
+
+\subsection{Reception et parsing d'une requete HTTP}
+A partir de cette operation, nous sommes maintenant dans un thread specialise dans l'execution des taches.
+La tache a ete retiree de la pool des taches a executer, et son traitement commence par la reception du header de la requete.
+Les donnees sont donc recu, concatenees dans un buffer, puis envoyees au parser HTTP, qui creera une instance d'un objet HttpRequest, contenant tout les parametres de la requete.
+A noter que la reception de donnees est non bloquante afin de rendre possible la detection d'un eventuel timeout.
+
+\subsection {Reception d'un contenu post-header}
+//FIXME
+
+\subsection {Creation d'un header de reponse}
+A partir de l'instance de HttpRequest cree lors du parsing de la requete, une instance de la classe HttpResponse est generee. C'est cette classe qui permettra de renvoyer la reponse au client.
+Selon si la requete demande un fichier ou un listing de repertoire, l'instance de HttpResponse sera differente. La recuperation du conteu est assure par la methode virtuelle pure getContent, qui sera implementee dans les classes HttpResponseFile, HttpResponseDir, ou bien HttpError.
+De cette facon, la lecture et l'envoie de la reponse peut se faire de maniere uniforme.
+Ces sous classes remplissent egalement les headers de reponse en adequation avec leur fonctions.
+Certains champs sont ajoutes de facon commune a toutes les reponses, comme le champ ``Server''.
+
+\subsection {Envoie du header de la reponse}
+Pour envoyer le header de reponse, la liste des champs de ce header est iteree, puis ajoutee dans un buffer, qui sera tout simplement envoye au client.
+
+\subsection {Envoie du corps de la reponse}
+Le corps de la reponse est obtenu grace a un stream, le dit stream etant construit dans la sous classe de HttpResponse adaptee a la requete.
+Chaque partie de ce stream est ajoutee dans un buffer, puis le buffer est envoye au client, ce jusqu'a la fin du stream.
+
+\subsection {Fin du traitement}
+Cette etape est appelee quelquesoit le resultat de la requete. Elle s'occupe de reinitialiser la tache afin qu'elle puisse etre replacee dans la pool, ferme la connection avec le client dans le cas ou ce client ne demande pas de KeepAlive. Dans le cas contraire, le client est ajoute a la liste des sockets en KeepAlive.
+
+\section {Interfacage des modules}
+
