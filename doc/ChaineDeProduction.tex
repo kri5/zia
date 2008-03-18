@@ -1,3 +1,4 @@
+\chapter{Chaine de Production}
 On peut decouper les grandes phases de fonctionnement du serveur en trois parties
 
 \begin{enumerate}
@@ -7,7 +8,8 @@ On peut decouper les grandes phases de fonctionnement du serveur en trois partie
 \end{enumerate}
 
 \section{La chaine de production}
-Le traitement des requetes peut se scinder en 7 etapes distinctes, ce qui permettera aux modules de se greffer entre ces differentes etapes :
+Le traitement des requetes peut se scinder en 7 etapes distinctes, 
+ce qui permettera aux modules de se greffer entre ces differentes etapes :
         \begin{enumerate}
             \item Connection d'un client, avant de recevoir des donnees de ce dernier
             \item Reception d'un header HTTP
@@ -18,5 +20,7 @@ Le traitement des requetes peut se scinder en 7 etapes distinctes, ce qui permet
             \item Fin du traitement de la requete
         \end{enumerate}
 
-        Les modules pourront ainsi agir a differentes etapes de la chaine de production afin d'en modifier son comportement.
- 
+Le decoupage du traitement d'une requete en differentes etapes nous permet
+donc de venir rajouter des modules avant ou apres ces etapes, qui 
+effectueront des diverses actions. Ces differents modules pourront agir 
+sur une ou plusieurs etapes de la chaine de production.
