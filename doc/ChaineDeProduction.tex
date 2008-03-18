@@ -20,6 +20,12 @@ ce qui permettera aux modules de se greffer entre ces differentes etapes :
     \item Fin du traitement de la requete
 \end{enumerate}
 
+    \begin{figure}[h!]
+    \framebox{\includegraphics[scale=0.2]{"images/WorkFlow".png}}
+    \end{figure}
+
+\newpage
+
 Le decoupage du traitement d'une requete en differentes etapes nous permet
 donc de venir rajouter des modules avant ou apres ces etapes, qui 
 effectueront des diverses actions. Ces differents modules pourront agir 
@@ -55,6 +61,10 @@ Chaque partie de ce stream est ajoutee dans un buffer, puis le buffer est envoye
 
 \subsection {Fin du traitement}
 Cette etape est appelee quelquesoit le resultat de la requete. Elle s'occupe de reinitialiser la tache afin qu'elle puisse etre replacee dans la pool, ferme la connection avec le client dans le cas ou ce client ne demande pas de KeepAlive. Dans le cas contraire, le client est ajoute a la liste des sockets en KeepAlive.
-
+\newpage
 \section {Interfacage des modules}
+
+    \begin{figure}[h!]
+    \framebox{\includegraphics[scale=0.2]{"images/Module".png}}
+    \end{figure}
 

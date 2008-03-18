@@ -1,2 +1,14 @@
   \chapter{Description d'un module}
 
+  Un module interagi avec le serveur a differents endroits du workflow.
+  Il pourra modifier la requete envoyee par le client, la reponse retournee par le serveur, mais egalement
+  interagir directement sur le comportement du serveur.
+
+  Certains modules permetteront de traiter des requetes que le serveur ne gere pas nativement (php, python, perl).
+  Ces derniers observeront les requetes entrantes afin de determiner si un traitement de leur part est nescessaire.
+  Des lors, ils pourront prendre en charge le traitement du corps de la reponse.
+
+  D'autres modules devant interagir sur des objets natifs du serveur, tel les Sockets (SSL), auront la possibilite de remplacer ces dernies par leurs propres implementations, au moment voulu.
+
+  D'autres encore ne feront qu'agir sur le format du contenu de la reponse renvoyee par le serveur (Compression/Cryptage).
+  Par exemple, ils pourront transformer du texte brut en donnees compressees et/ou cryptees\ldots
