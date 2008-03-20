@@ -14,8 +14,8 @@
 #include "MemoryManager.hpp"
 
 
-Task::Task() :
-    _res(NULL), _socket(NULL), _time(NULL), _vhosts(NULL)
+Task::Task(Pool* pool) :
+    _res(NULL), _socket(NULL), _time(NULL), _pool(pool), _vhosts(NULL)
 {
     _readBuffer = new Buffer(1024);
     _writeBuffer = new Buffer(1024);
@@ -62,6 +62,7 @@ void    Task::clear()
 bool    Task::finalize(bool succeded)
 {
     delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
+    //this->
     this->clear();
     return succeded;
 }
@@ -113,7 +114,7 @@ bool    Task::parseRequest()
     }
     //TODO: check host.
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
-                this->_req->getOption(HttpRequest::Host)));
+                this->_req->getOption("Host")));
     return true;
 }
 

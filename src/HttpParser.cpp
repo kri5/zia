@@ -57,7 +57,7 @@ void        HttpParser::parse()
             ;
 
         if (this->_isDone
-            && this->_request->getCommand() == HttpRequest::Post)
+            && this->_request->getCommand() == "Post")
             this->parseBody();
 	}
     this->flush();
@@ -86,7 +86,7 @@ bool        HttpParser::parseGetCommand()
             {
                 if (this->isEOL())
                 {
-                    this->_request->setCommand(HttpRequest::Get);
+                    this->_request->setCommand("Get");
                     return true;
                 }
             }
@@ -118,7 +118,7 @@ bool        HttpParser::parseHeadCommand()
             {
                 if (this->isEOL())
                 {
-                    this->_request->setCommand(HttpRequest::Head);
+                    this->_request->setCommand("Head");
                     return true;
                 }
             }
@@ -150,7 +150,7 @@ bool        HttpParser::parsePostCommand()
             {
                 if (this->isEOL())
                 {
-                    this->_request->setCommand(HttpRequest::Post);
+                    this->_request->setCommand("Post");
                     return true;
                 }
             }
@@ -199,8 +199,7 @@ void        HttpParser::parseBody()
 {
     std::string l;
 
-    l = this->_request->getOption
-        (HttpRequest::ContentLength);
+    l = this->_request->getOption("ContentLength");
     if (l.length())
         this->parseBodyArgument();
 }
@@ -386,7 +385,7 @@ bool        HttpParser::parseOptionAccept()
                         && this->readAcceptType(token))
                     ;
                 this->_request->appendOption
-                    (HttpRequest::Accept, token);
+                    ("Accept", token);
                 return true;
             }
         }
@@ -464,7 +463,7 @@ bool        HttpParser::parseOptionConnection()
             if (this->readIdentifier(token))
             {
                 this->_request->appendOption
-                    (HttpRequest::Connection, token);
+                    ("Connection", token);
                 return true;
             }
         }
@@ -493,7 +492,7 @@ bool        HttpParser::parseOptionHost()
             if (this->readHost(host))
             {
                 this->_request->appendOption
-                    (HttpRequest::Host,host);
+                    ("Host", host);
                 return true;
             }
         }
@@ -521,7 +520,7 @@ bool        HttpParser::parseOptionFrom()
         {
             this->readUntilEndOfLine(from);
             this->_request->appendOption
-                (HttpRequest::From, from);
+                ("From", from);
             return true;
         }
     }
@@ -549,7 +548,7 @@ bool        HttpParser::parseOptionContentLength()
             if (this->readInteger(length))
             {
                 this->_request->appendOption
-                    (HttpRequest::ContentLength, length);
+                    ("ContentLength", length);
                 return true;
             }
         }
@@ -578,7 +577,7 @@ bool        HttpParser::parseOptionDate()
             if (this->readDate(date))
             {
                 this->_request->appendOption
-                    (HttpRequest::Date, date);
+                    ("Date", date);
                 return true;
             }
         }
@@ -606,7 +605,7 @@ bool        HttpParser::parseOptionUserAgent()
         {
             this->readUntilEndOfLine(userAgent);
             this->_request->appendOption
-                (HttpRequest::UserAgent, userAgent);
+                ("UserAgent", userAgent);
             return true;
         }
     }
@@ -633,7 +632,7 @@ bool        HttpParser::parseOptionContentType()
         {
             this->readUntilEndOfLine(contentType);
             this->_request->appendOption
-                (HttpRequest::ContentType, contentType);
+                ("ContentType", contentType);
             return true;
         }
     }
@@ -735,8 +734,7 @@ bool        HttpParser::readAbsoluteUri(std::string& uri,
                 if (this->getLastReadChar() == '/')
                 {
                     host = res.substr(7, res.length() - 8);
-                    this->_request->appendOption(HttpRequest::Host,
-                                                host);
+                    this->_request->appendOption("Host", host);
                 }
              }
              uri = res;

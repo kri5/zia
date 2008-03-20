@@ -63,6 +63,37 @@ Chaque partie de ce stream est ajoutee dans un buffer, puis le buffer est envoye
 Cette etape est appelee quelquesoit le resultat de la requete. Elle s'occupe de reinitialiser la tache afin qu'elle puisse etre replacee dans la pool, ferme la connection avec le client dans le cas ou ce client ne demande pas de KeepAlive. Dans le cas contraire, le client est ajoute a la liste des sockets en KeepAlive.
 \newpage
 \section {Interfacage des modules}
+Nous interfacerons les modules a plusieurs emplacement de la chaine de production :
+\begin{enumerate}
+    \item Connection d'un client (accept())
+    \item Reception du header
+    \item Construction de la reponse
+    \item Envoie de la reponse
+\end{enumerate}
+
+Ainsi qu'a deux emplacements suplementaires :
+\begin{enumerate}
+    \item Demarage du serveur
+    \item Arret du serveur
+\end{enumerate}
+
+\subsection {Connection d'un client}
+Si un module s'inscrit a cet evenement, il devra construire sa propre implementation de l'interface IClientSocket.
+Ceci peut-etre particulierement utile lorsque les methodes d'envoie/reception de donnees doivent etre differentes des classiques send/recv, comme par exemple pour le SSL.
+
+\subsection {Reception d'un header}
+Cet evenement va permettre aux modules de modifier le header de la requete avant, et apres la reception du header envoye par le client.
+De cette facon, le module pourra modifier la facon qu'a le serveur d'interpreter la requete, ou encore ajouter certaines informations, en modifier d'autres\ldots etc.
+
+\subsection {Construction de la reponse}
+Cet emplacement de la chaine de production est divise en trois parties :
+
+Avant la construction de la requete, pour rajouter certains champs aux headers.
+
+Apres la construction de la requete, pour modifier, rajouter, ou supprimer les champs du header de reponse genere par le serveur.
+
+Pendant l'envoie du corps de la reponse, pour modifier les donnees envoyees, comme par exemple pour compresser la page.
+
 
     \begin{figure}[h!]
     \framebox{\includegraphics[scale=0.18]{"images/Module".png}}

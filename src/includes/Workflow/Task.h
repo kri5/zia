@@ -12,10 +12,12 @@
 #include "Mutex/IMutex.h"
 #include "Mutex/Mutex.h"
 
+class Pool;
+
 class Task
 {
     public:
-        Task();
+        Task(Pool*);
         virtual ~Task();
         void    execute();
         void    clear();
@@ -36,6 +38,7 @@ class Task
         Buffer*         _writeBuffer;
         Buffer*         _readBuffer;
         ITime*          _time;
+        Pool*           _pool;
         int             _timeoutDelay;
 
         const std::vector<const Vhost*>*    _vhosts;

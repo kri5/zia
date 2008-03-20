@@ -25,7 +25,7 @@ class HttpParser : public Parser
 
         bool            parseOptions();
 		bool			parseOption(const std::string&, 
-                                    HttpRequest::Option);
+                                    std::string);
 
         bool            parseOptionAccept();
         bool            parseOptionConnection();

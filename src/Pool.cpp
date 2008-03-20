@@ -6,6 +6,7 @@
 Pool::Pool(unsigned int nbThreads, unsigned int nbTasks) : _nbThreads(nbThreads), _nbTasks(nbTasks)
 {
     _mutex = new Mutex();
+    _keepAliveMutex = new Mutex();
 }
 
 void        Pool::init()
@@ -19,7 +20,7 @@ void        Pool::init()
     }
     for (unsigned int i = 0; i < this->_nbTasks; ++i)
     {
-        this->_freeTasks.push(new Task());
+        this->_freeTasks.push(new Task(this));
     }
     this->_manager = Pool::Manager::create(this);
 }
@@ -135,4 +136,13 @@ bool            Pool::empty() const
     MutexLock   get_lock(*this->_mutex);
     return this->_tasks.empty();
 }
+
+void            Pool::addKeepAliveClient(ClientSocket* clt)
+{
+    MutexLock   get_lock(this->_keepAliveMutex);    
+
+    std::cout << "Adding keep alive client" << std::endl;
+    this->_keepAlive.push_back(clt);
+}
+
 

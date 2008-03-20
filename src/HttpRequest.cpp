@@ -13,7 +13,7 @@ HttpRequest::~HttpRequest()
 
 }
 
-void            HttpRequest::setCommand(Command command)
+void            HttpRequest::setCommand(std::string command)
 {
     this->_command = command;
 }
@@ -36,7 +36,7 @@ void			HttpRequest::setConfig(const Config* cfg)
 	this->_cfg = const_cast<Config*>(cfg);
 }
 
-void            HttpRequest::appendOption(Option key,
+void            HttpRequest::appendOption(std::string key,
                                           std::string& value)
 {
     this->_options[key] = value;
@@ -59,7 +59,7 @@ void            HttpRequest::setProtocol(std::string& protocol)
     this->_protocol = protocol;
 }
 
-HttpRequest::Command                        HttpRequest::getCommand() const
+std::string     HttpRequest::getCommand() const
 {
     return this->_command;
 }
@@ -74,14 +74,14 @@ const std::string&                          HttpRequest::getProtocol() const
     return this->_protocol;
 }
 
-const std::map<HttpRequest::Option, std::string>&        HttpRequest::getOptions() const
+const std::map<std::string, std::string>&        HttpRequest::getOptions() const
 {
     return this->_options;
 }
 
-std::string       HttpRequest::getOption(Option option) const
+std::string       HttpRequest::getOption(std::string option) const
 {
-    std::map<HttpRequest::Option, std::string>::const_iterator    it = this->_options.find(option);
+    std::map<std::string, std::string>::const_iterator    it = this->_options.find(option);
     if (it != this->_options.end())
         return it->second;
     return "";
@@ -115,9 +115,9 @@ void            HttpRequest::clear()
 
 void            HttpRequest::print()
 {
-    std::map<Option, std::string>::iterator it
+    std::map<std::string, std::string>::iterator it
         = this->_options.begin();
-    std::map<Option, std::string>::iterator ite
+    std::map<std::string, std::string>::iterator ite
         = this->_options.end();
 
     std::map<std::string, std::string>::iterator uriIt

@@ -28,6 +28,7 @@ class   Pool
         unsigned int            getFreeThreadsNbr() const;
         unsigned int            getTaskNbr() const;
         bool                    empty() const;
+        void                    addKeepAliveClient(ClientSocket*);
     private:
         ///Must be launched from a thread safe environment.
         void                    __createThread();
@@ -36,9 +37,11 @@ class   Pool
         std::queue<Task*>       _freeTasks;
         std::queue<Worker*>     _threads;
         std::list<Worker*>      _workingThreads;
+        std::list<ClientSocket*>    _keepAlive;
         unsigned int            _nbThreads;
         unsigned int            _nbTasks;
         IMutex*                 _mutex;
+        IMutex*                 _keepAliveMutex;
         class   Manager : public IThread
         {
             public:
