@@ -36,12 +36,6 @@ void			HttpRequest::setConfig(const Config* cfg)
 	this->_cfg = const_cast<Config*>(cfg);
 }
 
-void            HttpRequest::appendOption(std::string key,
-                                          std::string& value)
-{
-    this->_options[key] = value;
-}
-
 void            HttpRequest::appendUriArgument(std::string& key,
                                             std::string& value)
 {
@@ -54,11 +48,6 @@ void            HttpRequest::appendBodyArgument(std::string& key,
     this->_bodyArguments[key] = value;
 }
 
-void            HttpRequest::setProtocol(std::string& protocol)
-{
-    this->_protocol = protocol;
-}
-
 std::string     HttpRequest::getCommand() const
 {
     return this->_command;
@@ -67,24 +56,6 @@ std::string     HttpRequest::getCommand() const
 const std::string&                          HttpRequest::getUri() const
 {
     return this->_uri;
-}
-
-const std::string&                          HttpRequest::getProtocol() const
-{
-    return this->_protocol;
-}
-
-const std::map<std::string, std::string>&        HttpRequest::getOptions() const
-{
-    return this->_options;
-}
-
-std::string       HttpRequest::getOption(std::string option) const
-{
-    std::map<std::string, std::string>::const_iterator    it = this->_options.find(option);
-    if (it != this->_options.end())
-        return it->second;
-    return "";
 }
 
 const Config*	HttpRequest::getConfig() const

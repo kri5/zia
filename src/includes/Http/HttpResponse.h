@@ -6,18 +6,11 @@
 #include <sstream>
 
 #include "File/IFile.h"
+#include "HttpTransaction.h"
 
-class   HttpResponse
+class   HttpResponse : public HttpTransaction
 {
     public:
-       // enum    Option
-       // {
-       //     Date,
-       //     ContentType,
-       //     ContentLength,
-       //     MimeType
-       // };
-
         struct  KeyValue
         {
             int                         key;
@@ -27,20 +20,8 @@ class   HttpResponse
         HttpResponse();
         virtual ~HttpResponse();
         
-        template <typename T>
-        void        appendOption(std::string opt, T value)
-        {
-            std::ostringstream  s;
-
-            s << value;
-            this->_options[opt] = s.str();
-        }
-        void        appendOption(std::string, std::string&);
         void        setResponseStatus(int status);
-        void        setProtocol(std::string&);
-        const std::map<std::string, std::string>&     getOptions() const;
 
-        const std::string&              getProtocol() const;
         int                             getResponseStatus() const;
         const std::string               getResponseValue() const;
         static const char*              getResponseStatusMessage(int key);
@@ -51,9 +32,7 @@ class   HttpResponse
 
     private:
         static KeyValue                 ResponseStatus[];
-        std::string                     _protocol;
         int                             _responseStatus;
-        std::map<std::string, std::string>   _options;
 };
 
 #endif  /* !__HTTPRESPONSE_H__ */

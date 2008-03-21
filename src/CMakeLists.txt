@@ -15,7 +15,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 	MutexLock.hpp AtExit.hpp Parser.cpp HttpParser.cpp HttpRequest.cpp
     HttpResponse.cpp Server.cpp HttpError.cpp Date.cpp
     Buffer.cpp DirectoryBrowser.cpp HttpResponseFile.cpp HttpResponseDir.cpp
-    Task.cpp Worker.cpp Pool.cpp PoolManager.cpp)
+    Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp)
 
 SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
 	IClientSocket.h Init.h Config.h SSLClientSocket.h Vhost.h
@@ -23,7 +23,7 @@ SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h Mai
 	ITime.h Time_win32.h Parser.h HttpParser.h HttpRequest.h IThread.h
     HttpResponse.h HttpError.h ISocket.h Date.h Server.h
     Buffer.h RootConfig.hpp DirectoryBrowser.h Task.h HttpResponseFile.h
-    HttpResponseDir.h Worker.h Pool.h)
+    HttpResponseDir.h Worker.h Pool.h HttpTransaction.h)
 
 
 IF (WIN32)

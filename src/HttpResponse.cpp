@@ -68,24 +68,9 @@ const char*             HttpResponse::getResponseStatusMessage(int key)
     return NULL;
 }
 
-void                    HttpResponse::setProtocol(std::string& protocol)
-{
-    this->_protocol = protocol;
-}
-
-void                    HttpResponse::appendOption(std::string opt, std::string& value)
-{
-    this->_options[opt] = value;
-}
-
 void                    HttpResponse::setResponseStatus(int status)
 {
     this->_responseStatus = status; 
-}
-
-const std::string&      HttpResponse::getProtocol() const
-{
-    return this->_protocol;
 }
 
 int                     HttpResponse::getResponseStatus() const
@@ -96,10 +81,5 @@ int                     HttpResponse::getResponseStatus() const
 const std::string      HttpResponse::getResponseValue() const
 {
     return std::string(getResponseStatusMessage(this->_responseStatus));
-}
-
-const std::map<std::string, std::string>&   HttpResponse::getOptions() const
-{
-    return this->_options;
 }
 
