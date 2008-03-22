@@ -1,3 +1,4 @@
+#include "Workflow/Pool.h" //Let this in first position (crossed dependencies :/ )
 #include "Workflow/Task.h"
 #include "File/IFile.h"
 #include "File/File.h"
@@ -61,8 +62,13 @@ void    Task::clear()
 
 bool    Task::finalize(bool succeded)
 {
-    delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
-    //this->
+ //   if (succeded == false ||
+ //           this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
+ //   {
+        delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
+ //   }
+ //   else
+ //       this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
     this->clear();
     return succeded;
 }
@@ -70,6 +76,7 @@ bool    Task::finalize(bool succeded)
 void    Task::execute()
 {
     _time = new Time();
+    std::cout << "new task" << std::endl;
     if (this->parseRequest() == true)
     {
         this->_time->init();
@@ -77,7 +84,12 @@ void    Task::execute()
         {
             //just for the moment :
             this->_res->appendOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
-            this->_res->appendOption("Connection", "close");
+            if (this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
+                this->_res->appendOption("Connection", "close");
+            else
+            {
+                this->_res->appendOption("Connection", "Keep-Alive");
+            }
             if (this->sendResponse())
             {
                 this->finalize(true);

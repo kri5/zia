@@ -7,6 +7,7 @@
 #include "File/File.h"
 #include "Server.h"
 #include "Config.h"
+#include "Workflow/Pool.h"
 
 const char* IClientSocket::Error::Msg[] = {
     "Unknown error",
@@ -48,6 +49,11 @@ const char* Server::Error::Msg[] = {
 const char*	Config::Error::Msg[] = {
 	"Unknown error",
 	"Can't access this out of root config"
+};
+
+const char* Pool::Manager::Error::Msg[] = {
+    "Unknown error",
+    "Poll() error"
 };
 
 // Archi dependent part.

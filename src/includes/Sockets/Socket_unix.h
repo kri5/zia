@@ -22,12 +22,14 @@ class Socket : public ISocket
     virtual void 	close(bool shutdown);
     int				getNativeSocket() const;
     const ISocket&  operator>>(struct pollfd&) const;
+    void            setPollFlag(int);
     bool            isSet(const struct pollfd&) const;
     int				getSocketValue() const;
     static const int SOCKET_ERROR = -1;
   protected:
     int             listenSocket;
     bool            _closed;
+    int             _pollFlag;
 };
 
 #endif

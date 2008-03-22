@@ -12,6 +12,7 @@ class ISocket
 		virtual void 			close(bool) = 0;
 		virtual const ISocket&	operator>>(struct pollfd&) const = 0;
 		virtual bool            isSet(const struct pollfd&) const = 0;
+        virtual void            setPollFlag(int) = 0;
 };
 
 #endif //ISOCKET_H__

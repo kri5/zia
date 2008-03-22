@@ -17,6 +17,8 @@ class   HttpError : public HttpResponse
         std::iostream&              getContent();
         bool                        completed() const;
     private:
+        void                        setContent();
+
         HttpRequest&                _request;
         int                         _status;
         std::string                 _message;

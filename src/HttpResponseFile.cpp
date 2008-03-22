@@ -4,7 +4,7 @@
 
 HttpResponseFile::HttpResponseFile(IFile* file) : HttpResponse(), _file(file)
 {
-    appendOption("ContentLength", file->getSize());
+    appendOption("Content-Length", file->getSize());
     appendOption("MimeType", 
     RootConfig::getInstance().getConfig()->getMimeType
            (file->getExtension()));

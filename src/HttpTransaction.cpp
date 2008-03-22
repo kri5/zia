@@ -5,6 +5,11 @@ void        HttpTransaction::setProtocol(std::string& protocol)
     this->_protocol = protocol;
 }
 
+bool    HttpTransaction::optionIsSet(std::string opt) const
+{
+    return (this->_options.find(opt) != this->_options.end());
+}
+
 const std::string&      HttpTransaction::getProtocol() const
 {
     return this->_protocol;

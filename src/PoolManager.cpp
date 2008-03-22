@@ -1,5 +1,8 @@
+#include <errno.h> //FIXME: check win32 compactibility
+
 #include "Workflow/Pool.h"
 #include "Logger.hpp"
+#include "ZException.hpp"
 
 //#include "MemoryManager.hpp"
 
@@ -12,6 +15,53 @@ Pool::Manager*    Pool::Manager::create(Pool* pool)
 
 Pool::Manager::Manager(Pool* pool) : _pool(pool)
 {
+}
+
+void    Pool::Manager::initKeepAlivePoll() //warning : high contendence.
+{
+    this->_pool->flushKeepAlive(this->_keepAlive);
+
+    std::list<KeepAliveClient>::iterator  it = this->_keepAlive.begin();
+    std::list<KeepAliveClient>::iterator  ite = this->_keepAlive.end();
+    size_t                              size = this->_keepAlive.size();
+    int                                 i = 0;
+
+    this->_fds = new struct pollfd[size];
+    memset(this->_fds, 0, sizeof(*(this->_fds)) * size);
+    while (it != ite)
+    {
+        *((*it).clt) >> this->_fds[i];
+        ++it;
+        ++i;
+    }
+}
+
+void    Pool::Manager::checkKeepAlive()
+{
+    int                                 i = 0;
+    int                                 ret;
+
+    ret = poll(this->_fds, this->_keepAlive.size(), 1);
+    if (ret < 0)
+        throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(errno));
+    if (ret == 0)
+        return ;
+
+    std::list<KeepAliveClient>::iterator  it = this->_keepAlive.begin();
+    std::list<KeepAliveClient>::iterator  ite = this->_keepAlive.end();
+    while (it != ite)
+    {
+        if ((*it).clt->isSet(this->_fds[i]))
+        {
+            this->_pool->addTask((*it).clt, (*it).vhosts);
+            it = this->_keepAlive.erase(it);
+        }
+        else
+            ++it;
+        ++i;
+    }
+
+    delete[] this->_fds;
 }
 
 void    Pool::Manager::code()
@@ -39,7 +89,7 @@ void    Pool::Manager::code()
                 //  non : a voir pour un algo de recreation de thread.
             }
         }
-       // Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "nbTread " << this->_pool->getFreeThreadsNbr() << Logger::Flush;
-       // Logger::getInstance() << Logger::Info << Logger::PrintStdOut << "Nb Task " << this->_pool->getTaskNbr() << Logger::Flush;
+        this->initKeepAlivePoll();
+        this->checkKeepAlive();
     }
 }

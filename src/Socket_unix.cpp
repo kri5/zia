@@ -9,7 +9,7 @@
 
 #include "MemoryManager.hpp"
 
-Socket::Socket() : _closed(false)
+Socket::Socket() : _closed(false), _pollFlag(POLLIN | POLLOUT | POLLERR | POLLHUP)
 {
 }
 
@@ -39,8 +39,13 @@ int	Socket::getNativeSocket() const
 const ISocket&  Socket::operator>>(struct pollfd& pfds) const
 {
   pfds.fd = this->listenSocket;
-  pfds.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+  pfds.events = this->_pollFlag;
   return *this;
+}
+
+void            Socket::setPollFlag(int mask)
+{
+    this->_pollFlag = mask;
 }
 
 int				Socket::getSocketValue() const
@@ -50,7 +55,7 @@ int				Socket::getSocketValue() const
 
 bool            Socket::isSet(const struct pollfd& pfds) const
 {
-  if (pfds.revents & (POLLOUT | POLLIN | POLLERR | POLLHUP))
+  if (pfds.revents & this->_pollFlag)
     return true;
   return false;
 }

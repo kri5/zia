@@ -87,7 +87,7 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
     int         size = this->_sockets.size();
     int         i;
 
-    for (i = 0; i < size && nbSockets > 0; ++i)
+    for (i = 0; i < size && nbSockets > 0; ++i) //FIXME: if nbSockets is the number of sockets to read, maybe we should use it :p
     {
         if (this->_sockets[i]->isSet(pfds[i]))
         {
@@ -95,9 +95,15 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
             ClientSocket*  clt = this->_sockets[i]->accept();
             if (clt)
             {
+                clt->setPollFlag(POLLIN | POLLERR | POLLHUP);
                 if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
                 {
+                    //FIXME: check for memory leak (not deleting clt)
                     Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
+                }
+                else
+                {
+                    std::cout << "new connected client" << std::endl;
                 }
             }
         }

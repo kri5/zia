@@ -137,12 +137,22 @@ bool            Pool::empty() const
     return this->_tasks.empty();
 }
 
-void            Pool::addKeepAliveClient(ClientSocket* clt)
+void            Pool::addKeepAliveClient(ClientSocket* clt, const std::vector<const Vhost*>* vhosts)
 {
-    MutexLock   get_lock(this->_keepAliveMutex);    
+    MutexLock   get_lock(this->_keepAliveMutex);
 
-    std::cout << "Adding keep alive client" << std::endl;
-    this->_keepAlive.push_back(clt);
+    this->_keepAlive.push(KeepAliveClient(clt, vhosts));
 }
 
+void    Pool::flushKeepAlive(std::list<KeepAliveClient>& sockets)
+{
+    MutexLock   get_lock(this->_keepAliveMutex);
+
+    while (this->_keepAlive.size() > 0)
+    {
+        std::cout << "transfering client from queue to list" << std::endl;
+        sockets.push_back(this->_keepAlive.front());
+        this->_keepAlive.pop();
+    }
+}
 

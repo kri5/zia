@@ -6,7 +6,7 @@ HttpResponseDir::HttpResponseDir(const HttpRequest* req) : HttpResponse()
     //everything's done here :
     _browser = new DirectoryBrowser(*req, _stream);
     _browser->get();
-    appendOption("ContentLength", _stream->str().length());
+    appendOption("Content-Length", _stream->str().length());
     appendOption("Content-Type", "text/html");
 }
 

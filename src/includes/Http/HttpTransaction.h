@@ -11,6 +11,7 @@ class   HttpTransaction
 {
     public:
         const SSMap&            getOptions() const;
+        bool                    optionIsSet(std::string) const;
         std::string				getOption(std::string) const;
 
         const std::string&      getProtocol() const;
