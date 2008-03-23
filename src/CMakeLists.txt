@@ -17,13 +17,14 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
     Buffer.cpp DirectoryBrowser.cpp HttpResponseFile.cpp HttpResponseDir.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp)
 
-SET(ZIAHTTPD_HEADERS zia.h Singleton.hpp Socket_win32.h ClientSocket_win32.h MainSocket_win32.h IThreadbase.h IThread_win32.h IMutex.h Mutex_win32.h
-	IClientSocket.h Init.h Config.h SSLClientSocket.h Vhost.h
-	Address.h Port.h NetworkID.h Port.h IFile.h IFileSystem.h File_win32.h FileSystem_win32.h
-	ITime.h Time_win32.h Parser.h HttpParser.h HttpRequest.h IThread.h
-    HttpResponse.h HttpError.h ISocket.h Date.h Server.h
-    Buffer.h RootConfig.hpp DirectoryBrowser.h Task.h HttpResponseFile.h
-    HttpResponseDir.h Worker.h Pool.h HttpTransaction.h)
+SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.h includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
+	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h
+	includes/Sockets/IClientSocket.h includes/Init.h includes/Config.h includes/Sockets/SSLClientSocket.h includes/Network/Vhost.h
+	includes/Network/Address.h includes/Network/Port.h includes/Network/NetworkID.h includes/File/IFile.h includes/FileSystem/IFileSystem.h includes/File/File_win32.h includes/FileSystem/FileSystem_win32.h
+	includes/Time/ITime.h includes/Time/Time_win32.h includes/Workflow/Parser.h includes/Http/HttpParser.h includes/Http/HttpRequest.h includes/Threads/IThread.h
+    includes/Http/HttpResponse.h includes/Http/HttpError.h includes/Sockets/ISocket.h includes/Date.h includes/Server.h
+    includes/Utils/Buffer.h RootConfig.hpp includes/DirectoryBrowser.h includes/Workflow/Task.h includes/Http/HttpResponseFile.h
+    includes/Http/HttpResponseDir.h includes/Workflow/Worker.h includes/Workflow/Pool.h includes/Http/HttpTransaction.h)
 
 
 IF (WIN32)
