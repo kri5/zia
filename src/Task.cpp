@@ -62,13 +62,13 @@ void    Task::clear()
 
 bool    Task::finalize(bool succeded)
 {
- //   if (succeded == false ||
- //           this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
- //   {
-        delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
- //   }
- //   else
- //       this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
+    if (succeded == false ||
+	    this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
+    {
+	delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
+    }
+    else
+	this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
     this->clear();
     return succeded;
 }
@@ -103,7 +103,7 @@ void    Task::execute()
 bool    Task::parseRequest()
 {
     HttpParser      parser(this->_req);
-    char            tmp[1024];
+    char            tmp[1025];
     int             sockRet;
 
     while (parser.done() == false)
@@ -111,6 +111,8 @@ bool    Task::parseRequest()
         if (this->checkTimeout())
             return false;
         sockRet = this->_socket->recv(tmp, 1024);
+	//tmp[sockRet] = 0;
+	//std::cout << "readed [" << tmp << "]" << std::endl;
         if (sockRet < 0) //check recv timeout / error
         {
             if (errno == EAGAIN)
