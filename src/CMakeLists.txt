@@ -13,7 +13,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 	Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp
 	MemoryManager.hpp ErrorMsg.cpp ZException.hpp
 	MutexLock.hpp AtExit.hpp Parser.cpp HttpParser.cpp HttpRequest.cpp
-    HttpResponse.cpp Server.cpp HttpError.cpp Date.cpp
+    HttpResponse.cpp Server.cpp HttpError.cpp
     Buffer.cpp DirectoryBrowser.cpp HttpResponseFile.cpp HttpResponseDir.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp)
 
@@ -22,7 +22,7 @@ SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.
 	includes/Sockets/IClientSocket.h includes/Init.h includes/Config.h includes/Sockets/SSLClientSocket.h includes/Network/Vhost.h
 	includes/Network/Address.h includes/Network/Port.h includes/Network/NetworkID.h includes/File/IFile.h includes/FileSystem/IFileSystem.h includes/File/File_win32.h includes/FileSystem/FileSystem_win32.h
 	includes/Time/ITime.h includes/Time/Time_win32.h includes/Workflow/Parser.h includes/Http/HttpParser.h includes/Http/HttpRequest.h includes/Threads/IThread.h
-    includes/Http/HttpResponse.h includes/Http/HttpError.h includes/Sockets/ISocket.h includes/Date.h includes/Server.h
+    includes/Http/HttpResponse.h includes/Http/HttpError.h includes/Sockets/ISocket.h includes/Server.h
     includes/Utils/Buffer.h RootConfig.hpp includes/DirectoryBrowser.h includes/Workflow/Task.h includes/Http/HttpResponseFile.h
     includes/Http/HttpResponseDir.h includes/Workflow/Worker.h includes/Workflow/Pool.h includes/Http/HttpTransaction.h)
 

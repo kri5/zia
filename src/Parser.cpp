@@ -6,8 +6,8 @@
 const int BUFF_SIZE = 256;
 const char	COMMENT_CHAR = ';';
 
-Parser::Parser() :  _i(0), _bufferId(0),
-                    _backI(0), _backBuffer(0),
+Parser::Parser(Buffer* buff) :  _i(0),
+                    _backI(0),
                     _ignore(true), _comment(false),
                     _end(false), _lastReadChar(0),
                     _isFed(false)
@@ -15,16 +15,27 @@ Parser::Parser() :  _i(0), _bufferId(0),
     //TODO:Replace by our excpetion system
 	/*if (extendBuffer() == false)
 		throw Exception("Can't read file");*/
+    if (buff == NULL)
+    {
+        _buffer = new Buffer(1024);
+        _internalBuffer = true;
+    }
+    else
+    {
+        _buffer = buff;
+        _internalBuffer = false;
+    }
 }
 
 Parser::~Parser()
 {
-    this->_buffers.clear();
+    if (_internalBuffer)
+        delete this->_buffer;
 }
 
-void		Parser::feed(const std::string& str)
+void		Parser::feed(const char* str, size_t size)
 {
-    this->_buffers.push_back(str);
+    this->_buffer->push(str, size);
     this->_end = false;
     this->_isFed = true;
 }
@@ -34,17 +45,18 @@ bool        Parser::isFed() const
     return this->_isFed;
 }
 
-bool		Parser::extendBuffer()
-{
-    // Si on n'a plus assez de donnees, on quite.
-    if (this->_bufferId >= (int)this->_buffers.size() - 1)
-    {
-        return false;
-    }
-    ++this->_bufferId;
-    this->_i = 0;
-    return true;
-}
+//bool		Parser::extendBuffer()
+//{
+//    //FIXME: voir pour fournir une classe de feeding, utilisee pour les modules et le parser.
+//    // Si on n'a plus assez de donnees, on quite.
+//    if (this->_bufferId >= (int)this->_buffers.size() - 1)
+//    {
+//        return false;
+//    }
+//    ++this->_bufferId;
+//    this->_i = 0;
+//    return true;
+//}
 
 char		Parser::peekChar()
 {
@@ -139,63 +151,40 @@ std::string        Parser::peekNChar(int n)
 
 void		Parser::__saveContext()
 {
-	this->_backBuffer = this->_bufferId;
 	this->_backI = this->_i;
 }
 
 void        Parser::saveContextPub()
 {
-    this->_backBufferPub = this->_bufferId;
     this->_backIPub = this->_i;
 }
 
 void		Parser::__restoreContext()
 {
 	this->_i = this->_backI >= 0 ? this->_backI : 0;
-	this->_bufferId = this->_backBuffer >= 0 ? this->_backBuffer : 0;
 }
 
 void        Parser::restoreContextPub()
 {
     this->_i = this->_backIPub >= 0 
                 ? this->_backIPub : 0;
-
-    this->_bufferId = this->_backBufferPub >= 0 
-                        ? this->_backBufferPub : 0;
 }
 
 void		Parser::flush()
 {
-	int		i;
-
-	for (i = this->_bufferId - 1; i >= 0; --i)
-	{
-		this->_buffers.erase(this->_buffers.begin());
-		this->_bufferId--;
-	}
-    //si on est apres la fin du dernier buffer (extendBuffer aurait ete appele au prochain readChar()
-	if (this->_i == this->_buffers[this->_bufferId].length())
-	{
-		this->_buffers.erase(this->_buffers.begin());
-        this->_i = 0;
-	}
+    this->_buffer->flush(this->_i);
+    this->_i = 0;
 }
 
 char	Parser::readChar()
 {
-	char	c;
+	char	c = this->_buffer->getChar(this->_i);
 
-	if (this->_i >= this->_buffers[this->_bufferId].length()
-            || this->_bufferId < 0)
-        //TODO: Replace by our Exception System
+    if (c < 0)
     {
-		if (!this->extendBuffer())
-        {
-            this->_end = true;
-			return 0;
-        }
+        this->_end = true;
+        return 0;
     }
-	c = this->_buffers[this->_bufferId][this->_i];
     if (this->_comment)
         this->skipComment(c);
 	return (c);
@@ -220,21 +209,18 @@ bool    Parser::readIfEqual(const std::string& toFind)
 
 void    Parser::readUpToIgnore()
 {
-    char c = this->_buffers[this->_bufferId][this->_i];
+    char c = this->readChar();
     while (c != '\n' && c != '\r' 
             && c != ' ' && c != '\t')
     {
         this->_i++;
-        if (this->_i >= this->_buffers[this->_bufferId].length()
-                || this->_bufferId < 0)
-            this->extendBuffer();
-        c = this->_buffers[this->_bufferId][this->_i];
+        c = this->readChar();
     }
 }
 
 void    Parser::readUpToIgnore(std::string& output)
 {
-	char c = this->_buffers[this->_bufferId][this->_i];
+	char c = this->readChar();
 
 	output = "";
 	while (c != '\n' && c != '\r' 
@@ -242,10 +228,7 @@ void    Parser::readUpToIgnore(std::string& output)
 	{
 		output += c;
 		this->_i++;
-		if (this->_i >= this->_buffers[this->_bufferId].length()
-                || this->_bufferId < 0)
-			this->extendBuffer();
-		c = this->_buffers[this->_bufferId][this->_i];
+        c = this->readChar();
 	}
 }
 
@@ -614,9 +597,6 @@ bool	Parser::readAnythingBut(const std::string& forbiden)
 
 void    Parser::dump() const
 {
-    std::string t = std::string(this->_buffers[this->_bufferId]);
-
-    std::cout << "buff == " << t
-        << std::endl << " i == " << this->_i << std::endl;
+    this->_buffer->dump();
 }
 

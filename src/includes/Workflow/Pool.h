@@ -25,6 +25,7 @@ class   Pool
         Pool(unsigned int nbThreads, unsigned int);
         void                    init();
         bool                    addTask(ClientSocket*, const std::vector<const Vhost*>*);
+        void                    rescheduleTask(Task*);
         void                    addSleepingThread(Worker*);
         Task*                   popTask();
         Worker*                 popFreeThread();

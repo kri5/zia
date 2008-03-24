@@ -150,6 +150,35 @@ char*   Buffer::get(size_t length)
 	return res;
 }
 
+char    Buffer::getChar(size_t pos)
+{
+	size_t  i;
+    size_t  buffId;
+    
+    buffId = pos / this->_capacity;
+    if (buffId > 0)
+    {
+        pos %= this->_capacity;
+        std::list<char*>::iterator      it = this->_buffers.begin();
+        std::list<char*>::iterator      end = this->_buffers.end();
+
+        i = 0;
+        while (it != end)
+        {
+            if (i == buffId)
+                break ;
+            ++it;
+            ++i;
+        }
+        if (i != buffId)
+            return -1;
+        return (*it)[pos];
+    }
+    if (pos >= this->_size)
+        return -1;
+    return (*(this->_buffers.begin()))[pos];
+}
+
 void    Buffer::dump()
 {
     std::list<char*>::iterator      it;

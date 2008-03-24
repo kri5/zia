@@ -41,6 +41,13 @@ bool        Pool::addTask(ClientSocket* clt, const std::vector<const Vhost*>* vh
     return false;
 }
 
+void    Pool::rescheduleTask(Task* t)
+{
+    MutexLock   getLock(this->_mutex);
+
+    this->_tasks.push(t);
+}
+
 void    Pool::addSleepingThread(Worker* thread)
 {
     MutexLock   get_lock(*this->_mutex);
@@ -150,7 +157,7 @@ void    Pool::flushKeepAlive(std::list<KeepAliveClient>& sockets)
 
     while (this->_keepAlive.size() > 0)
     {
-        std::cout << "transfering client from queue to list" << std::endl;
+        std::cout << "transfering keep alive client from queue to list" << std::endl;
         sockets.push_back(this->_keepAlive.front());
         this->_keepAlive.pop();
     }

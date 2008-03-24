@@ -13,7 +13,8 @@
  *  HttpRequest with all parameters inside
  * */
 
-HttpParser::HttpParser(HttpRequest* req) : _request(req),
+HttpParser::HttpParser(HttpRequest* req, Buffer* buff) : Parser(buff),
+                            _request(req),
                             _isFirstArgument(true),
                             _isFirstLine(true),
                             _isValid(true),

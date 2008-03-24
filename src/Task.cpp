@@ -43,7 +43,7 @@ Task::~Task()
 }
 
 void    Task::init(ClientSocket* clt,
-                    const std::vector<const Vhost*>* vhosts)
+        const std::vector<const Vhost*>* vhosts)
 {
     this->_vhosts = vhosts;
     this->_socket = clt;
@@ -62,13 +62,16 @@ void    Task::clear()
 
 bool    Task::finalize(bool succeded)
 {
-    if (succeded == false ||
-	    this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
-    {
-	delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
-    }
-    else
-	this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
+//    if (succeded == false ||
+//            this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
+//    {
+        delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
+//    }
+//    else
+//    {
+//        std::cout << "adding keep alive to queue" << std::endl;
+//        this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
+//    }
     this->clear();
     return succeded;
 }
@@ -102,10 +105,11 @@ void    Task::execute()
 
 bool    Task::parseRequest()
 {
-    HttpParser      parser(this->_req);
+    HttpParser      parser(this->_req, this->_readBuffer);
     char            tmp[1025];
     int             sockRet;
 
+    std::cout << "<<<< PARSING STARTED" << std::endl;
     while (parser.done() == false)
     {
         if (this->checkTimeout())
@@ -116,17 +120,22 @@ bool    Task::parseRequest()
         if (sockRet < 0) //check recv timeout / error
         {
             if (errno == EAGAIN)
+            {
+                std::cout << "recv timeout" << std::endl;
                 continue ; //recv timeout.
+            }
             return false;
         }
         else if (sockRet == 0)
             return false; //connection closed.
-        this->_readBuffer->push(tmp, sockRet);
-        parser.feed(this->_readBuffer->get(sockRet));
+        tmp[sockRet] = 0;
+        std::cout << "recv = [" << tmp << "]" << std::endl;
+        parser.feed(tmp, sockRet);
         parser.parse();
         this->_readBuffer->flush();
     }
     //TODO: check host.
+    std::cout << "<<<< PARSING ENDED" << std::endl;
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getOption("Host")));
     return true;

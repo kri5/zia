@@ -3,16 +3,15 @@
 
 #include <map>
 #include <sstream>
-#include <vector>
 #include <iostream>
-#include <string>
+#include "Utils/Buffer.h"
 #include "MemoryManager.hpp"
 
 class	Parser
 {
 	public:
 
-		Parser();
+		Parser(Buffer* = NULL);
 		virtual				~Parser();
 		char				peekChar(); //will consume stream
         std::string         peekNChar(int);
@@ -67,7 +66,7 @@ class	Parser
         bool                getComment() const;
         void                saveContextPub();
         void                restoreContextPub();
-		void				feed(const std::string&);
+		void				feed(const char*, size_t);
         bool                isFed() const;
         void                dump() const;
 
@@ -75,7 +74,7 @@ class	Parser
 		bool						isIgnore(char c) const;
 
 	private:
-		bool						extendBuffer();
+		//bool						extendBuffer();
 		void						__saveContext();
 		void						__restoreContext();
 		void						trim();
@@ -84,19 +83,17 @@ class	Parser
 
 		//attributes
 		std::stringstream           _stream;
-		std::vector<std::string>	_buffers;
+		Buffer*                     _buffer;
 		unsigned int	    		_i;
-		int							_bufferId;
 		int							_backI;
         int                         _backIPub;
-		int							_backBuffer;
-        int                         _backBufferPub;
         bool                        _ignore;
         bool                        _comment;
         std::string                 _commentList;
         bool                        _end;
         char                        _lastReadChar;
         bool                        _isFed;
+        bool                        _internalBuffer;
 };
 
 

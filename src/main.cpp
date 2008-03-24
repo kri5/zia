@@ -12,7 +12,6 @@
 #include "File/File.h"
 #include "Http/HttpParser.h"
 #include "Server.h"
-#include "Date.h"
 #include "Utils/Buffer.h"
 #include "RootConfig.hpp"
 #include "Threads/IThread.h"

@@ -24,6 +24,7 @@ class Buffer
         void        clear();
         size_t      gcount() const;
         bool        empty() const;
+        char        getChar(size_t);
     private:
         size_t              _capacity;
         size_t              _size;
