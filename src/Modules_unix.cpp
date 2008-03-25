@@ -54,7 +54,7 @@ bool            Modules::load(std::string filename)
         mi->support.push_back(ProcessContent);
     if (dynamic_cast<IServerQuit*>(ptr))
         mi->support.push_back(ServerQuit);
-    delete ptr;
+    module_destroy(ptr);
 
     // Now we add it to the list of loaded modules.
     _modules.push_back(mi);

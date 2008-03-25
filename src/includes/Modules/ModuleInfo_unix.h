@@ -15,7 +15,7 @@ class   ModuleInfo
         destroy_t*                      destroy;
         name_t*                         name;
         // This must be move to private fields later.
-        std::list< IModules::Support >    support;
+        std::list< IModules::Support >  support;
 
     protected:
         void*                           _handle;
