@@ -33,6 +33,7 @@ class Config
         const std::list<std::string>&           getModules() const;
         bool                                    isSet(std::string name) const;
         void                                    dump() const;
+		int                                     getDefaultPort() const;
 	protected:
 		/// Default port values :
 		enum DefaultPort
@@ -41,7 +42,6 @@ class Config
 			_SslPort = 443
 		};
 		/// Will return the default port, depending on UseSSL value.
-		int			getDefaultPort() const;
         void        removeParameter(std::string name);
 		/// The param list, stocked as name => value
 		std::map<std::string, std::string>		_params;

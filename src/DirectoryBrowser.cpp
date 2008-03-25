@@ -50,7 +50,15 @@ void           DirectoryBrowser::get()
         *(this->_stream) << f->getModifDate()->getStr() << "   ";
         *(this->_stream) << f->getSize() << "  \n";
         ++it;
+ 
     }
-    *(this->_stream) << "<hr></pre><address>ZiaHttpd Server at _HOST_ Port _PORT_</address>\n</body></html>";
+    *(this->_stream) << "<hr></pre><address>ZiaHttpd Server at http://" << 
+        this->_request.getOption("Host").substr(0, this->_request.getOption("Host").find(":")) << 
+        this->_request.getUri() << " Port ";
+    if (this->_request.getOption("Host").find(":") != std::string::npos)
+        *(this->_stream) << this->_request.getOption("Host").substr(this->_request.getOption("Host").find(":") + 1);
+    else
+        *(this->_stream) << this->_request.getConfig()->getDefaultPort();
+    *(this->_stream) << "</address>\n</body></html>";
 }
 

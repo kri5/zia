@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include <iostream>
+#include <string>
 #include "Http/HttpError.h"
 
 HttpError::HttpError(int status, HttpRequest& request) : _request(request), _status(status)
@@ -24,10 +25,18 @@ void    HttpError::setContent()
     *_content << "<html><head>\n";
     *_content << "<title>Error " << _status << " " << _message << "</title>\n";
     *_content << "</head><body>\n<h1><b>" << _status << "</b> " << _message << "</h1>\n";
-    *_content << "<hr>\n<address>ZiaHTTPD Server at _url_ Port _port_</address>\n";
+    *_content << "<hr>\n<address>ZiaHTTPD Server at http://" << 
+        this->_request.getOption("Host").substr(0, this->_request.getOption("Host").find(":")) << 
+        this->_request.getUri() << " Port ";
+    if (this->_request.getOption("Host").find(":") != std::string::npos)
+        *_content << this->_request.getOption("Host").substr(this->_request.getOption("Host").find(":") + 1);
+    else
+        *_content << this->_request.getConfig()->getDefaultPort();
+    *_content << " </address>\n";
     *_content << "</body></html>\n";
     appendOption("Content-Length", _content->str().size());
     appendOption("Content-Type", "text/html");
+    this->_request.print(); 
 }
 
 HttpError::~HttpError() throw()
