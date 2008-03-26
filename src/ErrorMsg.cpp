@@ -64,27 +64,27 @@ const char* Pool::Manager::Error::Msg[] = {
 ////////////////////////////////////////////////////////////
 #ifdef WIN32
 
-#include "Socket_win32.h"
+#include "Sockets/Socket_win32.h"
 const char*	Socket::Error::Msg[] = {
 	"Unknown error",
 	"Can't initialize socket librairie (WSAstartup)"
 };
 
-#include "File_win32.h"
+#include "File/File_win32.h"
 
 const char* File::Error::Msg[] = {
 	"Unknown error",
 	"Can't get file's attributes"
 };
 
-#include "FileSystem_win32.h"
+#include "FileSystem/FileSystem_win32.h"
 
 const char* FileSystem::Error::Msg[] = {
 	"Unknown error",
 	"Can't have valid file handle"
 };
 
-#include "Time_win32.h"
+#include "Time/Time_win32.h"
 
 const char* Time::Error::Msg[] = {
 	"Unknown error",

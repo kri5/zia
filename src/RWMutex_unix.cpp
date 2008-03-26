@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <iostream>
 
-#include "Mutex/RWMutex_unix.h"
+#include "Mutex/RWMutex.h"
 #include "MemoryManager.hpp"
 #include "Logger.hpp"
 
@@ -15,7 +15,7 @@ RWMutex::~RWMutex()
     pthread_rwlock_destroy(&rwmutex);
 }
 
-void            RWMutex::rdlock()
+void            RWMutex::rdLock()
 {
     if (pthread_rwlock_rdlock(&rwmutex) != 0)
     {
@@ -23,7 +23,7 @@ void            RWMutex::rdlock()
     }
 }
 
-void            RWMutex::wrlock()
+void            RWMutex::wrLock()
 {
     if (pthread_rwlock_wrlock(&rwmutex) != 0)
     {
@@ -31,10 +31,15 @@ void            RWMutex::wrlock()
     }
 }
 
-void            RWMutex::unlock()
+void            RWMutex::rdUnlock()
 {
     if (pthread_rwlock_unlock(&rwmutex) != 0)
     {
         Logger::getInstance() << Logger::Error << strerror(errno) << Logger::Flush;
     }
+}
+
+void			RWMutex::wrUnlock()
+{
+	rdUnlock();
 }

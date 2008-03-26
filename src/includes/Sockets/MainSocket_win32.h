@@ -7,8 +7,8 @@
 #include "Socket_win32.h"
 #include "ClientSocket_win32.h"
 #include "IMainSocket.h"
-#include "Vhost.h"
-#include "NetworkID.h"
+#include "Network/Vhost.h"
+#include "Network/NetworkID.h"
 
 /// Specialised socket class, which will just handle connections to server, then spawn a ClientSocket
 class MainSocket : public Socket, public IMainSocket

@@ -1,9 +1,9 @@
 #include <io.h>
 
-#include "File_win32.h"
+#include "File/File_win32.h"
 #include "ZException.hpp"
-#include "Time.h"
-#include "FileSystem_win32.h"
+#include "Time/Time.h"
+#include "FileSystem/FileSystem_win32.h"
 
 #include "MemoryManager.hpp"
 

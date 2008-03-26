@@ -1,8 +1,8 @@
 #include <sstream>
 #include <io.h>
 
-#include "FileSystem_win32.h"
-#include "File.h"
+#include "FileSystem/FileSystem_win32.h"
+#include "File/File.h"
 #include "ZException.hpp"
 
 #include "MemoryManager.hpp"

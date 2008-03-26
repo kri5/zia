@@ -4,9 +4,9 @@
 #include <string>
 
 #include "zia.h"
-#include "IFile.h"
+#include "File/IFile.h"
 #include "WinBase.h"
-#include "ITime.h"
+#include "Time/ITime.h"
 
 class File : public IFile
 {

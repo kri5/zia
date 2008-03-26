@@ -18,7 +18,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp)
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.h includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
-	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h
+	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
 	includes/Sockets/IClientSocket.h includes/Init.h includes/Config.h includes/Sockets/SSLClientSocket.h includes/Network/Vhost.h
 	includes/Network/Address.h includes/Network/Port.h includes/Network/NetworkID.h includes/File/IFile.h includes/FileSystem/IFileSystem.h includes/File/File_win32.h includes/FileSystem/FileSystem_win32.h
 	includes/Time/ITime.h includes/Time/Time_win32.h includes/Workflow/Parser.h includes/Http/HttpParser.h includes/Http/HttpRequest.h includes/Threads/IThread.h
