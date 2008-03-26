@@ -33,7 +33,7 @@ IF (WIN32)
 	SET(ZIAHTTPD_LIBS Ws2_32.lib ticppd.lib ${OPENSSL_LIBRARIES}
       ${OPENSSL_EAY_LIBRARIES})
 	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS}  IThread_win32.cpp
-		Mutex_win32.cpp Socket_win32.cpp ClientSocket_win32.cpp
+		Mutex_win32.cpp RWMutex_win32.cpp Socket_win32.cpp ClientSocket_win32.cpp
 		MainSocket_win32.cpp File_win32.cpp Time_win32.cpp FileSystem_win32.cpp)
 ELSE (WIN32)
 	SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic")
@@ -44,8 +44,9 @@ ENDIF (WIN32)
 
 IF (UNIX)
   SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} Socket_unix.cpp ClientSocket_unix.cpp
-	  MainSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp FileSystem_unix.cpp
-	  File_unix.cpp Time_unix.cpp Modules_unix.cpp ModuleInfo_unix.cpp)
+	  MainSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp RWMutex_unix.cpp
+      FileSystem_unix.cpp File_unix.cpp Time_unix.cpp Modules_unix.cpp
+      ModuleInfo_unix.cpp)
 ENDIF (UNIX)
 
 ADD_EXECUTABLE (ziahttpd ${ZIAHTTPD_SRCS})
