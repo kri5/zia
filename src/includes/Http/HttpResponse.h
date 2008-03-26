@@ -1,12 +1,14 @@
 #ifndef __HTTPRESPONSE_H__
 #define __HTTPRESPONSE_H__
 
-#include <istream>
 #include <map>
 #include <sstream>
+#include <queue>
 
 #include "File/IFile.h"
 #include "HttpTransaction.h"
+#include "Stream/IResponseStream.h"
+#include "Stream/ErrorResponseStream.h"
 
 class   HttpResponse : public HttpTransaction
 {
@@ -24,15 +26,21 @@ class   HttpResponse : public HttpTransaction
 
         int                             getResponseStatus() const;
         const std::string               getResponseValue() const;
+        size_t                          getContentLength() const;
         static const char*              getResponseStatusMessage(int key);
 
-        // ios_base will be either an ostreamstring or a ifstream
-        virtual std::iostream&          getContent() = 0;
-        virtual bool                    completed() const = 0;
+        void                            appendStream(IResponseStream*);
+        std::queue<IResponseStream*>&   getStreams();
+        void                            setError(ErrorResponseStream*);
 
     private:
+        void                            clearStreams();
+
         static KeyValue                 ResponseStatus[];
         int                             _responseStatus;
+        size_t                          _contentLength;
+        std::string                     _mimeType;
+        std::queue<IResponseStream*>    _streams;
 };
 
 #endif  /* !__HTTPRESPONSE_H__ */

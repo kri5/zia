@@ -52,8 +52,10 @@ HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
     { -1, NULL }
 };
 
-HttpResponse::HttpResponse() : _responseStatus(200)
+HttpResponse::HttpResponse() : _responseStatus(200), _contentLength(0)
 {
+    _mimeType = "text/html"; //probable default value (in case of an error, directory.
+    // if it's a file, we will change this.
 }
 
 HttpResponse::~HttpResponse()
@@ -81,5 +83,40 @@ int                     HttpResponse::getResponseStatus() const
 const std::string      HttpResponse::getResponseValue() const
 {
     return std::string(getResponseStatusMessage(this->_responseStatus));
+}
+
+void                    HttpResponse::appendStream(IResponseStream* stream)
+{
+    this->_streams.push(stream);
+    this->_contentLength += stream->getSize();
+}
+
+std::queue<IResponseStream*>&   HttpResponse::getStreams()
+{
+    return this->_streams;
+}
+
+void                    HttpResponse::setError(ErrorResponseStream* error)
+{
+    this->_responseStatus = error->getStatus();
+    this->clearStreams();
+    this->appendStream(error);
+}
+
+void                    HttpResponse::clearStreams()
+{
+    IResponseStream*    s;
+
+    while (this->_streams.empty() == false)
+    {
+        s = this->_streams.front();
+        this->_streams.pop();
+        delete s;
+    }
+}
+
+size_t                  HttpResponse::getContentLength() const
+{
+    return this->_contentLength;
 }
 

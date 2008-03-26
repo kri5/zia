@@ -13,6 +13,7 @@ class	Parser
 
 		Parser(Buffer* = NULL);
 		virtual				~Parser();
+        virtual void        init();
 		char				peekChar(); //will consume stream
         std::string         peekNChar(int);
 		char				readChar();

@@ -43,5 +43,11 @@ int main(int argc, char **argv)
     delete srv;
 	
 	Logger::deleteInstance(); 
+//    Buffer      buff(5);
+//
+//    buff.push("abcdefghijklmnopqrtsuvwxyz", 26);
+//    buff.flush(12);
+//    std::cout << buff.get(9);
+//    buff.dump();
 }
 

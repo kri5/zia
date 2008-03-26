@@ -27,6 +27,15 @@ HttpParser::~HttpParser()
 {
 }
 
+void    HttpParser::init()
+{
+    this->_isFirstArgument = true;
+    this->_isFirstLine = true;
+    this->_isValid = true;
+    this->_isDone = false;
+    Parser::init();
+}
+
 /**
  *  tries to parse any implemented
  *  Http command and then if it succeeds

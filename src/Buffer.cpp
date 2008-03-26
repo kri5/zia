@@ -154,13 +154,15 @@ char    Buffer::getChar(size_t pos)
 {
 	size_t  i;
     size_t  buffId;
+    std::list<char*>::iterator      it = this->_buffers.begin();
+    std::list<char*>::iterator      end = this->_buffers.end();
     
+    if (it == end)
+        return -1;
     buffId = pos / this->_capacity;
     if (buffId > 0)
     {
         pos %= this->_capacity;
-        std::list<char*>::iterator      it = this->_buffers.begin();
-        std::list<char*>::iterator      end = this->_buffers.end();
 
         i = 0;
         while (it != end)
@@ -238,6 +240,8 @@ char*   Buffer::getLine()
 
 void    Buffer::flush(size_t length)
 {
+    if (length == 0)
+        return ;
     std::list<char*>::iterator      it = this->_buffers.begin();
     std::list<char*>::iterator      end = this->_buffers.end();
     size_t                          nb;

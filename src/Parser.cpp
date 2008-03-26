@@ -24,6 +24,7 @@ Parser::Parser(Buffer* buff) :  _i(0),
     {
         _buffer = buff;
         _internalBuffer = false;
+        _isFed = true;
     }
 }
 
@@ -31,6 +32,13 @@ Parser::~Parser()
 {
     if (_internalBuffer)
         delete this->_buffer;
+}
+
+void        Parser::init()
+{
+    _lastReadChar = 0;
+    _isFed = _internalBuffer == true;
+    _end = false;
 }
 
 void		Parser::feed(const char* str, size_t size)
@@ -172,8 +180,13 @@ void        Parser::restoreContextPub()
 
 void		Parser::flush()
 {
+    //this->_buffer->dump();
+    //std::cout << "flushing with i == " << this->_i << std::endl;
     this->_buffer->flush(this->_i);
-    this->_i = 0;
+    if (this->_i > 0)
+        this->_i = 0;
+    //std::cout << "flushed" << std::endl;
+    //this->_buffer->dump();
 }
 
 char	Parser::readChar()

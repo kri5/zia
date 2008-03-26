@@ -2,23 +2,24 @@
 
 #include <iostream>
 #include <string>
-#include "Http/HttpError.h"
+#include "Stream/ErrorResponseStream.h"
+#include "Http/HttpResponse.h"
 
-HttpError::HttpError(int status, HttpRequest& request) : _request(request), _status(status)
+ErrorResponseStream::ErrorResponseStream(int status, HttpRequest& request) : _request(request), _status(status), _type(ErrorStream)
 {
     _message = HttpResponse::getResponseStatusMessage(_status);
     _content = new std::stringstream;
     setContent();
 }
 
-HttpError::HttpError(int status, HttpRequest* request) : _request(*request), _status(status)
+ErrorResponseStream::ErrorResponseStream(int status, HttpRequest* request) : _request(*request), _status(status)
 {
     this->_message = HttpResponse::getResponseStatusMessage(_status);
     _content = new std::stringstream;
     setContent();
 }
 
-void    HttpError::setContent()
+void    ErrorResponseStream::setContent()
 {
     _content->str("");
     *_content << "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n";
@@ -34,22 +35,36 @@ void    HttpError::setContent()
         *_content << this->_request.getConfig()->getDefaultPort();
     *_content << " </address>\n";
     *_content << "</body></html>\n";
-    appendOption("Content-Length", _content->str().size());
-    appendOption("Content-Type", "text/html");
     this->_request.print(); 
 }
 
-HttpError::~HttpError() throw()
+ErrorResponseStream::~ErrorResponseStream() throw()
 {
     delete this->_content;
 }
 
-std::iostream&      HttpError::getContent()
+std::iostream&      ErrorResponseStream::getContent()
 {
     return *this->_content;
 }
 
-bool                HttpError::completed() const
+bool                ErrorResponseStream::completed() const
 {
     return this->_content->eof();
 }
+
+IResponseStream::Type   ErrorResponseStream::getType() const
+{
+    return this->_type;
+}
+
+int                     ErrorResponseStream::getStatus() const
+{
+    return this->_status;
+}
+
+size_t                  ErrorResponseStream::getSize() const
+{
+    return this->_content->str().length();
+}
+

@@ -43,8 +43,8 @@ bool        Pool::addTask(ClientSocket* clt, const std::vector<const Vhost*>* vh
 
 void    Pool::rescheduleTask(Task* t)
 {
+    t->init(); //reinit task without touching internal buffers nor socket.
     MutexLock   getLock(this->_mutex);
-
     this->_tasks.push(t);
 }
 

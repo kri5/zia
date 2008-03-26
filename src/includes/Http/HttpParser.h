@@ -9,6 +9,7 @@ class HttpParser : public Parser
     public:
         HttpParser(HttpRequest*, Buffer* buff = NULL);
         virtual ~HttpParser();
+        void            init();
         void            parse();
         void            parseBody();
         bool            done() const;

@@ -1,16 +1,19 @@
+#include <errno.h>
+
 #include "Workflow/Pool.h" //Let this in first position (crossed dependencies :/ )
 #include "Workflow/Task.h"
 #include "File/IFile.h"
 #include "File/File.h"
 #include "Http/HttpParser.h"
-#include "Http/HttpResponseFile.h"
-#include "Http/HttpResponseDir.h"
 #include "MutexLock.hpp"
 #include "Mutex/IMutex.h"
 #include "Mutex/Mutex.h"
 #include "Logger.hpp"
 #include "RootConfig.hpp"
 #include "Time/Time.h"
+#include "Stream/ResponseStreamDir.h"
+#include "Stream/ResponseStreamFile.h"
+#include "Stream/ErrorResponseStream.h" //FIXME : change the name incoherence...
 
 #include "MemoryManager.hpp"
 
@@ -32,9 +35,8 @@ Task::~Task()
     delete this->_readBuffer;
 
     delete this->_req;
+    delete this->_res;
 
-    if (this->_res)
-        delete this->_res;
     if (this->_time)
         delete this->_time;
     //FIXME
@@ -47,17 +49,24 @@ void    Task::init(ClientSocket* clt,
 {
     this->_vhosts = vhosts;
     this->_socket = clt;
-    this->_req = new HttpRequest();
-    this->_res = NULL;
+    this->init();
 }
 
-void    Task::clear()
+void    Task::init()
 {
-    this->_writeBuffer->clear();
-    this->_readBuffer->clear();
+    this->_req = new HttpRequest();
+    this->_res = new HttpResponse();
+}
+
+void    Task::clear(bool clearBuffers)
+{
+    if (clearBuffers)
+    {
+        this->_writeBuffer->clear();
+        this->_readBuffer->clear();
+    }
     delete this->_req;
-    if (this->_res)
-        delete this->_res;
+    delete this->_res;
 }
 
 bool    Task::finalize(bool succeded)
@@ -65,21 +74,29 @@ bool    Task::finalize(bool succeded)
 //    if (succeded == false ||
 //            this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
 //    {
-        delete this->_socket; //off course, don't do this when KeepAlive is implemeted ;)
+        delete this->_socket;
 //    }
 //    else
 //    {
 //        std::cout << "adding keep alive to queue" << std::endl;
-//        this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
+//        if (this->_readBuffer->empty() == false)
+//        {
+//            this->clear(false);
+//            this->_pool->rescheduleTask(this);
+//            return succeded; //do not clear the task buffers !
+//        }
+//        else
+//            this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
 //    }
     this->clear();
+    //std::cout << "end task" << std::endl;
     return succeded;
 }
 
 void    Task::execute()
 {
     _time = new Time();
-    std::cout << "new task" << std::endl;
+    //std::cout << "new task" << std::endl;
     if (this->parseRequest() == true)
     {
         this->_time->init();
@@ -103,39 +120,46 @@ void    Task::execute()
     this->finalize(false);
 }
 
+bool    Task::receiveDatas()
+{
+    struct pollfd   fds;
+    int             ret;
+    int             sockRet;
+    char            tmp[1025];
+
+    memset(&fds, 0, sizeof(fds));
+    *(this->_socket) >> fds;
+    ret = poll(&fds, 1, 1);
+    if (ret < 0)
+        Logger::getInstance() << "Poll error: " << strerror(errno) << Logger::Flush;
+    if (ret > 0)
+    {
+        sockRet = this->_socket->recv(tmp, 1024);
+        tmp[sockRet] = 0;
+        //std::cout << "readed [" << tmp << "]" << std::endl;
+        if (sockRet <= 0) //check recv / error
+            return false;
+        this->_readBuffer->push(tmp, sockRet);
+    }
+    return true;
+}
+
 bool    Task::parseRequest()
 {
     HttpParser      parser(this->_req, this->_readBuffer);
-    char            tmp[1025];
-    int             sockRet;
 
-    std::cout << "<<<< PARSING STARTED" << std::endl;
     while (parser.done() == false)
     {
         if (this->checkTimeout())
-            return false;
-        sockRet = this->_socket->recv(tmp, 1024);
-	//tmp[sockRet] = 0;
-	//std::cout << "readed [" << tmp << "]" << std::endl;
-        if (sockRet < 0) //check recv timeout / error
         {
-            if (errno == EAGAIN)
-            {
-                std::cout << "recv timeout" << std::endl;
-                continue ; //recv timeout.
-            }
+            //std::cout << "PRE TIMEOUT" << std::endl;
+            this->_readBuffer->dump();
             return false;
         }
-        else if (sockRet == 0)
-            return false; //connection closed.
-        tmp[sockRet] = 0;
-        std::cout << "recv = [" << tmp << "]" << std::endl;
-        parser.feed(tmp, sockRet);
+        this->receiveDatas();
         parser.parse();
-        this->_readBuffer->flush();
     }
     //TODO: check host.
-    std::cout << "<<<< PARSING ENDED" << std::endl;
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getOption("Host")));
     return true;
@@ -149,28 +173,30 @@ bool    Task::buildResponse()
     if (fileInfo->getError() != IFile::Error::None)
     {
         if (fileInfo->getError() == IFile::Error::NoSuchFile)
-            this->_res = new HttpError(404, this->_req);
+            this->_res->setError(new ErrorResponseStream(404, this->_req));
         else if (fileInfo->getError() == IFile::Error::PermissionDenied)
-            this->_res = new HttpError(403, this->_req);
+            this->_res->setError(new ErrorResponseStream(403, this->_req));
         delete fileInfo;
         return true;
     }
     //TODO #43 : check if file is not found...
     if (fileInfo->isDirectory() == false)
     {
-        this->_res = new HttpResponseFile(fileInfo);
-        return true;
+        this->_res->appendOption("MimeType", 
+              RootConfig::getInstance().getConfig()->getMimeType(fileInfo->getExtension()));
+        this->_res->appendStream(new ResponseStreamFile(fileInfo));
     }
     else
     {
         std::string     path(docRoot + this->_req->getUri());
         delete fileInfo;
-        this->_res = new HttpResponseDir(this->_req);
-        return true;
+        this->_res->appendStream(new ResponseStreamDir(this->_req));
     }
+    this->_res->appendOption("Content-Length", this->_res->getContentLength());
+    return true;
 }
 
-bool    Task::sendResponse()
+bool    Task::sendHeader()
 {
     std::ostringstream      header;
 
@@ -188,18 +214,32 @@ bool    Task::sendResponse()
     const std::string& str = header.str();
     //this->_writeBuffer->clear();
     this->_writeBuffer->push(str.c_str(), str.length());
-    if (this->sendBuffer() == false)
+    return (this->sendBuffer());
+}
+
+bool    Task::sendResponse()
+{
+    if (this->sendHeader() == false)
         return false;
-    //From here, header is complete and send.
-    std::iostream& stream = this->_res->getContent();
+
+    std::queue<IResponseStream*>& streamQueue = this->_res->getStreams();
     char    buff[1024];
-    do
+    IResponseStream*    respStream;
+
+    while (streamQueue.empty() == false)
     {
-        stream.read(buff, sizeof(buff));
-        this->_writeBuffer->push(buff, stream.gcount());
-        if (this->sendBuffer() == false)
-            return false;
-    } while (this->_res->completed() == false);
+        respStream = streamQueue.front();
+        std::iostream& stream = respStream->getContent();
+        streamQueue.pop();
+        do
+        {
+            stream.read(buff, sizeof(buff));
+            this->_writeBuffer->push(buff, stream.gcount());
+            if (this->sendBuffer() == false)
+                return false;
+        } while (respStream->completed() == false);
+        delete respStream;
+    }
     //this->_socket->close(true);
     return true;
 }
