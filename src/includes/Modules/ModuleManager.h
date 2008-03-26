@@ -8,6 +8,7 @@
 #include "API/IModule.h"
 #include "Logger.hpp"
 #include "Singleton.hpp"
+#include "API/ModuleInfo.h"
 
 // API
 #include "API/IServerEvent.h"
@@ -21,12 +22,13 @@
 class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
 {
     public:
-       virtual bool        load(std::string filename); 
+       bool                         load(std::string filename); 
 
     private:
         ModuleManager();
         virtual ~ModuleManager();
-        std::list<IModule*>   _modules;
+        std::list<ModuleInfo*>*        _modules;
+        std::list<ModuleInfo*>         _moduleInstances;
 
         friend class Singleton<ModuleManager>;
 };

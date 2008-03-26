@@ -2,8 +2,8 @@
 #define MODULEINFO_UNIX_H
 
 #include <list>
-#include "IModule.h"
-#include "IModules.h"
+#include <string>
+#include "API/IModule.h"
 #include <dlfcn.h>
 
 class   ModuleInfo
@@ -11,7 +11,8 @@ class   ModuleInfo
     public:
         ModuleInfo(void* handle);
         ~ModuleInfo();
-        IModule*                        getInstance();
+        IModule*                        getInstance() const;
+        std::string                     getName() const;
     protected:
         create_t*                       create;
         destroy_t*                      destroy;

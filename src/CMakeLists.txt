@@ -15,7 +15,8 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 	MutexLock.hpp AtExit.hpp Parser.cpp HttpParser.cpp HttpRequest.cpp
     HttpResponse.cpp Server.cpp ErrorResponseStream.cpp
     Buffer.cpp DirectoryBrowser.cpp ResponseStreamFile.cpp ResponseStreamDir.cpp
-    Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp ModuleManager.cpp)
+    Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp
+    ModuleManager.cpp)
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.h includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
 	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
@@ -49,7 +50,7 @@ ENDIF (WIN32)
 IF (UNIX)
   SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} Socket_unix.cpp ClientSocket_unix.cpp
 	  MainSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp RWMutex_unix.cpp
-      FileSystem_unix.cpp File_unix.cpp Time_unix.cpp)
+      FileSystem_unix.cpp File_unix.cpp Time_unix.cpp ModuleInfo_unix.cpp)
 ENDIF (UNIX)
 
 ADD_EXECUTABLE (ziahttpd ${ZIAHTTPD_SRCS})

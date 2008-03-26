@@ -8,7 +8,7 @@
 class IBuildResponse : public IModule
 {
     public:
-        virtual ~IBuildResponse();
+        virtual ~IBuildResponse(){};
         virtual ChainStatus     postBuild(IHttpRequest&, IHttpResponse&) = 0;
 };
 

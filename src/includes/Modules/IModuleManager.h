@@ -6,15 +6,16 @@
 class   IModuleManager
 {
     public:
-        enum Support
+        enum    Hook
         {
-            ServerStart,
-            PreReceive,
-            PostReceive,
-            PostBuild,
-            PreContent,
-            ProcessContent,
-            ServerQuit
+            ServerEventHook,
+            ModuleEventHook,
+            WorkflowHook,
+            NetworkHook,
+            ReceiveRequestHook,
+            BuildResponseHook,
+            SendResponseHook,
+            NumberOfHooks
         };
         virtual ~IModuleManager() {};
         virtual bool    load(std::string filename) = 0;

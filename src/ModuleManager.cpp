@@ -3,13 +3,14 @@
 
 ModuleManager::ModuleManager()
 {
-
+    _modules = new std::list<ModuleInfo*>[NumberOfHooks];
 }
 
 ModuleManager::~ModuleManager()
 {
-    for (std::list<IModule*>::iterator it = _modules.begin(); it != _modules.end(); ++it)
+    for (std::list<ModuleInfo*>::iterator it = _moduleInstances.begin(); it != _moduleInstances.end(); ++it)
         delete *it;
+    delete[] this->_modules;
 }
 
 bool            ModuleManager::load(std::string filename)
@@ -22,13 +23,8 @@ bool            ModuleManager::load(std::string filename)
         return false;
     }
 
-    // First, we extract the needed symbols.
-    name_t* module_name = (name_t*) dlsym(handle, "name");
-    destroy_t* module_destroy = (destroy_t*) dlsym(handle, "destroy");
-    create_t* module_create = (create_t*) dlsym(handle, "create");
-
     // If any of these is null, a symbol is missing.
-    if (!module_name || !module_create || !module_destroy)
+    if (!dlsym(handle, "name") || !dlsym(handle, "create") || !dlsym(handle, "destroy"))
     {
         Logger::getInstance() << Logger::Error << "Can't load symbol: "
             << dlerror() << Logger::Flush;
@@ -36,30 +32,27 @@ bool            ModuleManager::load(std::string filename)
     }
 
     // Creating a ModuleInfo object.
-    //ModuleInfo* mi = new ModuleInfo(handle);
-    
+    ModuleInfo* mi = new ModuleInfo(handle);
+    this->_moduleInstances.push_back(mi);
+
     // Identifying which "event" class the module implement.
-    IModule* ptr = module_create();
-    //if (dynamic_cast<IServerStart*>(ptr))
-    //    mi->support.push_back(ServerStart); 
-    //if (dynamic_cast<IPreReceive*>(ptr))
-    //    mi->support.push_back(PreReceive);
-    //if (dynamic_cast<IPostReceive*>(ptr))
-    //    mi->support.push_back(PostReceive);
-    //if (dynamic_cast<IPostBuild*>(ptr))
-    //    mi->support.push_back(PostBuild);
-    //if (dynamic_cast<IPreContent*>(ptr))
-    //    mi->support.push_back(PreContent);
-    //if (dynamic_cast<IProcessContent*>(ptr))
-    //    mi->support.push_back(ProcessContent);
-    //if (dynamic_cast<IServerQuit*>(ptr))
-    //    mi->support.push_back(ServerQuit);
-    module_destroy(ptr);
+    IModule* ptr = mi->getInstance();
+    if (dynamic_cast<IServerEvent*>(ptr))
+        this->_modules[ServerEventHook].push_back(mi);
+    if (dynamic_cast<IModuleEvent*>(ptr))
+        this->_modules[ModuleEventHook].push_back(mi);
+    if (dynamic_cast<IWorkflow*>(ptr))
+        this->_modules[WorkflowHook].push_back(mi);
+    if (dynamic_cast<INetwork*>(ptr))
+        this->_modules[NetworkHook].push_back(mi);
+    if (dynamic_cast<IReceiveRequest*>(ptr))
+        this->_modules[ReceiveRequestHook].push_back(mi);
+    if (dynamic_cast<IBuildResponse*>(ptr))
+        this->_modules[BuildResponseHook].push_back(mi);
+    if (dynamic_cast<ISendResponse*>(ptr))
+        this->_modules[SendResponseHook].push_back(mi);
 
-    // Now we add it to the list of loaded modules.
-    //_modules.push_back(mi);
-
-    Logger::getInstance() << Logger::Info << "Module " << module_name() << " loaded." << Logger::Flush;
+    Logger::getInstance() << Logger::Info << "Module " << mi->getName() << " loaded." << Logger::Flush;
     return true;
 }
 
