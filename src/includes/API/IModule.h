@@ -11,6 +11,15 @@ class   IModule
     public:
         virtual ~IModule() {};
 
+        enum    ChainStatus
+        {
+            CONTINUE,
+            BREAD,
+            SKIP,
+            STOP,
+            ERROR
+        };
+
 };
 
 typedef IModule*    create_t();

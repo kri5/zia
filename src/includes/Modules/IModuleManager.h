@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-class   IModules
+class   IModuleManager
 {
     public:
         enum Support
@@ -16,7 +16,7 @@ class   IModules
             ProcessContent,
             ServerQuit
         };
-        virtual ~IModules() {};
+        virtual ~IModuleManager() {};
         virtual bool    load(std::string filename) = 0;
 };
 

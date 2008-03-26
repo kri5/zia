@@ -1,18 +1,18 @@
-#include "Modules/Modules.h"
+#include "Modules/ModuleManager.h"
 #include <dlfcn.h>
 
-Modules::Modules()
+ModuleManager::ModuleManager()
 {
 
 }
 
-Modules::~Modules()
+ModuleManager::~ModuleManager()
 {
-    for (std::list<ModuleInfo*>::iterator it = _modules.begin(); it != _modules.end(); ++it)
+    for (std::list<IModule*>::iterator it = _modules.begin(); it != _modules.end(); ++it)
         delete *it;
 }
 
-bool            Modules::load(std::string filename)
+bool            ModuleManager::load(std::string filename)
 {
     // Loading the module
     void* handle = dlopen(filename.c_str(), RTLD_LAZY);
@@ -36,28 +36,28 @@ bool            Modules::load(std::string filename)
     }
 
     // Creating a ModuleInfo object.
-    ModuleInfo* mi = new ModuleInfo(handle);
+    //ModuleInfo* mi = new ModuleInfo(handle);
     
     // Identifying which "event" class the module implement.
     IModule* ptr = module_create();
-    if (dynamic_cast<IServerStart*>(ptr))
-        mi->support.push_back(ServerStart); 
-    if (dynamic_cast<IPreReceive*>(ptr))
-        mi->support.push_back(PreReceive);
-    if (dynamic_cast<IPostReceive*>(ptr))
-        mi->support.push_back(PostReceive);
-    if (dynamic_cast<IPostBuild*>(ptr))
-        mi->support.push_back(PostBuild);
-    if (dynamic_cast<IPreContent*>(ptr))
-        mi->support.push_back(PreContent);
-    if (dynamic_cast<IProcessContent*>(ptr))
-        mi->support.push_back(ProcessContent);
-    if (dynamic_cast<IServerQuit*>(ptr))
-        mi->support.push_back(ServerQuit);
+    //if (dynamic_cast<IServerStart*>(ptr))
+    //    mi->support.push_back(ServerStart); 
+    //if (dynamic_cast<IPreReceive*>(ptr))
+    //    mi->support.push_back(PreReceive);
+    //if (dynamic_cast<IPostReceive*>(ptr))
+    //    mi->support.push_back(PostReceive);
+    //if (dynamic_cast<IPostBuild*>(ptr))
+    //    mi->support.push_back(PostBuild);
+    //if (dynamic_cast<IPreContent*>(ptr))
+    //    mi->support.push_back(PreContent);
+    //if (dynamic_cast<IProcessContent*>(ptr))
+    //    mi->support.push_back(ProcessContent);
+    //if (dynamic_cast<IServerQuit*>(ptr))
+    //    mi->support.push_back(ServerQuit);
     module_destroy(ptr);
 
     // Now we add it to the list of loaded modules.
-    _modules.push_back(mi);
+    //_modules.push_back(mi);
 
     Logger::getInstance() << Logger::Info << "Module " << module_name() << " loaded." << Logger::Flush;
     return true;

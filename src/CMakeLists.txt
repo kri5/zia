@@ -15,13 +15,15 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 	MutexLock.hpp AtExit.hpp Parser.cpp HttpParser.cpp HttpRequest.cpp
     HttpResponse.cpp Server.cpp ErrorResponseStream.cpp
     Buffer.cpp DirectoryBrowser.cpp ResponseStreamFile.cpp ResponseStreamDir.cpp
-    Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp)
+    Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp ModuleManager.cpp)
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.h includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
 	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
 	includes/Sockets/IClientSocket.h includes/Init.h includes/Config.h includes/Sockets/SSLClientSocket.h includes/Network/Vhost.h
 	includes/Network/Address.h includes/Network/Port.h includes/Network/NetworkID.h includes/File/IFile.h includes/FileSystem/IFileSystem.h includes/File/File_win32.h includes/FileSystem/FileSystem_win32.h
 	includes/Time/ITime.h includes/Time/Time_win32.h includes/Workflow/Parser.h includes/Http/HttpParser.h includes/Http/HttpRequest.h includes/Threads/IThread.h
+    includes/API/IHttpTransaction.h includes/API/IHttpRequest.h includes/API/IHttpResponse.h includes/API/IServerEvent.h includes/API/IModuleEvent.h
+    includes/API/IWorkflow.h includes/API/INetwork.h includes/API/IReceiveRequest.h includes/API/IBuildResponse.h includes/API/ISendResponse.h
     includes/Http/HttpResponse.h includes/Stream/ErrorResponseStream.h includes/Sockets/ISocket.h includes/Server.h
     includes/Utils/Buffer.h RootConfig.hpp includes/DirectoryBrowser.h
     includes/Workflow/Task.h includes/Stream/ResponseStreamFile.h
@@ -47,8 +49,7 @@ ENDIF (WIN32)
 IF (UNIX)
   SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} Socket_unix.cpp ClientSocket_unix.cpp
 	  MainSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp RWMutex_unix.cpp
-      FileSystem_unix.cpp File_unix.cpp Time_unix.cpp Modules_unix.cpp
-      ModuleInfo_unix.cpp)
+      FileSystem_unix.cpp File_unix.cpp Time_unix.cpp)
 ENDIF (UNIX)
 
 ADD_EXECUTABLE (ziahttpd ${ZIAHTTPD_SRCS})

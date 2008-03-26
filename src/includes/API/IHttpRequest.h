@@ -1,6 +1,8 @@
 #ifndef __IHTTPREQUEST_H__
 # define __IHTTPREQUEST_H__
 
+#include "IHttpTransaction.h"
+
 #include <string>
 #include <map>
 

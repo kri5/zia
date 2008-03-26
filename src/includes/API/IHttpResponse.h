@@ -12,7 +12,7 @@ class IHttpResponse : public IHttpTransaction
         virtual int                 getResponseStatus() const = 0;
 
         virtual const std::string   getResponseValue() const = 0;
-        virtual static const char*  getResponseStatusMessage(int) = 0;
+        static const char*          getResponseStatusMessage(int);
 
         virtual std::iostream&      getContent() = 0;
         virtual bool                completed() const = 0;

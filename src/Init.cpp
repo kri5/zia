@@ -4,7 +4,7 @@
 #include "Init.h"
 #include "Network/NetworkID.h"
 #include "RootConfig.hpp"
-#include "Modules/Modules.h"
+#include "Modules/ModuleManager.h"
 
 #include "MemoryManager.hpp"
 
@@ -164,7 +164,7 @@ void        Init::initModules()
     std::list<std::string>::const_iterator begin = modulesList.begin();
     std::list<std::string>::const_iterator end = modulesList.end();
     for (; begin != end; ++begin)
-        Modules::getInstance().load(*begin);
+        ModuleManager::getInstance().load(*begin);
 }
 
 /// Initialize the SSL features
