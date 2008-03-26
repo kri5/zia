@@ -19,7 +19,6 @@ class   IModule
             STOP,
             ERROR
         };
-
 };
 
 typedef IModule*    create_t();
