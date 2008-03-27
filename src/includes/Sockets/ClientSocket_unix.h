@@ -5,7 +5,9 @@
 #include "Socket_unix.h"
 #include "IClientSocket.h"
 
-#ifdef __NetBSD__
+#ifdef __FreeBSD__
+ #define MSG_NOSIGNAL 0
+#elif __NetBSD__
  #define MSG_NOSIGNAL 0
 #endif
 
