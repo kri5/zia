@@ -1,7 +1,7 @@
 #ifndef __IWORKFLOW_H__
 # define __IWORKFLOW_H__
 
-#include "IModule.h"
+#include "API/IModule.h"
 
 class IWorkflow : public IModule
 {

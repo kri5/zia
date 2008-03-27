@@ -2,9 +2,10 @@
 #define HELLOWORLD_H
 
 #include "API/IModule.h"
+#include "AbstractModule.h"
 #include <iostream>
 
-class helloworld : public IModule
+class helloworld : public AbstractModule
 {
     public:
         helloworld();

@@ -1,7 +1,7 @@
 #ifndef __ISERVEREVENT_H__
 # define __ISERVEREVENT_H__
 
-#include "IModule.h"
+#include "API/IModule.h"
 
 class IServerEvent : public IModule
 {

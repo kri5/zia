@@ -1,12 +1,10 @@
 #ifndef __INETWORK_H__
 # define __INETWORK_H__
 
-#include "IModule.h"
+#include "API/IModule.h"
 #include "Sockets/IClientSocket.h"
 
-typedef int SOCKET;
-
-class INetwork : IModule
+class INetwork : public IModule
 {
     public:
         virtual ~INetwork() {};
