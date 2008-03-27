@@ -45,8 +45,14 @@ void           DirectoryBrowser::get()
         std::string path;
         if (_request.getUri() != "/")
             path = _request.getUri() + "/";
+
         IFile* f = (*it);
-        *(this->_stream) << "[   ]<a href=\"" << path + f->getFileName() << "\">" << f->getFileName() << "</a>     ";
+
+        // Encoding # character.
+        std::string fullpath = path + f->getFileName();
+        findReplace(fullpath, "#", "%23");
+
+        *(this->_stream) << "[   ]<a href=\"" << fullpath << "\">" << f->getFileName() << "</a>     ";
         *(this->_stream) << f->getModifDate()->getStr() << "   ";
         *(this->_stream) << f->getSize() << "  \n";
         ++it;
@@ -61,4 +67,13 @@ void           DirectoryBrowser::get()
         *(this->_stream) << this->_request.getConfig()->getDefaultPort();
     *(this->_stream) << "</address>\n</body></html>";
 }
+
+void            DirectoryBrowser::findReplace(std::string &source, const std::string find, std::string replace)
+{
+    size_t j;
+    for (; (j = source.find( find )) != std::string::npos ; )
+        source.replace( j, find.length(), replace );
+}
+
+
 
