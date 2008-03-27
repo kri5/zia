@@ -12,7 +12,7 @@ class   HttpTransaction : public IHttpTransaction
 {
     public:
         const SSMap&            getHeaderOptions() const;
-        bool                    optionIsSet(std::string) const;
+        bool                    headerOptionIsSet(std::string) const;
         std::string				getHeaderOption(std::string) const;
 
         const std::string&      getProtocol() const;

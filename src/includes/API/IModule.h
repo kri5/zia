@@ -46,12 +46,13 @@ class   IModule
             onProcessContentEvent,
             onPostSendEvent
         };
-
+        
         virtual ChainStatus     call(Event) = 0;
         virtual ChainStatus     call(Event, IModule*) = 0;
         virtual IClientSocket*  call(Event, SOCKET) = 0;
         virtual ChainStatus     call(Event, char*, size_t) = 0;
         virtual ChainStatus     call(Event, IHttpRequest*, IHttpResponse*) = 0;
+        virtual size_t          call(Event, IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
         //FIXME: onProcessContent
 
 };

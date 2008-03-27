@@ -1,5 +1,6 @@
 #include "Modules/ModuleManager.h"
 #include <dlfcn.h>
+#include <assert.h>
 
 ModuleManager::ModuleManager()
 {
@@ -61,19 +62,22 @@ void                    ModuleManager::initProcessContent() const
     std::list<ModuleInfo*>::const_iterator        it = this->_modules[SendResponseHook].begin();
     std::list<ModuleInfo*>::const_iterator        ite = this->_modules[SendResponseHook].end();
     
-    IModule*    mod;
-    IModule*    prevMod = NULL;
+    IModule*        mod;
+    IModule*        prevMod = NULL;
+    ISendResponse*  modRes;
     for (; it != ite; ++it)
     {
         mod = (*it)->getInstance();
-        mod->setInput(prevMod);
+        modRes = dynamic_cast<ISendResponse*>(mod);
+        assert(modRes != NULL);
+        modRes->setInput(prevMod);
         prevMod = mod;
     }
 }
 
 size_t                  ModuleManager::processContent(IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
 {
-    return (this->_modules.back()->getInstance()->processContent(req, res, buff, size));
+    return (this->_modules[SendResponseHook].back()->getInstance()->call(IModule::onProcessContentEvent, req, res, buff, size));
 }
 
 IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event)

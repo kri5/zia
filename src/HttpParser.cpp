@@ -227,11 +227,11 @@ bool        HttpParser::parseBodyArgument()
 
     if (this->readBodyParam(key, value))
     {
-        this->_request->appendBodyArgument(key, value);
+        this->_request->setBodyArgument(key, value);
         while (this->peekIfEqual('&')
                 && this->readBodyParam(key, value))
         {
-            this->_request->appendBodyArgument(key, value);
+            this->_request->setBodyArgument(key, value);
         }
     }
     return true;
@@ -273,11 +273,11 @@ bool        HttpParser::parseUriArgument()
     {
 		if (this->readUriParam(key, value))
 		{
-			this->_request->appendUriArgument(key, value);
+			this->_request->setUriArgument(key, value);
 			while (this->peekIfEqual('&'))
 			{
 				this->readUriParam(key, value);
-				this->_request->appendUriArgument(key, value);
+				this->_request->setUriArgument(key, value);
 			}
 		}
     }

@@ -73,7 +73,7 @@ void    Task::clear(bool clearBuffers)
 bool    Task::finalize(bool succeded)
 {
 //    if (succeded == false ||
-//            this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
+//            this->_req->optionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
 //    {
         delete this->_socket;
 //    }
@@ -104,12 +104,12 @@ void    Task::execute()
         if (this->buildResponse() == true)
         {
             //just for the moment :
-            this->_res->appendOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
-            if (this->_req->optionIsSet("Connection") && this->_req->getOption("Connection") == "close")
-                this->_res->appendOption("Connection", "close");
+            this->_res->setHeaderOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
+            if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
+                this->_res->setHeaderOption("Connection", "close");
             else
             {
-                this->_res->appendOption("Connection", "Keep-Alive");
+                this->_res->setHeaderOption("Connection", "Keep-Alive");
             }
             if (this->sendResponse())
             {
@@ -162,7 +162,7 @@ bool    Task::parseRequest()
     }
     //TODO: check host.
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
-                this->_req->getOption("Host")));
+                this->_req->getHeaderOption("Host")));
     return true;
 }
 
@@ -183,7 +183,7 @@ bool    Task::buildResponse()
     //TODO #43 : check if file is not found...
     if (fileInfo->isDirectory() == false)
     {
-        this->_res->appendOption("MimeType", 
+        this->_res->setHeaderOption("MimeType", 
               RootConfig::getInstance().getConfig()->getMimeType(fileInfo->getExtension()));
         this->_res->appendStream(new ResponseStreamFile(fileInfo));
     }
@@ -193,7 +193,7 @@ bool    Task::buildResponse()
         delete fileInfo;
         this->_res->appendStream(new ResponseStreamDir(this->_req));
     }
-    this->_res->appendOption("Content-Length", this->_res->getContentLength());
+    this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());
     return true;
 }
 
@@ -203,7 +203,7 @@ bool    Task::sendHeader()
 
     header << "HTTP/1.1 " << this->_res->getResponseStatus() << " " << this->_res->getResponseValue() << "\r\n";
 
-    const std::map<std::string, std::string>& headerParams = this->_res->getOptions();
+    const std::map<std::string, std::string>& headerParams = this->_res->getHeaderOptions();
     std::map<std::string, std::string>::const_iterator        it = headerParams.begin();
     std::map<std::string, std::string>::const_iterator        ite = headerParams.end();
     while (it != ite)
@@ -220,7 +220,7 @@ bool    Task::sendHeader()
 
 bool    Task::sendResponse()
 {
-    ModuleManager::getInstance()->call(IModuleManager::SendResponseHook, IModule::onPreSendEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(IModuleManager::SendResponseHook, IModule::onPreSendEvent, this->_req, this->_res);
     if (this->sendHeader() == false)
         return false;
 
@@ -237,7 +237,7 @@ bool    Task::sendResponse()
         streamQueue.pop();
         do
         {
-            size = ModuleManager::getInstance()->processContent(this->_req, this->_res, buff, 1024);
+            size = ModuleManager::getInstance().processContent(this->_req, this->_res, buff, 1024);
             this->_writeBuffer->push(buff, size);
             if (this->sendBuffer() == false)
                 return false;
@@ -245,7 +245,7 @@ bool    Task::sendResponse()
         delete respStream;
     }
     //this->_socket->close(true);
-    ModuleManager::getInstance()->call(IModuleManager::SendResponseHook, IModule::onPostSendEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(IModuleManager::SendResponseHook, IModule::onPostSendEvent, this->_req, this->_res);
     return true;
 }
 

@@ -14,13 +14,12 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
         HttpRequest();
         ~HttpRequest();
         void                                        setCommand(std::string);
-        void                                        setUri(std::string&, bool = true);
+        void                                        setUri(std::string, bool = true);
 		void										setConfig(const Config* cfg);
-        void                                        appendUriArgument(std::string&, std::string&);
-        void                                        appendBodyArgument(std::string&, std::string&);
+        void                                        setUriArgument(std::string, std::string&);
+        void                                        setBodyArgument(std::string&, std::string&);
         std::string                                 getCommand() const;
         const std::string&                          getUri() const;
-        const std::string&                          getProtocol() const; //<<
 		const Config*								getConfig() const;
         const std::map<std::string, std::string>&   getUriArguments() const; 
         bool                                        isUriRelative() const;

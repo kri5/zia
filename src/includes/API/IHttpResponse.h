@@ -3,7 +3,7 @@
 
 #include "IHttpTransaction.h"
 
-class IHttpResponse : public IHttpTransaction
+class IHttpResponse// : public IHttpTransaction
 {
     public:
         virtual ~IHttpResponse() {};
@@ -15,7 +15,6 @@ class IHttpResponse : public IHttpTransaction
         static const char*          getResponseStatusMessage(int);
 
         virtual std::iostream&      getContent() = 0;
-        virtual bool                completed() const = 0;
 };
 
 #endif /* !__IHTTPRESPONSE_H__ */

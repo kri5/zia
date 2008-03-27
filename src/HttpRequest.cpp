@@ -18,7 +18,7 @@ void            HttpRequest::setCommand(std::string command)
     this->_command = command;
 }
 
-void            HttpRequest::setUri(std::string& uri, bool relative)
+void            HttpRequest::setUri(std::string uri, bool relative)
 {
     this->_uri = uri;
     this->_relativeUri = relative;
@@ -36,13 +36,13 @@ void			HttpRequest::setConfig(const Config* cfg)
 	this->_cfg = const_cast<Config*>(cfg);
 }
 
-void            HttpRequest::appendUriArgument(std::string& key,
+void            HttpRequest::setUriArgument(std::string key,
                                             std::string& value)
 {
     this->_uriArguments[key] = value;
 }
 
-void            HttpRequest::appendBodyArgument(std::string& key,
+void            HttpRequest::setBodyArgument(std::string& key,
                                                 std::string& value)
 {
     this->_bodyArguments[key] = value;
