@@ -1,4 +1,5 @@
 #include "DirectoryBrowser.h"
+#include "Utils/UrlString.h"
 
 DirectoryBrowser::DirectoryBrowser(const HttpRequest& request, 
         std::stringstream* stream) :
@@ -48,9 +49,9 @@ void           DirectoryBrowser::get()
 
         IFile* f = (*it);
 
-        // Encoding # character.
+        // Url encoding.
         std::string fullpath = path + f->getFileName();
-        findReplace(fullpath, "#", "%23");
+        fullpath = UrlString::urlEncode(fullpath);
 
         *(this->_stream) << "[   ]<a href=\"" << fullpath << "\">" << f->getFileName() << "</a>     ";
         *(this->_stream) << f->getModifDate()->getStr() << "   ";
@@ -67,13 +68,4 @@ void           DirectoryBrowser::get()
         *(this->_stream) << this->_request.getConfig()->getDefaultPort();
     *(this->_stream) << "</address>\n</body></html>";
 }
-
-void            DirectoryBrowser::findReplace(std::string &source, const std::string find, std::string replace)
-{
-    size_t j;
-    for (; (j = source.find( find )) != std::string::npos ; )
-        source.replace( j, find.length(), replace );
-}
-
-
 

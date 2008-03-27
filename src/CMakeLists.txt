@@ -16,7 +16,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
     HttpResponse.cpp Server.cpp ErrorResponseStream.cpp
     Buffer.cpp DirectoryBrowser.cpp ResponseStreamFile.cpp ResponseStreamDir.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp
-    ModuleManager.cpp NastyCast.hpp)
+    ModuleManager.cpp UrlString.cpp NastyCast.hpp)
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.h includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
 	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
@@ -29,7 +29,7 @@ SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.
     includes/Utils/Buffer.h RootConfig.hpp includes/DirectoryBrowser.h
     includes/Workflow/Task.h includes/Stream/ResponseStreamFile.h
     includes/Stream/ResponseStreamDir.h includes/Workflow/Worker.h includes/Workflow/Pool.h includes/Http/HttpTransaction.h
-    includes/API/IHttpTransaction.h includes/API/IHttpRequest.h includes/API/IHttpResponse.h)
+    includes/API/IHttpTransaction.h includes/API/IHttpRequest.h includes/API/IHttpResponse.h includes/Utils/UrlString.h)
 
 
 IF (WIN32)

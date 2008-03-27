@@ -17,7 +17,6 @@ class DirectoryBrowser
 
         void                            get();
     private:
-        void                            findReplace(std::string &source, const std::string find, std::string replace);
         const HttpRequest&              _request;
         FileSystem*                     _fs;
         std::list<IFile*>*              _fileList;
