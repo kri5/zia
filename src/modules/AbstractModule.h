@@ -2,15 +2,19 @@
 # define ABSTRACTMODULE_H__
 
 #include "API/IModule.h"
+#include "Sockets/IClientSocket.h"
+#include "API/IHttpRequest.h"
+#include "API/IHttpResponse.h"
 
-class   AbstractModule : public IModule
+template <typename T>
+class   AbstractModule : public T
 {
     public:
-        virtual ChainStatus     call(Event){return CONTINUE;}
-        virtual ChainStatus     call(Event, IModule*){return CONTINUE;}
-        virtual IClientSocket*  call(Event, SOCKET){return NULL;}
-        virtual ChainStatus     call(Event, char*, size_t){return CONTINUE;}
-        virtual ChainStatus     call(Event, IHttpRequest*, IHttpResponse*){return CONTINUE;}
+        virtual IModule::ChainStatus    call(IModule::Event){return IModule::CONTINUE;}
+        virtual IModule::ChainStatus    call(IModule::Event, IModule*){return IModule::CONTINUE;}
+        virtual IClientSocket*          call(IModule::Event, SOCKET){return NULL;}
+        virtual IModule::ChainStatus    call(IModule::Event, char*, size_t){return IModule::CONTINUE;}
+        virtual IModule::ChainStatus    call(IModule::Event, IHttpRequest*, IHttpResponse*){return IModule::CONTINUE;}
 };
 
 #endif //ABSTRACTMODULE_H__

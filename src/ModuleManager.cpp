@@ -56,3 +56,74 @@ bool            ModuleManager::load(std::string filename)
     return true;
 }
 
+IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event)
+{
+    std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
+    std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
+    IModule::ChainStatus                    res;
+
+    for (; it != ite; ++it)
+    {
+        res = (*it)->getInstance()->call(event);
+        if (res != IModule::CONTINUE)
+            break ;
+    }
+    return res;
+}
+
+IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IModule* mod)
+{
+    std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
+    std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
+    IModule::ChainStatus                    res;
+
+    for (; it != ite; ++it)
+    {
+        res = (*it)->getInstance()->call(event, mod);
+        if (res != IModule::CONTINUE)
+            break ;
+    }
+    return res;
+}
+
+IClientSocket*  ModuleManager::call(Hook hook, IModule::Event event, SOCKET sock)
+{
+    size_t      size = this->_modules[hook].size();
+
+    if (size == 0)
+        return NULL;
+    else if (size > 1)
+        Logger::getInstance() << Logger::Warning << "Can't have more than one module hooked to accept(). Will be using the first one." << Logger::Flush;
+    return (*(this->_modules[hook].begin()))->getInstance()->call(event, sock);
+}
+
+IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, char* buff, size_t size)
+{
+    std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
+    std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
+    IModule::ChainStatus                    res;
+
+    for (; it != ite; ++it)
+    {
+        res = (*it)->getInstance()->call(event, buff, size);
+        if (res != IModule::CONTINUE)
+            break ;
+    }
+    return res;
+}
+
+IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IHttpRequest* httpReq, IHttpResponse* httpRes)
+{
+    std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
+    std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
+    IModule::ChainStatus                    res;
+
+    for (; it != ite; ++it)
+    {
+        res = (*it)->getInstance()->call(event, httpReq, httpRes);
+        if (res != IModule::CONTINUE)
+            break ;
+    }
+    return res;
+}
+
