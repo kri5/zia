@@ -84,6 +84,23 @@ void            HttpRequest::clear()
     this->_relativeUri = false;
 }
 
+bool            HttpRequest::setParam(std::string key, void* value)
+{
+    if (this->_params.find(key) != this->_params.end())
+        return false;
+    this->_params[key] = value;
+    return true;
+}
+
+void*           HttpRequest::getParam(std::string key) const
+{
+    std::map<std::string, void*>::const_iterator  value = this->_params.find(key);
+
+    if (value == this->_params.end())
+        return NULL;
+    return value->second;
+}
+
 void            HttpRequest::print()
 {
     std::map<std::string, std::string>::iterator it

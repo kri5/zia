@@ -25,12 +25,15 @@ class HttpRequest : public HttpTransaction
         bool                                        isUriRelative() const;
         void                                        clear();
         void                                        print();
+        bool                                        setParam(std::string, void*);
+        void*                                       getParam(std::string) const;
 
     private:
         void                                        addDefaultHost();
         std::string                                 _command;
         std::map<std::string, std::string>          _uriArguments;
         std::map<std::string, std::string>          _bodyArguments;
+        std::map<std::string, void*>                _params;
         std::string                                 _uri;
         bool                                        _relativeUri;
 		Config*										_cfg;

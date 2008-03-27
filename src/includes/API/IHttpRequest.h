@@ -20,6 +20,9 @@ class IHttpRequest : public IHttpTransaction
         virtual void                                        setBodyArgument(std::string, std::string) = 0;
         virtual const std::map<std::string, std::string>&   getBodyArguments() const = 0;
         virtual std::string                                 getBodyArgument(std::string) const = 0;
+
+        virtual bool                                        setParam(std::string, void*) = 0;
+        virtual void*                                       getParam(std::string) const = 0;
 };
 
 #endif /* !__IHTTPREQUEST_H__ */
