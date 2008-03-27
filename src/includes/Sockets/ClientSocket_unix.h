@@ -5,6 +5,10 @@
 #include "Socket_unix.h"
 #include "IClientSocket.h"
 
+#ifdef __NetBSD__
+ #define MSG_NOSIGNAL 0
+#endif
+
 /** A specialized socket, which will only handle clients, and not connections to server.
  *  For others method than ctor/dtor documentation, refer to IClientSocket.
  */
