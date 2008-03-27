@@ -56,6 +56,26 @@ bool            ModuleManager::load(std::string filename)
     return true;
 }
 
+void                    ModuleManager::initProcessContent() const
+{
+    std::list<ModuleInfo*>::const_iterator        it = this->_modules[SendResponseHook].begin();
+    std::list<ModuleInfo*>::const_iterator        ite = this->_modules[SendResponseHook].end();
+    
+    IModule*    mod;
+    IModule*    prevMod = NULL;
+    for (; it != ite; ++it)
+    {
+        mod = (*it)->getInstance();
+        mod->setInput(prevMod);
+        prevMod = mod;
+    }
+}
+
+size_t                  ModuleManager::processContent(IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
+{
+    return (this->_modules.back()->getInstance()->processContent(req, res, buff, size));
+}
+
 IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event)
 {
     std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();

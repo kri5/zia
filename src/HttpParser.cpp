@@ -209,7 +209,7 @@ void        HttpParser::parseBody()
 {
     std::string l;
 
-    l = this->_request->getOption("ContentLength");
+    l = this->_request->getHeaderOption("Content-Length");
     if (l.length())
         this->parseBodyArgument();
 }
@@ -394,7 +394,7 @@ bool        HttpParser::parseOptionAccept()
                 while (this->peekIfEqual(",", token)
                         && this->readAcceptType(token))
                     ;
-                this->_request->appendOption
+                this->_request->setHeaderOption
                     ("Accept", token);
                 return true;
             }
@@ -472,7 +472,7 @@ bool        HttpParser::parseOptionConnection()
         {
             if (this->readIdentifier(token))
             {
-                this->_request->appendOption
+                this->_request->setHeaderOption
                     ("Connection", token);
                 return true;
             }
@@ -501,7 +501,7 @@ bool        HttpParser::parseOptionHost()
         {
             if (this->readHost(host))
             {
-                this->_request->appendOption
+                this->_request->setHeaderOption
                     ("Host", host);
                 return true;
             }
@@ -529,7 +529,7 @@ bool        HttpParser::parseOptionFrom()
         if (this->peekIfEqual(":"))
         {
             this->readUntilEndOfLine(from);
-            this->_request->appendOption
+            this->_request->setHeaderOption
                 ("From", from);
             return true;
         }
@@ -557,7 +557,7 @@ bool        HttpParser::parseOptionContentLength()
         {
             if (this->readInteger(length))
             {
-                this->_request->appendOption
+                this->_request->setHeaderOption
                     ("ContentLength", length);
                 return true;
             }
@@ -586,7 +586,7 @@ bool        HttpParser::parseOptionDate()
         {
             if (this->readDate(date))
             {
-                this->_request->appendOption
+                this->_request->setHeaderOption
                     ("Date", date);
                 return true;
             }
@@ -614,7 +614,7 @@ bool        HttpParser::parseOptionUserAgent()
         if (this->peekIfEqual(":"))
         {
             this->readUntilEndOfLine(userAgent);
-            this->_request->appendOption
+            this->_request->setHeaderOption
                 ("UserAgent", userAgent);
             return true;
         }
@@ -641,7 +641,7 @@ bool        HttpParser::parseOptionContentType()
         if (this->peekIfEqual(":"))
         {
             this->readUntilEndOfLine(contentType);
-            this->_request->appendOption
+            this->_request->setHeaderOption
                 ("ContentType", contentType);
             return true;
         }
@@ -744,7 +744,7 @@ bool        HttpParser::readAbsoluteUri(std::string& uri,
                 if (this->getLastReadChar() == '/')
                 {
                     host = res.substr(7, res.length() - 8);
-                    this->_request->appendOption("Host", host);
+                    this->_request->setHeaderOption("Host", host);
                 }
              }
              uri = res;

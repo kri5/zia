@@ -9,8 +9,9 @@
 #include "HttpTransaction.h"
 #include "Stream/IResponseStream.h"
 #include "Stream/ErrorResponseStream.h"
+#include "API/IHttpResponse.h"
 
-class   HttpResponse : public HttpTransaction
+class   HttpResponse : public IHttpResponse, public HttpTransaction
 {
     public:
         struct  KeyValue
@@ -33,6 +34,9 @@ class   HttpResponse : public HttpTransaction
         std::queue<IResponseStream*>&   getStreams();
         void                            setError(ErrorResponseStream*);
 
+        std::iostream&                  getContent();
+        void                            setCurrentContent(std::iostream*);
+
     private:
         void                            clearStreams();
 
@@ -41,6 +45,7 @@ class   HttpResponse : public HttpTransaction
         size_t                          _contentLength;
         std::string                     _mimeType;
         std::queue<IResponseStream*>    _streams;
+        std::iostream*                  _currentStream;
 };
 
 #endif  /* !__HTTPRESPONSE_H__ */

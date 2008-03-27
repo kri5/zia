@@ -26,7 +26,10 @@
 class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
 {
     public:
-        bool                         load(std::string filename); 
+        bool                    load(std::string filename); 
+        void                    initProcessContent() const;
+
+        size_t                  processContent(IHttpRequest*, IHttpResponse*, char*, size_t);
 
         IModule::ChainStatus    call(Hook, IModule::Event);
         IModule::ChainStatus    call(Hook, IModule::Event, IModule*);

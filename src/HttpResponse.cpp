@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "Http/HttpResponse.h"
 
 HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
@@ -52,9 +53,9 @@ HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
     { -1, NULL }
 };
 
-HttpResponse::HttpResponse() : _responseStatus(200), _contentLength(0)
+HttpResponse::HttpResponse() : _responseStatus(200), _contentLength(0), _mimeType("text/html"), _currentStream(NULL)
 {
-    _mimeType = "text/html"; //probable default value (in case of an error, directory.
+    //"text/html" => probable default value (in case of an error, directory.
     // if it's a file, we will change this.
 }
 
@@ -94,6 +95,17 @@ void                    HttpResponse::appendStream(IResponseStream* stream)
 std::queue<IResponseStream*>&   HttpResponse::getStreams()
 {
     return this->_streams;
+}
+
+std::iostream&          HttpResponse::getContent()
+{
+    assert(this->_currentStream != NULL);
+    return *(this->_currentStream);
+}
+
+void                    HttpResponse::setCurrentContent(std::iostream* stream)
+{
+    this->_currentStream = stream;
 }
 
 void                    HttpResponse::setError(ErrorResponseStream* error)

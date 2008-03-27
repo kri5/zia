@@ -23,6 +23,9 @@ class   IModuleManager
         };
         virtual ~IModuleManager() {};
         virtual bool    load(std::string filename) = 0;
+        virtual void    initProcessContent() const = 0;
+
+        virtual size_t  processContent(IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
 
         virtual IModule::ChainStatus    call(Hook, IModule::Event) = 0;
         virtual IModule::ChainStatus    call(Hook, IModule::Event, IModule*) = 0;

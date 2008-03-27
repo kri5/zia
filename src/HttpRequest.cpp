@@ -10,7 +10,7 @@ HttpRequest::HttpRequest() : _relativeUri(true)
 
 HttpRequest::~HttpRequest()
 {
-
+    this->_params.clear();
 }
 
 void            HttpRequest::setCommand(std::string command)

@@ -14,6 +14,7 @@
 #include "Stream/ResponseStreamDir.h"
 #include "Stream/ResponseStreamFile.h"
 #include "Stream/ErrorResponseStream.h" //FIXME : change the name incoherence...
+#include "Modules/ModuleManager.h"
 
 #include "MemoryManager.hpp"
 
@@ -219,28 +220,32 @@ bool    Task::sendHeader()
 
 bool    Task::sendResponse()
 {
+    ModuleManager::getInstance()->call(IModuleManager::SendResponseHook, IModule::onPreSendEvent, this->_req, this->_res);
     if (this->sendHeader() == false)
         return false;
 
     std::queue<IResponseStream*>& streamQueue = this->_res->getStreams();
     char    buff[1024];
+    size_t  size;
     IResponseStream*    respStream;
 
     while (streamQueue.empty() == false)
     {
         respStream = streamQueue.front();
         std::iostream& stream = respStream->getContent();
+        this->_res->setCurrentContent(&stream);
         streamQueue.pop();
         do
         {
-            stream.read(buff, sizeof(buff));
-            this->_writeBuffer->push(buff, stream.gcount());
+            size = ModuleManager::getInstance()->processContent(this->_req, this->_res, buff, 1024);
+            this->_writeBuffer->push(buff, size);
             if (this->sendBuffer() == false)
                 return false;
-        } while (respStream->completed() == false);
+        } while (size == 1024);
         delete respStream;
     }
     //this->_socket->close(true);
+    ModuleManager::getInstance()->call(IModuleManager::SendResponseHook, IModule::onPostSendEvent, this->_req, this->_res);
     return true;
 }
 

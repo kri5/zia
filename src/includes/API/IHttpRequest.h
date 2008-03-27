@@ -12,7 +12,7 @@ class IHttpRequest : public IHttpTransaction
         virtual ~IHttpRequest() {};
 
         virtual void                                        setUri(std::string) = 0;
-        virtual std::string                                 getUri() const = 0;
+        virtual const std::string&                          getUri() const = 0;
         virtual void                                        setUriArgument(std::string, std::string&) = 0;
         virtual std::string                                 getUriArgument(std::string) const = 0;
 

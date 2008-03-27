@@ -4,10 +4,11 @@
 #include <map>
 #include <string>
 
-#include "HttpTransaction.h"
+#include "Http/HttpTransaction.h"
 #include "Config.h"
+#include "API/IHttpRequest.h"
 
-class HttpRequest : public HttpTransaction
+class HttpRequest : public IHttpRequest, public HttpTransaction
 {
     public:
         HttpRequest();
