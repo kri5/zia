@@ -9,7 +9,7 @@ class DynLib : public IDynLib
 public:
 	~DynLib();
 	void		load(std::string filename);
-	void		sym(std::string symbol);
+	void*		sym(std::string symbol);
 	void		close();
 
 private:
@@ -17,3 +17,4 @@ private:
 };
 
 #endif // DYNLIB_UNIX_H
+
