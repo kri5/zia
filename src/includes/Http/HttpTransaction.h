@@ -8,7 +8,7 @@
 
 typedef std::map<std::string, std::string>      SSMap;
 
-class   HttpTransaction : public IHttpTransaction
+class   HttpTransaction : public virtual IHttpTransaction
 {
     public:
         const SSMap&            getHeaderOptions() const;

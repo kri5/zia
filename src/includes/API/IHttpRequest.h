@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-class IHttpRequest// : public IHttpTransaction
+class IHttpRequest : public virtual IHttpTransaction
 {
     public:
         virtual ~IHttpRequest() {};

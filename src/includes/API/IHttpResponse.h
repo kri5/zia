@@ -3,7 +3,7 @@
 
 #include "IHttpTransaction.h"
 
-class IHttpResponse// : public IHttpTransaction
+class IHttpResponse : public virtual IHttpTransaction
 {
     public:
         virtual ~IHttpResponse() {};
