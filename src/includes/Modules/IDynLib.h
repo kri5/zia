@@ -7,9 +7,10 @@ class IDynLib
 {
 public:
 	virtual ~IDynLib(){};
-	void		load(std::string filename);
-	void		sym(std::string symbol);
+	bool		load(const std::string& filename);
+	void		sym(const std::string& symbol);
 	void		close();
+    char*       lastError();
 };
 
 #endif // IDYNLIB_H

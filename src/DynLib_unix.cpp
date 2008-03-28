@@ -6,12 +6,14 @@ DynLib::~DynLib()
 	close();
 }
 
-void		DynLib::load(std::string filename)
+bool		DynLib::load(const std::string& filename)
 {
-	this->handle = dlopen(filename.c_str(), RTLD_LAZY);
+	if ((this->handle = dlopen(filename.c_str(), RTLD_LAZY)) == 0)
+        return false;
+    return true;
 }
 
-void*		DynLib::sym(std::string symbol)
+void*		DynLib::sym(const std::string& symbol)
 {
 	return dlsym(this->handle, symbol.c_str());
 }
@@ -19,4 +21,9 @@ void*		DynLib::sym(std::string symbol)
 void		DynLib::close()
 {
 	dlclose(this->handle);
+}
+
+char*       DynLib::lastError()
+{
+    return dlerror();
 }

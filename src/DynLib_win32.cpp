@@ -5,12 +5,14 @@ DynLib::~DynLib()
 	close();
 }
 
-void		DynLib::load(std::string filename)
+bool		DynLib::load(const std::string& filename)
 {
-	this->handle = LoadLibrary(filename.c_str());
+	if ((this->handle = LoadLibrary(filename.c_str())) == 0)
+        return false;
+    return true;
 }
 
-void*		DynLib::sym(std::string symbol)
+void*		DynLib::sym(const std::string& symbol)
 {
 	return GetProcAddress(this->handle, symbol.c_str());
 }
@@ -18,4 +20,9 @@ void*		DynLib::sym(std::string symbol)
 void		DynLib::close()
 {
 	FreeLibrary(this->handle);
+}
+
+char*       DynLib::lastError()
+{
+    return strerror(GetLastError());
 }

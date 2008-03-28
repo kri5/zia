@@ -1,5 +1,5 @@
 #include "Modules/ModuleManager.h"
-#include <dlfcn.h>
+#include "Modules/DynLib.h"
 #include <assert.h>
 
 ModuleManager::ModuleManager()
@@ -16,24 +16,26 @@ ModuleManager::~ModuleManager()
 
 bool            ModuleManager::load(std::string filename)
 {
+    DynLib* library = new DynLib();
+
     // Loading the module
-    void* handle = dlopen(filename.c_str(), RTLD_LAZY);
-    if (!handle)
+    if (!library->load(filename))
     {
-        Logger::getInstance() << Logger::Error << dlerror() << '\n' << Logger::Flush;
-        return false;
+         Logger::getInstance() << Logger::Error << library->lastError() << Logger::Flush;
+         return false;
     }
 
     // If any of these is null, a symbol is missing.
-    if (!dlsym(handle, "name") || !dlsym(handle, "create") || !dlsym(handle, "destroy"))
+    if (!library->sym("name") || !library->sym("create") || !library->sym("destroy"))
     {
+        delete library;
         Logger::getInstance() << Logger::Error << "Can't load symbol: "
-            << dlerror() << Logger::Flush;
+            << library->lastError() << Logger::Flush;
         return false;
     }
 
     // Creating a ModuleInfo object.
-    ModuleInfo* mi = new ModuleInfo(handle);
+    ModuleInfo* mi = new ModuleInfo(library);
     this->_moduleInstances.push_back(mi);
 
     // Identifying which "event" class the module implement.

@@ -8,9 +8,10 @@ class DynLib : public IDynLib
 {
 public:
 	~DynLib();
-	void		load(std::string filename);
-	void*		sym(std::string symbol);
+	bool		load(const std::string& filename);
+	void*		sym(const std::string& symbol);
 	void		close();
+    char*       lastError();
 
 private:
 	void*		handle;
