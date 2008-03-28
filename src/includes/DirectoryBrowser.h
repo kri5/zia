@@ -15,7 +15,7 @@ class DirectoryBrowser
         DirectoryBrowser(const HttpRequest& request, std::stringstream* stream);
         ~DirectoryBrowser();
 
-        void                            get();
+        bool                            get();
     private:
         const HttpRequest&              _request;
         FileSystem*                     _fs;

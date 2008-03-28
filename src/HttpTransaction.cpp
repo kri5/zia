@@ -1,11 +1,11 @@
 #include "Http/HttpTransaction.h"
 
-void        HttpTransaction::setProtocol(std::string& protocol)
+void        HttpTransaction::setProtocol(const std::string& protocol)
 {
     this->_protocol = protocol;
 }
 
-bool    HttpTransaction::headerOptionIsSet(std::string opt) const
+bool    HttpTransaction::headerOptionIsSet(const std::string& opt) const
 {
     return (this->_options.find(opt) != this->_options.end());
 }
@@ -20,7 +20,7 @@ const SSMap&    HttpTransaction::getHeaderOptions() const
     return this->_options;
 }
 
-std::string       HttpTransaction::getHeaderOption(std::string option) const
+std::string       HttpTransaction::getHeaderOption(const std::string& option) const
 {
     std::map<std::string, std::string>::const_iterator    it = this->_options.find(option);
     if (it != this->_options.end())
@@ -28,8 +28,8 @@ std::string       HttpTransaction::getHeaderOption(std::string option) const
     return "";
 }
 
-void            HttpTransaction::setHeaderOption(std::string key,
-                                          std::string& value)
+void            HttpTransaction::setHeaderOption(const std::string& key,
+                                          const std::string& value)
 {
     this->_options[key] = value;
 }

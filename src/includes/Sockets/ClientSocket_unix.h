@@ -25,6 +25,10 @@ class ClientSocket : public Socket, public IClientSocket
         virtual int 	send(const std::string& buf, int length) const;
         virtual int	    recv(char *buf, int length) const;
         virtual IClientSocket&  operator<<(const std::string& buf);
+
+        static  int     countSockets();
+    private:
+        static  int     _nbSockets;
 };
 
 #endif //__CLIENT_SOCKET_UNIX_H__

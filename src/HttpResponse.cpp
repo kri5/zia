@@ -113,6 +113,7 @@ void                    HttpResponse::setError(ErrorResponseStream* error)
     this->_responseStatus = error->getStatus();
     this->clearStreams();
     this->appendStream(error);
+    this->setHeaderOption("Content-Length", error->getSize());
 }
 
 void                    HttpResponse::clearStreams()

@@ -12,6 +12,7 @@ class ResponseStreamDir : public IResponseStream
     public:
         ResponseStreamDir(const HttpRequest*);
         ~ResponseStreamDir();
+        bool            good() const;
         std::iostream&  getContent();
         bool            completed() const;
         Type            getType() const;
@@ -20,6 +21,7 @@ class ResponseStreamDir : public IResponseStream
         std::stringstream*      _stream;
         DirectoryBrowser*       _browser;
         Type                    _type;
+        bool                    _good;
 };
 
 #endif //RESPONSE_STREAM_DIR_H__

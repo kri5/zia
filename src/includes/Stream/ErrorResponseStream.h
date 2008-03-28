@@ -19,6 +19,7 @@ class   ErrorResponseStream : public IResponseStream
         bool                        completed() const;
         Type                        getType() const;
         size_t                      getSize() const;
+        bool                        good() const;
     private:
         void                        setContent();
 

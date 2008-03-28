@@ -15,6 +15,7 @@ class   IResponseStream
         virtual ~IResponseStream(){};
         virtual std::iostream&      getContent() = 0;
         virtual bool                completed() const = 0;
+        virtual bool                good() const = 0;
         virtual Type                getType() const = 0;
         virtual size_t              getSize() const = 0;
 };

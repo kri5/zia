@@ -15,6 +15,7 @@ class ResponseStreamFile : public IResponseStream
         bool                    completed() const;
         Type                    getType() const;
         size_t                  getSize() const;
+        bool                    good() const;
     private:
         IFile*                  _file;
         Type                    _type;

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #endif
 
+#include <sys/resource.h>
 #include "zia.h"
 #include "Server.h"
 #include "Workflow/Worker.h"
@@ -20,15 +21,11 @@ Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toB
     std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		it = this->_toBind.begin();
     std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		end = this->_toBind.end();
 
-    _maxFd = 0;
     try
     {
         while (it != end)
         {
             MainSocket*		sock = new MainSocket(it->first, 16, it->second);
-#ifndef WIN32
-            _maxFd = sock->getSocketValue() > _maxFd ? sock->getSocketValue() : _maxFd;
-#endif
             _sockets.push_back(sock);
             ++it;
         }
@@ -38,6 +35,9 @@ Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toB
         Logger::getInstance() << Logger::Error << "Socket error : " << ex.what() << Logger::Flush;
         throw ZException<Server>(INFO, Server::Error::Bind);
     }
+    struct rlimit   l;
+    getrlimit(RLIMIT_NOFILE, &l);
+    _maxFd = (l.rlim_cur - 4) / 2;
 }
 
 Server::~Server()
@@ -97,15 +97,23 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
             ClientSocket*  clt = this->_sockets[i]->accept();
             if (clt)
             {
-                clt->setPollFlag(POLLIN | POLLERR | POLLHUP);
-                if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
+                if (ClientSocket::countSockets() >= this->_maxFd)
                 {
-                    //FIXME: check for memory leak (not deleting clt)
-                    Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
+                    std::cout << "Max client reached, disconnecting" << std::endl;
+                    delete clt;
                 }
                 else
                 {
-                    //std::cout << "new connected client" << std::endl;
+                    clt->setPollFlag(POLLIN | POLLERR | POLLHUP);
+                    if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
+                    {
+                        //FIXME: check for memory leak (not deleting clt)
+                        Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
+                    }
+                    //else
+                    //{
+                    //    std::cout << "new connected client" << std::endl;
+                    //}
                 }
             }
         }

@@ -12,20 +12,20 @@ class   HttpTransaction : public virtual IHttpTransaction
 {
     public:
         const SSMap&            getHeaderOptions() const;
-        bool                    headerOptionIsSet(std::string) const;
-        std::string				getHeaderOption(std::string) const;
+        bool                    headerOptionIsSet(const std::string&) const;
+        std::string				getHeaderOption(const std::string&) const;
 
         const std::string&      getProtocol() const;
-        void                    setProtocol(std::string&);
+        void                    setProtocol(const std::string&);
         template <typename T>
-        void                    setHeaderOption(std::string opt, T value)
+        void                    setHeaderOption(const std::string& opt, T value)
         {
             std::ostringstream  s;
 
             s << value;
             this->_options[opt] = s.str();
         }
-        void                    setHeaderOption(std::string, std::string&);
+        void                    setHeaderOption(const std::string&, const std::string&);
     protected:
         std::string             _protocol;
         SSMap                   _options;

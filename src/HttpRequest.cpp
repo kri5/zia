@@ -13,12 +13,12 @@ HttpRequest::~HttpRequest()
     this->_params.clear();
 }
 
-void            HttpRequest::setCommand(std::string command)
+void            HttpRequest::setCommand(const std::string& command)
 {
     this->_command = command;
 }
 
-void            HttpRequest::setUri(std::string uri, bool relative)
+void            HttpRequest::setUri(const std::string& uri, bool relative)
 {
     this->_uri = uri;
     this->_relativeUri = relative;
@@ -36,14 +36,14 @@ void			HttpRequest::setConfig(const Config* cfg)
 	this->_cfg = const_cast<Config*>(cfg);
 }
 
-void            HttpRequest::setUriArgument(std::string key,
-                                            std::string& value)
+void            HttpRequest::setUriArgument(const std::string& key,
+                                            const std::string& value)
 {
     this->_uriArguments[key] = value;
 }
 
-void            HttpRequest::setBodyArgument(std::string& key,
-                                                std::string& value)
+void            HttpRequest::setBodyArgument(const std::string& key,
+                                                const std::string& value)
 {
     this->_bodyArguments[key] = value;
 }
@@ -84,7 +84,7 @@ void            HttpRequest::clear()
     this->_relativeUri = false;
 }
 
-bool            HttpRequest::setParam(std::string key, void* value)
+bool            HttpRequest::setParam(const std::string& key, void* value)
 {
     if (this->_params.find(key) != this->_params.end())
         return false;
@@ -92,7 +92,7 @@ bool            HttpRequest::setParam(std::string key, void* value)
     return true;
 }
 
-void*           HttpRequest::getParam(std::string key) const
+void*           HttpRequest::getParam(const std::string& key) const
 {
     std::map<std::string, void*>::const_iterator  value = this->_params.find(key);
 

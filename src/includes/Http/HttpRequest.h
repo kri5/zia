@@ -13,11 +13,11 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
     public:
         HttpRequest();
         ~HttpRequest();
-        void                                        setCommand(std::string);
-        void                                        setUri(std::string, bool = true);
+        void                                        setCommand(const std::string&);
+        void                                        setUri(const std::string&, bool = true);
 		void										setConfig(const Config* cfg);
-        void                                        setUriArgument(std::string, std::string&);
-        void                                        setBodyArgument(std::string&, std::string&);
+        void                                        setUriArgument(const std::string&, const std::string&);
+        void                                        setBodyArgument(const std::string&, const std::string&);
         std::string                                 getCommand() const;
         const std::string&                          getUri() const;
 		const Config*								getConfig() const;
@@ -25,8 +25,8 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
         bool                                        isUriRelative() const;
         void                                        clear();
         void                                        print();
-        bool                                        setParam(std::string, void*);
-        void*                                       getParam(std::string) const;
+        bool                                        setParam(const std::string&, void*);
+        void*                                       getParam(const std::string&) const;
 
     private:
         void                                        addDefaultHost();

@@ -16,9 +16,10 @@ DirectoryBrowser::~DirectoryBrowser()
     delete this->_fs;
 }
 
-void           DirectoryBrowser::get()
+bool           DirectoryBrowser::get()
 {
-
+    if (this->_fileList == NULL)
+        return false;
     std::string parent = _request.getUri();
 
     // Remove trailing slash, if any.
@@ -67,5 +68,6 @@ void           DirectoryBrowser::get()
     else
         *(this->_stream) << this->_request.getConfig()->getDefaultPort();
     *(this->_stream) << "</address>\n</body></html>";
+    return true;
 }
 

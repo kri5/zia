@@ -31,3 +31,8 @@ size_t                  ResponseStreamFile::getSize() const
     return this->_file->getSize();
 }
 
+bool                    ResponseStreamFile::good() const
+{
+    return this->_file->good();
+}
+

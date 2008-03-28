@@ -105,12 +105,12 @@ void    Task::execute()
         {
             //just for the moment :
             this->_res->setHeaderOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
-            if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
+            //if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
                 this->_res->setHeaderOption("Connection", "close");
-            else
-            {
-                this->_res->setHeaderOption("Connection", "Keep-Alive");
-            }
+            //else
+            //{
+            //    this->_res->setHeaderOption("Connection", "Keep-Alive");
+            //}
             if (this->sendResponse())
             {
                 this->finalize(true);
@@ -153,7 +153,7 @@ bool    Task::parseRequest()
     {
         if (this->checkTimeout())
         {
-            //std::cout << "PRE TIMEOUT" << std::endl;
+            std::cout << "PRE TIMEOUT" << std::endl;
             this->_readBuffer->dump();
             return false;
         }
@@ -177,10 +177,10 @@ bool    Task::buildResponse()
             this->_res->setError(new ErrorResponseStream(404, this->_req));
         else if (fileInfo->getError() == IFile::Error::PermissionDenied)
             this->_res->setError(new ErrorResponseStream(403, this->_req));
+        //FIXME: add no more file directory as a potential error.
         delete fileInfo;
         return true;
     }
-    //TODO #43 : check if file is not found...
     if (fileInfo->isDirectory() == false)
     {
         this->_res->setHeaderOption("MimeType", 
@@ -191,7 +191,14 @@ bool    Task::buildResponse()
     {
         std::string     path(docRoot + this->_req->getUri());
         delete fileInfo;
-        this->_res->appendStream(new ResponseStreamDir(this->_req));
+        IResponseStream* stream = new ResponseStreamDir(this->_req);
+        if (stream->good() == false)
+        {
+            delete stream;
+            this->_res->setError(new ErrorResponseStream(500, this->_req));
+            return true;
+        }
+        this->_res->appendStream(stream);
     }
     this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());
     return true;

@@ -79,14 +79,17 @@ void                    ModuleManager::initProcessContent() const
 
 size_t                  ModuleManager::processContent(IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
 {
-    return (this->_modules[SendResponseHook].back()->getInstance()->call(IModule::onProcessContentEvent, req, res, buff, size));
+    if (this->_modules[SendResponseHook].size() > 0)
+        return (this->_modules[SendResponseHook].back()->getInstance()->call(IModule::onProcessContentEvent, req, res, buff, size));
+    res->getContent().read(buff, size);
+    return res->getContent().gcount();
 }
 
 IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event)
 {
     std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
     std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
-    IModule::ChainStatus                    res;
+    IModule::ChainStatus                    res = IModule::CONTINUE;
 
     for (; it != ite; ++it)
     {
@@ -101,7 +104,7 @@ IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IM
 {
     std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
     std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
-    IModule::ChainStatus                    res;
+    IModule::ChainStatus                    res = IModule::CONTINUE;
 
     for (; it != ite; ++it)
     {
@@ -127,7 +130,7 @@ IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, ch
 {
     std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
     std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
-    IModule::ChainStatus                    res;
+    IModule::ChainStatus                    res = IModule::CONTINUE;
 
     for (; it != ite; ++it)
     {
@@ -142,7 +145,7 @@ IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IH
 {
     std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
     std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
-    IModule::ChainStatus                    res;
+    IModule::ChainStatus                    res = IModule::CONTINUE;
 
     for (; it != ite; ++it)
     {

@@ -35,7 +35,6 @@ void    ErrorResponseStream::setContent()
         *_content << this->_request.getConfig()->getDefaultPort();
     *_content << " </address>\n";
     *_content << "</body></html>\n";
-    this->_request.print(); 
 }
 
 ErrorResponseStream::~ErrorResponseStream() throw()
@@ -66,5 +65,10 @@ int                     ErrorResponseStream::getStatus() const
 size_t                  ErrorResponseStream::getSize() const
 {
     return this->_content->str().length();
+}
+
+bool                    ErrorResponseStream::good() const
+{
+    return true;
 }
 
