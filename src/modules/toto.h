@@ -3,6 +3,7 @@
 
 #include "API/IModule.h"
 #include "API/ISendResponse.h"
+#include "AbstractModule.h"
 
 class Toto : public AbstractModule<ISendResponse>
 {

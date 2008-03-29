@@ -13,7 +13,7 @@ class ISendResponse : public IModule
         virtual ~ISendResponse() {};
         virtual void    setInput(IModule*) = 0;
 
-        virtual ChainStatus onPreSend(IHttpRequest*, IHttpRequest*) = 0;
+        virtual ChainStatus onPreSend(IHttpRequest*, IHttpResponse*) = 0;
         virtual size_t      onProcessContent(IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
         virtual ChainStatus onPostSend(IHttpRequest*, IHttpResponse*) = 0;
 };
