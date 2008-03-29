@@ -14,7 +14,7 @@ class Time : public ITime
 
         void        init();
 		time_t		getTimestamp() const;
-		const char*	getStr() const;
+		std::string	getStr() const;
         bool        elapsed(time_t seconds) const;
 		bool		operator<(const ITime&) const;
 		bool		operator>(const ITime&) const;

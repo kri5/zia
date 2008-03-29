@@ -25,7 +25,7 @@ class Time : public ITime
 
 		void				init();
 		time_t				getTimestamp() const;
-		const char*			getStr() const;
+		std::string			getStr() const;
 		bool				operator<(const ITime&) const;
 		bool				operator>(const ITime&) const;
 		bool				operator<=(const ITime&) const;

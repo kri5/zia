@@ -6,7 +6,6 @@ DirectoryBrowser::DirectoryBrowser(const HttpRequest& request,
     _request(request), _first(true), _stream(stream)
 {
     // Read directory path from request
-    // If it isn't a directory, throw 500
     _fs = new FileSystem(request.getConfig()->getParam("DocumentRoot") + request.getUri());
     _fileList = _fs->getFileList();
 }
@@ -56,9 +55,11 @@ bool           DirectoryBrowser::get()
 
         *(this->_stream) << "[   ]<a href=\"" << fullpath << "\">" << f->getFileName() << "</a>     ";
         *(this->_stream) << f->getModifDate()->getStr() << "   ";
-        *(this->_stream) << f->getSize() << "  \n";
+		if (f->isDirectory())
+			*(this->_stream) << "-" << "\n";
+		else
+			*(this->_stream) << f->getSize() << "\n";
         ++it;
- 
     }
     *(this->_stream) << "<hr></pre><address>ZiaHttpd Server at http://" << 
         this->_request.getHeaderOption("Host").substr(0, this->_request.getHeaderOption("Host").find(":")) << 

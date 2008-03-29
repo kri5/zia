@@ -23,9 +23,9 @@ time_t	Time::getTimestamp() const
 	return this->_time;
 }
 
-const char*	Time::getStr() const
+std::string		Time::getStr() const
 {
-	return ctime(&this->_time);
+	return std::string(ctime(&this->_time));
 }
 
 bool    Time::elapsed(time_t seconds) const

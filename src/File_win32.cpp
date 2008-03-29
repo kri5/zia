@@ -10,6 +10,7 @@
 File::File(const std::string& filename, const char* path) : 
 		_filename(filename), _time(NULL), _stream(NULL), _closed(false), _errorCode(Error::None)
 {
+//	std::cout << "path == " << path << " filename == " << filename << std::endl;
 	if (path)
 	{
 		_filePath = path;
