@@ -108,7 +108,11 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
                 }
                 else
                 {
+#ifndef WIN32
                     clt->setPollFlag(POLLIN | POLLERR | POLLHUP);
+#else
+					clt->setPollFlag(POLLRDNORM);
+#endif
                     if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
                     {
                         //FIXME: check for memory leak (not deleting clt)

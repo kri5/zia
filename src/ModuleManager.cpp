@@ -21,7 +21,7 @@ bool            ModuleManager::load(std::string filename)
     // Loading the module
     if (!library->load(filename))
     {
-         Logger::getInstance() << Logger::Error << library->lastError() << Logger::Flush;
+		Logger::getInstance() << Logger::Error << "Loading module " << filename << ": " << library->lastError() << Logger::Flush;
          return false;
     }
 

@@ -1,5 +1,7 @@
 #include <errno.h>
 
+#include "zia.h"
+
 #include "Workflow/Pool.h" //Let this in first position (crossed dependencies :/ )
 #include "Workflow/Task.h"
 #include "File/IFile.h"
@@ -132,7 +134,13 @@ bool    Task::receiveDatas()
     *(this->_socket) >> fds;
     ret = poll(&fds, 1, 1);
     if (ret < 0)
-        Logger::getInstance() << "Poll error: " << strerror(errno) << Logger::Flush;
+	{
+#ifndef WIN32     
+		Logger::getInstance() << "Poll error: " << strerror(errno) << Logger::Flush;
+#else
+		Logger::getInstance() << "Poll error: " << WSAGetLastError() << Logger::Flush;
+#endif
+	}
     if (ret > 0)
     {
         sockRet = this->_socket->recv(tmp, 1024);

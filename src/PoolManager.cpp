@@ -30,6 +30,7 @@ void    Pool::Manager::initKeepAlivePoll() //warning : high contendence.
     memset(this->_fds, 0, sizeof(*(this->_fds)) * size);
     while (it != ite)
     {
+		std::cout << "adding a fd" << std::endl;
         *((*it).clt) >> this->_fds[i];
         ++it;
         ++i;
@@ -43,8 +44,15 @@ void    Pool::Manager::checkKeepAlive()
 
     ret = poll(this->_fds, this->_keepAlive.size(), 1);
     if (ret < 0)
-        throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(errno));
-    if (ret == 0)
+	{
+#ifndef WIN32    
+		throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(errno));
+#else
+		std::cout << strerror(WSAGetLastError()) << " " << WSAGetLastError() << std::endl;
+		throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(WSAGetLastError()));
+#endif
+	}
+	if (ret == 0)
         return ;
 
     std::list<KeepAliveClient>::iterator  it = this->_keepAlive.begin();
@@ -89,7 +97,10 @@ void    Pool::Manager::code()
                 //  non : a voir pour un algo de recreation de thread.
             }
         }
-        this->initKeepAlivePoll();
-        this->checkKeepAlive();
+		if (this->_keepAlive.size() > 0)
+		{
+			this->initKeepAlivePoll();
+			this->checkKeepAlive();
+		}
     }
 }
