@@ -1,7 +1,7 @@
 #ifndef ISERVERQUIT
 #define ISERVERQUIT
 
-#include "Modules/IModule.h"
+#include "API/IModule.h"
 
 class IServerQuit : public IModule
 {
