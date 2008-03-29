@@ -4,7 +4,8 @@
 #include "zia.h"
 #ifndef WIN32
 typedef int SOCKET;
-#pragma warning(disable: C4190) //disable extern "C" warnings
+#else
+#pragma warning(disable: 4190) //disable extern "C" warnings
 #endif
 
 #include <string>
