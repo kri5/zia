@@ -1,4 +1,4 @@
-#include "Sockets/IClientSocket.h"
+#include "API/IClientSocket.h"
 #include "Sockets/MainSocket.h"
 #include "Network/NetworkID.h"
 #include "Network/Vhost.h"

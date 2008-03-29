@@ -2,7 +2,7 @@
 # define __INETWORK_H__
 
 #include "API/IModule.h"
-#include "Sockets/IClientSocket.h"
+#include "API/IClientSocket.h"
 
 class INetwork : public IModule
 {

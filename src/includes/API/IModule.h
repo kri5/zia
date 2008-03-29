@@ -5,7 +5,7 @@
 
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
-#include "Sockets/IClientSocket.h"
+#include "API/IClientSocket.h"
 
 #ifndef WIN32
     typedef int SOCKET;

@@ -5,7 +5,7 @@
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
-#include "Sockets/IClientSocket.h"
+#include "API/IClientSocket.h"
 
 class   IModuleManager
 {

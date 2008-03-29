@@ -2,7 +2,7 @@
 # define ABSTRACTMODULE_H__
 
 #include "API/IModule.h"
-#include "Sockets/IClientSocket.h"
+#include "API/IClientSocket.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
 
