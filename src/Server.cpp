@@ -2,9 +2,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/resource.h>
 #endif
 
-#include <sys/resource.h>
 #include "zia.h"
 #include "Server.h"
 #include "Workflow/Worker.h"
@@ -35,9 +35,13 @@ Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toB
         Logger::getInstance() << Logger::Error << "Socket error : " << ex.what() << Logger::Flush;
         throw ZException<Server>(INFO, Server::Error::Bind);
     }
+#ifndef WIN32
     struct rlimit   l;
     getrlimit(RLIMIT_NOFILE, &l);
     _maxFd = (l.rlim_cur - 4) / 2;
+#else
+	_maxFd = FD_SETSIZE;
+#endif
 }
 
 Server::~Server()

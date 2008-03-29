@@ -1,15 +1,18 @@
 #ifndef IMODULE_H
 #define IMODULE_H
 
+#include "zia.h"
+#ifndef WIN32
+typedef int SOCKET;
+#pragma warning(disable: C4190) //disable extern "C" warnings
+#endif
+
 #include <string>
 
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
 #include "API/IClientSocket.h"
 
-#ifndef WIN32
-    typedef int SOCKET;
-#endif
 
 /// Every interface that will be used by modules must inherit from this one.
 /// Here we set the module entry point, the destroy symbol and some
@@ -26,7 +29,7 @@ class   IModule
             SKIPTONEXTHOOK,
             SKIPTONEXTEVENT,
             STOP,
-            ERROR
+            ERRORMODULE
         };
         enum    Event
         {
@@ -47,11 +50,11 @@ class   IModule
             onPostSendEvent
         };
         
-        virtual ChainStatus     call(Event) = 0;
-        virtual ChainStatus     call(Event, IModule*) = 0;
+		virtual IModule::ChainStatus     call(Event) = 0;
+        virtual IModule::ChainStatus     call(Event, IModule*) = 0;
         virtual IClientSocket*  call(Event, SOCKET) = 0;
-        virtual ChainStatus     call(Event, char*, size_t) = 0;
-        virtual ChainStatus     call(Event, IHttpRequest*, IHttpResponse*) = 0;
+        virtual IModule::ChainStatus     call(Event, char*, size_t) = 0;
+        virtual IModule::ChainStatus     call(Event, IHttpRequest*, IHttpResponse*) = 0;
         virtual size_t          call(Event, IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
         //FIXME: onProcessContent
 

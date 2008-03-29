@@ -6,14 +6,18 @@
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
 
+int	ClientSocket::_nbSockets = 0;
+
 ClientSocket::ClientSocket(int acceptedSocket) : Socket()
 {
 	listenSocket = acceptedSocket;
+	++ClientSocket::_nbSockets;
 }
 
 ClientSocket::~ClientSocket()
 {
 	this->close(true);
+	--ClientSocket::_nbSockets;
 }
 
 int ClientSocket::send(const char *buf, int length) const
@@ -56,3 +60,7 @@ IClientSocket&   ClientSocket::operator<<(const std::string& buf)
     return *this;
 }
 
+int				ClientSocket::countSockets()
+{
+	return ClientSocket::_nbSockets;
+}

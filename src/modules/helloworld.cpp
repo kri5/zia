@@ -16,6 +16,7 @@ IModule::ChainStatus    helloworld::call(IModule::Event evt)
         this->onServerStart();
     else if (evt == IModule::onServerStopEvent)
         this->onServerStop();
+	return IModule::CONTINUE;
 }
 
 IModule::ChainStatus     helloworld::onServerStart()

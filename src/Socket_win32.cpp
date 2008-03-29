@@ -3,7 +3,7 @@
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
 
-Socket::Socket()
+Socket::Socket() : _pollFlag(POLLRDNORM | POLLWRNORM)
 {
 	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != NO_ERROR)
@@ -25,13 +25,18 @@ void Socket::close(bool shutdown)
 const ISocket&	Socket::operator>>(struct pollfd& pdfs) const
 {
 	pdfs.fd = this->listenSocket;
-	pdfs.events = POLLRDNORM | POLLWRNORM;
+	pdfs.events = this->_pollFlag;
 	return *this;
 }
 
 bool            Socket::isSet(const struct pollfd& pdfs) const
 {
-	if (pdfs.revents & (POLLRDNORM | POLLWRNORM))
+	if (pdfs.revents & this->_pollFlag)
 		return true;
 	return false;
+}
+
+void			Socket::setPollFlag(int pollFlag)
+{
+	_pollFlag = pollFlag;
 }

@@ -30,13 +30,15 @@ IModule::ChainStatus    Toto::call(IModule::Event event, IHttpRequest* req, IHtt
         return (this->onPreSend(req, res));
     else if (event == IModule::onPostSendEvent)
         return (this->onPostSend(req, res));
+	return IModule::ERRORMODULE;
 }
 
 IModule::ChainStatus    Toto::onPreSend(IHttpRequest* req, IHttpResponse* res)
 {
-    Buffer* buff = new Buffer(512);
+    /*Buffer* buff = new Buffer(512);
     if (req->setParam("totoBuffer", buff) == false)
-        std::cout << "Diantre !!!" << std::endl;
+        std::cout << "Diantre !!!" << std::endl;*/
+	return IModule::CONTINUE;
 }
 
 size_t                  Toto::onProcessContent(IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
@@ -44,23 +46,22 @@ size_t                  Toto::onProcessContent(IHttpRequest* req, IHttpResponse*
     std::cout << "processing content via totoModule" << std::endl;
     if (_glInput != NULL)
     {
-        //_glInput->call(onProcessContentEvent, req, res, buff, size);
-        strcpy(buff, "Vive les loutres");
+        return (_glInput->call(onProcessContentEvent, req, res, buff, size));
     }
     else
     {
         std::iostream& stream = res->getContent();
         stream.read(buff, size);
-        strcpy(buff, "Vive les loutres");
         return stream.gcount();
     }
 }
 
 IModule::ChainStatus    Toto::onPostSend(IHttpRequest* req, IHttpResponse* res)
 {
-    Buffer* buff = static_cast<Buffer*>(req->getParam("totoBuffer"));
+    /*Buffer* buff = static_cast<Buffer*>(req->getParam("totoBuffer"));
     if (buff)
-        delete buff;
+        delete buff;*/
+	return IModule::CONTINUE;
 }
 
 extern "C" IModule* create()

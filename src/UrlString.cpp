@@ -1,4 +1,5 @@
 #include <string>
+#include <cctype>
 #include "Utils/UrlString.h"
 
 std::string     UrlString::charToHex(char c)

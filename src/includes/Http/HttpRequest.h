@@ -1,6 +1,10 @@
 #ifndef __HTTPREQUEST_H__
 # define __HTTPREQUEST_H__
 
+#ifdef WIN32
+#pragma warning(disable: 4250)
+#endif
+
 #include <map>
 #include <string>
 

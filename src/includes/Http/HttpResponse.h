@@ -1,6 +1,10 @@
 #ifndef __HTTPRESPONSE_H__
 #define __HTTPRESPONSE_H__
 
+#ifdef WIN32
+#pragma warning(disable: 4250)
+#endif
+
 #include <map>
 #include <sstream>
 #include <queue>

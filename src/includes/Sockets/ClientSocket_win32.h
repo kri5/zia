@@ -3,7 +3,7 @@
 
 #include "zia.h"
 #include "Socket_win32.h"
-#include "IClientSocket.h"
+#include "API/IClientSocket.h"
 
 /** A specialized socket, which will only handle clients, and not connections to server.
  *  For others method than ctor/dtor documentation, refer to IClientSocket.
@@ -19,7 +19,9 @@ class ClientSocket : public Socket, public IClientSocket
 		int send(const char *buf, int length) const;
 		int send(const std::string& buf, int length) const;
         virtual IClientSocket&  operator<<(const std::string& buf);
+		static int			countSockets();
 	private:
+		static int			_nbSockets;
 };
 
 #endif //__CLIENT_SOCKET_WIN32_H__
