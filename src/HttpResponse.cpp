@@ -1,5 +1,4 @@
 #include <assert.h>
-#include "Stream/ResponseStreamGeneric.h"
 #include "Http/HttpResponse.h"
 
 HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
