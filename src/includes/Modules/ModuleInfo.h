@@ -14,10 +14,12 @@ class   ModuleInfo : public IModuleInfo
         ~ModuleInfo();
         IModule*                        getInstance() const;
         std::string                     getName() const;
+        int                             getVersion() const;
     protected:
         create_t*                       create;
         destroy_t*                      destroy;
         name_t*                         name;
+        version_t*                      version;
         IDynLib*                        _module;
         IModule*                        _instance;
         

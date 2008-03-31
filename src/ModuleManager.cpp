@@ -29,11 +29,11 @@ bool            ModuleManager::load(std::string filename)
     }
 
     // If any of these is null, a symbol is missing.
-    if (!library->sym("name") || !library->sym("create") || !library->sym("destroy"))
+    if (!library->sym("name") || !library->sym("create") || !library->sym("destroy") || !library->sym("version"))
     {
-        delete library;
-        Logger::getInstance() << Logger::Error << "Can't load symbol: "
+        Logger::getInstance() << Logger::Error << "Can't load symbol: " 
             << library->lastError() << Logger::Flush;
+        delete library;
         return false;
     }
 
@@ -58,7 +58,7 @@ bool            ModuleManager::load(std::string filename)
     if (dynamic_cast<ISendResponse*>(ptr))
         this->_modules[SendResponseHook].push_back(mi);
 
-    Logger::getInstance() << Logger::Info << "Module " << mi->getName() << " loaded." << Logger::Flush;
+    Logger::getInstance() << Logger::Info << "Module " << mi->getName() << " version " << mi->getVersion() << " loaded." << Logger::Flush;
     return true;
 }
 

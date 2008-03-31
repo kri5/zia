@@ -6,6 +6,7 @@ ModuleInfo::ModuleInfo(IDynLib* module) : _module(module)
     name = nasty_cast<void*, name_t*>(module->sym("name"));
     destroy = nasty_cast<void*, destroy_t*>(module->sym("destroy"));
     create = nasty_cast<void*, create_t*>(module->sym("create"));
+    version = nasty_cast<void*, version_t*>(module->sym("version"));
     _instance = create();
 }
 
@@ -25,3 +26,7 @@ ModuleInfo::~ModuleInfo()
     delete _module;
 }
 
+int             ModuleInfo::getVersion() const
+{
+    return  this->version();
+}

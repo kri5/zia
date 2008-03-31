@@ -76,5 +76,10 @@ extern "C" void destroy(IModule* i)
 
 extern "C" std::string name()
 {
-    return "Toto module version 1.0";
+    return "Toto";
+}
+
+extern "C" int  version()
+{
+    return 1;
 }

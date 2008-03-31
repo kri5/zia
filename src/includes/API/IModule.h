@@ -62,6 +62,8 @@ class   IModule
 typedef IModule*    create_t();
 typedef void        destroy_t(IModule*);
 typedef std::string name_t();
+typedef int         version_t();
+
 
 #endif // IMODULE_H
 

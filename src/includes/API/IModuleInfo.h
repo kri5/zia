@@ -11,6 +11,8 @@ class   IModuleInfo
         virtual IModule*    getInstance() const = 0;
         /// Will return the module name.
         virtual std::string getName() const = 0;
+        /// Will return the module version.
+        virtual int         getVersion() const = 0;
 };
 
 #endif //IMODULEINFO_H__

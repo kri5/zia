@@ -43,5 +43,10 @@ extern "C" void destroy(IModule* i)
 
 extern "C" std::string name()
 {
-    return "Hello world version 45";
+    return "Hello world";
+}
+
+extern "C" int  version()
+{
+    return 42;
 }
