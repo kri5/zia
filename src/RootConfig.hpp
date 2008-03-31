@@ -15,9 +15,17 @@ class RootConfig : public Singleton<RootConfig>
         {
             return RootConfig::getInstance()._cfg;
         }
-        static std::string  getParam(std::string name)
+        static const std::string*   getParam(const std::string& name)
         {
             return RootConfig::getConfig()->getParam(name);
+        }
+        static const char*          getParamChar(const std::string& name)
+        {
+            return RootConfig::getConfig()->getParamChar(name);
+        }
+        static bool                 isSet(const std::string& name)
+        {
+            return RootConfig::getConfig()->isSet(name);
         }
     private:
         RootConfig() : _cfg(NULL){}

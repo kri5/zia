@@ -26,7 +26,10 @@ Task::Task(Pool* pool) :
 {
     _readBuffer = new Buffer(1024);
     _writeBuffer = new Buffer(1024);
-    _timeoutDelay = atoi(RootConfig::getParam("Timeout").c_str());
+    if (RootConfig::isSet("Timeout"))
+        _timeoutDelay = atoi(RootConfig::getParam("Timeout")->c_str());
+    else
+        _timeoutDelay = 300;//Arbitrary default value :o)
 }
 
 Task::~Task()
@@ -176,8 +179,8 @@ bool    Task::parseRequest()
 
 bool    Task::buildResponse()
 {
-    std::string     docRoot = this->_req->getConfig()->getParam("DocumentRoot");
-    IFile*          fileInfo = new File(this->_req->getUri(), docRoot.c_str());
+    const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
+    IFile*              fileInfo = new File(this->_req->getUri(), docRoot.c_str());
 
     if (fileInfo->getError() != IFile::Error::None)
     {

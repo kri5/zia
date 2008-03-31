@@ -31,7 +31,7 @@ class Vhost : public Config
 		/// Will return the complete NetworkID :
 		const NetworkID&	    getNetworkID() const;
 		/// Param getter overloading, to ensure that some parameters can't be getted (such as login or group for daemon mode)
-		std::string			    getParam(std::string) const;
+		const std::string*	    getParam(std::string) const;
 		/// Will return the appropriate Vhost from the server's list, using Host: from Http header
 		static IConfig*         getVhost(const std::vector<Vhost*>& vhosts, const std::string& host);
 	private:

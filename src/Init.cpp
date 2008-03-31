@@ -183,7 +183,7 @@ void		Init::addWildcardVhosts()
 	std::map<const NetworkID*, std::vector<Vhost*> >::iterator	endNet;
 
 	//Will just create the element. This is soooo ugly :(
-	this->_bindList[NetworkID::factory("*", this->_conf->getParam("Listen"))];
+	this->_bindList[NetworkID::factory("*", *(this->_conf->getParam("Listen")))];
 	while (it != end)
 	{
 		if ((*it)->getAddress() == "*")

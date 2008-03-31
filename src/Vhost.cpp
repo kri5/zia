@@ -34,11 +34,11 @@ const NetworkID&	Vhost::getNetworkID() const
 	return *(this->_netId);
 }
 
-std::string		Vhost::getParam(std::string name) const
+const std::string*		Vhost::getParam(std::string name) const
 {
 	if (name == "User" || name == "Group")
 		throw ZException<Vhost>(INFO, Vhost::Error::InvalidConfig, name.c_str());
-	return (Config::getParam(name));
+    return (Config::getParam(name));
 }
 
 IConfig*	Vhost::getVhost(const std::vector<Vhost*>& vhosts, const std::string& host)
@@ -49,7 +49,8 @@ IConfig*	Vhost::getVhost(const std::vector<Vhost*>& vhosts, const std::string& h
 
 	for (i = 0; i < size; ++i)
 	{
-		if (vhosts[i]->getParam("ServerName") == host.substr(0, host.find(':')))
+        //ServerName has to be defined. This is (normally) checked in Init
+		if (*(vhosts[i]->getParam("ServerName")) == host.substr(0, host.find(':')))
 			return vhosts[i];
 	}
 	return RootConfig::getInstance().getConfig();

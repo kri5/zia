@@ -39,14 +39,22 @@ Config::Config(const Config& right) : IConfig(), _mime(NULL), _modules(NULL), _g
     }
 }
 
-const std::string&      Config::getParam(const std::string& name) const
+const std::string*      Config::getParam(const std::string& name) const
 {
-    const std::string&    tmp = "";
 	//We have to go through with an iterator because operator[] isn't a const method.
 	std::map<std::string, std::string>::const_iterator		it = this->_params.find(name);
 	if (it == this->_params.end())
-		return (tmp);
-	return it->second;
+		return (NULL);
+	return &(it->second);
+}
+
+const char*             Config::getParamChar(const std::string& name) const
+{
+	//We have to go through with an iterator because operator[] isn't a const method.
+	std::map<std::string, std::string>::const_iterator		it = this->_params.find(name);
+	if (it == this->_params.end())
+		return (NULL);
+	return it->second.c_str();
 }
 
 void			Config::setParam(const std::string& name, const std::string& value)

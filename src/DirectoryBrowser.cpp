@@ -6,7 +6,8 @@ DirectoryBrowser::DirectoryBrowser(const HttpRequest& request,
     _request(request), _first(true), _stream(stream)
 {
     // Read directory path from request
-    _fs = new FileSystem(request.getConfig()->getParam("DocumentRoot") + request.getUri());
+    // DocumentRoot has to be defined. This is normally checked in Init
+    _fs = new FileSystem(*(request.getConfig()->getParam("DocumentRoot")) + request.getUri());
     _fileList = _fs->getFileList();
 }
 
