@@ -27,19 +27,19 @@ class   HttpResponse : public IHttpResponse, public HttpTransaction
         HttpResponse();
         virtual ~HttpResponse();
         
-        void        setResponseStatus(int status);
-
+        void                            setResponseStatus(int status);
         int                             getResponseStatus() const;
-        const std::string               getResponseValue() const;
-        size_t                          getContentLength() const;
+
+        std::string                     getResponseValue() const;
         static const char*              getResponseStatusMessage(int key);
 
         void                            appendStream(IResponseStream*);
         std::queue<IResponseStream*>&   getStreams();
         void                            setError(ErrorResponseStream*);
+        size_t                          getContentLength() const;
 
-        std::iostream&                  getContent();
-        void                            setCurrentContent(std::iostream*);
+        void                            setCurrentStream(std::iostream*);
+        std::iostream&                  getCurrentStream();
 		void							skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream);
 		bool							isInSendMode() const;
 		bool							headerInStream() const;

@@ -81,7 +81,7 @@ int                     HttpResponse::getResponseStatus() const
     return this->_responseStatus;
 }
 
-const std::string      HttpResponse::getResponseValue() const
+std::string     HttpResponse::getResponseValue() const
 {
     return std::string(getResponseStatusMessage(this->_responseStatus));
 }
@@ -97,13 +97,13 @@ std::queue<IResponseStream*>&   HttpResponse::getStreams()
     return this->_streams;
 }
 
-std::iostream&          HttpResponse::getContent()
+std::iostream&          HttpResponse::getCurrentStream()
 {
     assert(this->_currentStream != NULL);
     return *(this->_currentStream);
 }
 
-void                    HttpResponse::setCurrentContent(std::iostream* stream)
+void                    HttpResponse::setCurrentStream(std::iostream* stream)
 {
     this->_currentStream = stream;
 }

@@ -249,7 +249,7 @@ bool    Task::sendResponse()
     {
         respStream = streamQueue.front();
         std::iostream& stream = respStream->getContent();
-        this->_res->setCurrentContent(&stream);
+        this->_res->setCurrentStream(&stream);
         streamQueue.pop();
         do
         {

@@ -50,7 +50,7 @@ size_t                  Toto::onProcessContent(IHttpRequest* req, IHttpResponse*
     }
     else
     {
-        std::iostream& stream = res->getContent();
+        std::iostream& stream = res->getCurrentStream();
         stream.read(buff, size);
         return stream.gcount();
     }

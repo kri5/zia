@@ -84,8 +84,8 @@ size_t                  ModuleManager::processContent(IHttpRequest* req, IHttpRe
 {
     if (this->_modules[SendResponseHook].size() > 0)
         return (this->_modules[SendResponseHook].back()->getInstance()->call(IModule::onProcessContentEvent, req, res, buff, size));
-    res->getContent().read(buff, size);
-    return res->getContent().gcount();
+    res->getCurrentStream().read(buff, size);
+    return res->getCurrentStream().gcount();
 }
 
 IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event)
