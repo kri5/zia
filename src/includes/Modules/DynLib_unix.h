@@ -7,14 +7,16 @@
 class DynLib : public IDynLib
 {
 public:
+    DynLib();
 	~DynLib();
-	bool		load(const std::string& filename);
-	void*		sym(const std::string& symbol);
-	void		close();
-    char*       lastError();
+	bool		    load(const std::string& filename);
+	void*		    sym(const std::string& symbol);
+	void		    close();
+    const char*     lastError();
 
 private:
-	void*		handle;
+	void*		    handle;
+    std::string*    _err;
 };
 
 #endif // DYNLIB_UNIX_H

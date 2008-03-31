@@ -11,7 +11,7 @@ public:
 	bool		load(const std::string& filename);
 	void*		sym(const std::string& symbol);
 	void		close();
-    char*       lastError();
+    const char* lastError();
 	
 private:
 	HMODULE		handle;

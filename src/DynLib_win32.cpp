@@ -22,7 +22,7 @@ void		DynLib::close()
 	FreeLibrary(this->handle);
 }
 
-char*       DynLib::lastError()
+const char*       DynLib::lastError()
 {
     return strerror(GetLastError());
 }
