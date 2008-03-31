@@ -1,5 +1,5 @@
-#ifndef IMODULES_H
-#define IMODULES_H
+#ifndef IMODULEMANAGER_H
+# define IMODULEMANAGER_H
 
 #include <iostream>
 #include "API/IModule.h"
