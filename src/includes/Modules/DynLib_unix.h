@@ -2,7 +2,7 @@
 #define DYNLIB_UNIX_H
 
 #include <string>
-#include "IDynLib.h"
+#include "API/IDynLib.h"
 
 class DynLib : public IDynLib
 {

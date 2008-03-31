@@ -4,12 +4,13 @@
 #include <list>
 #include <string>
 #include "API/IModule.h"
-#include "Modules/DynLib.h"
+#include "API/IModuleInfo.h"
+#include "API/IDynLib.h"
 
-class   ModuleInfo
+class   ModuleInfo : public IModuleInfo
 {
     public:
-        ModuleInfo(DynLib* module);
+        ModuleInfo(IDynLib* module);
         ~ModuleInfo();
         IModule*                        getInstance() const;
         std::string                     getName() const;
@@ -17,7 +18,7 @@ class   ModuleInfo
         create_t*                       create;
         destroy_t*                      destroy;
         name_t*                         name;
-        DynLib*                         _module;
+        IDynLib*                        _module;
         IModule*                        _instance;
         
 };

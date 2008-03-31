@@ -152,3 +152,4 @@ bool					HttpResponse::headerInStream() const
 {
 	return this->_headerInStream;
 }
+

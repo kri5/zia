@@ -8,7 +8,7 @@
 #include "API/IModule.h"
 #include "Logger.hpp"
 #include "Singleton.hpp"
-#include "API/ModuleInfo.h"
+#include "API/IModuleInfo.h"
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
@@ -40,8 +40,8 @@ class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
         ModuleManager();
         virtual ~ModuleManager();
 
-        std::list<ModuleInfo*>*        _modules;
-        std::list<ModuleInfo*>         _moduleInstances;
+        std::list<IModuleInfo*>*        _modules;
+        std::list<IModuleInfo*>         _moduleInstances;
 
         friend class Singleton<ModuleManager>;
 };

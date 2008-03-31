@@ -9,7 +9,7 @@ class IBuildResponse : public IModule
 {
     public:
         virtual ~IBuildResponse(){};
-        virtual ChainStatus     onPostBuild(IHttpRequest&, IHttpResponse&) = 0;
+        virtual ChainStatus     onPostBuild(IHttpRequest*, IHttpResponse*) = 0;
 };
 
 #endif /* !__IBUILDRESPONSE_H__ */

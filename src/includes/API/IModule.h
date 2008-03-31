@@ -1,7 +1,6 @@
 #ifndef IMODULE_H
-#define IMODULE_H
+# define IMODULE_H
 
-#include "zia.h"
 #ifndef WIN32
 typedef int SOCKET;
 #else
@@ -51,13 +50,12 @@ class   IModule
             onPostSendEvent
         };
         
-		virtual IModule::ChainStatus     call(Event) = 0;
-        virtual IModule::ChainStatus     call(Event, IModule*) = 0;
-        virtual IClientSocket*  call(Event, SOCKET) = 0;
-        virtual IModule::ChainStatus     call(Event, char*, size_t) = 0;
-        virtual IModule::ChainStatus     call(Event, IHttpRequest*, IHttpResponse*) = 0;
-        virtual size_t          call(Event, IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
-        //FIXME: onProcessContent
+        virtual IModule::ChainStatus    call(Event) = 0;
+        virtual IModule::ChainStatus    call(Event, IModule*) = 0;
+        virtual IClientSocket*          call(Event, SOCKET) = 0;
+        virtual IModule::ChainStatus    call(Event, char*, size_t) = 0;
+        virtual IModule::ChainStatus    call(Event, IHttpRequest*, IHttpResponse*) = 0;
+        virtual size_t                  call(Event, IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
 
 };
 
@@ -66,3 +64,4 @@ typedef void        destroy_t(IModule*);
 typedef std::string name_t();
 
 #endif // IMODULE_H
+

@@ -1,7 +1,7 @@
 #include "NastyCast.hpp"
-#include "API/ModuleInfo.h"
+#include "Modules/ModuleInfo.h"
 
-ModuleInfo::ModuleInfo(DynLib* module) : _module(module)
+ModuleInfo::ModuleInfo(IDynLib* module) : _module(module)
 {
     name = nasty_cast<void*, name_t*>(module->sym("name"));
     destroy = nasty_cast<void*, destroy_t*>(module->sym("destroy"));

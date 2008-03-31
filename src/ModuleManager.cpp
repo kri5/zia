@@ -1,22 +1,25 @@
 #include "Modules/ModuleManager.h"
+#include "API/IDynLib.h"
+#include "API/IModuleInfo.h"
+#include "Modules/ModuleInfo.h"
 #include "Modules/DynLib.h"
 #include <assert.h>
 
 ModuleManager::ModuleManager()
 {
-    _modules = new std::list<ModuleInfo*>[NumberOfHooks];
+    _modules = new std::list<IModuleInfo*>[NumberOfHooks];
 }
 
 ModuleManager::~ModuleManager()
 {
-    for (std::list<ModuleInfo*>::iterator it = _moduleInstances.begin(); it != _moduleInstances.end(); ++it)
+    for (std::list<IModuleInfo*>::iterator it = _moduleInstances.begin(); it != _moduleInstances.end(); ++it)
         delete *it;
     delete[] this->_modules;
 }
 
 bool            ModuleManager::load(std::string filename)
 {
-    DynLib* library = new DynLib();
+    IDynLib* library = new DynLib();
 
     // Loading the module
     if (!library->load(filename))
@@ -35,7 +38,7 @@ bool            ModuleManager::load(std::string filename)
     }
 
     // Creating a ModuleInfo object.
-    ModuleInfo* mi = new ModuleInfo(library);
+    IModuleInfo* mi = new ModuleInfo(library);
     this->_moduleInstances.push_back(mi);
 
     // Identifying which "event" class the module implement.
@@ -61,8 +64,8 @@ bool            ModuleManager::load(std::string filename)
 
 void                    ModuleManager::initProcessContent() const
 {
-    std::list<ModuleInfo*>::const_iterator        it = this->_modules[SendResponseHook].begin();
-    std::list<ModuleInfo*>::const_iterator        ite = this->_modules[SendResponseHook].end();
+    std::list<IModuleInfo*>::const_iterator        it = this->_modules[SendResponseHook].begin();
+    std::list<IModuleInfo*>::const_iterator        ite = this->_modules[SendResponseHook].end();
     
     IModule*        mod;
     IModule*        prevMod = NULL;
@@ -87,8 +90,8 @@ size_t                  ModuleManager::processContent(IHttpRequest* req, IHttpRe
 
 IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event)
 {
-    std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
-    std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
+    std::list<IModuleInfo*>::iterator        it = this->_modules[hook].begin();
+    std::list<IModuleInfo*>::iterator        ite = this->_modules[hook].end();
     IModule::ChainStatus                    res = IModule::CONTINUE;
 
     for (; it != ite; ++it)
@@ -102,8 +105,8 @@ IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event)
 
 IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IModule* mod)
 {
-    std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
-    std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
+    std::list<IModuleInfo*>::iterator        it = this->_modules[hook].begin();
+    std::list<IModuleInfo*>::iterator        ite = this->_modules[hook].end();
     IModule::ChainStatus                    res = IModule::CONTINUE;
 
     for (; it != ite; ++it)
@@ -128,8 +131,8 @@ IClientSocket*  ModuleManager::call(Hook hook, IModule::Event event, SOCKET sock
 
 IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, char* buff, size_t size)
 {
-    std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
-    std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
+    std::list<IModuleInfo*>::iterator        it = this->_modules[hook].begin();
+    std::list<IModuleInfo*>::iterator        ite = this->_modules[hook].end();
     IModule::ChainStatus                    res = IModule::CONTINUE;
 
     for (; it != ite; ++it)
@@ -143,8 +146,8 @@ IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, ch
 
 IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IHttpRequest* httpReq, IHttpResponse* httpRes)
 {
-    std::list<ModuleInfo*>::iterator        it = this->_modules[hook].begin();
-    std::list<ModuleInfo*>::iterator        ite = this->_modules[hook].end();
+    std::list<IModuleInfo*>::iterator        it = this->_modules[hook].begin();
+    std::list<IModuleInfo*>::iterator        ite = this->_modules[hook].end();
     IModule::ChainStatus                    res = IModule::CONTINUE;
 
     for (; it != ite; ++it)
