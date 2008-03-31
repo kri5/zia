@@ -4,6 +4,8 @@
 #include "Sockets/MainSocket_unix.h"
 #include "ZException.hpp"
 #include "Network/Vhost.h"
+#include "API/IModuleManager.h"
+#include "Modules/ModuleManager.h"
 
 #include "MemoryManager.hpp"
 
@@ -51,7 +53,7 @@ void	MainSocket::listen(int queue) const
 	}
 }
 
-ClientSocket*	MainSocket::accept()
+IClientSocket*	MainSocket::accept()
 {
 	int acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == SOCKET_ERROR)
@@ -59,9 +61,9 @@ ClientSocket*	MainSocket::accept()
         Logger::getInstance() << Logger::Warning << "Can't accept client (" << strerror(errno) << ')' << Logger::Flush;
 		//throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
 	}
-	ClientSocket *ret = new ClientSocket(acceptSocket);
-    // In case of SSL
-    //ClientSocket *ret = new SSLClientSocket(acceptSocket);
+    IClientSocket*  ret = ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onAcceptEvent, acceptSocket);
+    if (ret == NULL)
+        ret = new ClientSocket(acceptSocket);
 	return (ret);
 }
 

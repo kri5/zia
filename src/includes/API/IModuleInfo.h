@@ -1,6 +1,8 @@
 #ifndef IMODULEINFO_H__
 # define IMODULEINFO_H__
 
+#include "API/IModule.h"
+
 /// Interface for ModuleInfo.
 /// This class will contain base symbols, and the module instance.
 class   IModuleInfo

@@ -13,6 +13,7 @@ typedef int SOCKET;
 #include "API/IHttpResponse.h"
 #include "API/IClientSocket.h"
 
+class IModuleInfo;
 
 /// Every interface that will be used by modules must inherit from this one.
 /// Here we set the module entry point, the destroy symbol and some
@@ -47,13 +48,14 @@ class   IModule
             onPostBuild,
             onPreSendEvent,
             onProcessContentEvent,
-            onPostSendEvent
+            onPostSendEvent,
+            onFailureEvent
         };
         
         virtual IModule::ChainStatus    call(Event) = 0;
-        virtual IModule::ChainStatus    call(Event, IModule*) = 0;
+        virtual IModule::ChainStatus    call(Event, IModuleInfo*) = 0;
         virtual IClientSocket*          call(Event, SOCKET) = 0;
-        virtual IModule::ChainStatus    call(Event, char*, size_t) = 0;
+        virtual IModule::ChainStatus    call(Event, const char*, size_t) = 0;
         virtual IModule::ChainStatus    call(Event, IHttpRequest*, IHttpResponse*) = 0;
         virtual size_t                  call(Event, IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
 

@@ -20,7 +20,7 @@ public:
     const std::vector<const Vhost*>&   getAssociatedVhosts();
 
 	/// Spawn a new socket for the new client.
-	ClientSocket *accept();
+	IClientSocket *accept();
 private:
 	/// Bind the socket on a specified host and port.
 	void bind(const NetworkID*) const;

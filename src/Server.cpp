@@ -17,7 +17,6 @@
 Server::Server(const std::map<const NetworkID*, std::vector<Vhost*> >& toBind, 
         Pool* pool) : _toBind(toBind), _pool(pool)
 {
-    ModuleManager::getInstance().call(IModuleManager::ServerEventHook, IModule::onServerStartEvent);
     std::map<const NetworkID*, std::vector<Vhost*> >::const_iterator		it = this->_toBind.begin();
     std::map<const NetworkID*, std::vector<Vhost*> >::const_iterator		end = this->_toBind.end();
 
@@ -65,6 +64,8 @@ void		Server::run()
     struct pollfd*		pfds;
     int					ret;
 
+    //Hooks : onServerStart
+    ModuleManager::getInstance().call(IModuleManager::ServerEventHook, IModule::onServerStartEvent);
     Logger::getInstance() << Logger::Info << "All sockets initialized, starting main loop" << Logger::Flush;
     pfds = new struct pollfd[size];
     while (true)
@@ -86,6 +87,8 @@ void		Server::run()
         this->checkSockets(ret, pfds);
     }
     delete[]	pfds;
+    //Hooks : onServerStop
+    ModuleManager::getInstance().call(IModuleManager::ServerEventHook, IModule::onServerStopEvent);
 }
 
 void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) const
@@ -97,31 +100,36 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
     {
         if (this->_sockets[i]->isSet(pfds[i]))
         {
-            //Worker::create(*this->_sockets[i]->accept(), this->_sockets[i]->getAssociatedVhosts());
-            ClientSocket*  clt = this->_sockets[i]->accept();
-            if (clt)
+            IClientSocket*      iclt = this->_sockets[i]->accept();
+            if (iclt)
             {
-                if (ClientSocket::countSockets() >= this->_maxFd)
-                {
-                    std::cout << "Max client reached, disconnecting" << std::endl;
-                    delete clt;
-                }
+                ClientSocket*  clt = dynamic_cast<ClientSocket*>(iclt);
+                if (clt == NULL)
+                    delete iclt;
                 else
                 {
-#ifndef WIN32
-                    clt->setPollFlag(POLLIN | POLLERR | POLLHUP);
-#else
-					clt->setPollFlag(POLLRDNORM);
-#endif
-                    if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
+                    if (ClientSocket::countSockets() >= this->_maxFd)
                     {
-                        //FIXME: check for memory leak (not deleting clt)
-                        Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
+                        std::cout << "Max client reached, disconnecting" << std::endl;
+                        delete clt;
                     }
-                    //else
-                    //{
-                    //    std::cout << "new connected client" << std::endl;
-                    //}
+                    else
+                    {
+#ifndef WIN32
+                        clt->setPollFlag(POLLIN | POLLERR | POLLHUP);
+#else
+                        clt->setPollFlag(POLLRDNORM);
+#endif
+                        if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
+                        {
+                            //FIXME: check for memory leak (not deleting clt)
+                            Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
+                        }
+                        //else
+                        //{
+                        //    std::cout << "new connected client" << std::endl;
+                        //}
+                    }
                 }
             }
         }

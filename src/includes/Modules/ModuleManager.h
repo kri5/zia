@@ -32,9 +32,9 @@ class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
         size_t                  processContent(IHttpRequest*, IHttpResponse*, char*, size_t);
 
         IModule::ChainStatus    call(Hook, IModule::Event);
-        IModule::ChainStatus    call(Hook, IModule::Event, IModule*);
+        IModule::ChainStatus    call(Hook, IModule::Event, IModuleInfo*);
         IClientSocket*          call(Hook, IModule::Event, SOCKET);
-        IModule::ChainStatus    call(Hook, IModule::Event, char*, size_t);
+        IModule::ChainStatus    call(Hook, IModule::Event, const char*, size_t);
         IModule::ChainStatus    call(Hook, IModule::Event, IHttpRequest*, IHttpResponse*);
     private:
         ModuleManager();

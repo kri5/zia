@@ -59,6 +59,7 @@ bool            ModuleManager::load(std::string filename)
         this->_modules[SendResponseHook].push_back(mi);
 
     Logger::getInstance() << Logger::Info << "Module " << mi->getName() << " version " << mi->getVersion() << " loaded." << Logger::Flush;
+    ModuleManager::getInstance().call(IModuleManager::ModuleEventHook, IModule::onLoadModuleEvent, mi);
     return true;
 }
 
@@ -103,7 +104,7 @@ IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event)
     return res;
 }
 
-IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IModule* mod)
+IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IModuleInfo* mod)
 {
     std::list<IModuleInfo*>::iterator        it = this->_modules[hook].begin();
     std::list<IModuleInfo*>::iterator        ite = this->_modules[hook].end();
@@ -129,7 +130,7 @@ IClientSocket*  ModuleManager::call(Hook hook, IModule::Event event, SOCKET sock
     return (*(this->_modules[hook].begin()))->getInstance()->call(event, sock);
 }
 
-IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, char* buff, size_t size)
+IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, const char* buff, size_t size)
 {
     std::list<IModuleInfo*>::iterator        it = this->_modules[hook].begin();
     std::list<IModuleInfo*>::iterator        ite = this->_modules[hook].end();

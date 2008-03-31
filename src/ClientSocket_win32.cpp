@@ -22,6 +22,7 @@ ClientSocket::~ClientSocket()
 
 int ClientSocket::send(const char *buf, int length) const
 {
+    ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onSendEvent, buf, length);
 	int iResult = ::send(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
 		Logger::getInstance() << Logger::Warning << "Can't send data (" << strerror(WSAGetLastError()) << ')' << Logger::Flush;
@@ -51,6 +52,8 @@ int ClientSocket::recv( char *buf, int length ) const
 	int iResult = ::recv(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
 		Logger::getInstance() << Logger::Warning << "Can't receive data (" << strerror(WSAGetLastError()) << ')' << Logger::Flush;
+    else
+        ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onRecvEvent, buf, iResult);
 	return (iResult);
 }
 

@@ -94,6 +94,7 @@ bool    Task::finalize(bool succeded)
 //        else
 //            this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
 //    }
+    ModuleManager::getInstance().call(ModuleManager::WorkflowHook, IModule::onEndEvent, this->_req, this->_res);
     this->clear();
     //std::cout << "end task" << std::endl;
     return succeded;
@@ -101,6 +102,7 @@ bool    Task::finalize(bool succeded)
 
 void    Task::execute()
 {
+    ModuleManager::getInstance().call(ModuleManager::WorkflowHook, IModule::onBeginEvent, this->_req, this->_res);
     _time = new Time();
     //std::cout << "new task" << std::endl;
     if (this->parseRequest() == true)
@@ -108,6 +110,7 @@ void    Task::execute()
         this->_time->init();
         if (this->_res->isInSendMode() == true || this->buildResponse() == true)
         {
+            ModuleManager::getInstance().call(IModuleManager::BuildResponseHook, IModule::onPostBuild, this->_req, this->_res);
             //just for the moment :
             this->_res->setHeaderOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
             //if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
@@ -123,6 +126,7 @@ void    Task::execute()
             }
         }
     }
+    ModuleManager::getInstance().call(IModuleManager::WorkflowHook, IModule::onFailureEvent, this->_req, this->_res);
     this->finalize(false);
 }
 
@@ -160,6 +164,7 @@ bool    Task::parseRequest()
 {
     HttpParser      parser(this->_req, this->_readBuffer);
 
+    ModuleManager::getInstance().call(ModuleManager::ReceiveRequestHook, IModule::onPreReceiveEvent, this->_req, this->_res);
     while (parser.done() == false)
     {
         if (this->checkTimeout())
@@ -175,6 +180,7 @@ bool    Task::parseRequest()
     //TODO: check host.
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getHeaderOption("Host")));
+    ModuleManager::getInstance().call(ModuleManager::ReceiveRequestHook, IModule::onPostReceiveEvent, this->_req, this->_res);
     return true;
 }
 

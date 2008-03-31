@@ -3,6 +3,9 @@
 #include "Sockets/ClientSocket_unix.h"
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
+#include "API/IModuleManager.h"
+#include "API/IModule.h"
+#include "Modules/ModuleManager.h"
 
 int ClientSocket::_nbSockets = 0;
 
@@ -24,7 +27,9 @@ ClientSocket::~ClientSocket()
 
 int             ClientSocket::send(const char *buf, int length) const
 {
-	int iResult = ::send(listenSocket, buf, length, MSG_NOSIGNAL);
+    ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onSendEvent, buf, length);
+    int iResult = ::send(listenSocket, buf, length, MSG_NOSIGNAL);
+
 	if (iResult == SOCKET_ERROR)
         Logger::getInstance() << Logger::Error << "Send error : " << strerror(errno) << Logger::Flush;
 	return (iResult);
@@ -53,6 +58,8 @@ int             ClientSocket::recv(char *buf, int length) const
 	int iResult = ::recv(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
         Logger::getInstance() << Logger::Error << "Receive error : " << strerror(errno) << Logger::Flush;
+    else
+        ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onReceiveEvent, buf, iResult);
 	return (iResult);
 }
 

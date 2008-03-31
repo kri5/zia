@@ -2,6 +2,7 @@
 # define IMODULEMANAGER_H
 
 #include <iostream>
+#include "API/IModuleInfo.h"
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
@@ -28,9 +29,9 @@ class   IModuleManager
         virtual size_t  processContent(IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
 
         virtual IModule::ChainStatus    call(Hook, IModule::Event) = 0;
-        virtual IModule::ChainStatus    call(Hook, IModule::Event, IModule*) = 0;
+        virtual IModule::ChainStatus    call(Hook, IModule::Event, IModuleInfo*) = 0;
         virtual IClientSocket*          call(Hook, IModule::Event, SOCKET) = 0;
-        virtual IModule::ChainStatus    call(Hook, IModule::Event, char*, size_t) = 0;
+        virtual IModule::ChainStatus    call(Hook, IModule::Event, const char*, size_t) = 0;
         virtual IModule::ChainStatus    call(Hook, IModule::Event, IHttpRequest*, IHttpResponse*) = 0;
 };
 

@@ -19,7 +19,7 @@ class MainSocket : public Socket, public IMainSocket
 		~MainSocket();
         const std::vector<Vhost*>&   getAssociatedVhosts();
 
-		ClientSocket *accept();
+		IClientSocket *accept();
 	private:
 		void    bind(const NetworkID*) const;
 		void    listen(int queue) const;

@@ -40,7 +40,7 @@ void MainSocket::listen(int queue) const
 	}
 }
 
-ClientSocket *MainSocket::accept()
+IClientSocket *MainSocket::accept()
 {
 	SOCKET acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == INVALID_SOCKET)
@@ -49,7 +49,9 @@ ClientSocket *MainSocket::accept()
 		WSACleanup();
 		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Accept);
 	}
-	ClientSocket *ret = new ClientSocket(acceptSocket);
+    IClientSocket*  ret = ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onAcceptEvent, acceptSocket);
+    if (ret == NULL)
+        ret = new ClientSocket(acceptSocket);
 	return (ret);
 }
 
