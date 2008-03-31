@@ -103,7 +103,7 @@ void    Task::execute()
     if (this->parseRequest() == true)
     {
         this->_time->init();
-        if (this->buildResponse() == true)
+        if (this->_res->isInSendMode() == true || this->buildResponse() == true)
         {
             //just for the moment :
             this->_res->setHeaderOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
@@ -226,7 +226,8 @@ bool    Task::sendHeader()
         header << it->first << ": " << it->second << "\r\n";
         ++it;
     }
-    header << "\r\n";
+	if (this->_res->headerInStream() == false)
+	    header << "\r\n";
     const std::string& str = header.str();
     //this->_writeBuffer->clear();
     this->_writeBuffer->push(str.c_str(), str.length());

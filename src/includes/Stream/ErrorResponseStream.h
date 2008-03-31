@@ -6,7 +6,7 @@
 #include <istream>
 
 #include "Http/HttpRequest.h"
-#include "Stream/IResponseStream.h"
+#include "API/IResponseStream.h"
 
 class   ErrorResponseStream : public IResponseStream
 {

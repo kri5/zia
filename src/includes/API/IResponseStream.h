@@ -10,7 +10,8 @@ class   IResponseStream
         {
             FileStream,
             DirStream,
-            ErrorStream
+            ErrorStream,
+			Generic
         };
         virtual ~IResponseStream(){};
         virtual std::iostream&      getContent() = 0;

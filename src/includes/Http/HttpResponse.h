@@ -11,7 +11,7 @@
 
 #include "File/IFile.h"
 #include "HttpTransaction.h"
-#include "Stream/IResponseStream.h"
+#include "API/IResponseStream.h"
 #include "Stream/ErrorResponseStream.h"
 #include "API/IHttpResponse.h"
 
@@ -40,6 +40,9 @@ class   HttpResponse : public IHttpResponse, public HttpTransaction
 
         std::iostream&                  getContent();
         void                            setCurrentContent(std::iostream*);
+		void							skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream);
+		bool							isInSendMode() const;
+		bool							headerInStream() const;
 
     private:
         void                            clearStreams();
@@ -50,6 +53,8 @@ class   HttpResponse : public IHttpResponse, public HttpTransaction
         std::string                     _mimeType;
         std::queue<IResponseStream*>    _streams;
         std::iostream*                  _currentStream;
+		bool							_sendMode;
+		bool							_headerInStream;
 };
 
 #endif  /* !__HTTPRESPONSE_H__ */

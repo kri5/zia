@@ -16,7 +16,8 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
     HttpResponse.cpp Server.cpp ErrorResponseStream.cpp
     Buffer.cpp DirectoryBrowser.cpp ResponseStreamFile.cpp ResponseStreamDir.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp
-    ModuleManager.cpp UrlString.cpp NastyCast.hpp ModuleInfo.cpp)
+    ModuleManager.cpp UrlString.cpp NastyCast.hpp ModuleInfo.cpp
+	)
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.h includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
 	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h

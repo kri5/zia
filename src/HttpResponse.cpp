@@ -1,4 +1,5 @@
 #include <assert.h>
+#include "Stream/ResponseStreamGeneric.h"
 #include "Http/HttpResponse.h"
 
 HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
@@ -53,7 +54,7 @@ HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
     { -1, NULL }
 };
 
-HttpResponse::HttpResponse() : _responseStatus(200), _contentLength(0), _mimeType("text/html"), _currentStream(NULL)
+HttpResponse::HttpResponse() : _responseStatus(200), _contentLength(0), _mimeType("text/html"), _currentStream(NULL), _sendMode(false), _headerInStream(false)
 {
     //"text/html" => probable default value (in case of an error, directory.
     // if it's a file, we will change this.
@@ -133,3 +134,22 @@ size_t                  HttpResponse::getContentLength() const
     return this->_contentLength;
 }
 
+void					HttpResponse::skipToSend(IResponseStream* stream, bool flushStreams, bool headerIncluded)
+{
+	if (flushStreams)
+		this->clearStreams();
+	if (stream)
+		this->appendStream(stream);
+	this->_sendMode = true;
+	this->_headerInStream = headerIncluded;
+}
+
+bool					HttpResponse::isInSendMode() const
+{
+	return this->_sendMode;
+}
+
+bool					HttpResponse::headerInStream() const
+{
+	return this->_headerInStream;
+}

@@ -3,7 +3,7 @@
 
 #include <istream>
 
-#include "Stream/IResponseStream.h"
+#include "API/IResponseStream.h"
 #include "File/IFile.h"
 
 class ResponseStreamFile : public IResponseStream
