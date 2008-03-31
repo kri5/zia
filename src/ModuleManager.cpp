@@ -17,7 +17,13 @@ ModuleManager::~ModuleManager()
     delete[] this->_modules;
 }
 
-bool            ModuleManager::load(std::string filename)
+void            ModuleManager::pushModule(IModuleManager::Hook hook, IModuleInfo* mi)
+{
+    this->_modules[hook].push_back(mi);
+    mi->addSupportedHook(hook);
+}
+
+bool            ModuleManager::load(const std::string& filename)
 {
     IDynLib* library = new DynLib();
 
@@ -38,29 +44,71 @@ bool            ModuleManager::load(std::string filename)
     }
 
     // Creating a ModuleInfo object.
-    IModuleInfo* mi = new ModuleInfo(library);
+    IModuleInfo* mi = new ModuleInfo(library, filename);
     this->_moduleInstances.push_back(mi);
 
     // Identifying which "event" class the module implement.
     IModule* ptr = mi->getInstance();
     if (dynamic_cast<IServerEvent*>(ptr))
-        this->_modules[ServerEventHook].push_back(mi);
+        this->pushModule(ServerEventHook, mi);
     if (dynamic_cast<IModuleEvent*>(ptr))
-        this->_modules[ModuleEventHook].push_back(mi);
+        this->pushModule(ModuleEventHook, mi);
     if (dynamic_cast<IWorkflow*>(ptr))
-        this->_modules[WorkflowHook].push_back(mi);
+        this->pushModule(WorkflowHook, mi);
     if (dynamic_cast<INetwork*>(ptr))
-        this->_modules[NetworkHook].push_back(mi);
+        this->pushModule(NetworkHook, mi);
     if (dynamic_cast<IReceiveRequest*>(ptr))
-        this->_modules[ReceiveRequestHook].push_back(mi);
+        this->pushModule(ReceiveRequestHook, mi);
     if (dynamic_cast<IBuildResponse*>(ptr))
-        this->_modules[BuildResponseHook].push_back(mi);
+        this->pushModule(BuildResponseHook, mi);
     if (dynamic_cast<ISendResponse*>(ptr))
-        this->_modules[SendResponseHook].push_back(mi);
+        this->pushModule(SendResponseHook, mi);
 
     Logger::getInstance() << Logger::Info << "Module " << mi->getName() << " version " << mi->getVersion() << " loaded." << Logger::Flush;
     ModuleManager::getInstance().call(IModuleManager::ModuleEventHook, IModule::onLoadModuleEvent, mi);
     return true;
+}
+
+void                    ModuleManager::removeFromHooks(IModuleInfo* mi)
+{
+    const std::vector<IModuleManager::Hook>& hooks = mi->getSupportedHooks();
+    std::vector<IModuleManager::Hook>::const_iterator it = hooks.begin();
+    std::vector<IModuleManager::Hook>::const_iterator ite = hooks.end();
+
+    std::list<IModuleInfo*>::iterator       itMod;
+    std::list<IModuleInfo*>::iterator       iteMod;
+
+    for (; it != ite; ++it)
+    {
+        itMod = this->_modules[*it].begin();
+        iteMod = this->_modules[*it].end();
+
+        for (; itMod != iteMod; ++itMod)
+        {
+            if (*itMod == mi)
+            {
+                this->_modules[*it].erase(itMod);
+                break ;
+            }
+        }
+    }
+}
+
+void                    ModuleManager::unload(const std::string& filename)
+{
+    std::list<IModuleInfo*>::iterator   it = this->_moduleInstances.begin();
+    std::list<IModuleInfo*>::iterator   ite = this->_moduleInstances.end();
+
+    for (; it != ite; ++it)
+    {
+        if ((*it)->getFileName() == filename)
+        {
+            this->call(IModuleManager::ModuleEventHook, IModule::onUnloadModuleEvent, *it);
+            this->removeFromHooks((*it));
+            return ;
+        }
+    }
+    Logger::getInstance() << Logger::Warning << "No such module to unload" << Logger::Flush;
 }
 
 void                    ModuleManager::initProcessContent() const

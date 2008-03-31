@@ -2,7 +2,6 @@
 # define IMODULEMANAGER_H
 
 #include <iostream>
-#include "API/IModuleInfo.h"
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
@@ -23,7 +22,8 @@ class   IModuleManager
             NumberOfHooks
         };
         virtual ~IModuleManager() {};
-        virtual bool    load(std::string filename) = 0;
+        virtual bool    load(const std::string& filename) = 0;
+        virtual void    unload(const std::string& filename) = 0;
         virtual void    initProcessContent() const = 0;
 
         virtual size_t  processContent(IHttpRequest*, IHttpResponse*, char*, size_t) = 0;

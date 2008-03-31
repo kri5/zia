@@ -6,9 +6,9 @@
 #include <string>
 #include "API/IModuleManager.h"
 #include "API/IModule.h"
+#include "API/IModuleInfo.h"
 #include "Logger.hpp"
 #include "Singleton.hpp"
-#include "API/IModuleInfo.h"
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
@@ -23,10 +23,13 @@
 #include "API/IBuildResponse.h"
 #include "API/ISendResponse.h"
 
+//class IModuleInfo;
+
 class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
 {
     public:
-        bool                    load(std::string filename); 
+        bool                    load(const std::string& filename); 
+        void                    unload(const std::string& filename); 
         void                    initProcessContent() const;
 
         size_t                  processContent(IHttpRequest*, IHttpResponse*, char*, size_t);
@@ -39,6 +42,9 @@ class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
     private:
         ModuleManager();
         virtual ~ModuleManager();
+
+        void                    pushModule(IModuleManager::Hook, IModuleInfo*);
+        void                    removeFromHooks(IModuleInfo*);
 
         std::list<IModuleInfo*>*        _modules;
         std::list<IModuleInfo*>         _moduleInstances;
