@@ -34,7 +34,6 @@ class Init
 		void			parseConfigNode(ticpp::Node*, Config*);
 		void			addVhost(ticpp::Element&);
 		void			addMimeType(ticpp::Element& node);
-        void            addModule(ticpp::Element& node);
 		void			addWildcardVhosts();
 		void			addNonWildcardVhosts();
         bool            checkConfig() const;

@@ -48,6 +48,11 @@ std::string		File::getFileName() const
 	return this->_name;
 }
 
+std::string     File::getFullFileName() const
+{
+    return this->_filePath;
+}
+
 unsigned int		File::getSize() const
 {
 	return this->_stat.st_size;

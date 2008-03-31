@@ -30,7 +30,10 @@ class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
     public:
         bool                    load(const std::string& filename); 
         void                    unload(const std::string& filename); 
+        void                    unload(const std::list<IModuleInfo*>::iterator&);
         void                    initProcessContent() const;
+        void                    scanModuleDir();
+        bool                    isLoaded(const std::string&) const;
 
         size_t                  processContent(IHttpRequest*, IHttpResponse*, char*, size_t);
 

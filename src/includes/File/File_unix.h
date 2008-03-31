@@ -17,6 +17,7 @@ class File : public IFile
 		~File();
         Error::Code     getError() const;
 		std::string		getFileName() const;
+        std::string     getFullFileName() const;
         bool            isDirectory() const;
 		unsigned int	getSize() const;
 		ITime*			getModifDate();

@@ -25,6 +25,7 @@ class   IModuleManager
         virtual bool    load(const std::string& filename) = 0;
         virtual void    unload(const std::string& filename) = 0;
         virtual void    initProcessContent() const = 0;
+        virtual bool    isLoaded(const std::string&) const = 0;
 
         virtual size_t  processContent(IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
 

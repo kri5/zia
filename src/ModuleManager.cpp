@@ -3,6 +3,10 @@
 #include "API/IModuleInfo.h"
 #include "Modules/ModuleInfo.h"
 #include "Modules/DynLib.h"
+#include "RootConfig.hpp"
+#include "FileSystem/IFileSystem.h"
+#include "FileSystem/FileSystem.h"
+#include "File/IFile.h"
 #include <assert.h>
 
 ModuleManager::ModuleManager()
@@ -30,8 +34,8 @@ bool            ModuleManager::load(const std::string& filename)
     // Loading the module
     if (!library->load(filename))
     {
-		Logger::getInstance() << Logger::Error << "Loading module " << filename << ": " << library->lastError() << Logger::Flush;
-         return false;
+        Logger::getInstance() << Logger::Error << "Loading module " << filename << ": " << library->lastError() << Logger::Flush;
+        return false;
     }
 
     // If any of these is null, a symbol is missing.
@@ -111,11 +115,18 @@ void                    ModuleManager::unload(const std::string& filename)
     Logger::getInstance() << Logger::Warning << "No such module to unload" << Logger::Flush;
 }
 
+//it must be a valid iterator.
+void                    ModuleManager::unload(const std::list<IModuleInfo*>::iterator& it)
+{
+    this->call(IModuleManager::ModuleEventHook, IModule::onUnloadModuleEvent, *it);
+    this->removeFromHooks((*it));
+}
+
 void                    ModuleManager::initProcessContent() const
 {
     std::list<IModuleInfo*>::const_iterator        it = this->_modules[SendResponseHook].begin();
     std::list<IModuleInfo*>::const_iterator        ite = this->_modules[SendResponseHook].end();
-    
+
     IModule*        mod;
     IModule*        prevMod = NULL;
     ISendResponse*  modRes;
@@ -206,5 +217,54 @@ IModule::ChainStatus     ModuleManager::call(Hook hook, IModule::Event event, IH
             break ;
     }
     return res;
+}
+
+bool        ModuleManager::isLoaded(const std::string& fileName) const
+{
+    std::list<IModuleInfo*>::const_iterator   it = this->_moduleInstances.begin();
+    std::list<IModuleInfo*>::const_iterator   ite = this->_moduleInstances.end();
+
+    for (; it != ite; ++it)
+    {
+        if ((*it)->getFileName() == fileName)
+            return true;
+    }
+    return false;
+}
+
+void        ModuleManager::scanModuleDir()
+{
+    this->load("/home/chouquette/dev/zia/bin/modules/libtoto.so");
+    sleep(5);
+    if (RootConfig::isSet("ModulesDir") == false)
+        Logger::getInstance() << Logger::Warning << "No modules dir specified. No module will be loaded" << Logger::Flush;
+    IFileSystem* fs = new FileSystem(RootConfig::getParamChar("ModulesDir"));
+    std::list<IFile*>* files = fs->getFileList("so");
+    std::list<IFile*>::iterator it;
+    std::list<IFile*>::iterator ite = files->end();
+    std::list<IModuleInfo*>::iterator mIt = this->_moduleInstances.begin();
+    std::list<IModuleInfo*>::iterator mIte = this->_moduleInstances.end();
+    //First we look if some modules doesn't exists anymore.
+    for (; mIt != mIte; ++mIt)
+    {
+        it = files->begin();
+        for (; it != ite; ++it)
+        {
+            if ((*it)->getFullFileName() == (*mIt)->getFileName())
+                break ;
+        }
+        if (it == ite)
+        {
+            Logger::getInstance() << Logger::Info << (*mIt)->getFileName() << " is missing from ModulesDir. Unloading module." << Logger::Flush;
+            this->unload(mIt);
+        }
+    }
+    //Then we add new modules
+    it = files->begin();
+    for (; it != ite; ++it)
+    {
+        if (this->isLoaded((*it)->getFullFileName()) == false)
+            this->load((*it)->getFullFileName());
+    }
 }
 

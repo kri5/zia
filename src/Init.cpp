@@ -89,11 +89,6 @@ void		Init::addVhost(ticpp::Element& node)
     }
 }
 
-void        Init::addModule(ticpp::Element& node)
-{
-    this->_conf->addModule(node.GetText());
-}
-
 void		Init::addMimeType(ticpp::Element& node)
 {
 	std::string fileExts = node.GetAttribute("file");
@@ -130,8 +125,6 @@ void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 	{
 		if (it->Value() == "VirtualHost")
 			this->addVhost(*it);
-        else if (it->Value() == "module")
-            this->addModule(*it);
 		else if (it->Value() == "Include")
 			this->includeConfigFile(it->GetText(), cfg);
 		else if (it->Value() == "type")
@@ -160,11 +153,7 @@ void        Init::readConfiguration(const std::string fileName, Config* cfg)
 
 void        Init::initModules()
 {
-    const std::list<std::string>& modulesList = RootConfig::getConfig()->getModules();
-    std::list<std::string>::const_iterator begin = modulesList.begin();
-    std::list<std::string>::const_iterator end = modulesList.end();
-    for (; begin != end; ++begin)
-        ModuleManager::getInstance().load(*begin);
+    ModuleManager::getInstance().scanModuleDir();
 }
 
 /// Initialize the SSL features

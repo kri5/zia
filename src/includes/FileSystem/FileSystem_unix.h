@@ -32,7 +32,7 @@ class	FileSystem : public IFileSystem
 		};
 		FileSystem(std::string);
 		virtual 					~FileSystem();
-		std::list<IFile*>*		    getFileList();
+		std::list<IFile*>*		    getFileList(const char* pattern = NULL);
 		bool						checkFileExistence(std::string) const;
 		bool						checkReadRights(std::string) const;
 		bool						checkExecRights(std::string) const;

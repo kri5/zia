@@ -27,7 +27,7 @@ FileSystem::~FileSystem()
 	}
 }
 
-std::list<IFile*>*		FileSystem::getFileList()
+std::list<IFile*>*		FileSystem::getFileList(const char* pattern)
 {
 	if (this->_files == NULL)
 	{
@@ -45,7 +45,9 @@ std::list<IFile*>*		FileSystem::getFileList()
 			if (file->d_name[0] == '.' &&
 					(file->d_name[1] == 0 || (file->d_name[1] == '.' && file->d_name[2] == 0)))
 				continue ;
-			this->_files->push_back(new File(file->d_name, this->_path.c_str()));
+            if (pattern == NULL ||
+                    !strcmp(&file->d_name[strlen(file->d_name) - strlen(pattern)], pattern))
+                this->_files->push_back(new File(file->d_name, this->_path.c_str()));
 		}
 		closedir(dir);
 	}
