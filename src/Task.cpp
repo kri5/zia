@@ -168,7 +168,8 @@ bool    Task::parseRequest()
             this->_readBuffer->dump();
             return false;
         }
-        this->receiveDatas();
+        if (this->receiveDatas() == false)
+            return false;
         parser.parse();
     }
     //TODO: check host.
