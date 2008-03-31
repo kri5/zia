@@ -67,7 +67,7 @@ bool           DirectoryBrowser::get()
     if (this->_request.getHeaderOption("Host").find(":") != std::string::npos)
         *(this->_stream) << this->_request.getHeaderOption("Host").substr(this->_request.getHeaderOption("Host").find(":") + 1);
     else
-        *(this->_stream) << this->_request.getConfig()->getDefaultPort();
+        *(this->_stream) << this->_request.getConfig()->getParam("Port");
     *(this->_stream) << "</address>\n</body></html>";
     return true;
 }

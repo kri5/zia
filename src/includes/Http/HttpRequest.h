@@ -9,7 +9,7 @@
 #include <string>
 
 #include "Http/HttpTransaction.h"
-#include "Config.h"
+#include "API/IConfig.h"
 #include "API/IHttpRequest.h"
 
 class HttpRequest : public IHttpRequest, public HttpTransaction
@@ -17,20 +17,26 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
     public:
         HttpRequest();
         ~HttpRequest();
-        void                                        setCommand(const std::string&);
         void                                        setUri(const std::string&, bool = true);
-		void										setConfig(const Config* cfg);
-        void                                        setUriArgument(const std::string&, const std::string&);
-        void                                        setBodyArgument(const std::string&, const std::string&);
-        std::string                                 getCommand() const;
         const std::string&                          getUri() const;
-		const Config*								getConfig() const;
+        void                                        setUriArgument(const std::string&, const std::string&);
         const std::map<std::string, std::string>&   getUriArguments() const; 
+
+        void                                        setBodyArgument(const std::string&, const std::string&);
+        const std::map<std::string, std::string>&   getBodyArguments() const;
+        const std::string&                          getBodyArgument(const std::string&) const;
+
+        bool                                        setParam(const std::string&, void*);
+        void*                                       getParam(const std::string&) const;
+
+        void                                        setCommand(const std::string&);
+        const std::string&                          getCommand() const;
+
+		void										setConfig(IConfig* cfg);
+		IConfig*								    getConfig() const;
         bool                                        isUriRelative() const;
         void                                        clear();
         void                                        print();
-        bool                                        setParam(const std::string&, void*);
-        void*                                       getParam(const std::string&) const;
 
     private:
         void                                        addDefaultHost();
@@ -40,7 +46,7 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
         std::map<std::string, void*>                _params;
         std::string                                 _uri;
         bool                                        _relativeUri;
-		Config*										_cfg;
+		IConfig*									_cfg;
 };
 
 #endif /* !__HTTPREQUEST_H__ */

@@ -7,11 +7,11 @@
 class RootConfig : public Singleton<RootConfig>
 {
     public:
-        void		setConfig(const Config* cfg)
+        void		setConfig(Config* cfg)
         {
-            this->_cfg = const_cast<Config*>(cfg);
+            this->_cfg = cfg;
         }
-        static const Config*	getConfig()
+        static Config*	getConfig()
         {
             return RootConfig::getInstance()._cfg;
         }

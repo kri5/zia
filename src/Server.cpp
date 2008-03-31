@@ -14,12 +14,12 @@
 
 #include "MemoryManager.hpp"
 
-Server::Server(const std::map<const NetworkID*, std::vector<const Vhost*> >& toBind, 
+Server::Server(const std::map<const NetworkID*, std::vector<Vhost*> >& toBind, 
         Pool* pool) : _toBind(toBind), _pool(pool)
 {
     ModuleManager::getInstance().call(IModuleManager::ServerEventHook, IModule::onServerStartEvent);
-    std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		it = this->_toBind.begin();
-    std::map<const NetworkID*, std::vector<const Vhost*> >::const_iterator		end = this->_toBind.end();
+    std::map<const NetworkID*, std::vector<Vhost*> >::const_iterator		it = this->_toBind.begin();
+    std::map<const NetworkID*, std::vector<Vhost*> >::const_iterator		end = this->_toBind.end();
 
     try
     {

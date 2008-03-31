@@ -21,7 +21,7 @@ Config::~Config()
 	_params.clear();
 }
 
-Config::Config(const Config& right) : _mime(NULL), _modules(NULL), _globalConf(false)
+Config::Config(const Config& right) : IConfig(), _mime(NULL), _modules(NULL), _globalConf(false)
 {
     //some parameters shouldn't be herited :
     std::map<std::string, std::string>::const_iterator    it = right._params.begin();
@@ -39,28 +39,19 @@ Config::Config(const Config& right) : _mime(NULL), _modules(NULL), _globalConf(f
     }
 }
 
-std::string		Config::getParam(std::string name) const
+const std::string&      Config::getParam(const std::string& name) const
 {
+    const std::string&    tmp = "";
 	//We have to go through with an iterator because operator[] isn't a const method.
 	std::map<std::string, std::string>::const_iterator		it = this->_params.find(name);
 	if (it == this->_params.end())
-		return "";
+		return (tmp);
 	return it->second;
 }
 
-void			Config::setParam(std::string name, std::string value)
+void			Config::setParam(const std::string& name, const std::string& value)
 {
 	this->_params[name] = value;
-}
-	
-int		Config::getDefaultPort() const
-{
-	std::map<std::string, std::string>::const_iterator it = this->_params.find("UseSSL");
-
-	if (it == this->_params.end()
-			|| it->second == "1")
-		return Config::_DefaultPort;
-	return Config::_SslPort;
 }
 
 void	Config::addMimeType(std::string ext, std::string type)
@@ -92,7 +83,7 @@ const std::list<std::string>&	Config::getModules() const
     return *(this->_modules);
 }
 
-bool        Config::isSet(std::string name) const
+bool        Config::isSet(const std::string& name) const
 {
     return (this->_params.find(name) != this->_params.end());
 }

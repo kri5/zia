@@ -32,7 +32,7 @@ void    ErrorResponseStream::setContent()
     if (this->_request.getHeaderOption("Host").find(":") != std::string::npos)
         *_content << this->_request.getHeaderOption("Host").substr(this->_request.getHeaderOption("Host").find(":") + 1);
     else
-        *_content << this->_request.getConfig()->getDefaultPort();
+        *_content << this->_request.getConfig()->getParam("Port");
     *_content << " </address>\n";
     *_content << "</body></html>\n";
 }

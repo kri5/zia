@@ -21,7 +21,7 @@ class Task
         void    execute();
         void    clear(bool clearBuffers = true);
         /// Will totaly reinitialize the task (new client, new potential vhosts, and call init())
-        void    init(ClientSocket*, const std::vector<const Vhost*>*);
+        void    init(ClientSocket*, const std::vector<Vhost*>*);
         /// Will just recreate a new HttpRequest and set HttpResponse instance to NULL
         void    init();
 
@@ -44,7 +44,7 @@ class Task
         Pool*           _pool;
         int             _timeoutDelay;
 
-        const std::vector<const Vhost*>*    _vhosts;
+        const std::vector<Vhost*>*    _vhosts;
 };
 
 #endif //TASK_H__

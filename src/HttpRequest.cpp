@@ -31,9 +31,14 @@ void            HttpRequest::addDefaultHost()
    ; 
 }
 
-void			HttpRequest::setConfig(const Config* cfg)
+void			HttpRequest::setConfig(IConfig* cfg)
 {
-	this->_cfg = const_cast<Config*>(cfg);
+	this->_cfg = cfg;
+}
+
+IConfig*	HttpRequest::getConfig() const
+{
+	return this->_cfg;
 }
 
 void            HttpRequest::setUriArgument(const std::string& key,
@@ -48,7 +53,24 @@ void            HttpRequest::setBodyArgument(const std::string& key,
     this->_bodyArguments[key] = value;
 }
 
-std::string     HttpRequest::getCommand() const
+const std::map<std::string, std::string>&   HttpRequest::getBodyArguments() const
+{
+    return this->_bodyArguments;
+}
+
+const std::string&      HttpRequest::getBodyArgument(const std::string& key) const
+{
+    std::map<std::string, std::string>::const_iterator    toFind = this->_bodyArguments.find(key);
+
+    if (toFind == this->_bodyArguments.end())
+    {
+        const std::string& tmp = "";
+        return (tmp);
+    }
+    return toFind->second;
+}
+
+const std::string&     HttpRequest::getCommand() const
 {
     return this->_command;
 }
@@ -56,11 +78,6 @@ std::string     HttpRequest::getCommand() const
 const std::string&                          HttpRequest::getUri() const
 {
     return this->_uri;
-}
-
-const Config*	HttpRequest::getConfig() const
-{
-	return this->_cfg;
 }
 
 bool            HttpRequest::isUriRelative() const

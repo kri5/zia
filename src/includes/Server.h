@@ -24,13 +24,13 @@ class	Server
             };
             static const char* Msg[];
         };
-        Server(const std::map<const NetworkID*, std::vector<const Vhost*> >&, Pool* pool);
+        Server(const std::map<const NetworkID*, std::vector<Vhost*> >&, Pool* pool);
         ~Server();
         void			run();
 
     private:
         int																_maxFd;
-        const std::map<const NetworkID*, std::vector<const Vhost*> >&	_toBind;
+        const std::map<const NetworkID*, std::vector<Vhost*> >&	_toBind;
         std::vector<MainSocket*>										_sockets;
         Pool*                                                           _pool;
         const Config*													_rootCfg;

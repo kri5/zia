@@ -48,7 +48,7 @@ Task::~Task()
 }
 
 void    Task::init(ClientSocket* clt,
-        const std::vector<const Vhost*>* vhosts)
+        const std::vector<Vhost*>* vhosts)
 {
     this->_vhosts = vhosts;
     this->_socket = clt;

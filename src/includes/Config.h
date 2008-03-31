@@ -5,8 +5,10 @@
 #include <map>
 #include <string>
 
+#include "API/IConfig.h"
+
 /// Stores the config values. To be used in clients and main sockets classes.
-class Config
+class Config : public IConfig
 {
 	public:
 		struct	Error
@@ -23,17 +25,16 @@ class Config
 		Config(const Config&);
 		virtual ~Config();
 		/// Will return the param value as a string. May be overide by inherited classes.
-		virtual std::string						getParam(std::string) const;
+		virtual const std::string&				getParam(const std::string&) const;
 		/// Used to set a param, while parsing XML file.
-		void									setParam(std::string, std::string);
+		void									setParam(const std::string&, const std::string&);
 
 		void									addMimeType(std::string ext, std::string type);
 		std::string								getMimeType(std::string ext) const;
         void                                    addModule(std::string location);
         const std::list<std::string>&           getModules() const;
-        bool                                    isSet(std::string name) const;
+        bool                                    isSet(const std::string& name) const;
         void                                    dump() const;
-		int                                     getDefaultPort() const;
 	protected:
 		/// Default port values :
 		enum DefaultPort

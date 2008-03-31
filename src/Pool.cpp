@@ -25,7 +25,7 @@ void        Pool::init()
     this->_manager = Pool::Manager::create(this);
 }
 
-bool        Pool::addTask(ClientSocket* clt, const std::vector<const Vhost*>* vhosts)
+bool        Pool::addTask(ClientSocket* clt, const std::vector<Vhost*>* vhosts)
 {
     MutexLock   get_lock(*this->_mutex);
     //FIXME : adjust this limit and set it in the conf file.
@@ -144,7 +144,7 @@ bool            Pool::empty() const
     return this->_tasks.empty();
 }
 
-void            Pool::addKeepAliveClient(ClientSocket* clt, const std::vector<const Vhost*>* vhosts)
+void            Pool::addKeepAliveClient(ClientSocket* clt, const std::vector<Vhost*>* vhosts)
 {
     MutexLock   get_lock(this->_keepAliveMutex);
 

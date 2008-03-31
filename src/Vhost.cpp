@@ -41,7 +41,7 @@ std::string		Vhost::getParam(std::string name) const
 	return (Config::getParam(name));
 }
 
-const Config*	Vhost::getVhost(const std::vector<const Vhost*>& vhosts, const std::string& host)
+IConfig*	Vhost::getVhost(const std::vector<Vhost*>& vhosts, const std::string& host)
 {
     MutexLock   lock(Vhost::_mutex);
 	int		i;

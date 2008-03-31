@@ -13,10 +13,10 @@ class Worker;
 
 struct  KeepAliveClient
 {
-    KeepAliveClient(ClientSocket* _clt, const std::vector<const Vhost*>* _vhosts)
+    KeepAliveClient(ClientSocket* _clt, const std::vector<Vhost*>* _vhosts)
         : clt(_clt), vhosts(_vhosts) {}
     ClientSocket*   clt;
-    const std::vector<const Vhost*>*    vhosts;
+    const std::vector<Vhost*>*    vhosts;
 };
 
 class   Pool
@@ -24,7 +24,7 @@ class   Pool
     public:
         Pool(unsigned int nbThreads, unsigned int);
         void                    init();
-        bool                    addTask(ClientSocket*, const std::vector<const Vhost*>*);
+        bool                    addTask(ClientSocket*, const std::vector<Vhost*>*);
         void                    rescheduleTask(Task*);
         void                    addSleepingThread(Worker*);
         Task*                   popTask();
@@ -37,7 +37,7 @@ class   Pool
         unsigned int            getFreeThreadsNbr() const;
         unsigned int            getTaskNbr() const;
         bool                    empty() const;
-        void                    addKeepAliveClient(ClientSocket*, const std::vector<const Vhost*>*);
+        void                    addKeepAliveClient(ClientSocket*, const std::vector<Vhost*>*);
         void                    flushKeepAlive(std::list<KeepAliveClient>&);
     private:
         ///Must be launched from a thread safe environment.

@@ -20,7 +20,7 @@ class Init
 		~Init();
 
 		int     start();
-		const std::map<const NetworkID*, std::vector<const Vhost*> >&	getBindList() const;
+		const std::map<const NetworkID*, std::vector<Vhost*> >&	getBindList() const;
         Pool*                                                           getPool() const;
 	private:
 		void    		readCommandLine();
@@ -41,7 +41,7 @@ class Init
 
 		Config*													_conf;
 		std::list<Vhost*>										_vhosts;
-		std::map<const NetworkID*, std::vector<const Vhost*> >	_bindList;
+		std::map<const NetworkID*, std::vector<Vhost*> >	_bindList;
         Pool*                                                   _pool;
 
 		int     _argc;
