@@ -61,7 +61,7 @@ class IHttpResponse : public virtual IHttpTransaction
 	      /**
          *  Stream is the potentially new stream to add. If NULL, nothing will be added
          *  if flushStream is true, every other streams will be deleted. If headerIncluded is true, the double
-         *  carriage return must be in stream. Nothing will be added automatically.
+         *  carriage return must be in stream. Nothing will be added automatically. 
          */
     		virtual void                            skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream) = 0;
 };
