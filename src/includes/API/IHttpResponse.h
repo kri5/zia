@@ -23,39 +23,39 @@ class IHttpResponse : public virtual IHttpTransaction
 
         /**
          *  Returns the HttpResponse status code
-         *  @return the response's status code (int)
+         *  @return the response's status code
          */
         virtual int                             getResponseStatus() const = 0;
 
         /**
          *  Returns a description of the HttpResponse status code
-         *  @return status code's description (std::string)
+         *  @return status code's description
          */
         virtual std::string                     getResponseValue() const = 0;
 
         /**
          *  Appends a IResponseStream that will be used 
          *  while sending the response content.
-         *  @param stream the stream to append (IResponseStream*)
+         *  @param stream the stream to append
          */
         virtual void                            appendStream(IResponseStream* stream) = 0;
 
         /**
          *  Returns all the streams composing the reponse content
-         *  @return a queue containing all the response streams (std::queue<IResponseStream*>&)
+         *  @return a queue containing all the response streams
          */
         virtual std::queue<IResponseStream*>&   getStreams() = 0;
 
         /**
          *  Sets the current stream providing the response content
-         *  @param stream the stream to set current (std::iostream*)
+         *  @param stream the stream to set current
          */
         virtual void                            setCurrentStream(std::iostream* stream) = 0;
 
         /**
          *  Returns the current stream providing response content data
          *
-         *  @return  the current stream (std::iostream&)
+         *  @return  the current stream
          */
         virtual std::iostream&                  getCurrentStream() = 0;
 
@@ -67,7 +67,7 @@ class IHttpResponse : public virtual IHttpTransaction
          *  @param stream the response content stream
          *  @param flushStream whether the reponse should contains set streams or not
          *  @params headerInStream whether the header should be contained in the stream or not 
-         *                          (if not, double \r\n will automatically be added)
+         *                          (if not, double \\r\\n will automatically be added)
          */
     		virtual void                            skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream) = 0;
 };
