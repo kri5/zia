@@ -1,30 +1,30 @@
 #include <iostream>
 
-#include "toto.h"
+#include "loutre.h"
 #include "Utils/Buffer.h"
 
 
 static IModule* _glInput = NULL;
 
-Toto::Toto()
+Loutre::Loutre()
 {
 }
 
-Toto::~Toto()
+Loutre::~Loutre()
 {
 }
 
-void                    Toto::setInput(IModule* mod)
+void                    Loutre::setInput(IModule* mod)
 {
     _glInput = mod;
 }
         
-size_t                  Toto::call(IModule::Event, IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
+size_t                  Loutre::call(IModule::Event, IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
 {
     return this->onProcessContent(req, res, buff, size);
 }
 
-IModule::ChainStatus    Toto::call(IModule::Event event, IHttpRequest* req, IHttpResponse* res)
+IModule::ChainStatus    Loutre::call(IModule::Event event, IHttpRequest* req, IHttpResponse* res)
 {
     if (event == IModule::onPreSendEvent)
         return (this->onPreSend(req, res));
@@ -33,7 +33,7 @@ IModule::ChainStatus    Toto::call(IModule::Event event, IHttpRequest* req, IHtt
 	return IModule::ERRORMODULE;
 }
 
-IModule::ChainStatus    Toto::onPreSend(IHttpRequest* req, IHttpResponse* res)
+IModule::ChainStatus    Loutre::onPreSend(IHttpRequest* req, IHttpResponse* res)
 {
     /*Buffer* buff = new Buffer(512);
     if (req->setParam("totoBuffer", buff) == false)
@@ -41,15 +41,15 @@ IModule::ChainStatus    Toto::onPreSend(IHttpRequest* req, IHttpResponse* res)
 	return IModule::CONTINUE;
 }
 
-size_t                  Toto::onProcessContent(IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
+size_t                  Loutre::onProcessContent(IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
 {
     if (_glInput != NULL)
     {
         size_t retSize = _glInput->call(onProcessContentEvent, req, res, buff, size);
         for (unsigned int i = 0; i < retSize; ++i)
         {
-            if (buff[i] == 'W')
-                buff[i] = 'Z';
+            if (buff[i] == 'o')
+                buff[i] = 'a';
         }
         return retSize;
     }
@@ -60,14 +60,14 @@ size_t                  Toto::onProcessContent(IHttpRequest* req, IHttpResponse*
         size_t  retSize = stream.gcount();
         for (unsigned int i = 0; i < retSize; ++i)
         {
-            if (buff[i] == 'W')
-                buff[i] = 'Z';
+            if (buff[i] == 'o')
+                buff[i] = 'a';
         }
         return retSize;
     }
 }
 
-IModule::ChainStatus    Toto::onPostSend(IHttpRequest* req, IHttpResponse* res)
+IModule::ChainStatus    Loutre::onPostSend(IHttpRequest* req, IHttpResponse* res)
 {
     /*Buffer* buff = static_cast<Buffer*>(req->getParam("totoBuffer"));
     if (buff)
@@ -77,7 +77,7 @@ IModule::ChainStatus    Toto::onPostSend(IHttpRequest* req, IHttpResponse* res)
 
 extern "C" IModule* create()
 {
-    return new Toto;
+    return new Loutre;
 }
 
 extern "C" void destroy(IModule* i)
@@ -87,7 +87,7 @@ extern "C" void destroy(IModule* i)
 
 extern "C" std::string name()
 {
-    return "Toto";
+    return "Loutre";
 }
 
 extern "C" int  version()

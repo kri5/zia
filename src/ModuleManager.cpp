@@ -204,7 +204,6 @@ void        ModuleManager::scanModuleDir()
      //First we look if some modules doesn't exists anymore.
     for (; mIt != mIte; ++mIt)
     {
-        std::cout << "Count for " << (*mIt).ptr->getFileName() << " == " << (*mIt).count << std::endl;
         for (it = files->begin(); it != ite; ++it)
         {
             if ((*it)->getFullFileName() == (*mIt).ptr->getFileName())
@@ -222,10 +221,8 @@ void        ModuleManager::scanModuleDir()
             this->unload((*mIt).ptr->getFileName());
             if ((*mIt).count == 0)
             {
-                std::cout << "erasing module instance" << std::endl;
                 mIt = this->_moduleInstances.erase(mIt);
                 mIte = this->_moduleInstances.end();
-                std::cout << "module unloaded" << std::endl;
             }
         }
     }
@@ -246,12 +243,13 @@ void        ModuleManager::scanModuleDir()
     }
     if (firstChange == true)
         delete[] newList;
+    else
+        this->initProcessContent();
     delete files;
 }
 
 void        ModuleManager::removeModuleList(unsigned int reqId)
 {
-    std::cout << "Removing module list" << std::endl;
     std::list<RefCounter<IModuleInfo*>*>* list = this->_taskModulesList[reqId]->ptr;
 
     for (int i = 0; i < IModuleManager::NumberOfHooks; ++i)
