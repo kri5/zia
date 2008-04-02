@@ -155,6 +155,7 @@ void        Init::initModules()
 {
     ModuleManager::getInstance().init(10); //FIXME : get thread number from conf.
     ModuleManager::getInstance().scanModuleDir();
+    ModuleManager::getInstance().initProcessContent();
 }
 
 /// Initialize the SSL features

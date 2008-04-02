@@ -8,6 +8,7 @@
 #include "Threads/IThread.h"
 #include "Workflow/Worker.h"
 #include "Mutex/Mutex.h"
+#include "Time/ITime.h"
 
 class Worker;
 
@@ -71,6 +72,7 @@ class   Pool
                 Pool*           _pool;
                 struct pollfd*  _fds;
                 std::list<KeepAliveClient>    _keepAlive;
+                ITime*          _timer;
                 
         };
         Pool::Manager*          _manager;

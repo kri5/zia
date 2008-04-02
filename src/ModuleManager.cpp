@@ -131,6 +131,7 @@ void                    ModuleManager::unload(const std::string& filename)
 
 void                    ModuleManager::initProcessContent() const
 {
+    std::cout << "chaining process content" << std::endl;
     std::list<RefCounter<IModuleInfo*>*>::const_iterator         it = this->_modules.back().ptr[SendResponseHook].begin();
     std::list<RefCounter<IModuleInfo*>*>::const_iterator        ite = this->_modules.back().ptr[SendResponseHook].end();
 
@@ -199,7 +200,12 @@ void        ModuleManager::scanModuleDir()
      //First we look if some modules doesn't exists anymore.
     for (; mIt != mIte; ++mIt)
     {
-        if (this->isLoaded((*mIt).ptr->getFileName()) == true)
+        for (it = files->begin(); it != ite; ++it)
+        {
+            if ((*it)->getFullFileName() == (*mIt).ptr->getFileName())
+                break;
+        }
+        if (it == ite) //module wasn't in dir anymore : unloading
         {
             if (firstChange)
             {

@@ -1,7 +1,9 @@
 #include <errno.h> //FIXME: check win32 compactibility
 
 #include "Workflow/Pool.h"
+#include "Time/Time.h"
 #include "Logger.hpp"
+#include "Modules/ModuleManager.h"
 #include "ZException.hpp"
 
 //#include "MemoryManager.hpp"
@@ -15,6 +17,7 @@ Pool::Manager*    Pool::Manager::create(Pool* pool)
 
 Pool::Manager::Manager(Pool* pool) : _pool(pool)
 {
+    _timer = new Time();
 }
 
 void    Pool::Manager::initKeepAlivePoll() //warning : high contendence.
@@ -102,5 +105,10 @@ void    Pool::Manager::code()
 			this->initKeepAlivePoll();
 			this->checkKeepAlive();
 		}
+        if (this->_timer->elapsed(3))
+        {
+            ModuleManager::getInstance().scanModuleDir();
+            this->_timer->init();
+        }
     }
 }
