@@ -33,22 +33,15 @@ class   IModule
          *  This enum defines the different behaviours of the workflow.
          *  Almost each hook method will return a ChainStatus that will 
          *  eventually affect the request processing
-         *
-         *  CONTINUE           ==> 
-         *  BREAK              ==> No more module will be called for this event
-         *  SKIPTONEXTHOOK     ==> Skips to the next 
-         *  SKIPTONEXTEVENT    ==>
-         *  STOP               ==> Stops the workflow (assumes that the reponse has been sent by the module)
-         *  ERRORMODULE        ==> Internal module error (will send a Http 500 error)
          */
         enum    ChainStatus
         {
-            CONTINUE,         /**< enum  Standard behaviour */  
-            BREAK,            /**< enum  No more module will be called for this event */  
-            SKIPTONEXTHOOK,   /**< enum  Skips to the next hook */  
-            SKIPTONEXTEVENT,  /**< enum  Skips to the next event */  
-            STOP,             /**< enum  Stops the workflow (assumes that the reponse has been sent by the module) */    
-            ERRORMODULE       /**< enum  Internal module error (will send a Http 500 error) */  
+            CONTINUE,         /**< Standard behaviour */  
+            BREAK,            /**< No more module will be called for this event */  
+            SKIPTONEXTHOOK,   /**< Skips to the next hook */  
+            SKIPTONEXTEVENT,  /**< Skips to the next event */  
+            STOP,             /**< Stops the workflow (assumes that the reponse has been sent by the module) */    
+            ERRORMODULE       /**< Internal module error (will send a Http 500 error) */  
         };
 
         /**
