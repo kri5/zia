@@ -14,15 +14,16 @@ class Pool;
 class Worker : public IThread
 {
     public:
-        static Worker*      create(Pool*);
+        static Worker*      create(Pool*, unsigned int);
         virtual ~Worker(); 
 
     private:
-        Worker(Pool* pool);
+        Worker(Pool* pool, unsigned int);
         void                code();
 
         Pool*               _pool;
         int                 _timeoutDelay;
+        unsigned int        _id;
 };
 
 #endif // WORKER_H

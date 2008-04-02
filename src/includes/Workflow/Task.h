@@ -18,7 +18,7 @@ class Task
     public:
         Task(Pool*);
         virtual ~Task();
-        void    execute();
+        void    execute(unsigned int);
         void    clear(bool clearBuffers = true);
         /// Will totaly reinitialize the task (new client, new potential vhosts, and call init())
         void    init(ClientSocket*, const std::vector<Vhost*>*);
@@ -43,6 +43,7 @@ class Task
         ITime*          _time;
         Pool*           _pool;
         int             _timeoutDelay;
+        unsigned int    _taskId;
 
         const std::vector<Vhost*>*    _vhosts;
 };

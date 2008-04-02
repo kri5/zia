@@ -23,14 +23,21 @@
 #include "API/IBuildResponse.h"
 #include "API/ISendResponse.h"
 
-//class IModuleInfo;
 
 class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
 {
+    template <typename T>
+        struct      RefCounter
+        {
+            RefCounter(T _ptr) : ptr(_ptr), count(1){}
+            T               ptr;
+            unsigned int    count;
+        };
+    typedef std::list<RefCounter<IModuleInfo*> >     ModuleList;
     public:
+        void                    init(unsigned int);
         bool                    load(const std::string& filename); 
         void                    unload(const std::string& filename); 
-        void                    unload(const std::list<IModuleInfo*>::iterator&);
         void                    initProcessContent() const;
         void                    scanModuleDir();
         bool                    isLoaded(const std::string&) const;
@@ -46,11 +53,13 @@ class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
         ModuleManager();
         virtual ~ModuleManager();
 
-        void                    pushModule(IModuleManager::Hook, IModuleInfo*);
+        void                    pushModule(IModuleManager::Hook, RefCounter<IModuleInfo*>*);
         void                    removeFromHooks(IModuleInfo*);
+        void                    removeModuleList(unsigned int);
 
-        std::list<IModuleInfo*>*        _modules;
-        std::list<IModuleInfo*>         _moduleInstances;
+        std::list<RefCounter<std::list<RefCounter<IModuleInfo*>*>*> >   _modules;               // A list of a hook indexed array of IModuleInfo list
+        std::list<RefCounter<IModuleInfo*> >                            _moduleInstances;       // Every instance of modules
+        RefCounter<std::list<RefCounter<IModuleInfo*>*>*>**             _taskModulesList;       // taskId indexed array of a hook indexed array of ModuleInfo list
 
         friend class Singleton<ModuleManager>;
 };

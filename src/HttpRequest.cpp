@@ -3,9 +3,8 @@
 #include <iostream>
 #include <iomanip>
 
-HttpRequest::HttpRequest() : _relativeUri(true) 
+HttpRequest::HttpRequest(unsigned int reqId) : _relativeUri(true), _reqId(reqId)
 {
-
 }
 
 HttpRequest::~HttpRequest()
@@ -116,6 +115,11 @@ void*           HttpRequest::getParam(const std::string& key) const
     if (value == this->_params.end())
         return NULL;
     return value->second;
+}
+
+unsigned int    HttpRequest::getRequestId() const
+{
+    return this->_reqId;
 }
 
 void            HttpRequest::print()

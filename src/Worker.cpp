@@ -5,7 +5,7 @@
 #include "MemoryManager.hpp"
 #include "Time/Time.h"
 
-Worker::Worker(Pool* pool) : _pool(pool)
+Worker::Worker(Pool* pool, unsigned int id) : _pool(pool), _id(id)
 {
 }
 
@@ -14,11 +14,11 @@ Worker::~Worker()
 }
 
 /// Launch a new thread that will handle the new client connection
-Worker*          Worker::create(Pool* pool)
+Worker*          Worker::create(Pool* pool, unsigned int id)
 {
     // Will construct a Worker (so a new Thread class) and call it method run, which will create the thread
     // then, this thread will call IThreadBase() which will call Worker::code, from this newlly created instance.
-    Worker* w = new Worker(pool);
+    Worker* w = new Worker(pool, id);
     w->run();
     return w;
 }
@@ -31,7 +31,7 @@ void            Worker::code()
         Task*   t = this->_pool->popTask();
         if (t != NULL)
         {
-            t->execute();
+            t->execute(this->_id);
             this->_pool->finishTask(t);
         }
         else

@@ -14,7 +14,7 @@ void        Pool::init()
     MutexLock   get_lock(this->_mutex);
     for (unsigned int i = 0; i < this->_nbThreads; ++i)
     {
-        Worker* w = Worker::create(this);
+        Worker* w = Worker::create(this, i);
         //Automatically adding thread to sleeping pool.
         this->_workingThreads.push_back(w);
     }
@@ -96,12 +96,6 @@ Worker*    Pool::popFreeThread()
         return thread;
     }
     return NULL;
-}
-
-void        Pool::__createThread()
-{
-    Worker* w = Worker::create(this);
-    this->_workingThreads.push_back(w);
 }
 
 bool        Pool::createThread()

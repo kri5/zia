@@ -153,6 +153,7 @@ void        Init::readConfiguration(const std::string fileName, Config* cfg)
 
 void        Init::initModules()
 {
+    ModuleManager::getInstance().init(10); //FIXME : get thread number from conf.
     ModuleManager::getInstance().scanModuleDir();
 }
 

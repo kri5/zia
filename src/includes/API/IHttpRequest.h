@@ -29,6 +29,8 @@ class IHttpRequest : public virtual IHttpTransaction
 
         virtual void                                        setConfig(IConfig*) = 0;
         virtual IConfig*                                    getConfig() const = 0;
+
+        virtual unsigned int                                getRequestId() const = 0;
 };
 
 #endif /* !__IHTTPREQUEST_H__ */

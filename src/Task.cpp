@@ -60,7 +60,7 @@ void    Task::init(ClientSocket* clt,
 
 void    Task::init()
 {
-    this->_req = new HttpRequest();
+    this->_req = new HttpRequest(this->_taskId);
     this->_res = new HttpResponse();
 }
 
@@ -75,33 +75,9 @@ void    Task::clear(bool clearBuffers)
     delete this->_res;
 }
 
-bool    Task::finalize(bool succeded)
+void    Task::execute(unsigned int taskId)
 {
-//    if (succeded == false ||
-//            this->_req->optionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
-//    {
-        delete this->_socket;
-//    }
-//    else
-//    {
-//        std::cout << "adding keep alive to queue" << std::endl;
-//        if (this->_readBuffer->empty() == false)
-//        {
-//            this->clear(false);
-//            this->_pool->rescheduleTask(this);
-//            return succeded; //do not clear the task buffers !
-//        }
-//        else
-//            this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
-//    }
-    ModuleManager::getInstance().call(ModuleManager::WorkflowHook, IModule::onEndEvent, this->_req, this->_res);
-    this->clear();
-    //std::cout << "end task" << std::endl;
-    return succeded;
-}
-
-void    Task::execute()
-{
+    _taskId = taskId;
     ModuleManager::getInstance().call(ModuleManager::WorkflowHook, IModule::onBeginEvent, this->_req, this->_res);
     _time = new Time();
     //std::cout << "new task" << std::endl;
@@ -128,6 +104,31 @@ void    Task::execute()
     }
     ModuleManager::getInstance().call(IModuleManager::WorkflowHook, IModule::onFailureEvent, this->_req, this->_res);
     this->finalize(false);
+}
+
+bool    Task::finalize(bool succeded)
+{
+//    if (succeded == false ||
+//            this->_req->optionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
+//    {
+        delete this->_socket;
+//    }
+//    else
+//    {
+//        std::cout << "adding keep alive to queue" << std::endl;
+//        if (this->_readBuffer->empty() == false)
+//        {
+//            this->clear(false);
+//            this->_pool->rescheduleTask(this);
+//            return succeded; //do not clear the task buffers !
+//        }
+//        else
+//            this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
+//    }
+    ModuleManager::getInstance().call(ModuleManager::WorkflowHook, IModule::onEndEvent, this->_req, this->_res);
+    this->clear();
+    //std::cout << "end task" << std::endl;
+    return succeded;
 }
 
 bool    Task::receiveDatas()

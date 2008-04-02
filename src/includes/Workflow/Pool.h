@@ -40,8 +40,6 @@ class   Pool
         void                    addKeepAliveClient(ClientSocket*, const std::vector<Vhost*>*);
         void                    flushKeepAlive(std::list<KeepAliveClient>&);
     private:
-        ///Must be launched from a thread safe environment.
-        void                    __createThread();
 
         std::queue<Task*>       _tasks;
         std::queue<Task*>       _freeTasks;

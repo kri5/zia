@@ -21,6 +21,8 @@ public:
     virtual void    awake() = 0;
 	/// Return the process ID of the thread.
 	unsigned long	pid() const { return m_pid; }
+    /// Will return an id from O to threads number
+    unsigned int    id() const { return this->_id; }
 
 	/// Method for calling the threaded method "code" with "this" as parameter.
 	static void*	dispatch(void* thread_obj);
@@ -35,6 +37,7 @@ protected:
 	bool			_running;
 	/// Internal value to save the thread pid.
 	unsigned long	m_pid;
+    unsigned int    _id;
     Mutex*          _mutex;
     bool            _sleepScheduled;
     bool            _asleep;

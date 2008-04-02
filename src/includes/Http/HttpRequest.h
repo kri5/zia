@@ -15,7 +15,7 @@
 class HttpRequest : public IHttpRequest, public HttpTransaction
 {
     public:
-        HttpRequest();
+        HttpRequest(unsigned int);
         ~HttpRequest();
         void                                        setUri(const std::string&, bool = true);
         const std::string&                          getUri() const;
@@ -38,6 +38,8 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
         void                                        clear();
         void                                        print();
 
+        unsigned int                                getRequestId() const;
+
     private:
         void                                        addDefaultHost();
         std::string                                 _command;
@@ -47,6 +49,7 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
         std::string                                 _uri;
         bool                                        _relativeUri;
 		IConfig*									_cfg;
+        unsigned int                                _reqId;
 };
 
 #endif /* !__HTTPREQUEST_H__ */
