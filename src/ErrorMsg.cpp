@@ -9,7 +9,7 @@
 #include "Config.h"
 #include "Workflow/Pool.h"
 
-const char* IClientSocket::Error::Msg[] = {
+const char* ClientSocket::Error::Msg[] = {
     "Unknown error",
     "Send error",
     "Receive error",

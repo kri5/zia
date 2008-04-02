@@ -17,6 +17,17 @@
 class ClientSocket : public Socket, public IClientSocket
 {
     public:
+		struct  Error
+		{
+			enum    Code
+			{
+				Unknown,
+				Send,
+				Recv,
+				Disconnect
+			};
+			static const char* Msg[];
+		};
 		/// Will set the socket from the one returned by MainSocket::accept();
         ClientSocket(int acceptedSocket);
 		/// Don't close the socket. (Done by ~Socket())

@@ -69,7 +69,7 @@ class IHttpResponse : public virtual IHttpTransaction
          *  @params headerInStream whether the header should be contained in the stream or not 
          *                          (if not, double \\r\\n will automatically be added)
          */
-    		virtual void                            skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream) = 0;
+        virtual void                            skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream) = 0;
 };
 
 #endif /* !__IHTTPRESPONSE_H__ */

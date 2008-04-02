@@ -15,23 +15,45 @@ typedef int SOCKET;
 
 class IModuleInfo;
 
-/// Every interface that will be used by modules must inherit from this one.
-/// Here we set the module entry point, the destroy symbol and some
-/// informations used to correctly register the module.
+/** 
+ * Every interface that will be used by modules must inherit from this one.
+ * Here we set the module entry point, the destroy symbol and some
+ * informations used to correctly register the module.
+ */
 class   IModule
 {
     public:
+
+        /**
+         * The interface virtual destructor 
+         */
         virtual ~IModule() {};
 
+        /**
+         *  This enum defines the different behaviours of the workflow.
+         *  Almost each hook method will return a ChainStatus that will 
+         *  eventually affect the request processing
+         *
+         *  CONTINUE           ==> 
+         *  BREAK              ==> No more module will be called for this event
+         *  SKIPTONEXTHOOK     ==> Skips to the next 
+         *  SKIPTONEXTEVENT    ==>
+         *  STOP               ==> Stops the workflow (assumes that the reponse has been sent by the module)
+         *  ERRORMODULE        ==> Internal module error (will send a Http 500 error)
+         */
         enum    ChainStatus
         {
-            CONTINUE,
-            BREAK,
-            SKIPTONEXTHOOK,
-            SKIPTONEXTEVENT,
-            STOP,
-            ERRORMODULE
+            CONTINUE,         /**< enum  Standard behaviour */  
+            BREAK,            /**< enum  No more module will be called for this event */  
+            SKIPTONEXTHOOK,   /**< enum  Skips to the next hook */  
+            SKIPTONEXTEVENT,  /**< enum  Skips to the next event */  
+            STOP,             /**< enum  Stops the workflow (assumes that the reponse has been sent by the module) */    
+            ERRORMODULE       /**< enum  Internal module error (will send a Http 500 error) */  
         };
+
+        /**
+         *  This enum defines the different events (contained in hooks)
+         */
         enum    Event
         {
             onServerStartEvent,
@@ -52,12 +74,57 @@ class   IModule
             onFailureEvent
         };
         
-        virtual IModule::ChainStatus    call(Event) = 0;
-        virtual IModule::ChainStatus    call(Event, IModuleInfo*) = 0;
-        virtual IClientSocket*          call(Event, SOCKET) = 0;
-        virtual IModule::ChainStatus    call(Event, const char*, size_t) = 0;
-        virtual IModule::ChainStatus    call(Event, IHttpRequest*, IHttpResponse*) = 0;
-        virtual size_t                  call(Event, IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
+        /**
+         *  Calls the right event method deppending on the event passed in parameter
+         *  @param event the event being called
+         *  @return ChainStatus
+         */
+        virtual IModule::ChainStatus    call(Event event) = 0;
+        
+        /**
+         *  Calls the right event method deppending on the event passed in parameter
+         *  @param event the event being called
+         *  @param moduleInfo a IModuleInfo
+         *  @return ChainStatus
+         */
+        virtual IModule::ChainStatus    call(Event event, IModuleInfo* moduleInfo) = 0;
+        
+        /**
+         *  Calls the right event method deppending on the event passed in parameter
+         *  @param event the event being called
+         *  @param socket the currently used socket
+         *  @return the new IClientSocket that will be used for this request
+         */
+        virtual IClientSocket*          call(Event event, SOCKET socket) = 0;
+        
+        /**
+         *  Calls the right event method deppending on the event passed in parameter
+         *  @param event the event being called
+         *  @param buf the buffer containing some of the response content data
+         *  @param length the buffer's length
+         *  @return ChainStatus
+         */
+        virtual IModule::ChainStatus    call(Event event, const char* buf, size_t length) = 0;
+        
+        /**
+         *  Calls the right event method deppending on the event passed in parameter
+         *  @param event the event being called
+         *  @param request the current request
+         *  @param response the current response
+         *  @return ChainStatus
+         */
+        virtual IModule::ChainStatus    call(Event event, IHttpRequest* request, IHttpResponse* response) = 0;
+        
+        /**
+         *  Calls the right event method deppending on the event passed in parameter
+         *  @param event the event being called
+         *  @param request the current request
+         *  @param response the current response
+         *  @param buf a buffer containing some of the response content data
+         *  @param length the buffer's length
+         *  @return ChainStatus
+         */
+        virtual size_t                  call(Event event, IHttpRequest* request, IHttpResponse* reponse, char* buf, size_t length) = 0;
 
 };
 
