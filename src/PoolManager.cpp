@@ -55,23 +55,22 @@ void    Pool::Manager::checkKeepAlive()
 		throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(WSAGetLastError()));
 #endif
 	}
-	if (ret == 0)
-        return ;
-
-    std::list<KeepAliveClient>::iterator  it = this->_keepAlive.begin();
-    std::list<KeepAliveClient>::iterator  ite = this->_keepAlive.end();
-    while (it != ite)
+	if (ret > 0)
     {
-        if ((*it).clt->isSet(this->_fds[i]))
+        std::list<KeepAliveClient>::iterator  it = this->_keepAlive.begin();
+        std::list<KeepAliveClient>::iterator  ite = this->_keepAlive.end();
+        while (it != ite)
         {
-            this->_pool->addTask((*it).clt, (*it).vhosts);
-            it = this->_keepAlive.erase(it);
+            if ((*it).clt->isSet(this->_fds[i]))
+            {
+                this->_pool->addTask((*it).clt, (*it).vhosts);
+                it = this->_keepAlive.erase(it);
+            }
+            else
+                ++it;
+            ++i;
         }
-        else
-            ++it;
-        ++i;
     }
-
     delete[] this->_fds;
 }
 
@@ -100,11 +99,15 @@ void    Pool::Manager::code()
                 //  non : a voir pour un algo de recreation de thread.
             }
         }
+#ifdef WIN32 //because Windows can't poll on a empty fds set...
 		if (this->_keepAlive.size() > 0)
 		{
+#endif
 			this->initKeepAlivePoll();
 			this->checkKeepAlive();
-		}
+#ifdef WIN32
+        }
+#endif
         if (this->_timer->elapsed(3))
         {
             ModuleManager::getInstance().scanModuleDir();

@@ -61,6 +61,7 @@ bool            ModuleManager::load(const std::string& filename)
     // Creating a ModuleInfo object.
     IModuleInfo* mi = new ModuleInfo(library, filename);
     this->_moduleInstances.push_back(RefCounter<IModuleInfo*>(mi));
+    this->_moduleInstances.back().count = 0;
     RefCounter<IModuleInfo*>* refCountPtr = &(this->_moduleInstances.back()); //Haha ste loose y a qu'un seul niveau de template :'(
 
     // Identifying which "event" class the module implement.
@@ -104,6 +105,7 @@ void                    ModuleManager::removeFromHooks(IModuleInfo* mi)
         {
             if ((*itMod)->ptr == mi)
             {
+                (*itMod)->count--;
                 this->_modules.back().ptr[*it].erase(itMod);
                 break ;
             }
@@ -122,7 +124,9 @@ void                    ModuleManager::unload(const std::string& filename)
         if ((*it).ptr->getFileName() == filename)
         {
             this->call(IModuleManager::ModuleEventHook, IModule::onUnloadModuleEvent, (*it).ptr);
+            std::cout << "counting refs : " << (*it).count << std::endl;
             this->removeFromHooks((*it).ptr);
+            std::cout << "counting refs : " << (*it).count << std::endl;
             return ;
         }
     }
@@ -200,6 +204,7 @@ void        ModuleManager::scanModuleDir()
      //First we look if some modules doesn't exists anymore.
     for (; mIt != mIte; ++mIt)
     {
+        std::cout << "Count for " << (*mIt).ptr->getFileName() << " == " << (*mIt).count << std::endl;
         for (it = files->begin(); it != ite; ++it)
         {
             if ((*it)->getFullFileName() == (*mIt).ptr->getFileName())
@@ -215,6 +220,13 @@ void        ModuleManager::scanModuleDir()
             }
             Logger::getInstance() << Logger::Info << (*mIt).ptr->getFileName() << " is missing from ModulesDir. Unloading module." << Logger::Flush;
             this->unload((*mIt).ptr->getFileName());
+            if ((*mIt).count == 0)
+            {
+                std::cout << "erasing module instance" << std::endl;
+                mIt = this->_moduleInstances.erase(mIt);
+                mIte = this->_moduleInstances.end();
+                std::cout << "module unloaded" << std::endl;
+            }
         }
     }
     //Then we add new modules
@@ -234,6 +246,7 @@ void        ModuleManager::scanModuleDir()
     }
     if (firstChange == true)
         delete[] newList;
+    delete files;
 }
 
 void        ModuleManager::removeModuleList(unsigned int reqId)
