@@ -6,6 +6,7 @@
 #include "API/IHttpTransaction.h"
 #include "API/IResponseStream.h"
 
+/// Describes requirements for a Http Response.
 class IHttpResponse : public virtual IHttpTransaction
 {
     public:

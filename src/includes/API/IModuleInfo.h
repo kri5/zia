@@ -6,7 +6,6 @@
 #include "API/IModule.h"
 #include "API/IModuleManager.h"
 
-/// Interface for ModuleInfo.
 /// This class will contain base symbols, and the module instance.
 class   IModuleInfo
 {

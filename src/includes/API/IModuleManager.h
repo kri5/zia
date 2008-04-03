@@ -7,6 +7,7 @@
 #include "API/IHttpResponse.h"
 #include "API/IClientSocket.h"
 
+/// Will manage module, and fire events. This contains every modules instances.
 class   IModuleManager
 {
     public:

@@ -3,6 +3,7 @@
 
 #include <istream>
 
+/// Base interface for response stream. This will encapsulate a stringstream or a filestream
 class   IResponseStream
 {
     public:

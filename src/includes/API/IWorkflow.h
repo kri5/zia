@@ -5,6 +5,7 @@
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
 
+/// Base interface for modules who wants to hook on main workflow events.
 class IWorkflow : public IModule
 {
     public:

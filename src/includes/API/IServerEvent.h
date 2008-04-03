@@ -3,6 +3,7 @@
 
 #include "API/IModule.h"
 
+/// Base interface for modules who wants to hook on server events.
 class IServerEvent : public IModule
 {
     public:

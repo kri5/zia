@@ -4,6 +4,7 @@
 #include "API/IModuleInfo.h"
 #include "API/IModule.h"
 
+/// Interface to implement to hook a modules for modules evenement
 class IModuleEvent : public IModule
 {
     public:

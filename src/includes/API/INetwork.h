@@ -4,6 +4,7 @@
 #include "API/IModule.h"
 #include "API/IClientSocket.h"
 
+/// Interface for module who wants to hook on Network events
 class INetwork : public IModule
 {
     public:

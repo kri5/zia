@@ -7,6 +7,7 @@
 
 #include <fstream>
 
+/// Base interface for modules who wants to hook on response sending events.
 class ISendResponse : public IModule
 {
     public:

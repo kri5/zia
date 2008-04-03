@@ -5,6 +5,7 @@
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
 
+/// Interface for modules who wants to hook on request reception.
 class IReceiveRequest : public IModule
 {
     public:
