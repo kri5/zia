@@ -1,6 +1,7 @@
 #ifndef ICONFIG_H__
 # define ICONFIG_H__
 
+/// Configuration interface.
 class   IConfig
 {
     public:

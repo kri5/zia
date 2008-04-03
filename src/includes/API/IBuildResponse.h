@@ -5,6 +5,7 @@
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
 
+/// Interface used for response hook
 class IBuildResponse : public IModule
 {
     public:

@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 
+/// Specifies common parts between response and request interfaces.
 class IHttpTransaction
 {
     public:

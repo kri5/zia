@@ -17,9 +17,8 @@ class IModuleInfo;
 
 /** 
  * Every interface that will be used by modules must inherit from this one.
- * Here we set the module entry point, the destroy symbol and some
- * informations used to correctly register the module.
- */
+ * Here we set the module entry point,  */
+/// Common interface for all the modules.
 class   IModule
 {
     public:

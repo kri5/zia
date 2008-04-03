@@ -3,6 +3,7 @@
 
 #include <string>
 
+/// Dynamic librairies interface, to ensure multiplatform compactibility
 class IDynLib
 {
 public:

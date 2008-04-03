@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 
+/// Describes requirements for a HTTP response.
 class IHttpRequest : public virtual IHttpTransaction
 {
     public:

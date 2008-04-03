@@ -3,7 +3,7 @@
 
 #include <string>
 
-/// Interface for ClientSocket classes, to ensure multi-platform compactibility
+/// Interface for hooking socket creation, after accept()
 class IClientSocket
 {
 	public:
