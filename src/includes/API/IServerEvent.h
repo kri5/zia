@@ -16,6 +16,7 @@ namespace zAPI
     class IServerEvent : public virtual IModule
     {
         public:
+
             /**
              *  The interface virtual destructor
              */
@@ -34,7 +35,6 @@ namespace zAPI
              *  @return a ChainStatus
              */
             virtual ChainStatus     onServerStop() = 0;
-
     };
 }
 

@@ -10,6 +10,7 @@ namespace zAPI
     class IHttpTransaction
     {
         public:
+
             /**
              *  The interface virtual destructor
              */

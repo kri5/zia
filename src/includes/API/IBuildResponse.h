@@ -8,10 +8,11 @@
 namespace zAPI
 {
     /**
-     *  This hook interface forces you to implement two event methods.
-     *  The first one (onPreBuild) will be called before building the reponse header.
-     *  The second one (onPostBuild) will be called after building the response header.
-     *
+     *  This hook interface forces you to implement two event methods.<br>
+     *  <ul>
+     *      <li>The first one (onPreBuild) will be called before building the reponse header.</li>
+     *      <li>The second one (onPostBuild) will be called after building the response header.</li>
+     *  </ul>
      *  Both methods receive two parameters : a IHttpRequest* and a IHttpResponse*.
      */
     /// Interface used for response hook

@@ -15,7 +15,6 @@ namespace zAPI
      *  </ul>
      */
     /// Describe requirements for implementing IReceiveRequest in a module
-    /// Interface for modules who wants to hook on request reception.
     class IReceiveRequest : public virtual IModule
     {
         public:

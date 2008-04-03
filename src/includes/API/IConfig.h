@@ -7,6 +7,7 @@ namespace zAPI
     class   IConfig
     {
         public:
+
             /**
              *  The interface virtual destructor
              */
