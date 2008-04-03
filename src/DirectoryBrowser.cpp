@@ -1,5 +1,7 @@
 #include "DirectoryBrowser.h"
 #include "Utils/UrlString.h"
+#include <iostream>
+#include <iomanip>
 
 DirectoryBrowser::DirectoryBrowser(const HttpRequest& request, 
         std::stringstream* stream) :
@@ -34,7 +36,8 @@ bool           DirectoryBrowser::get()
         parent.erase(1);
 
     *(this->_stream) << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n";
-    *(this->_stream) << "<html>\n<head>\n<title>Index of " << _request.getUri() << "</title></head>\n";
+    *(this->_stream) << "<html>\n<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />\n";
+    *(this->_stream) << "<head>\n<title>Index of " << _request.getUri() << "</title></head>\n";
     *(this->_stream) << "<body><h1>Index of " << _request.getUri() << "</h1>\n";
     *(this->_stream) << "<pre>Name                    Last modified      Size  Description<hr>\n";
     *(this->_stream) << "<a href=\"" << parent << "\">Parent Directory</a>                            -\n";
@@ -54,15 +57,16 @@ bool           DirectoryBrowser::get()
         std::string fullpath = path + f->getFileName();
         fullpath = UrlString::urlEncode(fullpath);
 
-        *(this->_stream) << "[   ]<a href=\"" << fullpath << "\">" << f->getFileName() << "</a>     ";
-        *(this->_stream) << f->getModifDate()->getStr() << "   ";
+        std::string file = "[   ] <a href=\"" + fullpath + "\">" + f->getFileName() + "</a> ";
+        *(this->_stream) << std::setw(60) << std::left << file;
+        *(this->_stream) << std::setw(24) << f->getModifDate()->getStr() << " ";
 		if (f->isDirectory())
 			*(this->_stream) << "-" << "\n";
 		else
 			*(this->_stream) << f->getSize() << "\n";
         ++it;
     }
-    *(this->_stream) << "<hr></pre><address>ZiaHttpd Server at http://" << 
+    *(this->_stream) << "</pre><hr><address>ZiaHttpd Server at http://" << 
         this->_request.getHeaderOption("Host").substr(0, this->_request.getHeaderOption("Host").find(":")) << 
         this->_request.getUri() << " Port ";
     if (this->_request.getHeaderOption("Host").find(":") != std::string::npos)
