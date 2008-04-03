@@ -21,22 +21,22 @@ class IReceiveRequest : public IModule
         virtual ~IReceiveRequest() {};
 
         /**
-         *  the preReceive event.
+         *  The preReceive event.<br>
          *  This method will be called just before receiving datas from the IClientSocket.
          *  @param request the IHttpRequest of the transaction
          *  @param response the IHttpResponse of the transaction
          *  @return a ChainStatus
          */
-        virtual ChainStatus onPreReceive(IHttpRequest&, IHttpResponse&) = 0;
+        virtual ChainStatus onPreReceive(IHttpRequest& request, IHttpResponse& response) = 0;
 
         /**
-         *  the postReceive event.
+         *  The postReceive event.<br>
          *  This method will be called just after receiving some datas from the IClientSocket.
          *  @param request the IHttpRequest of the transaction
          *  @param response the IHttpResponse of the transaction
          *  @return a ChainStatus
          */
-        virtual ChainStatus onPostReceive(IHttpRequest&, IHttpResponse&) = 0;
+        virtual ChainStatus onPostReceive(IHttpRequest& request, IHttpResponse& response) = 0;
 };
 
 #endif /* !__IRECEIVEREQUEST_H__ */
