@@ -12,6 +12,7 @@
  *      <li>The second one (onPostReceive) will be called after receiving the datas.</li>
  *  </ul>
  */
+/// Describe requirements for implementing IReceiveRequest in a module
 class IReceiveRequest : public IModule
 {
     public:
