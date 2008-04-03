@@ -5,7 +5,13 @@
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
 
-/// Interface used for response hook
+/**
+ *  This hook interface forces you to implement two event methods.
+ *  The first one (onPreBuild) will be called before building the reponse header.
+ *  The second one (onPostBuild) will be called after building the response header.
+ *
+ *  Both methods receive two parameters : a IHttpRequest* and a IHttpResponse*.
+ */
 class IBuildResponse : public IModule
 {
     public:
@@ -16,8 +22,8 @@ class IBuildResponse : public IModule
         virtual ~IBuildResponse(){};
 
         /**
-         *  The preBuild hook.
-         *  This module method will be called before sending the response header
+         *  The preBuild event.
+         *  This module method will be called before building the response header
          *  @param request a IHttpRequest
          *  @param reponse a IHttpResponse
          *  @return a ChainStatus
@@ -25,8 +31,8 @@ class IBuildResponse : public IModule
         virtual ChainStatus     onPreBuild(IHttpRequest* request, IHttpResponse* response) = 0;
 
         /**
-         *  The postBuild hook.
-         *  This method will be called after the reponse header has been sent
+         *  The postBuild event.
+         *  This method will be called after the reponse header has been built
          *  @param request a IHttpRequest
          *  @param response a IHttpResponse
          *  @return a ChainStatus
