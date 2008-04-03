@@ -4,27 +4,20 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include "Logger.hpp"
+#include "Singleton.hpp"
+
+// API
 #include "API/IModuleManager.h"
 #include "API/IModule.h"
 #include "API/IModuleInfo.h"
-#include "Logger.hpp"
-#include "Singleton.hpp"
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
 #include "API/IClientSocket.h"
 
-// API
-#include "API/IServerEvent.h"
-#include "API/IModuleEvent.h"
-#include "API/IWorkflow.h"
-#include "API/INetwork.h"
-#include "API/IReceiveRequest.h"
-#include "API/IBuildResponse.h"
-#include "API/ISendResponse.h"
 
-
-class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
+class   ModuleManager : public zAPI::IModuleManager, public Singleton<ModuleManager>
 {
     template <typename T>
         struct      RefCounter
@@ -33,7 +26,7 @@ class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
             T               ptr;
             unsigned int    count;
         };
-    typedef std::list<RefCounter<IModuleInfo*> >     ModuleList;
+    typedef std::list<RefCounter<zAPI::IModuleInfo*> >     ModuleList;
     public:
         void                    init(unsigned int);
         bool                    load(const std::string& filename); 
@@ -42,24 +35,24 @@ class   ModuleManager : public IModuleManager, public Singleton<ModuleManager>
         void                    scanModuleDir();
         bool                    isLoaded(const std::string&) const;
 
-        size_t                  processContent(IHttpRequest*, IHttpResponse*, char*, size_t);
+        size_t                  processContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t);
 
-        IModule::ChainStatus    call(Hook, IModule::Event);
-        IModule::ChainStatus    call(Hook, IModule::Event, IModuleInfo*);
-        IClientSocket*          call(Hook, IModule::Event, SOCKET);
-        IModule::ChainStatus    call(Hook, IModule::Event, const char*, size_t);
-        IModule::ChainStatus    call(Hook, IModule::Event, IHttpRequest*, IHttpResponse*);
+        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook, zAPI::IModule::Event);
+        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook, zAPI::IModule::Event, zAPI::IModuleInfo*);
+        zAPI::IClientSocket*          call(zAPI::IModule::Hook, zAPI::IModule::Event, SOCKET);
+        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook, zAPI::IModule::Event, const char*, size_t);
+        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook, zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*);
     private:
         ModuleManager();
         virtual ~ModuleManager();
 
-        void                    pushModule(IModuleManager::Hook, RefCounter<IModuleInfo*>*);
-        void                    removeFromHooks(IModuleInfo*);
+        void                    pushModule(zAPI::IModule::Hook, RefCounter<zAPI::IModuleInfo*>*);
+        void                    removeFromHooks(zAPI::IModuleInfo*);
         void                    removeModuleList(unsigned int);
 
-        std::list<RefCounter<std::list<RefCounter<IModuleInfo*>*>*> >   _modules;               // A list of a hook indexed array of IModuleInfo list
-        std::list<RefCounter<IModuleInfo*> >                            _moduleInstances;       // Every instance of modules
-        RefCounter<std::list<RefCounter<IModuleInfo*>*>*>**             _taskModulesList;       // taskId indexed array of a hook indexed array of ModuleInfo list
+        std::list<RefCounter<std::list<RefCounter<zAPI::IModuleInfo*>*>*> >   _modules;          // A list of a hook indexed array of IModuleInfo list
+        std::list<RefCounter<zAPI::IModuleInfo*> >                            _moduleInstances;  // Every instance of modules
+        RefCounter<std::list<RefCounter<zAPI::IModuleInfo*>*>*>**             _taskModulesList;  // taskId indexed array of a hook indexed array of ModuleInfo list
 
         friend class Singleton<ModuleManager>;
 };

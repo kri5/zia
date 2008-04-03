@@ -1,16 +1,16 @@
 #include "NastyCast.hpp"
 #include "Modules/ModuleInfo.h"
 
-ModuleInfo::ModuleInfo(IDynLib* module, const std::string& filename) : _module(module), _fileName(filename)
+ModuleInfo::ModuleInfo(zAPI::IDynLib* module, const std::string& filename) : _module(module), _fileName(filename)
 {
-    name = nasty_cast<void*, name_t*>(module->sym("name"));
-    destroy = nasty_cast<void*, destroy_t*>(module->sym("destroy"));
-    create = nasty_cast<void*, create_t*>(module->sym("create"));
-    version = nasty_cast<void*, version_t*>(module->sym("version"));
+    name = nasty_cast<void*, zAPI::name_t*>(module->sym("name"));
+    destroy = nasty_cast<void*, zAPI::destroy_t*>(module->sym("destroy"));
+    create = nasty_cast<void*, zAPI::create_t*>(module->sym("create"));
+    version = nasty_cast<void*, zAPI::version_t*>(module->sym("version"));
     _instance = create();
 }
 
-IModule*        ModuleInfo::getInstance() const
+zAPI::IModule*        ModuleInfo::getInstance() const
 {
     return this->_instance;
 }
@@ -36,12 +36,12 @@ int             ModuleInfo::getVersion() const
     return  this->version();
 }
 
-void            ModuleInfo::addSupportedHook(IModuleManager::Hook hook)
+void            ModuleInfo::addSupportedHook(zAPI::IModule::Hook hook)
 {
     this->_hooks.push_back(hook);
 }
 
-const std::vector<IModuleManager::Hook>&    ModuleInfo::getSupportedHooks() const
+const std::vector<zAPI::IModule::Hook>&    ModuleInfo::getSupportedHooks() const
 {
     return this->_hooks;
 }

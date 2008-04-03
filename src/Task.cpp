@@ -78,7 +78,7 @@ void    Task::clear(bool clearBuffers)
 void    Task::execute(unsigned int taskId)
 {
     _taskId = taskId;
-    ModuleManager::getInstance().call(ModuleManager::WorkflowHook, IModule::onBeginEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onBeginEvent, this->_req, this->_res);
     _time = new Time();
     //std::cout << "new task" << std::endl;
     if (this->parseRequest() == true)
@@ -86,7 +86,7 @@ void    Task::execute(unsigned int taskId)
         this->_time->init();
         if (this->_res->isInSendMode() == true || this->buildResponse() == true)
         {
-            ModuleManager::getInstance().call(IModuleManager::BuildResponseHook, IModule::onPostBuild, this->_req, this->_res);
+            ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPostBuild, this->_req, this->_res);
             //just for the moment :
             this->_res->setHeaderOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
             //if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
@@ -102,7 +102,7 @@ void    Task::execute(unsigned int taskId)
             }
         }
     }
-    ModuleManager::getInstance().call(IModuleManager::WorkflowHook, IModule::onFailureEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onFailureEvent, this->_req, this->_res);
     this->finalize(false);
 }
 
@@ -125,7 +125,7 @@ bool    Task::finalize(bool succeded)
 //        else
 //            this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
 //    }
-    ModuleManager::getInstance().call(ModuleManager::WorkflowHook, IModule::onEndEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onEndEvent, this->_req, this->_res);
     this->clear();
     //std::cout << "end task" << std::endl;
     return succeded;
@@ -165,7 +165,7 @@ bool    Task::parseRequest()
 {
     HttpParser      parser(this->_req, this->_readBuffer);
 
-    ModuleManager::getInstance().call(ModuleManager::ReceiveRequestHook, IModule::onPreReceiveEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(zAPI::IModule::ReceiveRequestHook, zAPI::IModule::onPreReceiveEvent, this->_req, this->_res);
     while (parser.done() == false)
     {
         if (this->checkTimeout())
@@ -181,7 +181,7 @@ bool    Task::parseRequest()
     //TODO: check host.
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getHeaderOption("Host")));
-    ModuleManager::getInstance().call(ModuleManager::ReceiveRequestHook, IModule::onPostReceiveEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(zAPI::IModule::ReceiveRequestHook, zAPI::IModule::onPostReceiveEvent, this->_req, this->_res);
     return true;
 }
 
@@ -210,7 +210,7 @@ bool    Task::buildResponse()
     {
         std::string     path(docRoot + this->_req->getUri());
         delete fileInfo;
-        IResponseStream* stream = new ResponseStreamDir(this->_req);
+        zAPI::IResponseStream* stream = new ResponseStreamDir(this->_req);
         if (stream->good() == false)
         {
             delete stream;
@@ -247,14 +247,14 @@ bool    Task::sendHeader()
 
 bool    Task::sendResponse()
 {
-    ModuleManager::getInstance().call(IModuleManager::SendResponseHook, IModule::onPreSendEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPreSendEvent, this->_req, this->_res);
     if (this->sendHeader() == false)
         return false;
 
-    std::queue<IResponseStream*>& streamQueue = this->_res->getStreams();
+    std::queue<zAPI::IResponseStream*>& streamQueue = this->_res->getStreams();
     char    buff[1024];
     size_t  size;
-    IResponseStream*    respStream;
+    zAPI::IResponseStream*    respStream;
 
     while (streamQueue.empty() == false)
     {
@@ -272,7 +272,7 @@ bool    Task::sendResponse()
         delete respStream;
     }
     //this->_socket->close(true);
-    ModuleManager::getInstance().call(IModuleManager::SendResponseHook, IModule::onPostSendEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPostSendEvent, this->_req, this->_res);
     return true;
 }
 

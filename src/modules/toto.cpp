@@ -4,7 +4,7 @@
 #include "Utils/Buffer.h"
 
 
-static IModule* _glInput = NULL;
+static zAPI::IModule* _glInput = NULL;
 
 Toto::Toto()
 {
@@ -19,29 +19,29 @@ void                    Toto::setInput(IModule* mod)
     _glInput = mod;
 }
         
-size_t                  Toto::call(IModule::Event, IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
+size_t                  Toto::call(zAPI::IModule::Event, zAPI::IHttpRequest* req, zAPI::IHttpResponse* res, char* buff, size_t size)
 {
     return this->onProcessContent(req, res, buff, size);
 }
 
-IModule::ChainStatus    Toto::call(IModule::Event event, IHttpRequest* req, IHttpResponse* res)
+zAPI::IModule::ChainStatus    Toto::call(zAPI::IModule::Event event, zAPI::IHttpRequest* req, zAPI::IHttpResponse* res)
 {
-    if (event == IModule::onPreSendEvent)
+    if (event == zAPI::IModule::onPreSendEvent)
         return (this->onPreSend(req, res));
-    else if (event == IModule::onPostSendEvent)
+    else if (event == zAPI::IModule::onPostSendEvent)
         return (this->onPostSend(req, res));
-	return IModule::ERRORMODULE;
+	return zAPI::IModule::ERRORMODULE;
 }
 
-IModule::ChainStatus    Toto::onPreSend(IHttpRequest* req, IHttpResponse* res)
+zAPI::IModule::ChainStatus    Toto::onPreSend(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res)
 {
     /*Buffer* buff = new Buffer(512);
     if (req->setParam("totoBuffer", buff) == false)
         std::cout << "Diantre !!!" << std::endl;*/
-	return IModule::CONTINUE;
+	return zAPI::IModule::CONTINUE;
 }
 
-size_t                  Toto::onProcessContent(IHttpRequest* req, IHttpResponse* res, char* buff, size_t size)
+size_t                  Toto::onProcessContent(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res, char* buff, size_t size)
 {
     if (_glInput != NULL)
     {
@@ -67,7 +67,7 @@ size_t                  Toto::onProcessContent(IHttpRequest* req, IHttpResponse*
     }
 }
 
-IModule::ChainStatus    Toto::onPostSend(IHttpRequest* req, IHttpResponse* res)
+zAPI::IModule::ChainStatus    Toto::onPostSend(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res)
 {
     /*Buffer* buff = static_cast<Buffer*>(req->getParam("totoBuffer"));
     if (buff)
@@ -75,12 +75,12 @@ IModule::ChainStatus    Toto::onPostSend(IHttpRequest* req, IHttpResponse* res)
 	return IModule::CONTINUE;
 }
 
-extern "C" IModule* create()
+extern "C" zAPI::IModule* create()
 {
     return new Toto;
 }
 
-extern "C" void destroy(IModule* i)
+extern "C" void destroy(zAPI::IModule* i)
 {
     delete i;
 }

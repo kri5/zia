@@ -41,7 +41,7 @@ const std::string*		Vhost::getParam(std::string name) const
     return (Config::getParam(name));
 }
 
-IConfig*	Vhost::getVhost(const std::vector<Vhost*>& vhosts, const std::string& host)
+zAPI::IConfig*	Vhost::getVhost(const std::vector<Vhost*>& vhosts, const std::string& host)
 {
     MutexLock   lock(Vhost::_mutex);
 	int		i;

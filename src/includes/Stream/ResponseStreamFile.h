@@ -6,7 +6,7 @@
 #include "API/IResponseStream.h"
 #include "File/IFile.h"
 
-class ResponseStreamFile : public IResponseStream
+class ResponseStreamFile : public zAPI::IResponseStream
 {
     public:
         ResponseStreamFile(IFile*);

@@ -8,7 +8,7 @@
 #include "Http/HttpRequest.h"
 #include "API/IResponseStream.h"
 
-class   ErrorResponseStream : public IResponseStream
+class   ErrorResponseStream : public zAPI::IResponseStream
 {
     public:
         ErrorResponseStream(int status, HttpRequest& request);

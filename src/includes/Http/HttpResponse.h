@@ -15,7 +15,7 @@
 #include "Stream/ErrorResponseStream.h"
 #include "API/IHttpResponse.h"
 
-class   HttpResponse : public IHttpResponse, public HttpTransaction
+class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
 {
     public:
         struct  KeyValue
@@ -27,34 +27,34 @@ class   HttpResponse : public IHttpResponse, public HttpTransaction
         HttpResponse();
         virtual ~HttpResponse();
         
-        void                            setResponseStatus(int status);
-        int                             getResponseStatus() const;
+        void                                    setResponseStatus(int status);
+        int                                     getResponseStatus() const;
 
-        std::string                     getResponseValue() const;
-        static const char*              getResponseStatusMessage(int key);
+        std::string                             getResponseValue() const;
+        static const char*                      getResponseStatusMessage(int key);
 
-        void                            appendStream(IResponseStream*);
-        std::queue<IResponseStream*>&   getStreams();
-        void                            setError(ErrorResponseStream*);
-        size_t                          getContentLength() const;
+        void                                    appendStream(zAPI::IResponseStream*);
+        std::queue<zAPI::IResponseStream*>&     getStreams();
+        void                                    setError(ErrorResponseStream*);
+        size_t                                  getContentLength() const;
 
-        void                            setCurrentStream(std::iostream*);
-        std::iostream&                  getCurrentStream();
-		void							skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream);
-		bool							isInSendMode() const;
-		bool							headerInStream() const;
+        void                                    setCurrentStream(std::iostream*);
+        std::iostream&                          getCurrentStream();
+		void							        skipToSend(zAPI::IResponseStream* stream, bool flushStream, bool headerInStream);
+		bool							        isInSendMode() const;
+		bool							        headerInStream() const;
 
     private:
-        void                            clearStreams();
+        void                                    clearStreams();
 
-        static KeyValue                 ResponseStatus[];
-        int                             _responseStatus;
-        size_t                          _contentLength;
-        std::string                     _mimeType;
-        std::queue<IResponseStream*>    _streams;
-        std::iostream*                  _currentStream;
-		bool							_sendMode;
-		bool							_headerInStream;
+        static KeyValue                         ResponseStatus[];
+        int                                     _responseStatus;
+        size_t                                  _contentLength;
+        std::string                             _mimeType;
+        std::queue<zAPI::IResponseStream*>      _streams;
+        std::iostream*                          _currentStream;
+		bool							        _sendMode;
+		bool							        _headerInStream;
 };
 
 #endif  /* !__HTTPRESPONSE_H__ */

@@ -6,7 +6,7 @@
 #include "AbstractModule.h"
 #include <iostream>
 
-class helloworld : public AbstractModule<IServerEvent>
+class helloworld : public AbstractModule<zAPI::IServerEvent>
 {
     public:
         helloworld();

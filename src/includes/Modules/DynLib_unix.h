@@ -4,7 +4,7 @@
 #include <string>
 #include "API/IDynLib.h"
 
-class DynLib : public IDynLib
+class DynLib : public zAPI::IDynLib
 {
 public:
     DynLib();

@@ -7,7 +7,7 @@
 #include "Http/HttpResponse.h"
 #include "DirectoryBrowser.h"
 
-class ResponseStreamDir : public IResponseStream
+class ResponseStreamDir : public zAPI::IResponseStream
 {
     public:
         ResponseStreamDir(const HttpRequest*);

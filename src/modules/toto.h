@@ -5,19 +5,19 @@
 #include "API/ISendResponse.h"
 #include "AbstractModule.h"
 
-class Toto : public AbstractModule<ISendResponse>
+class Toto : public AbstractModule<zAPI::ISendResponse>
 {
     public:
         Toto();
         ~Toto();
 
-        void            setInput(IModule*);
+        void            setInput(zAPI::IModule*);
 
-        size_t          call(IModule::Event, IHttpRequest*, IHttpResponse*, char*, size_t);
-        ChainStatus     call(IModule::Event, IHttpRequest*, IHttpResponse*);
-        ChainStatus     onPreSend(IHttpRequest*, IHttpResponse*);
-        size_t          onProcessContent(IHttpRequest*, IHttpResponse*, char*, size_t);
-        ChainStatus     onPostSend(IHttpRequest*, IHttpResponse*);
+        size_t          call(zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t);
+        ChainStatus     call(zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*);
+        ChainStatus     onPreSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
+        size_t          onProcessContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t);
+        ChainStatus     onPostSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
 };
 
 #endif //TOTO_H__

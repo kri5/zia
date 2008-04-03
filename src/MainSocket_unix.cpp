@@ -53,7 +53,7 @@ void	MainSocket::listen(int queue) const
 	}
 }
 
-IClientSocket*	MainSocket::accept()
+zAPI::IClientSocket*	MainSocket::accept()
 {
 	int acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == SOCKET_ERROR)
@@ -61,7 +61,7 @@ IClientSocket*	MainSocket::accept()
         Logger::getInstance() << Logger::Warning << "Can't accept client (" << strerror(errno) << ')' << Logger::Flush;
 		//throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
 	}
-    IClientSocket*  ret = ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onAcceptEvent, acceptSocket);
+    zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onAcceptEvent, acceptSocket);
     if (ret == NULL)
         ret = new ClientSocket(acceptSocket);
 	return (ret);

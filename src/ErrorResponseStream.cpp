@@ -52,7 +52,7 @@ bool                ErrorResponseStream::completed() const
     return this->_content->eof();
 }
 
-IResponseStream::Type   ErrorResponseStream::getType() const
+zAPI::IResponseStream::Type   ErrorResponseStream::getType() const
 {
     return this->_type;
 }

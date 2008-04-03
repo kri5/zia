@@ -8,7 +8,7 @@
 #include "API/IConfig.h"
 
 /// Stores the config values. To be used in clients and main sockets classes.
-class Config : public IConfig
+class Config : public zAPI::IConfig
 {
 	public:
 		struct	Error

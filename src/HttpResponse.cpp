@@ -86,13 +86,13 @@ std::string     HttpResponse::getResponseValue() const
     return std::string(getResponseStatusMessage(this->_responseStatus));
 }
 
-void                    HttpResponse::appendStream(IResponseStream* stream)
+void                    HttpResponse::appendStream(zAPI::IResponseStream* stream)
 {
     this->_streams.push(stream);
     this->_contentLength += stream->getSize();
 }
 
-std::queue<IResponseStream*>&   HttpResponse::getStreams()
+std::queue<zAPI::IResponseStream*>&   HttpResponse::getStreams()
 {
     return this->_streams;
 }
@@ -118,7 +118,7 @@ void                    HttpResponse::setError(ErrorResponseStream* error)
 
 void                    HttpResponse::clearStreams()
 {
-    IResponseStream*    s;
+    zAPI::IResponseStream*    s;
 
     while (this->_streams.empty() == false)
     {
@@ -133,7 +133,7 @@ size_t                  HttpResponse::getContentLength() const
     return this->_contentLength;
 }
 
-void					HttpResponse::skipToSend(IResponseStream* stream, bool flushStreams, bool headerIncluded)
+void					HttpResponse::skipToSend(zAPI::IResponseStream* stream, bool flushStreams, bool headerIncluded)
 {
 	if (flushStreams)
 		this->clearStreams();

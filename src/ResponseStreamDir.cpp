@@ -29,7 +29,7 @@ bool            ResponseStreamDir::completed() const
     return this->_stream->eof();
 }
 
-IResponseStream::Type   ResponseStreamDir::getType() const
+zAPI::IResponseStream::Type   ResponseStreamDir::getType() const
 {
     return this->_type;
 }

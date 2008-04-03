@@ -24,7 +24,7 @@ class IMainSocket
 		};
 		virtual ~IMainSocket(){}
 		/// Spawn a new socket for the new client.
-		virtual IClientSocket *accept() = 0;
+		virtual zAPI::IClientSocket *accept() = 0;
 	protected:
 		/// Bind the socket on a specified host and port.
 		virtual void bind(const NetworkID*) const = 0;

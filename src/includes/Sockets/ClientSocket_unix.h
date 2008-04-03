@@ -14,7 +14,7 @@
 /** A specialized socket, which will only handle clients, and not connections to server.
  *  For others method than ctor/dtor documentation, refer to IClientSocket.
  */
-class ClientSocket : public Socket, public IClientSocket
+class ClientSocket : public Socket, public zAPI::IClientSocket
 {
     public:
 		struct  Error

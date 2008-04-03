@@ -21,7 +21,7 @@ bool                ResponseStreamFile::completed() const
     return this->_file->eof();
 }
 
-IResponseStream::Type   ResponseStreamFile::getType() const
+zAPI::IResponseStream::Type   ResponseStreamFile::getType() const
 {
     return this->_type;
 }

@@ -9,26 +9,26 @@
 #include "API/IModuleInfo.h"
 #include "API/IDynLib.h"
 
-class   ModuleInfo : public IModuleInfo
+class   ModuleInfo : public zAPI::IModuleInfo
 {
     public:
-        ModuleInfo(IDynLib* module, const std::string&);
+        ModuleInfo(zAPI::IDynLib* module, const std::string&);
         ~ModuleInfo();
-        IModule*                                    getInstance() const;
+        zAPI::IModule*                              getInstance() const;
         std::string                                 getName() const;
         int                                         getVersion() const;
         const std::string&                          getFileName() const;
-        void                                        addSupportedHook(IModuleManager::Hook);
-        const std::vector<IModuleManager::Hook>&    getSupportedHooks() const;
+        void                                        addSupportedHook(zAPI::IModule::Hook);
+        const std::vector<zAPI::IModule::Hook>&     getSupportedHooks() const;
     protected:
-        create_t*                                   create;
-        destroy_t*                                  destroy;
-        name_t*                                     name;
-        version_t*                                  version;
-        IDynLib*                                    _module;
-        IModule*                                    _instance;
+        zAPI::create_t*                                   create;
+        zAPI::destroy_t*                                  destroy;
+        zAPI::name_t*                                     name;
+        zAPI::version_t*                                  version;
+        zAPI::IDynLib*                              _module;
+        zAPI::IModule*                              _instance;
         std::string                                 _fileName;
-        std::vector<IModuleManager::Hook>           _hooks;
+        std::vector<zAPI::IModule::Hook>            _hooks;
         
 };
 

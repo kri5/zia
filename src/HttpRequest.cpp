@@ -30,12 +30,12 @@ void            HttpRequest::addDefaultHost()
    ; 
 }
 
-void			HttpRequest::setConfig(IConfig* cfg)
+void			HttpRequest::setConfig(zAPI::IConfig* cfg)
 {
 	this->_cfg = cfg;
 }
 
-IConfig*	HttpRequest::getConfig() const
+zAPI::IConfig*	HttpRequest::getConfig() const
 {
 	return this->_cfg;
 }

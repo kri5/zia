@@ -12,7 +12,7 @@
 #include "API/IConfig.h"
 #include "API/IHttpRequest.h"
 
-class HttpRequest : public IHttpRequest, public HttpTransaction
+class HttpRequest : public zAPI::IHttpRequest, public HttpTransaction
 {
     public:
         HttpRequest(unsigned int);
@@ -32,8 +32,8 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
         void                                        setCommand(const std::string&);
         const std::string&                          getCommand() const;
 
-		void										setConfig(IConfig* cfg);
-		IConfig*								    getConfig() const;
+		void										setConfig(zAPI::IConfig* cfg);
+        zAPI::IConfig*								getConfig() const;
         bool                                        isUriRelative() const;
         void                                        clear();
         void                                        print();
@@ -48,7 +48,7 @@ class HttpRequest : public IHttpRequest, public HttpTransaction
         std::map<std::string, void*>                _params;
         std::string                                 _uri;
         bool                                        _relativeUri;
-		IConfig*									_cfg;
+        zAPI::IConfig*								_cfg;
         unsigned int                                _reqId;
 };
 
