@@ -6,9 +6,11 @@
 #include "API/IHttpResponse.h"
 
 /**
- *  This hook interface forces you to implements two event methods.<br>
- *  The first one (onPreReceive) will be called before receiving any data on the IClientSocket.<br>
- *  The second one (onPostReceive) will be called after receiving the datas.<br>
+ *  This hook interface forces you to implements two event methods.<br><br>
+ *  <ul>
+ *      <li>The first one (onPreReceive) will be called before receiving any data on the IClientSocket.</li>
+ *      <li>The second one (onPostReceive) will be called after receiving the datas.</li>
+ *  </ul>
  */
 class IReceiveRequest : public IModule
 {
