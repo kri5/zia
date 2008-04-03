@@ -18,10 +18,11 @@ typedef int SOCKET;
  * Every interface that will be used by modules must inherit from this one.
  * Here we set the module entry point
  */
-/// Common interface for all the modules.
 namespace zAPI
 {
     class   IModuleInfo;
+
+    /// Common interface for all the modules.
     class   IModule
     {
         public:
