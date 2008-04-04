@@ -88,7 +88,7 @@ namespace zAPI
              *  @param event the event being called
              *  @return ChainStatus
              */
-            virtual IModule::ChainStatus    call(Event){return CONTINUE;}
+            virtual IModule::ChainStatus    call(Event) = 0;
 
             /**
              *  Calls the right event method deppending on the event passed in parameter
@@ -96,7 +96,7 @@ namespace zAPI
              *  @param moduleInfo a IModuleInfo
              *  @return ChainStatus
              */
-            virtual IModule::ChainStatus    call(Event, IModuleInfo*){return CONTINUE;}
+            virtual IModule::ChainStatus    call(Event, IModuleInfo*) = 0;
 
             /**
              *  Calls the right event method deppending on the event passed in parameter
@@ -104,7 +104,7 @@ namespace zAPI
              *  @param socket the currently used socket
              *  @return the new IClientSocket that will be used for this request
              */
-            virtual IClientSocket*          call(Event, SOCKET){return NULL;};
+            virtual IClientSocket*          call(Event, SOCKET) = 0;
 
             /**
              *  Calls the right event method deppending on the event passed in parameter
@@ -113,7 +113,7 @@ namespace zAPI
              *  @param length the buffer's length
              *  @return ChainStatus
              */
-            virtual IModule::ChainStatus    call(Event, const char*, size_t){return CONTINUE;}
+            virtual IModule::ChainStatus    call(Event, const char*, size_t) = 0;
 
             /**
              *  Calls the right event method deppending on the event passed in parameter
@@ -122,7 +122,7 @@ namespace zAPI
              *  @param response the current response
              *  @return ChainStatus
              */
-            virtual IModule::ChainStatus    call(Event, IHttpRequest*, IHttpResponse*){return CONTINUE;}
+            virtual IModule::ChainStatus    call(Event, IHttpRequest*, IHttpResponse*) = 0;
 
             /**
              *  Calls the right event method deppending on the event passed in parameter
@@ -133,7 +133,7 @@ namespace zAPI
              *  @param length the buffer's length
              *  @return ChainStatus
              */
-            virtual size_t                  call(Event, IHttpRequest*, IHttpResponse*, char*, size_t){return CONTINUE;};
+            virtual size_t                  call(Event, IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
 
     };
 

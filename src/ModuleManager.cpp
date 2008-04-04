@@ -34,6 +34,8 @@ ModuleManager::~ModuleManager()
 void            ModuleManager::init(unsigned int nbTasks)
 {
     this->_taskModulesList = new RefCounter<std::list<RefCounter<zAPI::IModuleInfo*>*>*>*[nbTasks];
+    for (unsigned int i = 0; i < nbTasks; ++i)
+        this->_taskModulesList[i] = NULL;
 }
 
 //Will add a hook for a module. (on the new set of modules)
@@ -143,7 +145,6 @@ void                    ModuleManager::unload(const std::string& filename)
 
 void                    ModuleManager::initProcessContent() const
 {
-    std::cout << "chaining process content" << std::endl;
     std::list<RefCounter<zAPI::IModuleInfo*>*>::const_iterator         it = this->_modules.back().ptr[zAPI::IModule::SendResponseHook].begin();
     std::list<RefCounter<zAPI::IModuleInfo*>*>::const_iterator        ite = this->_modules.back().ptr[zAPI::IModule::SendResponseHook].end();
 
@@ -299,15 +300,23 @@ void        ModuleManager::removeModuleList(unsigned int reqId)
 
 size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res, char* buff, size_t size)
 {
+    if (this->_taskModulesList[req->getRequestId()] == NULL)
+    {
+        res->getCurrentStream().read(buff, size);
+        return res->getCurrentStream().gcount();
+    }
+
     if (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].size() > 0)
-        return (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].back()->ptr->getInstance()->call
-                (zAPI::IModule::onProcessContentEvent, req, res, buff, size));
+        return (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].back()->ptr->getInstance()->call(zAPI::IModule::onProcessContentEvent, req, res, buff, size));
     res->getCurrentStream().read(buff, size);
     return res->getCurrentStream().gcount();
 }
 
 zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event)
 {
+    if (this->_modules.size() == 0)
+        return zAPI::IModule::CONTINUE;
+
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = this->_modules.back().ptr[hook].begin();
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = this->_modules.back().ptr[hook].end();
     zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
@@ -323,6 +332,9 @@ zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAP
 
 zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, zAPI::IModuleInfo* mod)
 {
+    if (this->_modules.size() == 0)
+        return zAPI::IModule::CONTINUE;
+
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = this->_modules.back().ptr[hook].begin();
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = this->_modules.back().ptr[hook].end();
     zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
@@ -338,6 +350,9 @@ zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAP
 
 zAPI::IClientSocket*  ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, SOCKET sock)
 {
+    if (this->_modules.size() == 0)
+        return NULL;
+
     size_t      size = this->_modules.back().ptr[hook].size();
 
     if (size == 0)
@@ -349,6 +364,9 @@ zAPI::IClientSocket*  ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModul
 
 zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, const char* buff, size_t size)
 {
+    if (this->_modules.size() == 0)
+        return zAPI::IModule::CONTINUE;
+
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = this->_modules.back().ptr[hook].begin();
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = this->_modules.back().ptr[hook].end();
     zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
@@ -364,9 +382,12 @@ zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAP
 
 zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, zAPI::IHttpRequest* httpReq, zAPI::IHttpResponse* httpRes)
 {
+    if (this->_modules.size() == 0)
+        return zAPI::IModule::CONTINUE;
+
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = this->_modules.back().ptr[hook].begin();
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = this->_modules.back().ptr[hook].end();
-    zAPI::IModule::ChainStatus                    res = zAPI::IModule::CONTINUE;
+    zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
 
     if (hook == zAPI::IModule::WorkflowHook) //setting pointer to current modules list
     {

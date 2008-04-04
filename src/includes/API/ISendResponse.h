@@ -19,7 +19,7 @@ namespace zAPI
      *  </ul>
      */
     /// Base interface for modules who wants to hook on response sending events.
-    class ISendResponse : public IModule
+    class ISendResponse : public virtual IModule
     {
         public:
 

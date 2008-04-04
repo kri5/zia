@@ -16,7 +16,7 @@ namespace zAPI
      *  </ul>
      */
     /// Base interface for modules who wants to hook on main workflow events.
-    class IWorkflow : public IModule
+    class IWorkflow : public virtual IModule
     {
         public:
             /**
