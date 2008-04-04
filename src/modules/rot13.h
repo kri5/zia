@@ -11,6 +11,7 @@ class Rot13 : public AbstractModule, public zAPI::ISendResponse
         Rot13();
         ~Rot13();
 
+        int             getPriority(zAPI::IModule::Event event);
         size_t          call(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t, IModule**, unsigned int);
         ChainStatus     call(zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*);
         ChainStatus     onPreSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);

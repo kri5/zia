@@ -84,6 +84,14 @@ namespace zAPI
             };
 
             /**
+             * Is called by the ModuleManager when the module is loaded to get the priority
+             * of the event passed in parameter.
+             * @param event the event to get priority from
+             * @return a priority
+             */
+            virtual int                     getPriority(Event event) = 0;
+
+            /**
              *  Calls the right event method deppending on the event passed in parameter
              *  @param event the event being called
              *  @return ChainStatus

@@ -12,6 +12,21 @@ Rot13::~Rot13()
 {
 }
 
+int                     Rot13::getPriority(zAPI::IModule::Event event)
+{
+    switch (event)
+    {
+        case zAPI::IModule::onPreSendEvent:
+            return 10;
+        case zAPI::IModule::onProcessContentEvent:
+            return 60;
+        case zAPI::IModule::onPostSendEvent:
+            return 4;
+        default:
+            return 10;
+    }
+}
+
 size_t                  Rot13::call(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res, char* buff, size_t size, IModule** tab, unsigned int index)
 {
     return this->onProcessContent(req, res, buff, size, tab, index);
