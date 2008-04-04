@@ -2,8 +2,9 @@
 # define LOUTRE_H__
 
 #include "API/IBuildResponse.h"
+#include "Modules/AbstractModule.h"
 
-class Loutre : public zAPI::IBuildResponse
+class Loutre : public virtual AbstractModule, public zAPI::IBuildResponse
 {
     public:
         Loutre();
