@@ -56,7 +56,7 @@ zAPI::IModule::ChainStatus    HookTests::onPreSend(zAPI::IHttpRequest*, zAPI::IH
     ;
 }
 
-size_t                        HookTests::onProcessContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t)
+size_t                        HookTests::onProcessContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t, IModule**, unsigned int)
 {
     ;
 }

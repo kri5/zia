@@ -28,15 +28,8 @@ namespace zAPI
              */
             virtual ~ISendResponse() {};
 
-            /**
-             *  The setInput event.
-             *  This method is kind of special because it aims to build a chain of module.
-             *  on progress
-             */
-            virtual void    setInput(IModule*) = 0;
-
             virtual ChainStatus onPreSend(IHttpRequest*, IHttpResponse*) = 0;
-            virtual size_t      onProcessContent(IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
+            virtual size_t      onProcessContent(IHttpRequest*, IHttpResponse*, char*, size_t, IModule**, unsigned int) = 0;
             virtual ChainStatus onPostSend(IHttpRequest*, IHttpResponse*) = 0;
     };
 }

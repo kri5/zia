@@ -36,7 +36,7 @@ zAPI::IModule::ChainStatus    AbstractModule::call(zAPI::IModule::Event, zAPI::I
     return zAPI::IModule::CONTINUE;
 }
 
-size_t                        AbstractModule::call(zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t)
+size_t                        AbstractModule::call(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t, IModule**, unsigned int)
 {
     return zAPI::IModule::CONTINUE;
 }

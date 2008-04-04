@@ -11,12 +11,12 @@ class   AbstractModule : public virtual zAPI::IModule
     public:
         AbstractModule();
         virtual ~AbstractModule();
-        zAPI::IModule::ChainStatus  call(zAPI::IModule::Event);
-        zAPI::IModule::ChainStatus  call(zAPI::IModule::Event, zAPI::IModuleInfo*);
-        zAPI::IClientSocket*        call(zAPI::IModule::Event, SOCKET);
-        zAPI::IModule::ChainStatus  call(zAPI::IModule::Event, const char*, size_t);
-        zAPI::IModule::ChainStatus  call(zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*);
-        size_t                      call(zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t);
+        virtual zAPI::IModule::ChainStatus  call(zAPI::IModule::Event);
+        virtual zAPI::IModule::ChainStatus  call(zAPI::IModule::Event, zAPI::IModuleInfo*);
+        virtual zAPI::IClientSocket*        call(zAPI::IModule::Event, SOCKET);
+        virtual zAPI::IModule::ChainStatus  call(zAPI::IModule::Event, const char*, size_t);
+        virtual zAPI::IModule::ChainStatus  call(zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*);
+        virtual size_t                      call(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t, IModule**, unsigned int);
 };
 
 #endif //ABSTRACTMODULE_H__

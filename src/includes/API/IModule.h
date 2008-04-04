@@ -126,14 +126,16 @@ namespace zAPI
 
             /**
              *  Calls the right event method deppending on the event passed in parameter
-             *  @param event the event being called
+             *  This one is only for calling processContent without breaking API's conception.
              *  @param request the current request
              *  @param response the current response
              *  @param buf a buffer containing some of the response content data
              *  @param length the buffer's length
+             *  @param tab the IModule subscribe to processContent event
+             *  @param index the current module in the IModule tab, to know which module to read in
              *  @return ChainStatus
              */
-            virtual size_t                  call(Event, IHttpRequest*, IHttpResponse*, char*, size_t) = 0;
+            virtual size_t                  call(IHttpRequest*, IHttpResponse*, char*, size_t, IModule**, unsigned int) = 0;
 
     };
 

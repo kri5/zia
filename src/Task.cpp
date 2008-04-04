@@ -218,6 +218,7 @@ bool    Task::buildResponse()
             this->_res->setError(new ErrorResponseStream(500, this->_req));
             return true;
         }
+        this->_res->setHeaderOption("Content-Type", "text/html");
         this->_res->appendStream(stream);
     }
     this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());

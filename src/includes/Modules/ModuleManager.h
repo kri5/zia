@@ -31,7 +31,6 @@ class   ModuleManager : public zAPI::IModuleManager, public Singleton<ModuleMana
         void                    init(unsigned int);
         bool                    load(const std::string& filename); 
         void                    unload(const std::string& filename); 
-        void                    initProcessContent() const;
         void                    scanModuleDir();
         bool                    isLoaded(const std::string&) const;
 

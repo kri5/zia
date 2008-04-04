@@ -1,7 +1,8 @@
-#include "loutre.h"
-#include "Stream/ResponseStreamGeneric.h"
 #include <iostream>
 #include <sstream>
+
+#include "loutre.h"
+#include "Stream/ResponseStreamGeneric.h"
 
 Loutre::Loutre()
 {

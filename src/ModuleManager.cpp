@@ -143,24 +143,6 @@ void                    ModuleManager::unload(const std::string& filename)
     Logger::getInstance() << Logger::Warning << "No such module to unload" << Logger::Flush;
 }
 
-void                    ModuleManager::initProcessContent() const
-{
-    std::list<RefCounter<zAPI::IModuleInfo*>*>::const_iterator         it = this->_modules.back().ptr[zAPI::IModule::SendResponseHook].begin();
-    std::list<RefCounter<zAPI::IModuleInfo*>*>::const_iterator        ite = this->_modules.back().ptr[zAPI::IModule::SendResponseHook].end();
-
-    zAPI::IModule*        mod;
-    zAPI::IModule*        prevMod = NULL;
-    zAPI::ISendResponse*  modRes;
-    for (; it != ite; ++it)
-    {
-        mod = ((*it)->ptr)->getInstance();
-        modRes = dynamic_cast<zAPI::ISendResponse*>(mod);
-        assert(modRes != NULL);
-        modRes->setInput(prevMod);
-        prevMod = mod;
-    }
-}
-
 bool        ModuleManager::isLoaded(const std::string& fileName) const
 {
     if (this->_modules.size() <= 0)
@@ -252,8 +234,6 @@ void        ModuleManager::scanModuleDir()
     }
     if (firstChange == true)
         delete[] newList;
-    else
-        this->initProcessContent();
     delete files;
 }
 
@@ -307,7 +287,21 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
     }
 
     if (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].size() > 0)
-        return (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].back()->ptr->getInstance()->call(zAPI::IModule::onProcessContentEvent, req, res, buff, size));
+    {
+        zAPI::IModule** tab = new zAPI::IModule*[this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].size() + 1];
+        unsigned int    i = 0;
+        std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator    it = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].begin();
+        std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator    ite = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].end();
+        for (; it != ite; ++it, ++i)
+        {
+            tab[i] = (*it)->ptr->getInstance();
+        }
+        tab[i] = NULL;
+        size_t ret = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].front()->ptr->
+                getInstance()->call(req, res, buff, size, tab, 0);
+        delete[] tab;
+        return ret;
+    }
     res->getCurrentStream().read(buff, size);
     return res->getCurrentStream().gcount();
 }

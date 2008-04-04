@@ -28,7 +28,7 @@ class HookTests : public AbstractModule, public zAPI::IBuildResponse, public zAP
 
         void                        setInput(zAPI::IModule*);
         zAPI::IModule::ChainStatus  onPreSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
-        size_t                      onProcessContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t);
+        size_t                      onProcessContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t, IModule**, unsigned int);
         zAPI::IModule::ChainStatus  onPostSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
 
         zAPI::IModule::ChainStatus  onServerStart();
