@@ -12,7 +12,7 @@
 class DirectoryBrowser
 {
     public:
-        DirectoryBrowser(const HttpRequest& request, std::stringstream* stream);
+        DirectoryBrowser(const HttpRequest& request, std::iostream* stream);
         ~DirectoryBrowser();
 
         bool                            get();
@@ -21,7 +21,7 @@ class DirectoryBrowser
         FileSystem*                     _fs;
         std::list<IFile*>*              _fileList;
         bool                            _first;
-        std::stringstream*              _stream;
+        std::iostream*                  _stream;
 };
 
 #endif // __DIRECTORYBROWSER_H__

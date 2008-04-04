@@ -4,7 +4,7 @@
 #include <iomanip>
 
 DirectoryBrowser::DirectoryBrowser(const HttpRequest& request, 
-        std::stringstream* stream) :
+        std::iostream* stream) :
     _request(request), _first(true), _stream(stream)
 {
     // Read directory path from request

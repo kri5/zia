@@ -86,7 +86,7 @@ void    Task::execute(unsigned int taskId)
         this->_time->init();
         if (this->_res->isInSendMode() == true || this->buildResponse() == true)
         {
-            ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPostBuild, this->_req, this->_res);
+            ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPostBuildEvent, this->_req, this->_res);
             //just for the moment :
             this->_res->setHeaderOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
             //if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
@@ -187,6 +187,7 @@ bool    Task::parseRequest()
 
 bool    Task::buildResponse()
 {
+    ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPreBuildEvent, this->_req, this->_res);
     const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
     IFile*              fileInfo = new File(this->_req->getUri(), docRoot.c_str());
 

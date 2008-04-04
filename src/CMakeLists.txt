@@ -16,7 +16,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
     HttpResponse.cpp Server.cpp ErrorResponseStream.cpp
     Buffer.cpp DirectoryBrowser.cpp ResponseStreamFile.cpp ResponseStreamDir.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp
-    ModuleManager.cpp UrlString.cpp NastyCast.hpp ModuleInfo.cpp
+    ModuleManager.cpp UrlString.cpp NastyCast.hpp ModuleInfo.cpp ResponseStreamGeneric.cpp
 	)
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.h includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
@@ -32,7 +32,7 @@ SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.
     includes/Stream/ResponseStreamDir.h includes/Workflow/Worker.h includes/Workflow/Pool.h includes/Http/HttpTransaction.h
     includes/API/IHttpTransaction.h includes/API/IHttpRequest.h includes/API/IHttpResponse.h includes/Utils/UrlString.h
     includes/Modules/ModuleManager.h includes/Modules/IDynLib.h includes/Modules/DynLib.h includes/Modules/DynLib_win32.h
-    includes/API/ModuleInfo.h)
+    includes/API/ModuleInfo.h includes/Stream/ResponseStreamGeneric.h)
 
 
 IF (WIN32)

@@ -1,5 +1,5 @@
 INCLUDE_DIRECTORIES(../includes/ ./)
-ADD_LIBRARY (helloworld MODULE helloworld.cpp)
-ADD_LIBRARY (toto MODULE toto.cpp)
+#ADD_LIBRARY (helloworld MODULE helloworld.cpp)
+#ADD_LIBRARY (toto MODULE toto.cpp)
 ADD_LIBRARY (loutre MODULE loutre.cpp)
 #ADD_LIBRARY (hooktests MODULE HookTests.cpp)
