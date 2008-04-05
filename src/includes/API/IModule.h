@@ -69,6 +69,7 @@ namespace zAPI
                 onUnloadModuleEvent,
                 onBeginEvent,
                 onEndEvent,
+                onErrorEvent,
                 onAcceptEvent,
                 onReceiveEvent,
                 onSendEvent,
@@ -78,8 +79,7 @@ namespace zAPI
                 onPostBuildEvent,
                 onPreSendEvent,
                 onProcessContentEvent,
-                onPostSendEvent,
-                onFailureEvent
+                onPostSendEvent
             };
 
             /**

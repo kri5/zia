@@ -25,7 +25,7 @@ namespace zAPI
             virtual ~IWorkflow() {};
 
             /**
-             *  The begin event.<br>
+             *  The workflow begin event.<br>
              *  This method will be called at the begining of the transaction 
              *  (after the accept event of the INetwork hook interface).
              *  @param request the IHttpRequest of the transaction
@@ -35,7 +35,7 @@ namespace zAPI
             virtual ChainStatus     onBegin(IHttpRequest* request, IHttpResponse* response) = 0;
 
             /**
-             *  The en event.<br>
+             *  The workflow end event.<br>
              *  This method will be called at the end of the transaction
              *  (when all the data has been sent and just before the end of the task)
              *  @param request the IHttpRequest of the transaction
@@ -45,13 +45,13 @@ namespace zAPI
             virtual ChainStatus     onEnd(IHttpRequest* request, IHttpResponse* response) = 0;
 
             /**
-             *  The failure event.<br>
+             *  The workflow error event.<br>
              *  This method will be called when a module failed to do his job and returned an ERRORMODULE ChainStatus.
              *  @param request the IHttpRequest of the transaction
              *  @param response the IHttpResponse of the transaction
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onFailure(IHttpRequest*, IHttpResponse*) = 0;
+            virtual ChainStatus     onError(IHttpRequest*, IHttpResponse*) = 0;
     };
 }
 

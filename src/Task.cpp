@@ -81,7 +81,7 @@ void    Task::execute(unsigned int taskId)
     ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onBeginEvent, this->_req, this->_res);
     _time = new Time();
     //std::cout << "new task" << std::endl;
-    if (this->parseRequest() == true)
+    if (this->_res->isInSendMode() == true || this->parseRequest() == true)
     {
         this->_time->init();
         if (this->_res->isInSendMode() == true || this->buildResponse() == true)
@@ -102,7 +102,7 @@ void    Task::execute(unsigned int taskId)
             }
         }
     }
-    ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onFailureEvent, this->_req, this->_res);
+    ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onErrorEvent, this->_req, this->_res);
     this->finalize(false);
 }
 
@@ -273,7 +273,7 @@ bool    Task::sendResponse()
         } while (size == 1024);
         delete respStream;
     }
-    //this->_socket->close(true);
+    this->_socket->close(true);
     ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPostSendEvent, this->_req, this->_res);
     return true;
 }
