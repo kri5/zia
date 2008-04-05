@@ -25,8 +25,8 @@ class HookTests : public AbstractModule, public zAPI::IBuildResponse, public zAP
         zAPI::IModule::ChainStatus  onReceive(char*, size_t);
         zAPI::IModule::ChainStatus  onSend(char*, size_t);
 
-        zAPI::IModule::ChainStatus  onPreReceive(zAPI::IHttpRequest&, zAPI::IHttpResponse&);
-        zAPI::IModule::ChainStatus  onPostReceive(zAPI::IHttpRequest&, zAPI::IHttpResponse&);
+        zAPI::IModule::ChainStatus  onPreReceive(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
+        zAPI::IModule::ChainStatus  onPostReceive(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
 
         void                        setInput(zAPI::IModule*);
         zAPI::IModule::ChainStatus  onPreSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);

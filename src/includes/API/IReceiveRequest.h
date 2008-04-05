@@ -1,5 +1,5 @@
-#ifndef __IRECEIVEREQUEST_H__
-# define __IRECEIVEREQUEST_H__
+#ifndef IRECEIVEREQUEST_H__
+# define IRECEIVEREQUEST_H__
 
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
@@ -30,7 +30,7 @@ namespace zAPI
              *  @param response the IHttpResponse of the transaction
              *  @return a ChainStatus
              */
-            virtual ChainStatus onPreReceive(IHttpRequest& request, IHttpResponse& response) = 0;
+            virtual ChainStatus onPreReceive(IHttpRequest* request, IHttpResponse* response) = 0;
 
             /**
              *  The postReceive event.<br>
@@ -39,7 +39,7 @@ namespace zAPI
              *  @param response the IHttpResponse of the transaction
              *  @return a ChainStatus
              */
-            virtual ChainStatus onPostReceive(IHttpRequest& request, IHttpResponse& response) = 0;
+            virtual ChainStatus onPostReceive(IHttpRequest* request, IHttpResponse* response) = 0;
     };
 }
 

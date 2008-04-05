@@ -41,12 +41,12 @@ zAPI::IModule::ChainStatus    HookTests::onSend(char*, size_t)
     ;
 }
 
-zAPI::IModule::ChainStatus    HookTests::onPreReceive(zAPI::IHttpRequest&, zAPI::IHttpResponse&)
+zAPI::IModule::ChainStatus    HookTests::onPreReceive(zAPI::IHttpRequest*, zAPI::IHttpResponse*)
 {
     ;
 }
 
-zAPI::IModule::ChainStatus    HookTests::onPostReceive(zAPI::IHttpRequest&, zAPI::IHttpResponse&)
+zAPI::IModule::ChainStatus    HookTests::onPostReceive(zAPI::IHttpRequest*, zAPI::IHttpResponse*)
 {
     ;
 }
