@@ -156,7 +156,7 @@ namespace zAPI
     typedef void        destroy_t(IModule*);
     /// Defines a pointer to name() function, which return the module name as a string
     typedef std::string name_t();
-    /// define a pointer to version() function, which return module's version as an integer.
+    /// define a pointer to version() function, which return the api's version the module is maid for, as an integer.
     typedef int         version_t();
 }
 
