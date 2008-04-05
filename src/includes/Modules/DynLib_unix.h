@@ -2,9 +2,9 @@
 #define DYNLIB_UNIX_H
 
 #include <string>
-#include "API/IDynLib.h"
+#include "Modules/IDynLib.h"
 
-class DynLib : public zAPI::IDynLib
+class DynLib : public IDynLib
 {
 public:
     DynLib();

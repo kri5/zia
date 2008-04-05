@@ -11,6 +11,11 @@ HookTests::~HookTests()
 
 }
 
+int                             HookTests::getPriority(zAPI::IModule::Event) const
+{
+    return 50;
+}
+
 zAPI::IModule::ChainStatus    HookTests::onPreBuild(zAPI::IHttpRequest*, zAPI::IHttpResponse*)
 {
     ;

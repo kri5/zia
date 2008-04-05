@@ -89,7 +89,7 @@ namespace zAPI
              * @param event the event to get priority from
              * @return a priority
              */
-            virtual int                     getPriority(Event event) = 0;
+            virtual int                     getPriority(Event event) const = 0;
 
             /**
              *  Calls the right event method deppending on the event passed in parameter

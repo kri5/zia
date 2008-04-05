@@ -1,7 +1,7 @@
 #include "NastyCast.hpp"
 #include "Modules/ModuleInfo.h"
 
-ModuleInfo::ModuleInfo(zAPI::IDynLib* module, const std::string& filename) : _module(module), _fileName(filename)
+ModuleInfo::ModuleInfo(IDynLib* module, const std::string& filename) : _module(module), _fileName(filename)
 {
     name = nasty_cast<void*, zAPI::name_t*>(module->sym("name"));
     destroy = nasty_cast<void*, zAPI::destroy_t*>(module->sym("destroy"));

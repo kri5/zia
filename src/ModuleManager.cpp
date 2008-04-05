@@ -1,5 +1,5 @@
 #include "Modules/ModuleManager.h"
-#include "API/IDynLib.h"
+#include "Modules/IDynLib.h"
 #include "API/IModuleInfo.h"
 #include "Modules/ModuleInfo.h"
 #include "Modules/DynLib.h"
@@ -50,7 +50,7 @@ void            ModuleManager::pushModule(zAPI::IModule::Hook hook, RefCounter<z
 
 bool            ModuleManager::load(const std::string& filename)
 {
-    zAPI::IDynLib* library = new DynLib();
+    IDynLib* library = new DynLib();
 
     // Loading the module
     if (!library->load(filename))

@@ -16,6 +16,8 @@ class HookTests : public AbstractModule, public zAPI::IBuildResponse, public zAP
         HookTests();
         virtual ~HookTests();
 
+        int                         getPriority(zAPI::IModule::Event) const;
+
         zAPI::IModule::ChainStatus  onPreBuild(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
         zAPI::IModule::ChainStatus  onPostBuild(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
 
