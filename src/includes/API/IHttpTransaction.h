@@ -25,7 +25,7 @@ namespace zAPI
 
             /**
              *  Returns the value matching the key passed in parameter.
-             *  Returns NULL if the key was not set yet
+             *  Returns empty std::string if the key was not set yet
              *  @return the value of the option
              */
             virtual std::string                                 getHeaderOption(const std::string& key) const = 0;
@@ -57,3 +57,4 @@ namespace zAPI
     };
 }
 # endif /* !__IHTTPTRANSACTION_H__ */
+
