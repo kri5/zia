@@ -63,12 +63,6 @@ int             ClientSocket::recv(char *buf, int length) const
 	return (iResult);
 }
 
-zAPI::IClientSocket&   ClientSocket::operator<<(const std::string& buf)
-{
-    send(buf, buf.size());
-    return *this;
-}
-
 int             ClientSocket::countSockets()
 {
     return ClientSocket::_nbSockets;
