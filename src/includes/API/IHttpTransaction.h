@@ -1,5 +1,5 @@
-#ifndef __IHTTPTRANSACTION_H__
-# define __IHTTPTRANSACTION_H__
+#ifndef IHTTPTRANSACTION_H__
+# define IHTTPTRANSACTION_H__
 
 #include <string>
 #include <map>
@@ -56,5 +56,5 @@ namespace zAPI
             virtual const std::string&                          getProtocol() const = 0;
     };
 }
-# endif /* !__IHTTPTRANSACTION_H__ */
+# endif /* !IHTTPTRANSACTION_H__ */
 
