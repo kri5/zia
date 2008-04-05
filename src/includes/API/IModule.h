@@ -146,9 +146,9 @@ namespace zAPI
 
     };
 
-    /**
-     * This define function pointer to the right type.
-     * This prevents you to cast at every call
+    /*
+     * This defines a function pointer to the right type.
+     * This enhance code appearence by preventing you to cast a void* function pointer at every call
      */
     /// Defines a pointer to create() function, which return a IModule*
     typedef IModule*    create_t();
