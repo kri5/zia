@@ -1,11 +1,9 @@
-#ifndef __ISENDRESPONSE_H__
-# define __ISENDRESPONSE_H__
+#ifndef ISENDRESPONSE_H__
+# define ISENDRESPONSE_H__
 
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
-
-#include <fstream>
 
 namespace zAPI
 {
@@ -34,6 +32,6 @@ namespace zAPI
     };
 }
 
-#endif /* !__ISENDRESPONSE_H__ */
+#endif /* !ISENDRESPONSE_H__ */
 
 

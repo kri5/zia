@@ -12,7 +12,6 @@ typedef int SOCKET;
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
 #include "API/IClientSocket.h"
-//#include "API/IModuleInfo.h"
 
 /** 
  * Every interface that will be used by modules must inherit from this one.

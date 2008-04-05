@@ -1,5 +1,5 @@
-#ifndef __IWORKFLOW_H__
-# define __IWORKFLOW_H__
+#ifndef IWORKFLOW_H__
+# define IWORKFLOW_H__
 
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
@@ -55,4 +55,4 @@ namespace zAPI
     };
 }
 
-#endif /* !__IWORKFLOW_H__ */
+#endif /* !IWORKFLOW_H__ */
