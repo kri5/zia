@@ -1,5 +1,5 @@
-#ifndef __IHTTPREQUEST_H__
-# define __IHTTPREQUEST_H__
+#ifndef IHTTPREQUEST_H__
+# define IHTTPREQUEST_H__
 
 #include "API/IHttpTransaction.h"
 #include "API/IConfig.h"
@@ -110,4 +110,4 @@ namespace zAPI
             virtual unsigned int                                getRequestId() const = 0;
     };
 }
-#endif /* !__IHTTPREQUEST_H__ */
+#endif /* !IHTTPREQUEST_H__ */

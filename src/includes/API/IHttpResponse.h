@@ -1,5 +1,5 @@
-#ifndef __IHTTPRESPONSE_H__
-# define __IHTTPRESPONSE_H__
+#ifndef IHTTPRESPONSE_H__
+# define IHTTPRESPONSE_H__
 
 #include <queue>
 
@@ -34,7 +34,7 @@ namespace zAPI
              *  Returns a description of the HttpResponse status code
              *  @return status code's description
              */
-            virtual std::string                     getResponseValue() const = 0;
+            virtual const std::string&              getResponseValue() const = 0;
 
             /**
              *  Appends a IResponseStream that will be used 
@@ -76,4 +76,4 @@ namespace zAPI
     };
 }
 
-#endif /* !__IHTTPRESPONSE_H__ */
+#endif /* !IHTTPRESPONSE_H__ */

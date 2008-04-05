@@ -53,7 +53,7 @@ HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
     { -1, NULL }
 };
 
-HttpResponse::HttpResponse() : _responseStatus(200), _contentLength(0), _mimeType("text/html"), _currentStream(NULL), _sendMode(false), _headerInStream(false)
+HttpResponse::HttpResponse() : _responseStatus(200), _responseValue("OK"), _contentLength(0), _mimeType("text/html"), _currentStream(NULL), _sendMode(false), _headerInStream(false)
 {
     //"text/html" => probable default value (in case of an error, directory.
     // if it's a file, we will change this.
@@ -74,6 +74,7 @@ const char*             HttpResponse::getResponseStatusMessage(int key)
 void                    HttpResponse::setResponseStatus(int status)
 {
     this->_responseStatus = status; 
+    this->_responseValue = std::string(getResponseStatusMessage(this->_responseStatus));
 }
 
 int                     HttpResponse::getResponseStatus() const
@@ -81,9 +82,9 @@ int                     HttpResponse::getResponseStatus() const
     return this->_responseStatus;
 }
 
-std::string     HttpResponse::getResponseValue() const
+const std::string&      HttpResponse::getResponseValue() const
 {
-    return std::string(getResponseStatusMessage(this->_responseStatus));
+    return this->_responseValue;
 }
 
 void                    HttpResponse::appendStream(zAPI::IResponseStream* stream)

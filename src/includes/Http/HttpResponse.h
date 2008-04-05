@@ -30,7 +30,7 @@ class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
         void                                    setResponseStatus(int status);
         int                                     getResponseStatus() const;
 
-        std::string                             getResponseValue() const;
+        const std::string&                      getResponseValue() const;
         static const char*                      getResponseStatusMessage(int key);
 
         void                                    appendStream(zAPI::IResponseStream*);
@@ -49,6 +49,7 @@ class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
 
         static KeyValue                         ResponseStatus[];
         int                                     _responseStatus;
+        std::string                             _responseValue;
         size_t                                  _contentLength;
         std::string                             _mimeType;
         std::queue<zAPI::IResponseStream*>      _streams;
