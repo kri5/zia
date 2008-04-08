@@ -3,8 +3,8 @@
 
 #include <queue>
 
-#include "API/IHttpTransaction.h"
-#include "API/IResponseStream.h"
+#include "IHttpTransaction.h"
+#include "IResponseStream.h"
 
 namespace zAPI
 {

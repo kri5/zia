@@ -1,8 +1,8 @@
 #ifndef IHTTPREQUEST_H__
 # define IHTTPREQUEST_H__
 
-#include "API/IHttpTransaction.h"
-#include "API/IConfig.h"
+#include "IHttpTransaction.h"
+#include "IConfig.h"
 
 #include <string>
 #include <map>

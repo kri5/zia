@@ -3,11 +3,11 @@
 
 #include <iostream>
 #include <string>
-#include "API/IModule.h"
-#include "API/IHttpRequest.h"
-#include "API/IHttpResponse.h"
-#include "API/IClientSocket.h"
-#include "API/IModuleInfo.h"
+#include "IModule.h"
+#include "IHttpRequest.h"
+#include "IHttpResponse.h"
+#include "IClientSocket.h"
+#include "IModuleInfo.h"
 
 namespace zAPI
 {

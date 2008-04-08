@@ -1,9 +1,9 @@
 #ifndef IWORKFLOW_H__
 # define IWORKFLOW_H__
 
-#include "API/IModule.h"
-#include "API/IHttpRequest.h"
-#include "API/IHttpResponse.h"
+#include "IModule.h"
+#include "IHttpRequest.h"
+#include "IHttpResponse.h"
 
 namespace zAPI
 {

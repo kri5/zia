@@ -1,7 +1,7 @@
 #ifndef __ISERVEREVENT_H__
 # define __ISERVEREVENT_H__
 
-#include "API/IModule.h"
+#include "IModule.h"
 
 namespace zAPI
 {

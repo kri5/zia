@@ -1,8 +1,8 @@
 #ifndef __INETWORK_H__
 # define __INETWORK_H__
 
-#include "API/IModule.h"
-#include "API/IClientSocket.h"
+#include "IModule.h"
+#include "IClientSocket.h"
 
 namespace zAPI
 {

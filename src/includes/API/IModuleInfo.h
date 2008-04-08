@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "API/IModule.h"
+#include "IModule.h"
 
 namespace zAPI
 {

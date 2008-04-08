@@ -9,9 +9,9 @@ typedef int SOCKET;
 
 #include <string>
 
-#include "API/IHttpRequest.h"
-#include "API/IHttpResponse.h"
-#include "API/IClientSocket.h"
+#include "IHttpRequest.h"
+#include "IHttpResponse.h"
+#include "IClientSocket.h"
 
 /** 
  * Every interface that will be used by modules must inherit from this one.

@@ -1,8 +1,8 @@
 #ifndef __IMODULEEVENT_H__
 # define __IMODULEEVENT_H__
 
-#include "API/IModuleInfo.h"
-#include "API/IModule.h"
+#include "IModuleInfo.h"
+#include "IModule.h"
 
 namespace zAPI
 {
