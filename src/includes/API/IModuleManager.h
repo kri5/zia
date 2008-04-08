@@ -29,5 +29,5 @@ namespace zAPI
     };
 }
 
-#endif // IMODULES_H
+#endif // IMODULEMANAGER_H
 
