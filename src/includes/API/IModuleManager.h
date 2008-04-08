@@ -2,6 +2,7 @@
 # define IMODULEMANAGER_H
 
 #include <iostream>
+#include <string>
 #include "API/IModule.h"
 #include "API/IHttpRequest.h"
 #include "API/IHttpResponse.h"
