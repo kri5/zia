@@ -24,7 +24,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~ISendResponse() {};
+            virtual ~ISendResponse() {}
 
             virtual ChainStatus onPreSend(IHttpRequest*, IHttpResponse*) = 0;
             virtual size_t      onProcessContent(IHttpRequest*, IHttpResponse*, char*, size_t, IModule**, unsigned int) = 0;

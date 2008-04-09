@@ -22,7 +22,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~IWorkflow() {};
+            virtual ~IWorkflow() {}
 
             /**
              *  The workflow begin event.<br>

@@ -29,7 +29,7 @@ namespace zAPI
             /**
              * The interface virtual destructor 
              */
-            virtual ~IModule() {};
+            virtual ~IModule() {}
 
             /**
              *  This enum defines the different behaviours of the workflow.

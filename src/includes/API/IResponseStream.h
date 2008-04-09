@@ -20,7 +20,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~IResponseStream(){};
+            virtual ~IResponseStream(){}
 
             /**
              *  Return the underlying (std::iostream) stream

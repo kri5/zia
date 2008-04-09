@@ -19,7 +19,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~INetwork() {};
+            virtual ~INetwork() {}
 
             /**
              *  The accept event.

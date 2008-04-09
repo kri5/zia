@@ -23,7 +23,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~IBuildResponse(){};
+            virtual ~IBuildResponse(){}
 
             /**
              *  The preBuild event.

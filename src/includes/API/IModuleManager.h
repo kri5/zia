@@ -15,7 +15,7 @@ namespace zAPI
     class   IModuleManager
     {
         public:
-            virtual ~IModuleManager() {};
+            virtual ~IModuleManager() {}
             virtual bool    load(const std::string& filename) = 0;
             virtual void    unload(const std::string& filename) = 0;
 

@@ -16,7 +16,7 @@ namespace zAPI
             /**
              *  The Interface virtual destructor
              */
-            virtual ~IHttpResponse() {};
+            virtual ~IHttpResponse() {}
 
             /**
              *  Sets the HttpResponse status code

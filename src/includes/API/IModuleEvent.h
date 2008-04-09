@@ -18,7 +18,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~IModuleEvent() {};
+            virtual ~IModuleEvent() {}
 
             /**
              *  The loadModule event

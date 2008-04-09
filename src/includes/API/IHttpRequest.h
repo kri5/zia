@@ -17,7 +17,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~IHttpRequest() {};
+            virtual ~IHttpRequest() {}
 
             /**
              *  Sets the request URI and whether the uri is relative or not.

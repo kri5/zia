@@ -21,7 +21,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~IReceiveRequest() {};
+            virtual ~IReceiveRequest() {}
 
             /**
              *  The preReceive event.<br>

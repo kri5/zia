@@ -20,7 +20,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~IServerEvent() {};
+            virtual ~IServerEvent() {}
 
             /**
              *  The serverStart event.<br>

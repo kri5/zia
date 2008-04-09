@@ -14,7 +14,7 @@ namespace zAPI
             /**
              *  The interface virtual destructor
              */
-            virtual ~IHttpTransaction() {};
+            virtual ~IHttpTransaction() {}
 
             /**
              *  Sets a header option with a key / value pair passed in parameters
