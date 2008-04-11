@@ -24,6 +24,7 @@ class Task
         void    init(ClientSocket*, const std::vector<Vhost*>*);
         /// Will just recreate a new HttpRequest and set HttpResponse instance to NULL
         void    init();
+        bool    isFree() const;
 
     private:
         bool            parseRequest();
@@ -43,7 +44,11 @@ class Task
         ITime*          _time;
         Pool*           _pool;
         int             _timeoutDelay;
+        /// Will be set to false if browser sent more than one request in a keepalive socket.
+        bool            _freeTask;
+    public://FIXME
         unsigned int    _taskId;
+        bool            poped;
 
         const std::vector<Vhost*>*    _vhosts;
 };

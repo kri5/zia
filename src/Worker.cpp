@@ -32,7 +32,8 @@ void            Worker::code()
         if (t != NULL)
         {
             t->execute(this->_id);
-            this->_pool->finishTask(t);
+            if (t->isFree() == true)
+                this->_pool->finishTask(t);
         }
         else
         {

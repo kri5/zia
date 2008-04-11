@@ -47,10 +47,11 @@ IF (WIN32)
 		MainSocket_win32.cpp File_win32.cpp Time_win32.cpp FileSystem_win32.cpp
 		DynLib_win32.cpp)
 ELSE (WIN32)
-	SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic")
+	SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic -ggdb")
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
 	LINK_DIRECTORIES(../libs/unix/)
 	SET(ZIAHTTPD_LIBS pthread ticpp dl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
+    #SET(ZIAHTTPD_LIBS ${ZIAHTTPD_LIBS} -lefence)
 ENDIF (WIN32)
 
 IF (UNIX)

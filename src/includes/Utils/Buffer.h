@@ -7,7 +7,7 @@
 class Buffer
 {
     public:
-        Buffer(size_t size);
+        Buffer(size_t capacity);
         ~Buffer();
 
         bool        hasEOL() const;
@@ -26,15 +26,15 @@ class Buffer
         bool        empty() const;
         char        getChar(size_t);
     private:
-        size_t              _capacity;
-        size_t              _size;
-        int                 _eol;
-        size_t              _bufPos;
-        std::list<char*>    _buffers;
-        size_t              _readCount;
+        size_t                  _capacity;
+        size_t                  _size;
+        int                     _eol;
+        size_t                  _bufPos;
+        std::list<std::string*> _buffers;
+        size_t                  _readCount;
 
-        void                packBuffer(size_t);
-        void                getEolPos();
+        void                    packBuffer(size_t);
+        void                    getEolPos();
 };
 
 #endif //BUFFER_H__

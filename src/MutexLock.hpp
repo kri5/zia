@@ -9,15 +9,18 @@ class   MutexLock
     public:
         MutexLock(IMutex* mutex) : _mutex(mutex)
         {
+            //std::cout << "Locked" << std::endl;
             mutex->lock();
         }
         MutexLock(IMutex& mutex) : _mutex(&mutex)
         {
+            //std::cout << "Locked" << std::endl;
             mutex.lock();
         }
         ~MutexLock()
         {
             this->_mutex->unlock();
+            //std::cout << "UnLocked" << std::endl;
         }
     private:
         IMutex*     _mutex;

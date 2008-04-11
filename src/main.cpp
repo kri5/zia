@@ -32,11 +32,18 @@ int main(int argc, char **argv)
     delete srv;
 	
 	Logger::deleteInstance(); 
-//    Buffer      buff(5);
-//
-//    buff.push("abcdefghijklmnopqrtsuvwxyz", 26);
-//    buff.flush(12);
-//    std::cout << buff.get(9);
-//    buff.dump();
+    Buffer      buff(5);
+
+    buff.push("abcdefghijklmnopqrtsuvwxyz", 26);
+    buff.dump();
+    buff.flush(12);
+    buff.dump();
+    std::cout << buff.get(14) << std::endl;
+    buff.dump();
+    buff.push("bite", 4);
+    buff.dump();
+    buff.flush();
+    buff.dump();
+    std::cout << buff.size() << std::endl;
 }
 

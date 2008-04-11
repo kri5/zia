@@ -19,7 +19,8 @@ class Socket : public ISocket
     /// Close the socket.
     virtual ~Socket();
     /// Close the connection with auto-shutdown support.
-    virtual void 	close(bool shutdown);
+    void 	        close(bool shutdown);
+    bool            isClosed() const;
     int				getNativeSocket() const;
     const ISocket&  operator>>(struct pollfd&) const;
     void            setPollFlag(int);

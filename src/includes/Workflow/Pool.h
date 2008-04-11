@@ -24,6 +24,7 @@ class   Pool
 {
     public:
         Pool(unsigned int nbThreads, unsigned int);
+        virtual                 ~Pool();
         void                    init();
         bool                    addTask(ClientSocket*, const std::vector<Vhost*>*);
         void                    rescheduleTask(Task*);
@@ -50,7 +51,7 @@ class   Pool
         unsigned int            _nbThreads;
         unsigned int            _nbTasks;
         IMutex*                 _mutex;
-        IMutex*                 _keepAliveMutex;
+        //IMutex*                 _keepAliveMutex;
         class   Manager : public IThread
         {
             public:

@@ -4,6 +4,7 @@
 #include "zia.h"
 #include "Socket_unix.h"
 #include "API/IClientSocket.h"
+#include "Mutex/Mutex.h"
 
 #ifdef __FreeBSD__
  #define MSG_NOSIGNAL 0
@@ -17,6 +18,7 @@
 class ClientSocket : public Socket, public zAPI::IClientSocket
 {
     public:
+        bool            deleted;
 		struct  Error
 		{
 			enum    Code
@@ -39,6 +41,7 @@ class ClientSocket : public Socket, public zAPI::IClientSocket
         static  int     countSockets();
     private:
         static  int     _nbSockets;
+        static  Mutex   _mutex;
 };
 
 #endif //__CLIENT_SOCKET_UNIX_H__

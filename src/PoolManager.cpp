@@ -24,16 +24,15 @@ void    Pool::Manager::initKeepAlivePoll() //warning : high contendence.
 {
     this->_pool->flushKeepAlive(this->_keepAlive);
 
-    std::list<KeepAliveClient>::iterator  it = this->_keepAlive.begin();
-    std::list<KeepAliveClient>::iterator  ite = this->_keepAlive.end();
-    size_t                              size = this->_keepAlive.size();
-    int                                 i = 0;
+    std::list<KeepAliveClient>::iterator    it = this->_keepAlive.begin();
+    std::list<KeepAliveClient>::iterator    ite = this->_keepAlive.end();
+    size_t                                  size = this->_keepAlive.size();
+    int                                     i = 0;
 
     this->_fds = new struct pollfd[size];
     memset(this->_fds, 0, sizeof(*(this->_fds)) * size);
     while (it != ite)
     {
-		std::cout << "adding a fd" << std::endl;
         *((*it).clt) >> this->_fds[i];
         ++it;
         ++i;

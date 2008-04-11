@@ -12,11 +12,11 @@
 #include "API/IConfig.h"
 #include "API/IHttpRequest.h"
 
-class HttpRequest : public zAPI::IHttpRequest, public HttpTransaction
+class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
 {
     public:
-        HttpRequest(unsigned int);
-        ~HttpRequest();
+        HttpRequest();
+        virtual ~HttpRequest();
         void                                        setUri(const std::string&, bool = true);
         const std::string&                          getUri() const;
         void                                        setUriArgument(const std::string&, const std::string&);

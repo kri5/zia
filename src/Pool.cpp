@@ -6,7 +6,13 @@
 Pool::Pool(unsigned int nbThreads, unsigned int nbTasks) : _nbThreads(nbThreads), _nbTasks(nbTasks)
 {
     _mutex = new Mutex();
-    _keepAliveMutex = new Mutex();
+    //_keepAliveMutex = new Mutex();
+}
+
+Pool::~Pool()
+{
+    delete this->_mutex;
+    //delete this->_keepAliveMutex;
 }
 
 void        Pool::init()
@@ -27,8 +33,7 @@ void        Pool::init()
 
 bool        Pool::addTask(ClientSocket* clt, const std::vector<Vhost*>* vhosts)
 {
-    MutexLock   get_lock(*this->_mutex);
-    //FIXME : adjust this limit and set it in the conf file.
+    MutexLock   get_lock(this->_mutex);
     if (this->_freeTasks.size() > 0)
     {
         Task*   t = this->_freeTasks.front();
@@ -41,16 +46,9 @@ bool        Pool::addTask(ClientSocket* clt, const std::vector<Vhost*>* vhosts)
     return false;
 }
 
-void    Pool::rescheduleTask(Task* t)
-{
-    t->init(); //reinit task without touching internal buffers nor socket.
-    MutexLock   getLock(this->_mutex);
-    this->_tasks.push(t);
-}
-
 void    Pool::addSleepingThread(Worker* thread)
 {
-    MutexLock   get_lock(*this->_mutex);
+    MutexLock   get_lock(this->_mutex);
     this->_threads.push(thread);
     //retirer le thread de la pile de thread actif
     std::list<Worker*>::iterator  it = this->_workingThreads.begin();
@@ -73,6 +71,7 @@ Task*   Pool::popTask()
     {
         Task* task = this->_tasks.front();
         this->_tasks.pop();
+        //std::cout << "poping " << task->_taskId << std::endl;
         return task;
     }
     return NULL;
@@ -82,6 +81,7 @@ void        Pool::finishTask(Task* t)
 {
     MutexLock   get_lock(this->_mutex);
 
+    //std::cout << "adding task " << t->_taskId << " to free task" << std::endl;
     this->_freeTasks.push(t);
 }
 
@@ -138,20 +138,27 @@ bool            Pool::empty() const
     return this->_tasks.empty();
 }
 
+void    Pool::rescheduleTask(Task* t)
+{
+    //std::cout << "rescheduling task " << t->_taskId << std::endl;
+    MutexLock   getLock(this->_mutex);
+    this->_tasks.push(t);
+}
+
 void            Pool::addKeepAliveClient(ClientSocket* clt, const std::vector<Vhost*>* vhosts)
 {
-    MutexLock   get_lock(this->_keepAliveMutex);
+    MutexLock   get_lock(this->_mutex);
 
     this->_keepAlive.push(KeepAliveClient(clt, vhosts));
 }
 
 void    Pool::flushKeepAlive(std::list<KeepAliveClient>& sockets)
 {
-    MutexLock   get_lock(this->_keepAliveMutex);
+    MutexLock   get_lock(this->_mutex);
 
     while (this->_keepAlive.size() > 0)
     {
-        std::cout << "transfering keep alive client from queue to list" << std::endl;
+        //std::cout << "transfering keep alive client from queue to list" << std::endl;
         sockets.push_back(this->_keepAlive.front());
         this->_keepAlive.pop();
     }

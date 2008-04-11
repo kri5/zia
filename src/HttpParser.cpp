@@ -44,10 +44,17 @@ void    HttpParser::init()
 
 void        HttpParser::parse()
 {
+//    std::cout << "||||| parser flag is fed " << this->isFed() << std::endl
+//        << "isDone " << this->_isDone << std::endl
+//        << "isValid " << this->_isValid << std::endl
+//        << "isFirstLine " << this->_isFirstLine << std::endl
+//        << "isFirstArg " << this->_isFirstArgument << std::endl
+//        << "isEnd " << this->isEnd() << std::endl;
     if (!this->isFed())
         return ;
     if (this->_isFirstLine)
     {
+        //this->_buffer->dump();
         if (this->parseGetCommand()
             || this->parsePostCommand()
             || this->parseHeadCommand())
@@ -59,12 +66,15 @@ void        HttpParser::parse()
         else
             this->_isValid = false;
     }
-    if (this->_isValid)
+    if (this->_isValid && this->_isFirstLine == false)
 	{
         if (this->isEOL())
             this->_isDone = true;
         while (!this->isEnd() && this->hasEOL() && this->parseOptions())
-            ;
+        {
+            //FIXME: remove me after debug, causea i'm kind of slow.
+            this->flush();
+        }
 
         if (this->_isDone
             && this->_request->getCommand() == "Post")

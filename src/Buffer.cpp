@@ -8,18 +8,17 @@
 
 Buffer::Buffer(size_t capacity) : _capacity(capacity), _eol(-1), _bufPos(0)
 {
-    _buffers.push_back(new char[capacity]);
     _size = 0;
 }
 
 Buffer::~Buffer()
 {
-    std::list<char*>::iterator      it = this->_buffers.begin();
-    std::list<char*>::iterator      ite = this->_buffers.end();
+    std::list<std::string*>::iterator      it = this->_buffers.begin();
+    std::list<std::string*>::iterator      ite = this->_buffers.end();
 
     while (it != ite)
     {
-        delete[] *it;
+        delete *it;
         ++it;
     }
     this->_buffers.clear();
@@ -42,84 +41,45 @@ size_t  Buffer::size() const
 
 void    Buffer::push(const char* data, size_t size)
 {
-    int  dataPos = 0;
-    int  bakSize = size;
-
     this->_size += size;
-    while (this->_bufPos + size > this->_capacity)
+    if (this->_buffers.size() == 0 || 
+            this->_buffers.back()->length() + size > this->_capacity)
     {
-        memcpy(this->_buffers.back() + this->_bufPos,
-                data + dataPos,
-                this->_capacity - this->_bufPos);
-        dataPos += this->_capacity - this->_bufPos;
-        this->_buffers.push_back(new char[this->_capacity]);
-        size -= this->_capacity - this->_bufPos;
+        std::string* str = new std::string(data, size);
+        this->_buffers.push_back(str);
         this->_bufPos = 0;
     }
-    memcpy(this->_buffers.back() + this->_bufPos,
-            data + dataPos, bakSize - dataPos);
-    this->_bufPos += size;
+    else
+    {
+        this->_buffers.back()->append(data, size);
+        this->_bufPos += size;
+    }
     if (this->hasEOL() == false)
         this->getEolPos();
 }
 
 void    Buffer::packBuffer(size_t begin)
 {
-    std::list<char*>::iterator      it = this->_buffers.begin();
-    std::list<char*>::iterator      end = this->_buffers.end();
-    std::list<char*>::iterator      next;
-
-    if (begin == 0)
+    if (this->_buffers.size() == 0)
     {
-        delete[] this->_buffers.front();
-        this->_buffers.erase(this->_buffers.begin());
+        return ;
     }
-    else
-    {
-        while (it != end)
-        {
-            next = it;
-            ++next;
-            memcpy((*it), &(*it)[begin], this->_capacity - begin);
-            if (next != end)
-            {
-                memcpy(&(*it)[this->_capacity - begin], (*next), begin);
-            }
-            else
-            {
-                if (this->_bufPos < begin)
-                {
-                    delete[] *it;
-                    this->_buffers.erase(it);
-                    this->_bufPos += this->_capacity - begin;
-                    break ;
-                }
-                else if (this->_bufPos == begin)
-                {
-                    this->_bufPos = 0;
-                }
-                else
-                {
-                    memset(&(*it)[this->_bufPos - begin], 0, this->_capacity - (this->_bufPos - begin));
-                }
-            }
-            ++it;
-        }
-    }
+    this->_buffers.front()->erase(0, begin);
+    this->_bufPos = 0;
     this->getEolPos();
 }
 
 void	Buffer::get(char* res, size_t length)
 {
-	size_t  i;
-	size_t  nb;
-	std::list<char*>::iterator      it = this->_buffers.begin();
-	std::list<char*>::iterator      end = this->_buffers.end();
+	size_t                                  i;
+	size_t                                  nb;
+	std::list<std::string*>::iterator       it = this->_buffers.begin();
+	std::list<std::string*>::iterator       end = this->_buffers.end();
 
 	i = 0;
 	for (nb = 0; nb < length; ++nb)
 	{
-		if (i == this->_capacity)
+		if (i == (*it)->length())
 		{
 			++it;
 			if (it == end)
@@ -136,7 +96,7 @@ void	Buffer::get(char* res, size_t length)
 			res[nb] = 0;
 			return ;
 		}
-		res[nb] = (*it)[i];
+		res[nb] = (*it)->at(i);
 		++i;
 	}
 	res[nb] = 0;
@@ -152,64 +112,59 @@ char*   Buffer::get(size_t length)
 
 char    Buffer::getChar(size_t pos)
 {
-	size_t  i;
-    size_t  buffId;
-    std::list<char*>::iterator      it = this->_buffers.begin();
-    std::list<char*>::iterator      end = this->_buffers.end();
+	size_t                                  i = 0;
+    std::list<std::string*>::iterator       it = this->_buffers.begin();
+    std::list<std::string*>::iterator       end = this->_buffers.end();
     
     if (it == end)
         return -1;
-    buffId = pos / this->_capacity;
-    if (buffId > 0)
+    for (; it != end; ++it)
     {
-        pos %= this->_capacity;
-
-        i = 0;
-        while (it != end)
+        if (pos >= i + (*it)->length()) //resultat dans un buffer suivant.
         {
-            if (i == buffId)
-                break ;
-            ++it;
-            ++i;
+            i += (*it)->length();
+            continue ;
         }
-        if (i != buffId)
-            return -1;
-        return (*it)[pos];
+        else //le resultat est dans ce buffer.
+        {
+            if (pos >= (*it)->length())
+            {
+                //std::cout << "pos == " << pos << std::endl << " i == " << i << " length " << (*it)->length() << std::endl;
+                //this->dump();
+                return -1;
+            }
+            return ((*it)->at(pos - i));
+        }
     }
-    if (pos >= this->_size)
-        return -1;
-    return (*(this->_buffers.begin()))[pos];
+    return -1;
 }
 
 void    Buffer::dump()
 {
-    std::list<char*>::iterator      it;
-    int                             i = 0;
+    std::list<std::string*>::iterator       it;
 
     for (it = this->_buffers.begin(); it != this->_buffers.end(); ++it)
-    {
-        std::cout << "#" << i << ">|" << std::string(*it, this->_capacity) << "|<" << std::endl;
-        ++i;
-    }
+        std::cout << *(*it) << "]><[";
+    std::cout << std::endl;
 }
 
 void        Buffer::getEolPos()
 {
-    std::list<char*>::iterator      it = this->_buffers.begin();
-    std::list<char*>::iterator      end = this->_buffers.end();
-    int                             nb;
-    size_t                          i;
-    bool                            backslashAire = false;
+    std::list<std::string*>::iterator       it = this->_buffers.begin();
+    std::list<std::string*>::iterator       end = this->_buffers.end();
+    int                                     nb;
+    size_t                                  i;
+    bool                                    backslashAire = false;
+    size_t                                  length;
 
     for (nb = 0; it != end; ++it)
     {
-        for (i = 0; i < this->_capacity; ++i, ++nb)
+        length = (*it)->length();
+        for (i = 0; i < length; ++i, ++nb)
         {
-            if (i == this->_capacity)
-                break ;
             if (backslashAire == true)
             {
-                if ((*it)[i] == '\n')
+                if ((*it)->at(i) == '\n')
                 {
                     this->_eol = nb;
                     return ;    
@@ -219,7 +174,7 @@ void        Buffer::getEolPos()
             }
             else
             {
-                if ((*it)[i] == '\r')
+                if ((*it)->at(i) == '\r')
                 {
                     backslashAire = true;
                 }
@@ -242,29 +197,35 @@ void    Buffer::flush(size_t length)
 {
     if (length == 0)
         return ;
-    std::list<char*>::iterator      it = this->_buffers.begin();
-    std::list<char*>::iterator      end = this->_buffers.end();
-    size_t                          nb;
-    size_t                          i;
+    std::list<std::string*>::iterator       it = this->_buffers.begin();
+    std::list<std::string*>::iterator       end = this->_buffers.end();
+    size_t                                  nb;
+    size_t                                  i;
+    size_t                                  strLength;
 
     for (nb = 0; it != end; )
     {
-        for (i = 0; i < this->_capacity; ++i, ++nb)
+        strLength = (*it)->length();
+        for (i = 0; i < strLength; ++i, ++nb)
         {
+            if (i == strLength - 1)
+            {
+                break ;
+            }
             if (nb == length)
             {
                 this->packBuffer(i);
-                this->_size -= length;
+                this->_size -= i;
                 return ;
             }
-            if (i == this->_capacity)
-                break ;
         }
-        delete[] *it;
+        delete *it;
         it = this->_buffers.erase(it);
+        this->_size -= strLength;
+        if (nb == length - 1)
+            return ;
     }
     this->_size = 0;
-    this->packBuffer(i);
 }
 
 void    Buffer::flush()
@@ -274,19 +235,19 @@ void    Buffer::flush()
 
 void    Buffer::clear()
 {
-    std::list<char*>::iterator      it = this->_buffers.begin();
-    std::list<char*>::iterator      end = this->_buffers.end();
+    std::list<std::string*>::iterator      it = this->_buffers.begin();
+    std::list<std::string*>::iterator      end = this->_buffers.end();
 
     while (it != end)
     {
-        delete[] *it;
+        delete *it;
         ++it;
     }
+    this->_size = 0;
     this->_buffers.clear();
     this->_bufPos = 0;
     this->_eol = -1;
-    _buffers.push_back(new char[this->_capacity]);
-    memset(*(this->_buffers.begin()), 0, this->_capacity);
+    _buffers.push_back(new std::string);
 }
 
 size_t  Buffer::gcount() const
@@ -298,3 +259,4 @@ bool    Buffer::empty() const
 {
     return (this->_size == 0);
 }
+

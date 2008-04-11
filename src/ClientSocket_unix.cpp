@@ -8,8 +8,9 @@
 #include "Modules/ModuleManager.h"
 
 int ClientSocket::_nbSockets = 0;
+Mutex   ClientSocket::_mutex;
 
-ClientSocket::ClientSocket(int acceptedSocket) 
+ClientSocket::ClientSocket(int acceptedSocket) : deleted(false)
 {
 	listenSocket = acceptedSocket;
     struct timeval tv;
@@ -21,7 +22,9 @@ ClientSocket::ClientSocket(int acceptedSocket)
 
 ClientSocket::~ClientSocket()
 {
+    deleted = true;
 	this->close(true);
+    MutexLock   getLock(ClientSocket::_mutex);
     --ClientSocket::_nbSockets;
 }
 

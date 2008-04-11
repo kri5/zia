@@ -34,7 +34,6 @@ std::list<IFile*>*				FileSystem::getFileList()
 		WIN32_FIND_DATA			files;
 		HANDLE					search;
 		BOOL					res;
-		std::cout << "browsing " << this->_path << std::endl;
 		std::string				fileName = this->_path + "/*";
 		
 		this->_files = new std::list<IFile*>;

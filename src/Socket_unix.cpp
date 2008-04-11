@@ -21,26 +21,31 @@ void Socket::close(bool shutdown)
 {
     if (this->_closed == false)
     {
-	    if (shutdown)
+        if (shutdown)
             if (::shutdown(listenSocket, SHUT_RDWR))
                 Logger::getInstance() << Logger::Error << "Can't shutdown socket : " << strerror(errno) << Logger::Flush;
-    	if (::close(listenSocket) < 0)
+        if (::close(listenSocket) < 0)
             Logger::getInstance() << Logger::Error << "Can't close socket : " << strerror(errno) << Logger::Flush;
         this->_closed = true;
     }
 }
 
+bool    Socket::isClosed() const
+{
+    return this->_closed;
+}
+
 int	Socket::getNativeSocket() const
 {
-	return this->listenSocket;
+    return this->listenSocket;
 }
 
 
 const ISocket&  Socket::operator>>(struct pollfd& pfds) const
 {
-  pfds.fd = this->listenSocket;
-  pfds.events = this->_pollFlag;
-  return *this;
+    pfds.fd = this->listenSocket;
+    pfds.events = this->_pollFlag;
+    return *this;
 }
 
 void            Socket::setPollFlag(int mask)
@@ -50,12 +55,12 @@ void            Socket::setPollFlag(int mask)
 
 int				Socket::getSocketValue() const
 {
-	return this->listenSocket;
+    return this->listenSocket;
 }
 
 bool            Socket::isSet(const struct pollfd& pfds) const
 {
-  if (pfds.revents & this->_pollFlag)
-    return true;
-  return false;
+    if (pfds.revents & this->_pollFlag)
+        return true;
+    return false;
 }

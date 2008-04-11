@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-HttpRequest::HttpRequest(unsigned int reqId) : _relativeUri(true), _reqId(reqId)
+HttpRequest::HttpRequest() : _relativeUri(true)
 {
 }
 
@@ -122,7 +122,6 @@ unsigned int    HttpRequest::getRequestId() const
     return this->_reqId;
 }
 
-//this should never be used in our implementation, but API requires it.
 void            HttpRequest::setRequestId(unsigned int id)
 {
     this->_reqId = id;

@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <errno.h>
 
 #include "zia.h"
@@ -30,6 +31,8 @@ Task::Task(Pool* pool) :
         _timeoutDelay = atoi(RootConfig::getParam("Timeout")->c_str());
     else
         _timeoutDelay = 300;//Arbitrary default value :o)
+
+    poped = false;
 }
 
 Task::~Task()
@@ -45,9 +48,6 @@ Task::~Task()
 
     if (this->_time)
         delete this->_time;
-    //FIXME
-    delete this->_socket;
-    //selon le keep-alive : delete _socket;
 }
 
 void    Task::init(ClientSocket* clt,
@@ -56,12 +56,16 @@ void    Task::init(ClientSocket* clt,
     this->_vhosts = vhosts;
     this->_socket = clt;
     this->init();
+    this->_freeTask = true;
 }
 
 void    Task::init()
 {
-    this->_req = new HttpRequest(this->_taskId);
+    assert(poped == false);
+    poped = true;
+    this->_req = new HttpRequest();
     this->_res = new HttpResponse();
+    this->_time = new Time();
 }
 
 void    Task::clear(bool clearBuffers)
@@ -71,16 +75,23 @@ void    Task::clear(bool clearBuffers)
         this->_writeBuffer->clear();
         this->_readBuffer->clear();
     }
+    delete this->_time;
     delete this->_req;
     delete this->_res;
+    poped = false;
 }
 
 void    Task::execute(unsigned int taskId)
 {
     _taskId = taskId;
+    this->_req->setRequestId(taskId);
     ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onBeginEvent, this->_req, this->_res);
-    _time = new Time();
     //std::cout << "new task" << std::endl;
+    if (this->_socket->isClosed() == true)
+    {
+        this->finalize(false);
+        return ;
+    }
     if (this->_res->isInSendMode() == true || this->parseRequest() == true)
     {
         this->_time->init();
@@ -89,12 +100,10 @@ void    Task::execute(unsigned int taskId)
             ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPostBuildEvent, this->_req, this->_res);
             //just for the moment :
             this->_res->setHeaderOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
-            //if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
+            if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
                 this->_res->setHeaderOption("Connection", "close");
-            //else
-            //{
-            //    this->_res->setHeaderOption("Connection", "Keep-Alive");
-            //}
+            else
+                this->_res->setHeaderOption("Connection", "Keep-Alive");
             if (this->sendResponse())
             {
                 this->finalize(true);
@@ -108,26 +117,33 @@ void    Task::execute(unsigned int taskId)
 
 bool    Task::finalize(bool succeded)
 {
-//    if (succeded == false ||
-//            this->_req->optionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
-//    {
+    if (succeded)
+        ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onEndEvent, this->_req, this->_res);
+
+    if (succeded == false || this->_socket->isClosed() == true ||
+            this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
+    {
+        this->_freeTask = true;
+        this->clear();
         delete this->_socket;
-//    }
-//    else
-//    {
-//        std::cout << "adding keep alive to queue" << std::endl;
-//        if (this->_readBuffer->empty() == false)
-//        {
-//            this->clear(false);
-//            this->_pool->rescheduleTask(this);
-//            return succeded; //do not clear the task buffers !
-//        }
-//        else
-//            this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
-//    }
-    ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onEndEvent, this->_req, this->_res);
-    this->clear();
-    //std::cout << "end task" << std::endl;
+    }
+    else
+    {
+        if (this->_readBuffer->empty() == false)
+        {
+            this->_freeTask = false;
+            this->clear(false);
+            this->init(); //reinit task without touching internal buffers nor socket.
+            this->_pool->rescheduleTask(this);
+            return succeded;
+        }
+        else
+        {
+            this->_freeTask = true;
+            this->clear();
+            this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
+        }
+    }
     return succeded;
 }
 
@@ -170,15 +186,15 @@ bool    Task::parseRequest()
     {
         if (this->checkTimeout())
         {
-            std::cout << "PRE TIMEOUT" << std::endl;
-            this->_readBuffer->dump();
+            //this->_readBuffer->dump();
+            exit(0);
             return false;
         }
         if (this->receiveDatas() == false)
             return false;
         parser.parse();
     }
-    //TODO: check host.
+    //FIXME: check host.
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getHeaderOption("Host")));
     ModuleManager::getInstance().call(zAPI::IModule::ReceiveRequestHook, zAPI::IModule::onPostReceiveEvent, this->_req, this->_res);
@@ -191,13 +207,15 @@ bool    Task::buildResponse()
     const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
     IFile*              fileInfo = new File(this->_req->getUri(), docRoot.c_str());
 
+    //this->_readBuffer->dump();
+    //std::cout << "===========================\n===============================" << std::endl;
     if (fileInfo->getError() != IFile::Error::None)
     {
         if (fileInfo->getError() == IFile::Error::NoSuchFile)
             this->_res->setError(new ErrorResponseStream(404, this->_req));
         else if (fileInfo->getError() == IFile::Error::PermissionDenied)
             this->_res->setError(new ErrorResponseStream(403, this->_req));
-        //FIXME: add no more file directory as a potential error.
+        //FIXME: add no more file descriptors as a potential error.
         delete fileInfo;
         return true;
     }
@@ -210,6 +228,10 @@ bool    Task::buildResponse()
     else
     {
         std::string     path(docRoot + this->_req->getUri());
+        std::cout << "Directory browser : " << path << std::endl;
+        //Because we shouldn't go there : let's segfault and trace it with gdb
+        char* toto = "kikoo";
+        toto[2] = 't';
         delete fileInfo;
         zAPI::IResponseStream* stream = new ResponseStreamDir(this->_req);
         if (stream->good() == false)
@@ -273,7 +295,7 @@ bool    Task::sendResponse()
         } while (size == 1024);
         delete respStream;
     }
-    this->_socket->close(true);
+    //this->_socket->close(true);
     ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPostSendEvent, this->_req, this->_res);
     return true;
 }
@@ -303,5 +325,10 @@ bool    Task::checkTimeout()
         return true;
     }
     return false;
+}
+
+bool    Task::isFree() const
+{
+    return this->_freeTask;
 }
 

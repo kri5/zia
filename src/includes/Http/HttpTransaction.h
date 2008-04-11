@@ -11,6 +11,7 @@ typedef std::map<std::string, std::string>      SSMap;
 class   HttpTransaction : public virtual zAPI::IHttpTransaction
 {
     public:
+        virtual ~HttpTransaction(){};
         const SSMap&            getHeaderOptions() const;
         bool                    headerOptionIsSet(const std::string&) const;
         std::string				getHeaderOption(const std::string&) const;

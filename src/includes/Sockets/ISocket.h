@@ -10,6 +10,7 @@ class ISocket
 	public:
 		virtual ~ISocket(){}
 		virtual void 			close(bool) = 0;
+        virtual bool            isClosed() const = 0;
 		virtual const ISocket&	operator>>(struct pollfd&) const = 0;
 		virtual bool            isSet(const struct pollfd&) const = 0;
         virtual void            setPollFlag(int) = 0;

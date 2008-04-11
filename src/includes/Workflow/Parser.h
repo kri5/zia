@@ -73,6 +73,8 @@ class	Parser
 
 	protected:
 		bool						isIgnore(char c) const;
+        //FIXME: put me back in private after debug :)
+		Buffer*                     _buffer;
 
 	private:
 		//bool						extendBuffer();
@@ -84,7 +86,6 @@ class	Parser
 
 		//attributes
 		std::stringstream           _stream;
-		Buffer*                     _buffer;
 		unsigned int	    		_i;
 		int							_backI;
         int                         _backIPub;
