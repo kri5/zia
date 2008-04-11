@@ -122,6 +122,12 @@ unsigned int    HttpRequest::getRequestId() const
     return this->_reqId;
 }
 
+//this should never be used in our implementation, but API requires it.
+void            HttpRequest::setRequestId(unsigned int id)
+{
+    this->_reqId = id;
+}
+
 void            HttpRequest::print()
 {
     std::map<std::string, std::string>::iterator it

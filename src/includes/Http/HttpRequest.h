@@ -39,6 +39,7 @@ class HttpRequest : public zAPI::IHttpRequest, public HttpTransaction
         void                                        print();
 
         unsigned int                                getRequestId() const;
+        void                                        setRequestId(unsigned int);
 
     private:
         void                                        addDefaultHost();

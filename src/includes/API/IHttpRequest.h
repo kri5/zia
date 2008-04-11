@@ -107,7 +107,23 @@ namespace zAPI
              */
             virtual IConfig*                                    getConfig() const = 0;
 
+
+            /**
+             *  Return the current request ID
+             *  Used for identifying requests within workflow, and eventually
+             *  for the ModuleManager, in the case of a module list modification
+             *  while a request is proceced. In this case, this id will
+             *  allow the module manager to know which module list is associated with
+             *  this request.
+             *  @return the current request ID as an unsigned int.
+             */
             virtual unsigned int                                getRequestId() const = 0;
+
+            /**
+             *  Set the current request's ID
+             *  To be getter as described for the associated getter, getRequestId()
+             */
+            virtual void                                        setRequestId(unsigned int id) = 0;
     };
 }
 #endif /* !IHTTPREQUEST_H__ */
