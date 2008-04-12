@@ -228,10 +228,6 @@ bool    Task::buildResponse()
     else
     {
         std::string     path(docRoot + this->_req->getUri());
-        std::cout << "Directory browser : " << path << std::endl;
-        //Because we shouldn't go there : let's segfault and trace it with gdb
-        char* toto = "kikoo";
-        toto[2] = 't';
         delete fileInfo;
         zAPI::IResponseStream* stream = new ResponseStreamDir(this->_req);
         if (stream->good() == false)

@@ -41,8 +41,6 @@ void            ModuleManager::init(unsigned int nbTasks)
 //Will add a hook for a module. (on the new set of modules)
 void            ModuleManager::pushModule(zAPI::IModule::Hook hook, RefCounter<zAPI::IModuleInfo*>* mi)
 {
-    //ne pas s'endormir...
-    //FIXME: je ne suis pas sur *DU TOUT* que le tableau indexe par hooks soit alloue a vrai dire ;/
     this->_modules.back().ptr[hook].push_back(mi);
     mi->ptr->addSupportedHook(hook);
     mi->count++;
@@ -164,7 +162,6 @@ bool        ModuleManager::isLoaded(const std::string& fileName) const
 
 void        ModuleManager::scanModuleDir()
 {
-    std::cout << "Scanning module dir" << std::endl;
     if (RootConfig::isSet("ModulesDir") == false)
     {
         Logger::getInstance() << Logger::Warning << "No modules dir specified. No module will be loaded" << Logger::Flush;
@@ -173,67 +170,70 @@ void        ModuleManager::scanModuleDir()
     //Retreiving modules in ModulesDir
     IFileSystem* fs = new FileSystem(RootConfig::getParamChar("ModulesDir"));
     std::list<IFile*>* files = fs->getFileList("so");
-    //Creating a new modules list
-    std::list<RefCounter<zAPI::IModuleInfo*>*>* newList = new std::list<RefCounter<zAPI::IModuleInfo*>*>[zAPI::IModule::NumberOfHooks];
-    //duplicating old list, to apply changes from the old one to the new one
-    if (this->_modules.size() > 0)
+    if (files != NULL)
     {
-        for (int i = 0; i < zAPI::IModule::NumberOfHooks; ++i)
-            newList[i] = this->_modules.back().ptr[i];
-    }
-    //flag to see if some changes occured.
-    bool    firstChange = true;
+        //Creating a new modules list
+        std::list<RefCounter<zAPI::IModuleInfo*>*>* newList = new std::list<RefCounter<zAPI::IModuleInfo*>*>[zAPI::IModule::NumberOfHooks];
+        //duplicating old list, to apply changes from the old one to the new one
+        if (this->_modules.size() > 0)
+        {
+            for (int i = 0; i < zAPI::IModule::NumberOfHooks; ++i)
+                newList[i] = this->_modules.back().ptr[i];
+        }
+        //flag to see if some changes occured.
+        bool    firstChange = true;
 
-    //files list iterators
-    std::list<IFile*>::iterator it;
-    std::list<IFile*>::iterator ite = files->end();
+        //files list iterators
+        std::list<IFile*>::iterator it;
+        std::list<IFile*>::iterator ite = files->end();
 
-    //modules instance iterators
-    
-    std::list<RefCounter<zAPI::IModuleInfo*> >::iterator mIt = this->_moduleInstances.begin();
-    std::list<RefCounter<zAPI::IModuleInfo*> >::iterator mIte = this->_moduleInstances.end();
-     //First we look if some modules doesn't exists anymore.
-    for (; mIt != mIte; ++mIt)
-    {
-        for (it = files->begin(); it != ite; ++it)
+        //modules instance iterators
+
+        std::list<RefCounter<zAPI::IModuleInfo*> >::iterator mIt = this->_moduleInstances.begin();
+        std::list<RefCounter<zAPI::IModuleInfo*> >::iterator mIte = this->_moduleInstances.end();
+        //First we look if some modules doesn't exists anymore.
+        for (; mIt != mIte; ++mIt)
         {
-            if ((*it)->getFullFileName() == (*mIt).ptr->getFileName())
-                break;
+            for (it = files->begin(); it != ite; ++it)
+            {
+                if ((*it)->getFullFileName() == (*mIt).ptr->getFileName())
+                    break;
+            }
+            if (it == ite) //module wasn't in dir anymore : unloading
+            {
+                if (firstChange)
+                {
+                    this->_modules.push_back(newList);
+                    this->_modules.back().count = 0;
+                    firstChange = false;
+                }
+                Logger::getInstance() << Logger::Info << (*mIt).ptr->getFileName() << " is missing from ModulesDir. Unloading module." << Logger::Flush;
+                this->unload((*mIt).ptr->getFileName());
+                if ((*mIt).count == 0)
+                {
+                    mIt = this->_moduleInstances.erase(mIt);
+                    mIte = this->_moduleInstances.end();
+                }
+            }
         }
-        if (it == ite) //module wasn't in dir anymore : unloading
+        //Then we add new modules
+        it = files->begin();
+        for (; it != ite; ++it)
         {
-            if (firstChange)
+            if (this->isLoaded((*it)->getFullFileName()) == false)
             {
-                this->_modules.push_back(newList);
-                this->_modules.back().count = 0;
-                firstChange = false;
-            }
-            Logger::getInstance() << Logger::Info << (*mIt).ptr->getFileName() << " is missing from ModulesDir. Unloading module." << Logger::Flush;
-            this->unload((*mIt).ptr->getFileName());
-            if ((*mIt).count == 0)
-            {
-                mIt = this->_moduleInstances.erase(mIt);
-                mIte = this->_moduleInstances.end();
+                if (firstChange)
+                {
+                    this->_modules.push_back(newList);
+                    this->_modules.back().count = 0;
+                    firstChange = false;
+                }
+                this->load((*it)->getFullFileName());
             }
         }
+        if (firstChange == true)
+            delete[] newList;
     }
-    //Then we add new modules
-    it = files->begin();
-    for (; it != ite; ++it)
-    {
-        if (this->isLoaded((*it)->getFullFileName()) == false)
-        {
-            if (firstChange)
-            {
-                this->_modules.push_back(newList);
-                this->_modules.back().count = 0;
-                firstChange = false;
-            }
-            this->load((*it)->getFullFileName());
-        }
-    }
-    if (firstChange == true)
-        delete[] newList;
     delete files;
 }
 
@@ -298,7 +298,7 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
         }
         tab[i] = NULL;
         size_t ret = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].front()->ptr->
-                getInstance()->call(req, res, buff, size, tab, 0);
+            getInstance()->call(req, res, buff, size, tab, 0);
         delete[] tab;
         return ret;
     }
