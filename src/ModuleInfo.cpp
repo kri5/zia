@@ -8,19 +8,20 @@ ModuleInfo::ModuleInfo(IDynLib* module, const std::string& filename) : _module(m
     create = nasty_cast<void*, zAPI::create_t*>(module->sym("create"));
     version = nasty_cast<void*, zAPI::version_t*>(module->sym("version"));
     _instance = create();
+    _name = name();
 }
 
-zAPI::IModule*        ModuleInfo::getInstance() const
+zAPI::IModule*          ModuleInfo::getInstance() const
 {
     return this->_instance;
 }
 
-std::string     ModuleInfo::getName() const
+const std::string&      ModuleInfo::getName() const
 {
-    return this->name();
+    return this->_name;
 }
 
-const std::string&  ModuleInfo::getFileName() const
+const std::string&      ModuleInfo::getFileName() const
 {
     return this->_fileName;
 }
@@ -31,7 +32,7 @@ ModuleInfo::~ModuleInfo()
     delete _module;
 }
 
-int             ModuleInfo::getVersion() const
+float           ModuleInfo::getVersion() const
 {
     return  this->version();
 }

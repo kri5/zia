@@ -15,9 +15,9 @@ namespace zAPI
             /// Will return the module instance.
             virtual zAPI::IModule*                                  getInstance() const = 0;
             /// Will return the module name.
-            virtual std::string                                     getName() const = 0;
+            virtual const std::string&                              getName() const = 0;
             /// Will return the module version.
-            virtual int                                             getVersion() const = 0;
+            virtual float                                           getVersion() const = 0;
             virtual const std::string&                              getFileName() const = 0;
 
             virtual void                                            addSupportedHook(IModule::Hook) = 0;

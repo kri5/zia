@@ -15,8 +15,8 @@ class   ModuleInfo : public zAPI::IModuleInfo
         ModuleInfo(IDynLib* module, const std::string&);
         ~ModuleInfo();
         zAPI::IModule*                              getInstance() const;
-        std::string                                 getName() const;
-        int                                         getVersion() const;
+        const std::string&                          getName() const;
+        float                                       getVersion() const;
         const std::string&                          getFileName() const;
         void                                        addSupportedHook(zAPI::IModule::Hook);
         const std::vector<zAPI::IModule::Hook>&     getSupportedHooks() const;
@@ -25,6 +25,7 @@ class   ModuleInfo : public zAPI::IModuleInfo
         zAPI::destroy_t*                            destroy;
         zAPI::name_t*                               name;
         zAPI::version_t*                            version;
+        std::string                                 _name;
         IDynLib*                                    _module;
         zAPI::IModule*                              _instance;
         std::string                                 _fileName;
