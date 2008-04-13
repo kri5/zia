@@ -33,8 +33,17 @@ void    Pool::Manager::initKeepAlivePoll() //warning : high contendence.
     memset(this->_fds, 0, sizeof(*(this->_fds)) * size);
     while (it != ite)
     {
-        *((*it).clt) >> this->_fds[i];
-        ++it;
+        if ((*it).timer->elapsed((*it).timeout)) //FIXME: essayer de faire ca toutes les secondes uniquement.
+        {
+            delete (*it).clt;
+            delete (*it).timer;
+            it = this->_keepAlive.erase(it);
+        }
+        else
+        {
+            *((*it).clt) >> this->_fds[i];
+            ++it;
+        }
         ++i;
     }
 }
@@ -63,6 +72,7 @@ void    Pool::Manager::checkKeepAlive()
             if ((*it).clt->isSet(this->_fds[i]))
             {
                 this->_pool->addTask((*it).clt, (*it).vhosts);
+                delete (*it).timer;
                 it = this->_keepAlive.erase(it);
             }
             else

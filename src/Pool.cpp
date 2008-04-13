@@ -2,6 +2,7 @@
 #include "Logger.hpp"
 #include "MutexLock.hpp"
 #include "Workflow/Worker.h"
+#include "Time/Time.h"
 
 Pool::Pool(unsigned int nbThreads, unsigned int nbTasks) : _nbThreads(nbThreads), _nbTasks(nbTasks)
 {
@@ -145,11 +146,12 @@ void    Pool::rescheduleTask(Task* t)
     this->_tasks.push(t);
 }
 
-void            Pool::addKeepAliveClient(ClientSocket* clt, const std::vector<Vhost*>* vhosts)
+void            Pool::addKeepAliveClient(ClientSocket* clt, int timeout, const std::vector<Vhost*>* vhosts)
 {
     MutexLock   get_lock(this->_mutex);
 
-    this->_keepAlive.push(KeepAliveClient(clt, vhosts));
+    this->_keepAlive.push(KeepAliveClient(clt, timeout, vhosts));
+    this->_keepAlive.back().timer = new Time();
 }
 
 void    Pool::flushKeepAlive(std::list<KeepAliveClient>& sockets)

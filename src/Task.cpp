@@ -129,7 +129,7 @@ bool    Task::finalize(bool succeded)
     }
     else
     {
-        if (this->_readBuffer->empty() == false)
+        if (this->_readBuffer->empty() == false) //There are task left in this buffer.
         {
             this->_freeTask = false;
             this->clear(false);
@@ -137,11 +137,17 @@ bool    Task::finalize(bool succeded)
             this->_pool->rescheduleTask(this);
             return succeded;
         }
-        else
+        else //free keep-alive client.
         {
+            int         timeout;
+
+            if (this->_req->headerOptionIsSet("Keep-Alive"))
+                timeout = atoi(this->_req->getHeaderOption("Keep-Alive").c_str());
+            else
+                timeout = 150;
             this->_freeTask = true;
             this->clear();
-            this->_pool->addKeepAliveClient(this->_socket, this->_vhosts);
+            this->_pool->addKeepAliveClient(this->_socket, timeout, this->_vhosts);
         }
     }
     return succeded;

@@ -14,10 +14,12 @@ class Worker;
 
 struct  KeepAliveClient
 {
-    KeepAliveClient(ClientSocket* _clt, const std::vector<Vhost*>* _vhosts)
-        : clt(_clt), vhosts(_vhosts) {}
-    ClientSocket*   clt;
-    const std::vector<Vhost*>*    vhosts;
+    KeepAliveClient(ClientSocket* _clt, int _timeout, const std::vector<Vhost*>* _vhosts)
+        : clt(_clt), timeout(_timeout), vhosts(_vhosts) {}
+    ClientSocket*                   clt;
+    ITime*                          timer;
+    int                             timeout;
+    const std::vector<Vhost*>*      vhosts;
 };
 
 class   Pool
@@ -39,7 +41,7 @@ class   Pool
         unsigned int            getFreeThreadsNbr() const;
         unsigned int            getTaskNbr() const;
         bool                    empty() const;
-        void                    addKeepAliveClient(ClientSocket*, const std::vector<Vhost*>*);
+        void                    addKeepAliveClient(ClientSocket*, int timeout, const std::vector<Vhost*>*);
         void                    flushKeepAlive(std::list<KeepAliveClient>&);
     private:
 

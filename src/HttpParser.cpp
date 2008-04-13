@@ -359,14 +359,16 @@ bool        HttpParser::parseOptions()
 
 bool        HttpParser::parseOptionGeneric()
 {
-    std::string tmp;
+    std::string value;
+    std::string key;
 
     this->saveContextPub();
-    if (this->readAnythingBut(":"))
+    if (this->readAnythingBut(":", key))
     {
         if (this->peekIfEqual(":"))
         {
-            this->readUntilEndOfLine(tmp);
+            this->readUntilEndOfLine(value);
+            this->_request->setHeaderOption(key, value);
             return true;
         }
     }
