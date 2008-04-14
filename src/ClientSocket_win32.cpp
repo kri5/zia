@@ -3,6 +3,8 @@
 #include "Sockets/ClientSocket_win32.h"
 #include "Logger.hpp"
 
+#include "API/IModule.h"
+#include "Modules/ModuleManager.h"
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
 
@@ -22,7 +24,7 @@ ClientSocket::~ClientSocket()
 
 int ClientSocket::send(const char *buf, int length) const
 {
-    ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onSendEvent, buf, length);
+	ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onSendEvent, buf, length);
 	int iResult = ::send(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
 		Logger::getInstance() << Logger::Warning << "Can't send data (" << strerror(WSAGetLastError()) << ')' << Logger::Flush;
@@ -53,14 +55,8 @@ int ClientSocket::recv( char *buf, int length ) const
 	if (iResult == SOCKET_ERROR)
 		Logger::getInstance() << Logger::Warning << "Can't receive data (" << strerror(WSAGetLastError()) << ')' << Logger::Flush;
     else
-        ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onRecvEvent, buf, iResult);
+		ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onReceiveEvent, buf, iResult);
 	return (iResult);
-}
-
-IClientSocket&   ClientSocket::operator<<(const std::string& buf)
-{
-    send(buf, buf.size());
-    return *this;
 }
 
 int				ClientSocket::countSockets()

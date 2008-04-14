@@ -14,18 +14,19 @@ class File : public IFile
 		/// Error definitions for File class.
 		File(const std::string&, const char* path = NULL);
 		~File();
-		std::string		getFileName() const;
-		Error::Code     getError() const;
-		unsigned int	getSize() const;
-		ITime*			getModifDate();
-		bool            isDirectory() const;
-		std::string		getExtension() const;
-		void			open();
-		void			close();
-		std::streamsize	get(char* buff, size_t len);
-		bool			good() const;
-		bool			eof() const;
-		std::iostream*	getStream();
+		const std::string&		getFileName() const;
+		const std::string&		getFullFileName() const;
+		Error::Code     		getError() const;
+		unsigned int			getSize() const;
+		ITime*					getModifDate();
+		bool            		isDirectory() const;
+		std::string				getExtension() const;
+		void					open();
+		void					close();
+		std::streamsize			get(char* buff, size_t len);
+		bool					good() const;
+		bool					eof() const;
+		std::iostream*			getStream();
 	private:
 		std::string					_filename;
 		std::string					_filePath;

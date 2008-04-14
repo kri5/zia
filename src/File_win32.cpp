@@ -39,9 +39,14 @@ File::~File()
 	}
 }
 
-std::string		File::getFileName() const
+const std::string&		File::getFileName() const
 {
 	return this->_filename;
+}
+
+const std::string&		File::getFullFileName() const
+{
+	return this->_filePath;
 }
 
 unsigned int				File::getSize() const

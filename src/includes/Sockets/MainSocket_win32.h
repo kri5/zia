@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "Socket_win32.h"
-#include "ClientSocket_win32.h"
+#include "API/IClientSocket.h"
 #include "IMainSocket.h"
 #include "Network/Vhost.h"
 #include "Network/NetworkID.h"
@@ -15,12 +15,12 @@ class MainSocket : public Socket, public IMainSocket
 {
 public:
 	// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
-	MainSocket(const NetworkID*, int, const std::vector<const Vhost*>&);
+	MainSocket(const NetworkID*, int, const std::vector<Vhost*>&);
 	
-    const std::vector<const Vhost*>&   getAssociatedVhosts();
+    const std::vector<Vhost*>&   getAssociatedVhosts();
 
 	/// Spawn a new socket for the new client.
-	IClientSocket *accept();
+	zAPI::IClientSocket		*accept();
 private:
 	/// Bind the socket on a specified host and port.
 	void bind(const NetworkID*) const;
@@ -30,7 +30,7 @@ private:
 	
 
 	const NetworkID*			_netId;
-	const std::vector<const Vhost*>&	_vhosts;
+	const std::vector<Vhost*>&	_vhosts;
 };
 
 #endif //__MAINSOCKET_WIN32_H__

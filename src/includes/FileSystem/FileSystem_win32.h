@@ -30,7 +30,7 @@ class	FileSystem : public IFileSystem
 		FileSystem(std::string);
 		virtual 					~FileSystem();
 		/// Don't bother with getFileList() memory allocation, FileSystem::~FileSystem() will do it automaticaly.
-		std::list<IFile*>*			getFileList();
+		std::list<IFile*>*			getFileList(const char* pattern = NULL);
 		bool						checkFileExistence(std::string) const;
 		bool						checkReadRights(std::string) const;
 		bool						checkExecRights(std::string) const;

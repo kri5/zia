@@ -23,8 +23,8 @@ class	IFile
 		};
 		virtual ~IFile(){};
 		virtual Error::Code             getError() const = 0;
-        virtual std::string				getFileName() const = 0;
-        virtual std::string             getFullFileName() const = 0;
+        virtual const std::string&		getFileName() const = 0;
+        virtual const std::string&		getFullFileName() const = 0;
         virtual bool                    isDirectory() const = 0;
 		virtual unsigned int			getSize() const = 0;
 		virtual ITime*					getModifDate() = 0;

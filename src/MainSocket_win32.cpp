@@ -1,9 +1,11 @@
 #include "Sockets/MainSocket_win32.h"
 
+#include "Sockets/ClientSocket.h"
+#include "Modules/ModuleManager.h"
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
 
-MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<const Vhost*>& vhosts) : Socket(), _netId(netId), _vhosts(vhosts)
+MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : Socket(), _netId(netId), _vhosts(vhosts)
 {
 	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (listenSocket == INVALID_SOCKET)
@@ -40,7 +42,7 @@ void MainSocket::listen(int queue) const
 	}
 }
 
-IClientSocket *MainSocket::accept()
+zAPI::IClientSocket*	MainSocket::accept()
 {
 	SOCKET acceptSocket = ::accept(listenSocket, NULL, NULL);
 	if (acceptSocket == INVALID_SOCKET)
@@ -49,13 +51,13 @@ IClientSocket *MainSocket::accept()
 		WSACleanup();
 		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Accept);
 	}
-    IClientSocket*  ret = ModuleManager::getInstance().call(IModuleManager::NetworkHook, IModule::onAcceptEvent, acceptSocket);
+	zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onAcceptEvent, acceptSocket);
     if (ret == NULL)
         ret = new ClientSocket(acceptSocket);
 	return (ret);
 }
 
-const std::vector<const Vhost*>&   MainSocket::getAssociatedVhosts()
+const std::vector<Vhost*>&   MainSocket::getAssociatedVhosts()
 {
     return _vhosts;
 }

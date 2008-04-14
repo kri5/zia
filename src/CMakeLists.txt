@@ -32,8 +32,8 @@ SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.
     includes/Stream/ResponseStreamDir.h includes/Workflow/Worker.h includes/Workflow/Pool.h includes/Http/HttpTransaction.h
     includes/API/IHttpTransaction.h includes/API/IHttpRequest.h includes/API/IHttpResponse.h includes/Utils/UrlString.h
     includes/Modules/ModuleManager.h includes/Modules/IDynLib.h includes/Modules/DynLib.h includes/Modules/DynLib_win32.h
-    includes/API/ModuleInfo.h includes/Stream/ResponseStreamGeneric.h
-    includes/API/AbstractModule.h)
+    includes/API/IModuleInfo.h includes/Stream/ResponseStreamGeneric.h
+    includes/Modules/AbstractModule.h)
 
 
 IF (WIN32)

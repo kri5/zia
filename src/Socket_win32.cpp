@@ -17,9 +17,13 @@ Socket::~Socket()
 
 void Socket::close(bool shutdown)
 {
-	if (shutdown)
-		::shutdown(listenSocket, SD_BOTH);
-	closesocket(listenSocket);
+	if (this->_closed == false)
+	{
+		if (shutdown)
+			::shutdown(listenSocket, SD_BOTH);
+		closesocket(listenSocket);
+		this->_closed = true;
+	}
 }
 
 const ISocket&	Socket::operator>>(struct pollfd& pdfs) const
@@ -39,4 +43,9 @@ bool            Socket::isSet(const struct pollfd& pdfs) const
 void			Socket::setPollFlag(int pollFlag)
 {
 	_pollFlag = pollFlag;
+}
+
+bool			Socket::isClosed() const
+{
+	return this->_closed;
 }

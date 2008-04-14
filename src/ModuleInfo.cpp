@@ -1,4 +1,5 @@
 #include "NastyCast.hpp"
+#include "zia.h"
 #include "Modules/ModuleInfo.h"
 
 ModuleInfo::ModuleInfo(IDynLib* module, const std::string& filename) : _module(module), _fileName(filename)

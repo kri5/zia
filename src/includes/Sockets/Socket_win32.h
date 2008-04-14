@@ -27,10 +27,12 @@ public:
 	const ISocket&	operator>>(struct pollfd& pdfs) const;
 	bool            isSet(const struct pollfd& pdfs) const;
 	void            setPollFlag(int);
+	bool			isClosed() const;
 protected:
 	WSADATA wsaData;
 	SOCKET listenSocket;
 	int				_pollFlag;
+	bool			_closed;
 };
 
 #endif // __SOCKET_WIN32_H__

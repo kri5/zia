@@ -2,7 +2,7 @@
 #define DYNLIB_WIN32_H
 
 #include <string>
-#include "API/IDynLib.h"
+#include "Modules/IDynLib.h"
 
 class DynLib : public IDynLib
 {

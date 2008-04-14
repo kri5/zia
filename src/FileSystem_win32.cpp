@@ -27,14 +27,18 @@ FileSystem::~FileSystem()
 	}
 }
 
-std::list<IFile*>*				FileSystem::getFileList()
+std::list<IFile*>*				FileSystem::getFileList(const char* pattern)
 {
 	if (this->_files == NULL)
 	{
 		WIN32_FIND_DATA			files;
 		HANDLE					search;
 		BOOL					res;
-		std::string				fileName = this->_path + "/*";
+		std::string				fileName;
+		if (pattern == NULL)
+			fileName = this->_path + "/*";
+		else
+			fileName = this->_path + "/*." + pattern;
 		
 		this->_files = new std::list<IFile*>;
 		if ((search = FindFirstFile(fileName.c_str(), &files)) == INVALID_HANDLE_VALUE)
@@ -46,7 +50,10 @@ std::list<IFile*>*				FileSystem::getFileList()
 		while (res)
 		{
 			if (files.cFileName && files.cFileName[0] != '.')
+			{
+				std::cout << files.cFileName << std::endl;
 				this->_files->push_back(new File(files.cFileName, this->_path.c_str()));
+			}
 			res = FindNextFile(search, &files);
 		}
 		FindClose(search);

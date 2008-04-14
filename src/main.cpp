@@ -1,19 +1,22 @@
-#include "zia.h"
+//#include "zia.h"
 
-#include <iostream>
-#include <iomanip>
-#include <cstdlib>
+//#include <iostream>
+//#include <iomanip>
+//#include <cstdlib>
 
-#include "ZException.hpp"
-#include "Init.h"
-#include "Server.h"
-#include "Utils/Buffer.h"
+#include "FileSystem/IFileSystem.h"
+#include "FileSystem/FileSystem.h"
+//#include "ZException.hpp"
+//#include "Init.h"
+//#include "Server.h"
 
-#include "MemoryManager.hpp"
+//#include "MemoryManager.hpp"
 
 int main(int argc, char **argv)
 {
-	Init		i(argc, argv);
+	IFileSystem* fs = new FileSystem(".");
+	fs->getFileList(".conf");
+	/*Init		i(argc, argv);
 	Server*		srv;
 
 	if (i.start() == EXIT_FAILURE)
@@ -29,21 +32,21 @@ int main(int argc, char **argv)
     }
 	srv->run();
 
-    delete srv;
+    delete srv;*/
 	
-	Logger::deleteInstance(); 
-    Buffer      buff(5);
+	//Logger::deleteInstance(); 
+    //Buffer      buff(5);
 
-    buff.push("abcdefghijklmnopqrtsuvwxyz", 26);
-    buff.dump();
-    buff.flush(12);
-    buff.dump();
-    std::cout << buff.get(14) << std::endl;
-    buff.dump();
-    buff.push("bite", 4);
-    buff.dump();
-    buff.flush();
-    buff.dump();
-    std::cout << buff.size() << std::endl;
+    //buff.push("abcdefghijklmnopqrtsuvwxyz", 26);
+    //buff.dump();
+    //buff.flush(12);
+    //buff.dump();
+    //std::cout << buff.get(14) << std::endl;
+    //buff.dump();
+    //buff.push("bite", 4);
+    //buff.dump();
+    //buff.flush();
+    //buff.dump();
+    //std::cout << buff.size() << std::endl;
 }
 

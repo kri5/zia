@@ -8,7 +8,7 @@
 /** A specialized socket, which will only handle clients, and not connections to server.
  *  For others method than ctor/dtor documentation, refer to IClientSocket.
  */
-class ClientSocket : public Socket, public IClientSocket
+class ClientSocket : public Socket, public zAPI::IClientSocket
 {
 	public:
 		struct  Error
@@ -26,10 +26,9 @@ class ClientSocket : public Socket, public IClientSocket
 		ClientSocket(int acceptedSocket);
 		/// Don't close the socket. (Done by ~Socket())
 		~ClientSocket();
-		int	recv(char *buf, int length) const;
-		int send(const char *buf, int length) const;
-		int send(const std::string& buf, int length) const;
-        virtual IClientSocket&  operator<<(const std::string& buf);
+		int		recv(char *buf, int length) const;
+		int		send(const char *buf, int length) const;
+		int		send(const std::string& buf, int length) const;
 		static int			countSockets();
 	private:
 		static int			_nbSockets;
