@@ -43,12 +43,12 @@ IFile::Error::Code     File::getError() const
     return this->_errorCode;
 }
 
-std::string		File::getFileName() const
+const std::string&	File::getFileName() const
 {
 	return this->_name;
 }
 
-std::string     File::getFullFileName() const
+const std::string&    File::getFullFileName() const
 {
     return this->_filePath;
 }

@@ -1,22 +1,22 @@
-//#include "zia.h"
+#include "zia.h"
 
-//#include <iostream>
-//#include <iomanip>
-//#include <cstdlib>
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
 
 #include "FileSystem/IFileSystem.h"
 #include "FileSystem/FileSystem.h"
-//#include "ZException.hpp"
-//#include "Init.h"
-//#include "Server.h"
+#include "ZException.hpp"
+#include "Init.h"
+#include "Server.h"
 
-//#include "MemoryManager.hpp"
+#include "MemoryManager.hpp"
 
 int main(int argc, char **argv)
 {
-	IFileSystem* fs = new FileSystem(".");
-	fs->getFileList(".conf");
-	/*Init		i(argc, argv);
+	//IFileSystem* fs = new FileSystem(".");
+	//fs->getFileList(".conf");
+	Init		i(argc, argv);
 	Server*		srv;
 
 	if (i.start() == EXIT_FAILURE)
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     }
 	srv->run();
 
-    delete srv;*/
+    delete srv;
 	
 	//Logger::deleteInstance(); 
     //Buffer      buff(5);
