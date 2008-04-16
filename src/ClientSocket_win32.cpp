@@ -59,6 +59,11 @@ int ClientSocket::recv( char *buf, int length ) const
 	return (iResult);
 }
 
+int             ClientSocket::getNativeSocket() const
+{
+    return listenSocket;
+}
+
 int				ClientSocket::countSockets()
 {
 	return ClientSocket::_nbSockets;
