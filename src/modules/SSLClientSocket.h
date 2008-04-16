@@ -15,12 +15,14 @@ class SSLClientSocket : public zAPI::IClientSocket
     virtual int     send(const std::string& buf, int length) const;
     virtual int     recv(char *buf, int length) const;
     virtual void    close(bool shutdown);
+    virtual bool    isClosed() const;
     virtual int     getNativeSocket() const;
 
   protected:
     SSL_CTX*        ctx;
     SSL*            ssl;
     int             listenSocket;
+    bool            _closed;
 
   private:
     void	logError() const;

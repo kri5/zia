@@ -10,7 +10,7 @@
 int ClientSocket::_nbSockets = 0;
 Mutex   ClientSocket::_mutex;
 
-ClientSocket::ClientSocket(int acceptedSocket) : deleted(false)
+ClientSocket::ClientSocket(int acceptedSocket) : deleted(false), _closed(false) 
 {
 	listenSocket = acceptedSocket;
     struct timeval tv;
@@ -74,4 +74,22 @@ int             ClientSocket::getNativeSocket() const
 int             ClientSocket::countSockets()
 {
     return ClientSocket::_nbSockets;
+}
+
+bool            ClientSocket::isClosed() const
+{
+    return this->_closed;
+}
+
+void            ClientSocket::close(bool shutdown)
+{
+    if (this->_closed == false)
+    {
+        if (shutdown)
+            if (::shutdown(listenSocket, SHUT_RDWR))
+                Logger::getInstance() << Logger::Error << "Can't shutdown socket : " << strerror(errno) << Logger::Flush;
+        if (::close(listenSocket) < 0)
+            Logger::getInstance() << Logger::Error << "Can't close socket : " << strerror(errno) << Logger::Flush;
+        this->_closed = true;
+    }
 }

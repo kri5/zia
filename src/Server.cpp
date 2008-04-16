@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/resource.h>
+#include <poll.h>
 #endif
 
 #include "zia.h"
@@ -73,7 +74,12 @@ void		Server::run()
         memset(pfds, 0, sizeof(*pfds) * size);
         for (i = 0; i < size; ++i)
         {
-            *(this->_sockets[i]) >> pfds[i];
+            pfds[i].fd = this->_sockets[i]->getNativeSocket();
+#ifndef WIN32
+            pfds[i].events = (POLLIN | POLLOUT | POLLERR | POLLHUP);
+#else
+            pfds[i].events = (POLLRDNORM);
+#endif
         }
         ret = poll(pfds, size, 1000);
         if (ret < 0)
@@ -98,38 +104,31 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
 
     for (i = 0; i < size && nbSockets > 0; ++i) //FIXME: if nbSockets is the number of sockets to read, maybe we should use it :p
     {
-        if (this->_sockets[i]->isSet(pfds[i]))
+#ifndef WIN32
+        if (pfds[i].revents & (POLLIN | POLLOUT | POLLERR | POLLHUP))
+#else
+        if (pfds[i].revents & (POLLRDNORM))
+#endif
         {
-            zAPI::IClientSocket*      iclt = this->_sockets[i]->accept();
-            if (iclt)
+            zAPI::IClientSocket*      clt = this->_sockets[i]->accept();
+            if (clt)
             {
-                ClientSocket*  clt = dynamic_cast<ClientSocket*>(iclt);
-                if (clt == NULL)
-                    delete iclt;
+                if (ClientSocket::countSockets() >= this->_maxFd)
+                {
+                    std::cout << "Max client reached, disconnecting" << std::endl;
+                    delete clt;
+                }
                 else
                 {
-                    if (ClientSocket::countSockets() >= this->_maxFd)
+                    if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
                     {
-                        std::cout << "Max client reached, disconnecting" << std::endl;
-                        delete clt;
+                        //FIXME: check for memory leak (not deleting clt)
+                        Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
                     }
-                    else
-                    {
-#ifndef WIN32
-                        clt->setPollFlag(POLLIN | POLLERR | POLLHUP);
-#else
-                        clt->setPollFlag(POLLRDNORM);
-#endif
-                        if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
-                        {
-                            //FIXME: check for memory leak (not deleting clt)
-                            Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
-                        }
-                        //else
-                        //{
-                        //    std::cout << "new connected client" << std::endl;
-                        //}
-                    }
+                    //else
+                    //{
+                    //    std::cout << "new connected client" << std::endl;
+                    //}
                 }
             }
         }

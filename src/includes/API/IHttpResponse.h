@@ -63,9 +63,10 @@ namespace zAPI
             virtual std::iostream&                  getCurrentStream() = 0;
 
             /**
-             *  Stream is the potentially new stream to add. If NULL, nothing will be added
-             *  if flushStream is true, every other streams will be deleted. If headerIncluded is true, the double
-             *  carriage return must be in stream. Nothing will be added automatically.
+             *  This method will allow you to skip to response sending(skip every step(s) between this event and
+             *  the response sending). You can just add an ending stream, or 
+             *  flush every streams already set, and set yours as the only stream to send.
+             *  If your stream contains header, you can change header sending mode by passing true as third parameter.
              *
              *  @param stream the response content stream
              *  @param flushStream whether the reponse should contains set streams or not

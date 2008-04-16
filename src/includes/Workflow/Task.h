@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Sockets/ClientSocket.h"
+#include "API/IClientSocket.h"
 #include "Http/HttpRequest.h"
 #include "Http/HttpResponse.h"
 #include "Network/Vhost.h"
@@ -21,7 +21,7 @@ class Task
         void    execute(unsigned int);
         void    clear(bool clearBuffers = true);
         /// Will totaly reinitialize the task (new client, new potential vhosts, and call init())
-        void    init(ClientSocket*, const std::vector<Vhost*>*);
+        void    init(zAPI::IClientSocket*, const std::vector<Vhost*>*);
         /// Will just recreate a new HttpRequest and set HttpResponse instance to NULL
         void    init();
         bool    isFree() const;
@@ -36,19 +36,19 @@ class Task
         bool            receiveDatas();
         bool            checkTimeout();
 
-        HttpRequest*    _req;
-        HttpResponse*   _res;
-        ClientSocket*   _socket;
-        Buffer*         _writeBuffer;
-        Buffer*         _readBuffer;
-        ITime*          _time;
-        Pool*           _pool;
-        int             _timeoutDelay;
+        HttpRequest*            _req;
+        HttpResponse*           _res;
+        zAPI::IClientSocket*    _socket;
+        Buffer*                 _writeBuffer;
+        Buffer*                 _readBuffer;
+        ITime*                  _time;
+        Pool*                   _pool;
+        int                     _timeoutDelay;
         /// Will be set to false if browser sent more than one request in a keepalive socket.
-        bool            _freeTask;
+        bool                    _freeTask;
     public://FIXME
-        unsigned int    _taskId;
-        bool            poped;
+        unsigned int            _taskId;
+        bool                    poped;
 
         const std::vector<Vhost*>*    _vhosts;
 };

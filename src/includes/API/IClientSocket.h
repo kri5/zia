@@ -23,7 +23,7 @@ namespace zAPI
              *  @param length the maximum length to read
              *  @return the read length
              */
-            virtual int	recv(char *buf, int length) const = 0;
+            virtual int	    recv(char *buf, int length) const = 0;
 
             /**
              *  Sends a certain amount of data contained in the specified 
@@ -32,7 +32,7 @@ namespace zAPI
              *  @param length the wanted size to send
              *  @return the size sent through the socket
              */
-            virtual int send(const char *buf, int length) const = 0;
+            virtual int     send(const char *buf, int length) const = 0;
 
             /**
              *  Sends a certain amount of data contained in the specified 
@@ -41,13 +41,29 @@ namespace zAPI
              *  @param length wanted size to send (or -1, if you want to send the entire string)
              *  @return the size sent through the socket
              */
-            virtual int send(const std::string& buf, int length) const = 0;
+            virtual int     send(const std::string& buf, int length) const = 0;
 
+            /**
+             *  Close the socket, and eventually shut it down nicelly.
+             *
+             *  @param shutdown If true, close will call shutdown(2)
+             */
+            virtual void    close(bool shutdown) = 0;
+
+            /**
+             *  Check if socket has already be closed, to prevent multiple socket
+             *  closure.
+             *
+             *  @return a boolean indicating if socket has been closed.
+             */
+
+            virtual bool    isClosed() const = 0;
             /**
              * Get the underlying socket used for the client
              * @return a socket identifier
              */
-            virtual int	getNativeSocket() const = 0;
+            
+            virtual int	    getNativeSocket() const = 0;
 
     };
 }

@@ -32,7 +32,7 @@ void        Pool::init()
     this->_manager = Pool::Manager::create(this);
 }
 
-bool        Pool::addTask(ClientSocket* clt, const std::vector<Vhost*>* vhosts)
+bool        Pool::addTask(zAPI::IClientSocket* clt, const std::vector<Vhost*>* vhosts)
 {
     MutexLock   get_lock(this->_mutex);
     if (this->_freeTasks.size() > 0)
@@ -146,7 +146,7 @@ void    Pool::rescheduleTask(Task* t)
     this->_tasks.push(t);
 }
 
-void            Pool::addKeepAliveClient(ClientSocket* clt, int timeout, const std::vector<Vhost*>* vhosts)
+void            Pool::addKeepAliveClient(zAPI::IClientSocket* clt, int timeout, const std::vector<Vhost*>* vhosts)
 {
     MutexLock   get_lock(this->_mutex);
 

@@ -1,5 +1,8 @@
 #include <assert.h>
 #include <errno.h>
+#ifndef WIN32
+#include <poll.h>
+#endif
 
 #include "zia.h"
 
@@ -50,7 +53,7 @@ Task::~Task()
         delete this->_time;
 }
 
-void    Task::init(ClientSocket* clt,
+void    Task::init(zAPI::IClientSocket* clt,
         const std::vector<Vhost*>* vhosts)
 {
     this->_vhosts = vhosts;
@@ -161,7 +164,12 @@ bool    Task::receiveDatas()
     char            tmp[1025];
 
     memset(&fds, 0, sizeof(fds));
-    *(this->_socket) >> fds;
+    fds.fd = this->_socket->getNativeSocket();
+#ifndef WIN32
+    fds.events = (POLLIN | POLLERR | POLLHUP);
+#else
+    fds.events = (POLLRDNORM);
+#endif
     ret = poll(&fds, 1, 1);
     if (ret < 0)
 	{
@@ -193,7 +201,6 @@ bool    Task::parseRequest()
         if (this->checkTimeout())
         {
             //this->_readBuffer->dump();
-            exit(0);
             return false;
         }
         if (this->receiveDatas() == false)

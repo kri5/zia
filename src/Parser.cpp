@@ -141,6 +141,7 @@ bool        Parser::peekIfEqual(const std::string& toFind)
         if (this->peekIfEqual(toFind[i]) == false)
         {
             this->__restoreContext();
+            //std::cout << "false with " << this->readChar() << " / " << toFind[i] << std::endl;
             return false;
         }
     }
@@ -243,6 +244,40 @@ void    Parser::readUpToIgnore(std::string& output)
 		this->_i++;
         c = this->readChar();
 	}
+}
+
+
+void    Parser::readUpTo(const std::string& end)
+{
+    char    c = this->readChar();
+
+    while (true)
+    {
+        if (c == end[0])
+        {
+            if (this->readIfEqual(end) == true)
+                break ;
+        }
+        this->_i++;
+        c = this->readChar();
+    }
+}
+void    Parser::readUpTo(const std::string& end, std::string& output)
+{
+    char    c = this->readChar();
+
+    output = "";
+    while (true)
+    {
+        if (c == end[0])
+        {
+            if (this->readIfEqual(end) == true)
+                break ;
+        }
+        output += c;
+        this->_i++;
+        c = this->readChar();
+    }
 }
 
 void	Parser::readUntilEndOfLine(std::string& output)

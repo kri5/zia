@@ -1,7 +1,7 @@
 #ifndef IMODULE_H
 # define IMODULE_H
 
-#ifndef WIN32
+#ifndef _WIN32
 typedef int SOCKET;
 #else
 #pragma warning(disable: 4190) //disable extern "C" warnings
@@ -161,4 +161,5 @@ namespace zAPI
 }
 
 #endif // IMODULE_H
+
 

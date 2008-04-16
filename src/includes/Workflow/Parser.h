@@ -29,6 +29,8 @@ class	Parser
 
 		void                readUpToIgnore();
 		void				readUpToIgnore(std::string& output);
+        void                readUpTo(const std::string& end, std::string& output);
+        void                readUpTo(const std::string& end);
 
 		void				readUntilEndOfLine();
 		void				readUntilEndOfLine(std::string& output);

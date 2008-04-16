@@ -2,9 +2,15 @@
 #define __CLIENT_SOCKET_UNIX_H__
 
 #include "zia.h"
-#include "Socket_unix.h"
 #include "API/IClientSocket.h"
 #include "Mutex/Mutex.h"
+#include <iostream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <poll.h>
 
 #ifdef __FreeBSD__
  #define MSG_NOSIGNAL 0
@@ -15,7 +21,7 @@
 /** A specialized socket, which will only handle clients, and not connections to server.
  *  For others method than ctor/dtor documentation, refer to IClientSocket.
  */
-class ClientSocket : public Socket, public zAPI::IClientSocket
+class ClientSocket : public zAPI::IClientSocket
 {
     public:
         bool            deleted;
@@ -37,12 +43,17 @@ class ClientSocket : public Socket, public zAPI::IClientSocket
         virtual int	    send(const char *buf, int length) const;
         virtual int 	send(const std::string& buf, int length) const;
         virtual int	    recv(char *buf, int length) const;
-        virtual int     getNativeSocket() const;
+        virtual void    close(bool shutdown);
+        virtual bool    isClosed() const;
+        virtual int	    getNativeSocket() const;
 
         static  int     countSockets();
+        static const int SOCKET_ERROR = -1;
     private:
         static  int     _nbSockets;
         static  Mutex   _mutex;
+        int             listenSocket;
+        bool            _closed;
 };
 
 #endif //__CLIENT_SOCKET_UNIX_H__

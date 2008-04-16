@@ -148,8 +148,17 @@ int     SSLClientSocket::recv(char *buf, int length) const
 //FIXME This method doesn't exist anymore in the IClientSocket interface!
 void    SSLClientSocket::close(bool shutdown)
 {
-  SSL_shutdown(ssl);
-  //IClientSocket::close(shutdown);
+    if (this->_closed == false)
+    {
+        SSL_shutdown(ssl);
+        this->_closed = true;
+        //IClientSocket::close(shutdown);
+    }
+}
+
+bool    SSLClientSocket::isClosed() const
+{
+    return this->_closed;
 }
 
 int     SSLClientSocket::getNativeSocket() const

@@ -72,3 +72,25 @@ const std::vector<Vhost*>&   MainSocket::getAssociatedVhosts()
     return _vhosts;
 }
 
+int                         MainSocket::getNativeSocket() const
+{
+    return listenSocket;
+}
+
+bool                        MainSocket::isClosed() const
+{
+    return this->_closed;
+}
+
+void                        MainSocket::close(bool shutdown)
+{
+    if (this->_closed == false)
+    {
+        if (shutdown)
+            if (::shutdown(listenSocket, SHUT_RDWR))
+                Logger::getInstance() << Logger::Error << "Can't shutdown socket : " << strerror(errno) << Logger::Flush;
+        if (::close(listenSocket) < 0)
+            Logger::getInstance() << Logger::Error << "Can't close socket : " << strerror(errno) << Logger::Flush;
+        this->_closed = true;
+    }
+}

@@ -73,11 +73,11 @@ void        HttpParser::parse()
         while (!this->isEnd() && this->hasEOL() && this->parseOptions())
         {
             //FIXME: remove me after debug, causea i'm kind of slow.
-            this->flush();
+            //this->flush();
         }
 
         if (this->_isDone
-            && this->_request->getCommand() == "Post")
+            && this->_request->getCommand() == "POST")
             this->parseBody();
 	}
     this->flush();
@@ -106,7 +106,7 @@ bool        HttpParser::parseGetCommand()
             {
                 if (this->isEOL())
                 {
-                    this->_request->setCommand("Get");
+                    this->_request->setCommand("GET");
                     return true;
                 }
             }
@@ -138,7 +138,7 @@ bool        HttpParser::parseHeadCommand()
             {
                 if (this->isEOL())
                 {
-                    this->_request->setCommand("Head");
+                    this->_request->setCommand("HEAD");
                     return true;
                 }
             }
@@ -170,7 +170,7 @@ bool        HttpParser::parsePostCommand()
             {
                 if (this->isEOL())
                 {
-                    this->_request->setCommand("Post");
+                    this->_request->setCommand("POST");
                     return true;
                 }
             }
@@ -219,9 +219,19 @@ void        HttpParser::parseBody()
 {
     std::string l;
 
-    l = this->_request->getHeaderOption("Content-Length");
-    if (l.length())
-        this->parseBodyArgument();
+    if (this->_request->headerOptionIsSet("Content-Type") == false
+            || this->_request->getHeaderOption("Content-Type").compare(0, 20, "multipart/form-data;") != 0) //this is not a bool !!
+    {
+        if (this->_request->headerOptionIsSet("Content-Length"))
+        {
+            l = this->_request->getHeaderOption("Content-Length");
+            this->parseBodyArgumentsMonoPart();
+        } //FIXME: si il n'y a pas de content-length : le signaler.
+    }
+    else
+    {
+        this->parseBodyArgumentsMultiPart();
+    }
 }
 
 /**
@@ -230,17 +240,17 @@ void        HttpParser::parseBody()
  *  object
  * */
 
-bool        HttpParser::parseBodyArgument()
+bool        HttpParser::parseBodyArgumentsMonoPart()
 {
     std::string key;
     std::string value;
 
-    if (this->readBodyParam(key, value))
+    if (this->readParam(key, value))
     {
         this->_request->setBodyArgument(key, value);
-        while (this->peekIfEqual('&')
-                && this->readBodyParam(key, value))
+        while (this->peekIfEqual('&'))
         {
+            this->readParam(key, value);
             this->_request->setBodyArgument(key, value);
         }
     }
@@ -248,20 +258,50 @@ bool        HttpParser::parseBodyArgument()
 }
 
 /**
- *  Parses a single key => value
- *  pair of the body
- * */
+ *  Parse body arguments with a multipart format.
+ *  Will put them in the HttpRequest instance
+ */
 
-bool        HttpParser::readBodyParam(std::string& key,
-                                      std::string& value)
+bool        HttpParser::parseBodyArgumentsMultiPart()
 {
-    this->readAnythingBut("&=\r\n", key);
-    if (this->peekIfEqual('='))
+    std::string     boundary;
+    size_t          boundaryPos = this->_request->getHeaderOption("Content-Type").find("boundary=");
+
+    if (boundaryPos == std::string::npos)
+        return false;
+    boundary = this->_request->getHeaderOption("Content-Type").substr(boundaryPos + 9); //9 == strlen("boundary=");
+    while (this->peekIfEqual("--") && this->peekIfEqual(boundary))
     {
-        this->readAnythingBut("&\r\n", value);
-        return true;
+        if (peekIfEqual("--") == true)
+            break ;
+        if (this->peekIfEqual("\r\n") == false)
+            return false;
+        this->setIgnore(false);
+        if (this->peekIfEqual("Content-Disposition: form-data;") == false)
+        {
+            this->setIgnore(true);
+            std::cout << "Found something that is not a form field. Dropping it" << std::endl;
+            this->readUpTo(boundary);
+        }
+        else
+        {
+            this->setIgnore(true);
+            if (this->peekIfEqual("name=\"") == false)
+                return false;
+            std::string     key;
+            if (this->readAnythingBut("\"", key) == false)
+                return false;
+            if (this->peekIfEqual("\"\r\n\r\n") == false)
+                return false;
+            std::string     value;
+            this->setIgnore(false);
+            this->readUpTo(boundary, value);
+            this->_request->setBodyArgument(key, value);
+            std::cout << key << " => " << value << std::endl;
+            this->setIgnore(true);
+        }
     }
-    return false;
+    return true;
 }
 
 /**
@@ -281,12 +321,12 @@ bool        HttpParser::parseUriArgument()
 	// URI_Argument ::= [ '?' [param]*]?
     if (this->peekIfEqual('?'))
     {
-		if (this->readUriParam(key, value))
+		if (this->readParam(key, value))
 		{
 			this->_request->setUriArgument(key, value);
 			while (this->peekIfEqual('&'))
 			{
-				this->readUriParam(key, value);
+				this->readParam(key, value);
 				this->_request->setUriArgument(key, value);
 			}
 		}
@@ -300,7 +340,7 @@ bool        HttpParser::parseUriArgument()
 	// if we made it to an ignore char, we return false 
     // (end of the URI params)
 
-bool        HttpParser::readUriParam(std::string& key, 
+bool        HttpParser::readParam(std::string& key, 
                                      std::string& value)
 {
 	if (this->isIgnore(this->readChar()))
@@ -570,7 +610,7 @@ bool        HttpParser::parseOptionContentLength()
             if (this->readInteger(length))
             {
                 this->_request->setHeaderOption
-                    ("ContentLength", length);
+                    ("Content-Length", length);
                 return true;
             }
         }
@@ -654,7 +694,7 @@ bool        HttpParser::parseOptionContentType()
         {
             this->readUntilEndOfLine(contentType);
             this->_request->setHeaderOption
-                ("ContentType", contentType);
+                ("Content-Type", contentType);
             return true;
         }
     }

@@ -1,4 +1,7 @@
 #include <errno.h> //FIXME: check win32 compactibility
+#ifndef WIN32
+# include <poll.h>
+#endif
 
 #include "Workflow/Pool.h"
 #include "Time/Time.h"
@@ -41,7 +44,12 @@ void    Pool::Manager::initKeepAlivePoll() //warning : high contendence.
         }
         else
         {
-            *((*it).clt) >> this->_fds[i];
+            this->_fds[i].fd = ((*it).clt)->getNativeSocket();
+#ifndef WIN32
+            this->_fds[i].events = (POLLIN | POLLERR | POLLHUP);
+#else
+            this->_fds[i].events = (POLLRDNORM);
+#endif
             ++it;
         }
         ++i;
@@ -69,7 +77,11 @@ void    Pool::Manager::checkKeepAlive()
         std::list<KeepAliveClient>::iterator  ite = this->_keepAlive.end();
         while (it != ite)
         {
-            if ((*it).clt->isSet(this->_fds[i]))
+#ifndef WIN32
+            if (this->_fds[i].revents & (POLLIN | POLLERR | POLLHUP))
+#else
+                if (this->_fds[i].revents & (POLLRDNORM))
+#endif
             {
                 this->_pool->addTask((*it).clt, (*it).vhosts);
                 delete (*it).timer;

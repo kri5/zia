@@ -21,7 +21,8 @@ class HttpParser : public Parser
         bool            parseHeadCommand();
         bool            parseUri();
         bool            parseUriArgument();
-        bool            parseBodyArgument();
+        bool            parseBodyArgumentsMonoPart();
+        bool            parseBodyArgumentsMultiPart();
         bool            parseProtocol();
 
         bool            parseOptions();
@@ -46,8 +47,7 @@ class HttpParser : public Parser
         bool            readRelativeUri(std::string&, bool&);
         bool            readDate(std::string&);
         bool            readTime(std::string&);
-        bool            readUriParam(std::string&, std::string&);
-        bool            readBodyParam(std::string&, std::string&);
+        bool            readParam(std::string&, std::string&);
 
         bool            isDayOfTheMonth(const int) const;
         bool            isDayOfTheWeek(const std::string&) const;

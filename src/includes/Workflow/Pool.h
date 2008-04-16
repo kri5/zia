@@ -9,14 +9,15 @@
 #include "Workflow/Worker.h"
 #include "Mutex/Mutex.h"
 #include "Time/ITime.h"
+#include "API/IClientSocket.h"
 
 class Worker;
 
 struct  KeepAliveClient
 {
-    KeepAliveClient(ClientSocket* _clt, int _timeout, const std::vector<Vhost*>* _vhosts)
+    KeepAliveClient(zAPI::IClientSocket* _clt, int _timeout, const std::vector<Vhost*>* _vhosts)
         : clt(_clt), timeout(_timeout), vhosts(_vhosts) {}
-    ClientSocket*                   clt;
+    zAPI::IClientSocket*            clt;
     ITime*                          timer;
     int                             timeout;
     const std::vector<Vhost*>*      vhosts;
@@ -28,7 +29,7 @@ class   Pool
         Pool(unsigned int nbThreads, unsigned int);
         virtual                 ~Pool();
         void                    init();
-        bool                    addTask(ClientSocket*, const std::vector<Vhost*>*);
+        bool                    addTask(zAPI::IClientSocket*, const std::vector<Vhost*>*);
         void                    rescheduleTask(Task*);
         void                    addSleepingThread(Worker*);
         Task*                   popTask();
@@ -41,7 +42,7 @@ class   Pool
         unsigned int            getFreeThreadsNbr() const;
         unsigned int            getTaskNbr() const;
         bool                    empty() const;
-        void                    addKeepAliveClient(ClientSocket*, int timeout, const std::vector<Vhost*>*);
+        void                    addKeepAliveClient(zAPI::IClientSocket*, int timeout, const std::vector<Vhost*>*);
         void                    flushKeepAlive(std::list<KeepAliveClient>&);
     private:
 

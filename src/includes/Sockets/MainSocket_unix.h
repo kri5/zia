@@ -4,13 +4,12 @@
 #include <string>
 #include <vector>
 
-#include "Sockets/Socket_unix.h"
 #include "Sockets/ClientSocket_unix.h"
 #include "Sockets/IMainSocket.h"
 #include "Network/NetworkID.h"
 #include "Network/Vhost.h"
 
-class MainSocket : public Socket, public IMainSocket
+class MainSocket : public IMainSocket
 {
 	public:
 		// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
@@ -19,7 +18,14 @@ class MainSocket : public Socket, public IMainSocket
         const std::vector<Vhost*>&   getAssociatedVhosts();
 
         zAPI::IClientSocket *accept();
+        void    close(bool shutdown);
+        bool    isClosed() const;
+        int	    getNativeSocket() const;
 	private:
+        static const    int SOCKET_ERROR = -1;
+        int             listenSocket;
+        bool            _closed;
+
 		void    bind(const NetworkID*) const;
 		void    listen(int queue) const;
 

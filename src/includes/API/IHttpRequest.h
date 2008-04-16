@@ -121,7 +121,7 @@ namespace zAPI
 
             /**
              *  Set the current request's ID
-             *  To be getter as described for the associated getter, getRequestId()
+             *  To set the request id (see getRequestId for more info on what is requestId)
              */
             virtual void                                        setRequestId(unsigned int id) = 0;
     };
