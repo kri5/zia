@@ -138,11 +138,11 @@ namespace zAPI
              *  @param response the current response
              *  @param buf a buffer containing some of the response content data
              *  @param length the buffer's length
-             *  @param tab the IModule subscribe to processContent event
+             *  @param tab the IModule instances which subscribed to processContent event
              *  @param index the current module in the IModule tab, to know which module to read in
              *  @return ChainStatus
              */
-            virtual size_t                  call(IHttpRequest* request, IHttpResponse* response, char* buf, size_t length, IModule** tab, unsigned int index) = 0;
+            virtual size_t                  call(IHttpRequest* request, IHttpResponse* response, char* buf, size_t length, const std::vector<IModule*>& tab, unsigned int index) = 0;
 
     };
 

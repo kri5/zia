@@ -288,18 +288,17 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
 
     if (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].size() > 0)
     {
-        zAPI::IModule** tab = new zAPI::IModule*[this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].size() + 1];
+        std::vector<zAPI::IModule*> tab;
         unsigned int    i = 0;
         std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator    it = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].begin();
         std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator    ite = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].end();
         for (; it != ite; ++it, ++i)
         {
-            tab[i] = (*it)->ptr->getInstance();
+            tab.push_back((*it)->ptr->getInstance());
         }
         tab[i] = NULL;
         size_t ret = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].front()->ptr->
             getInstance()->call(req, res, buff, size, tab, 0);
-        delete[] tab;
         return ret;
     }
     res->getCurrentStream().read(buff, size);
