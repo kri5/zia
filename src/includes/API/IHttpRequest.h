@@ -34,17 +34,17 @@ namespace zAPI
             virtual const std::string&                          getUri() const = 0;
 
             /**
-             *  Sets a uri argument with a key / value pair passed in parameter
-             *  @param key the uri argument key
-             *  @param value the uri argument value
+             *  Sets the uri's query string. A URI query is basically all there is 
+             *  after the "?" of the URI
+             *  @param query the uri query string
              */
-            virtual void                                        setUriArgument(const std::string& key, const std::string& value) = 0;
+            virtual void                                        setUriQuery(const std::string& query) = 0;
 
             /**
-             *  Returns a map containing all the uri arguments
+             *  Returns a string containing the query of the URI
              *  @return the uri arguments map
              */
-            virtual const std::map<std::string, std::string>&   getUriArguments() const = 0;
+            virtual const std::string                           getUriQuery() const = 0;
 
             /**
              *  Sets a body argument with a key / value pair passed in paramater

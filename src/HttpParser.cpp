@@ -323,11 +323,11 @@ bool        HttpParser::parseUriArgument()
     {
 		if (this->readParam(key, value))
 		{
-			this->_request->setUriArgument(key, value);
+			//this->_request->setUriArgument(key, value);
 			while (this->peekIfEqual('&'))
 			{
 				this->readParam(key, value);
-				this->_request->setUriArgument(key, value);
+				//this->_request->setUriArgument(key, value);
 			}
 		}
     }

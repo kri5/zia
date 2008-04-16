@@ -19,8 +19,10 @@ class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
         virtual ~HttpRequest();
         void                                        setUri(const std::string&, bool = true);
         const std::string&                          getUri() const;
-        void                                        setUriArgument(const std::string&, const std::string&);
-        const std::map<std::string, std::string>&   getUriArguments() const; 
+        //void                                        setUriArgument(const std::string&, const std::string&);
+        //const std::map<std::string, std::string>&   getUriArguments() const; 
+        void                                        setUriQuery(const std::string&);
+        const std::string                           getUriQuery() const;
 
         void                                        setBodyArgument(const std::string&, const std::string&);
         const std::map<std::string, std::string>&   getBodyArguments() const;

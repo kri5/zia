@@ -40,21 +40,10 @@ zAPI::IConfig*	HttpRequest::getConfig() const
 	return this->_cfg;
 }
 
-void            HttpRequest::setUriArgument(const std::string& key,
-                                            const std::string& value)
-{
-    this->_uriArguments[key] = value;
-}
-
 void            HttpRequest::setBodyArgument(const std::string& key,
                                                 const std::string& value)
 {
     this->_bodyArguments[key] = value;
-}
-
-const std::map<std::string, std::string>&   HttpRequest::getBodyArguments() const
-{
-    return this->_bodyArguments;
 }
 
 const std::string&      HttpRequest::getBodyArgument(const std::string& key) const
@@ -68,6 +57,12 @@ const std::string&      HttpRequest::getBodyArgument(const std::string& key) con
         return (tmp);
     }
     return toFind->second;
+}
+
+
+const std::map<std::string, std::string>&   HttpRequest::getBodyArguments() const
+{
+    return this->_bodyArguments;
 }
 
 const std::string&     HttpRequest::getCommand() const
@@ -85,9 +80,15 @@ bool            HttpRequest::isUriRelative() const
     return this->_relativeUri;
 }
 
-const std::map<std::string, std::string>&   HttpRequest::getUriArguments() const
+
+const std::string      HttpRequest::getUriQuery() const
 {
-    return this->_uriArguments;
+    return "";
+}
+
+void                    HttpRequest::setUriQuery(const std::string&)
+{
+    ;
 }
 
 void            HttpRequest::clear()
