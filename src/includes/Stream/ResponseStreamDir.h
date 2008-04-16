@@ -15,12 +15,10 @@ class ResponseStreamDir : public zAPI::IResponseStream
         bool            good() const;
         std::iostream&  getContent();
         bool            completed() const;
-        Type            getType() const;
         size_t          getSize() const;
     private:
         std::stringstream*      _stream;
         DirectoryBrowser*       _browser;
-        Type                    _type;
         bool                    _good;
 };
 

@@ -9,14 +9,6 @@ namespace zAPI
     class   IResponseStream
     {
         public:
-            enum    Type
-            {
-                FileStream,
-                DirStream,
-                ErrorStream,
-                Generic
-            };
-
             /**
              *  The interface virtual destructor
              */
@@ -40,13 +32,6 @@ namespace zAPI
              *  @return whether the stream is good for i/o operations or not
              */
             virtual bool                good() const = 0;
-
-            /**
-             *  Returns the type of the underlying stream.
-             *  This type is defined by the inner enum Type of this very class
-             *  @return the type of the underlying stream
-             */
-            virtual Type                getType() const = 0;
 
             /**
              *  Returns the size of the stream (the number of caracters that you can read)

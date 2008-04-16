@@ -5,7 +5,7 @@
 #include "Stream/ErrorResponseStream.h"
 #include "Http/HttpResponse.h"
 
-ErrorResponseStream::ErrorResponseStream(int status, HttpRequest& request) : _request(request), _status(status), _type(ErrorStream)
+ErrorResponseStream::ErrorResponseStream(int status, HttpRequest& request) : _request(request), _status(status)
 {
     _message = HttpResponse::getResponseStatusMessage(_status);
     _content = new std::stringstream;
@@ -52,10 +52,10 @@ bool                ErrorResponseStream::completed() const
     return this->_content->eof();
 }
 
-zAPI::IResponseStream::Type   ErrorResponseStream::getType() const
-{
-    return this->_type;
-}
+//zAPI::IResponseStream::Type   ErrorResponseStream::getType() const
+//{
+//    return this->_type;
+//}
 
 int                     ErrorResponseStream::getStatus() const
 {

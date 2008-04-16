@@ -2,7 +2,7 @@
 #include "RootConfig.hpp"
 #include <iostream>
 
-ResponseStreamFile::ResponseStreamFile(IFile* file) : _file(file), _type(FileStream)
+ResponseStreamFile::ResponseStreamFile(IFile* file) : _file(file)
 {
 }
 
@@ -19,11 +19,6 @@ std::iostream&      ResponseStreamFile::getContent()
 bool                ResponseStreamFile::completed() const
 {
     return this->_file->eof();
-}
-
-zAPI::IResponseStream::Type   ResponseStreamFile::getType() const
-{
-    return this->_type;
 }
 
 size_t                  ResponseStreamFile::getSize() const

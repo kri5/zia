@@ -13,12 +13,10 @@ class ResponseStreamFile : public zAPI::IResponseStream
         ~ResponseStreamFile();
         std::iostream&          getContent();
         bool                    completed() const;
-        Type                    getType() const;
         size_t                  getSize() const;
         bool                    good() const;
     private:
         IFile*                  _file;
-        Type                    _type;
 };
 
 #endif // RESPONSESTREAMFILE_H__

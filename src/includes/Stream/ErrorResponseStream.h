@@ -17,7 +17,6 @@ class   ErrorResponseStream : public zAPI::IResponseStream
         std::iostream&              getContent();
         int                         getStatus() const;
         bool                        completed() const;
-        Type                        getType() const;
         size_t                      getSize() const;
         bool                        good() const;
     private:
@@ -27,7 +26,6 @@ class   ErrorResponseStream : public zAPI::IResponseStream
         int                         _status;
         std::string                 _message;
         std::stringstream*          _content;
-        Type                        _type;
 };
 
 

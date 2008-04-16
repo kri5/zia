@@ -1,6 +1,6 @@
 #include "Stream/ResponseStreamDir.h"
 
-ResponseStreamDir::ResponseStreamDir(const HttpRequest* req) : _type(DirStream)
+ResponseStreamDir::ResponseStreamDir(const HttpRequest* req)
 {
     _stream = new std::stringstream();
     //everything's done here :
@@ -29,10 +29,10 @@ bool            ResponseStreamDir::completed() const
     return this->_stream->eof();
 }
 
-zAPI::IResponseStream::Type   ResponseStreamDir::getType() const
-{
-    return this->_type;
-}
+//zAPI::IResponseStream::Type   ResponseStreamDir::getType() const
+//{
+//    return this->_type;
+//}
 
 size_t                  ResponseStreamDir::getSize() const
 {

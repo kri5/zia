@@ -15,7 +15,6 @@ class	ResponseStreamGeneric : public zAPI::IResponseStream
         std::iostream&      getContent();
         bool                completed() const;
         bool                good() const;
-        Type                getType() const;
         size_t              getSize() const;
 	private:
 		std::stringstream*	_stream;

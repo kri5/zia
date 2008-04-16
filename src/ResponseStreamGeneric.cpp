@@ -24,10 +24,10 @@ bool	ResponseStreamGeneric::good() const
 	return this->_stream->good();
 }
 
-zAPI::IResponseStream::Type	ResponseStreamGeneric::getType() const
-{
-	return IResponseStream::Generic;
-}
+//zAPI::IResponseStream::Type	ResponseStreamGeneric::getType() const
+//{
+//	return IResponseStream::Generic;
+//}
 
 size_t					ResponseStreamGeneric::getSize() const
 {
