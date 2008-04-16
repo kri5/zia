@@ -44,7 +44,6 @@ int         Init::start()
     if (this->checkConfig() == false)
         return EXIT_FAILURE;
     this->initModules();
-    this->initSSL();
     this->initSockets();
     this->initThreads();
 
@@ -156,14 +155,6 @@ void        Init::initModules()
     ModuleManager::getInstance().init(10); //FIXME : get thread number from conf.
     ModuleManager::getInstance().scanModuleDir();
     //ModuleManager::getInstance().initProcessContent();
-}
-
-/// Initialize the SSL features
-void        Init::initSSL()
-{
-  SSL_library_init(); // load encryption & hash algorithms for SSL
-  SSL_load_error_strings(); // load the error strings for good error reporting
-  Logger::getInstance() << Logger::Info << "SSL loaded successfully." << Logger::Flush;
 }
 
 void		Init::addWildcardVhosts()

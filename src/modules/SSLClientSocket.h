@@ -4,22 +4,23 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <iostream>
-#include "zia.h"
-#include "ClientSocket.h"
-#include "Logger.hpp"
+#include "API/IClientSocket.h"
 
-class SSLClientSocket : public ClientSocket
+class SSLClientSocket : public zAPI::IClientSocket
 {
   public:
     SSLClientSocket(int acceptedSocket);
     virtual ~SSLClientSocket();
     virtual int     send(const char *buf, int length) const;
+    virtual int     send(const std::string& buf, int length) const;
     virtual int     recv(char *buf, int length) const;
     virtual void    close(bool shutdown);
+    virtual int     getNativeSocket() const;
 
   protected:
-    SSL_CTX* ctx;
-    SSL* ssl;
+    SSL_CTX*        ctx;
+    SSL*            ssl;
+    int             listenSocket;
 
   private:
     void	logError() const;

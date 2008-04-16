@@ -43,6 +43,12 @@ namespace zAPI
              */
             virtual int send(const std::string& buf, int length) const = 0;
 
+            /**
+             * Get the underlying socket used for the client
+             * @return a socket identifier
+             */
+            virtual int	getNativeSocket() const = 0;
+
     };
 }
 

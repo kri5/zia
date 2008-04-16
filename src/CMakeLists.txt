@@ -9,7 +9,7 @@ ADD_DEFINITIONS(-DTIXML_USE_TICPP)
 INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR} includes/ ./)
 
 SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp 
-	Config.cpp Init.cpp SSLClientSocket.cpp Vhost.cpp
+	Config.cpp Init.cpp Vhost.cpp
 	Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp
 	MemoryManager.hpp ErrorMsg.cpp ZException.hpp
 	MutexLock.hpp AtExit.hpp Parser.cpp HttpParser.cpp HttpRequest.cpp
@@ -21,7 +21,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/Socket_win32.h includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
 	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
-	includes/API/IClientSocket.h includes/Init.h includes/Config.h includes/Sockets/SSLClientSocket.h includes/Network/Vhost.h
+	includes/API/IClientSocket.h includes/Init.h includes/Config.h includes/Network/Vhost.h
 	includes/Network/Address.h includes/Network/Port.h includes/Network/NetworkID.h includes/File/IFile.h includes/FileSystem/IFileSystem.h includes/File/File_win32.h includes/FileSystem/FileSystem_win32.h
 	includes/Time/ITime.h includes/Time/Time_win32.h includes/Workflow/Parser.h includes/Http/HttpParser.h includes/Http/HttpRequest.h includes/Threads/IThread.h
     includes/API/IHttpTransaction.h includes/API/IHttpRequest.h includes/API/IHttpResponse.h includes/API/IServerEvent.h includes/API/IModuleEvent.h
@@ -50,7 +50,7 @@ ELSE (WIN32)
 	SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic -ggdb")
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
 	LINK_DIRECTORIES(../libs/unix/)
-	SET(ZIAHTTPD_LIBS pthread ticpp dl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
+	SET(ZIAHTTPD_LIBS pthread ticpp dl efence ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
     #SET(ZIAHTTPD_LIBS ${ZIAHTTPD_LIBS} -lefence)
 ENDIF (WIN32)
 

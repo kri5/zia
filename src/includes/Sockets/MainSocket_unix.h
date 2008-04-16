@@ -6,7 +6,6 @@
 
 #include "Sockets/Socket_unix.h"
 #include "Sockets/ClientSocket_unix.h"
-#include "Sockets/SSLClientSocket.h"
 #include "Sockets/IMainSocket.h"
 #include "Network/NetworkID.h"
 #include "Network/Vhost.h"

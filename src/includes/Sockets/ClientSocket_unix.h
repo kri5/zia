@@ -37,6 +37,7 @@ class ClientSocket : public Socket, public zAPI::IClientSocket
         virtual int	    send(const char *buf, int length) const;
         virtual int 	send(const std::string& buf, int length) const;
         virtual int	    recv(char *buf, int length) const;
+        virtual int     getNativeSocket() const;
 
         static  int     countSockets();
     private:

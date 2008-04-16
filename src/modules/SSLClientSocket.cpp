@@ -1,12 +1,11 @@
-#include "Sockets/SSLClientSocket.h"
-
-#include "MemoryManager.hpp"
+#include "SSLClientSocket.h"
 
 /// Initializing SSL socket and doing handshake with the client.
-SSLClientSocket::SSLClientSocket(int acceptedSocket) : ClientSocket(acceptedSocket)
+SSLClientSocket::SSLClientSocket(int acceptedSocket)
 {
   int iResult;
   bool no_error = true;
+  listenSocket = acceptedSocket;
 
   // Initializing the SSL Method
   ctx = SSL_CTX_new(SSLv23_server_method());
@@ -16,6 +15,7 @@ SSLClientSocket::SSLClientSocket(int acceptedSocket) : ClientSocket(acceptedSock
     return;
   }
 
+  //FIXME we must get the certificates path from the configuration!
   // Load the certificate and the private key
   if (SSL_CTX_use_certificate_file(ctx, "ssl/server.crt", SSL_FILETYPE_PEM) < 1)
   {
@@ -76,6 +76,11 @@ SSLClientSocket::~SSLClientSocket()
   SSL_CTX_free(ctx);
 }
 
+int     SSLClientSocket::send(const std::string& buf, int length) const
+{
+    send(buf.c_str(), buf.size());
+}
+
 int     SSLClientSocket::send(const char *buf, int length) const
 {
   bool no_error = true;
@@ -90,7 +95,7 @@ int     SSLClientSocket::send(const char *buf, int length) const
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
       case SSL_ERROR_WANT_WRITE:
-	Logger::getInstance() << Logger::Debug << "SSL_write: renegociating session." << Logger::Flush;
+	//Logger::getInstance() << Logger::Debug << "SSL_write: renegociating session." << Logger::Flush;
 	break;
       case SSL_ERROR_WANT_CONNECT:
       case SSL_ERROR_WANT_ACCEPT:
@@ -121,7 +126,7 @@ int     SSLClientSocket::recv(char *buf, int length) const
       case SSL_ERROR_NONE:
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
-	Logger::getInstance() << Logger::Debug << "SSL_read: renegociating session." << Logger::Flush;
+	//Logger::getInstance() << Logger::Debug << "SSL_read: renegociating session." << Logger::Flush;
 	break;
       case SSL_ERROR_WANT_WRITE:
       case SSL_ERROR_WANT_CONNECT:
@@ -140,10 +145,16 @@ int     SSLClientSocket::recv(char *buf, int length) const
   return iResult;
 }
 
+//FIXME This method doesn't exist anymore in the IClientSocket interface!
 void    SSLClientSocket::close(bool shutdown)
 {
   SSL_shutdown(ssl);
-  ClientSocket::close(shutdown);
+  //IClientSocket::close(shutdown);
+}
+
+int     SSLClientSocket::getNativeSocket() const
+{
+    return listenSocket;
 }
 
 /// Get and send errors (as strings) to the logger.
