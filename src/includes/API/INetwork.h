@@ -41,7 +41,7 @@ namespace zAPI
              *  @param length the datas length
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onReceive(char* buf, size_t length) = 0;
+            virtual ChainStatus     onReceive(const char* buf, size_t length) = 0;
 
             /**
              *  The send event.
@@ -52,7 +52,7 @@ namespace zAPI
              *  @param length the datas length
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onSend(char* buf, size_t length) = 0;
+            virtual ChainStatus     onSend(const char* buf, size_t length) = 0;
     };
 }
 

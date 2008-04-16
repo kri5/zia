@@ -42,15 +42,17 @@ zAPI::IClientSocket*        ModSSL::call(zAPI::IModule::Event event, SOCKET sock
 
 zAPI::IClientSocket*        ModSSL::onAccept(SOCKET socket)
 {
-    return new SSLClientSocket(socket); 
+    std::cout << "onAcceptSSL" << std::endl;
+    //return new SSLClientSocket(socket); 
+    return NULL;
 }
 
-zAPI::IModule::ChainStatus  ModSSL::onReceive(char* buf, size_t length)
+zAPI::IModule::ChainStatus  ModSSL::onReceive(const char* buf, size_t length)
 {
     return zAPI::IModule::CONTINUE;
 }
 
-zAPI::IModule::ChainStatus  ModSSL::onSend(char* buf, size_t length)
+zAPI::IModule::ChainStatus  ModSSL::onSend(const char* buf, size_t length)
 {
     return zAPI::IModule::CONTINUE;
 }
