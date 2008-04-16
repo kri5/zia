@@ -4,7 +4,7 @@
 #include "Sockets/MainSocket_unix.h"
 #include "ZException.hpp"
 #include "Network/Vhost.h"
-#include "API/IModuleManager.h"
+#include "Modules/IModuleManager.h"
 #include "Modules/ModuleManager.h"
 
 #include "MemoryManager.hpp"

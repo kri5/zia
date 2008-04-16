@@ -6,9 +6,9 @@
 #include <string>
 #include "Logger.hpp"
 #include "Singleton.hpp"
+#include "Modules/IModuleManager.h"
 
 // API
-#include "API/IModuleManager.h"
 #include "API/IModule.h"
 #include "API/IModuleInfo.h"
 #include "API/IModule.h"

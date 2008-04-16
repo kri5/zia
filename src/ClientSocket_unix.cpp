@@ -3,7 +3,7 @@
 #include "Sockets/ClientSocket_unix.h"
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
-#include "API/IModuleManager.h"
+#include "Modules/IModuleManager.h"
 #include "API/IModule.h"
 #include "Modules/ModuleManager.h"
 
