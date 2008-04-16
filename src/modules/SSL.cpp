@@ -26,6 +26,7 @@ ModSSL::ModSSL()
     std::cout << "ModSSL is initializing..." << std::endl;
     SSL_library_init(); // load encryption & hash algorithms for SSL
     SSL_load_error_strings(); // load the error strings for good error reporting
+    std::cout << "Initialized." << std::endl;
 }
 
 ModSSL::~ModSSL()

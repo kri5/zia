@@ -21,10 +21,10 @@ class   ModuleInfo : public zAPI::IModuleInfo
         void                                        addSupportedHook(zAPI::IModule::Hook);
         const std::vector<zAPI::IModule::Hook>&     getSupportedHooks() const;
     protected:
-        zAPI::create_t*                             create;
-        zAPI::destroy_t*                            destroy;
-        zAPI::name_t*                               name;
-        zAPI::version_t*                            version;
+        zAPI::create_t                              create;
+        zAPI::destroy_t                             destroy;
+        zAPI::name_t                                name;
+        zAPI::version_t                             version;
         std::string                                 _name;
         IDynLib*                                    _module;
         zAPI::IModule*                              _instance;

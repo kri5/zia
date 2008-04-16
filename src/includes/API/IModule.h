@@ -150,14 +150,14 @@ namespace zAPI
      * This defines a function pointer to the right type.
      * This enhance code appearence by preventing you to cast a void* function pointer at every call
      */
-    /// Defines a pointer to create() function, which return a IModule*
-    typedef IModule*    create_t();
-    /// Defines a pointer to destroy() function, which takes a IModule* as a param.
-    typedef void        destroy_t(IModule*);
-    /// Defines a pointer to name() function, which return the module name as a string
-    typedef std::string name_t();
-    /// define a pointer to version() function, which return the api's version the module is maid for, as an integer.
-    typedef float       version_t();
+    /// Defines a function pointer for create(), which return a IModule*
+    typedef IModule*    (*create_t)();
+    /// Defines a function pointer for destroy(), which takes a IModule* as a param.
+    typedef void        (*destroy_t)(IModule*);
+    /// Defines a function pointer for name(), which return the module name as a string
+    typedef std::string (*name_t)();
+    /// define a function pointer for version(), which return the api's version the module is maid for, as an integer.
+    typedef float       (*version_t)();
 }
 
 #endif // IMODULE_H

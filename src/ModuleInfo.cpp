@@ -1,15 +1,18 @@
 #include "NastyCast.hpp"
 #include "zia.h"
 #include "Modules/ModuleInfo.h"
+#include <iostream>
+
+#define LOAD_SYMBOL(name) *(void **)(&name) = module->sym(#name)
 
 ModuleInfo::ModuleInfo(IDynLib* module, const std::string& filename) : _module(module), _fileName(filename)
 {
-    name = nasty_cast<void*, zAPI::name_t*>(module->sym("name"));
-    destroy = nasty_cast<void*, zAPI::destroy_t*>(module->sym("destroy"));
-    create = nasty_cast<void*, zAPI::create_t*>(module->sym("create"));
-    version = nasty_cast<void*, zAPI::version_t*>(module->sym("version"));
-    _instance = create();
-    _name = name();
+    LOAD_SYMBOL(name);
+    LOAD_SYMBOL(destroy);
+    LOAD_SYMBOL(create);
+    LOAD_SYMBOL(version);
+    _instance = (*create)();
+    _name = (*name)();
 }
 
 zAPI::IModule*          ModuleInfo::getInstance() const
@@ -35,7 +38,7 @@ ModuleInfo::~ModuleInfo()
 
 float           ModuleInfo::getVersion() const
 {
-    return  this->version();
+    return this->version();
 }
 
 void            ModuleInfo::addSupportedHook(zAPI::IModule::Hook hook)
