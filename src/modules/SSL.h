@@ -11,8 +11,8 @@ class ModSSL : public AbstractModule, public zAPI::INetwork
         virtual ~ModSSL();
 
         zAPI::IClientSocket*        onAccept(SOCKET socket);
-        zAPI::IModule::ChainStatus  onReceive(char* buf, size_t length);
-        zAPI::IModule::ChainStatus  onSend(char* buf, size_t length);
+        zAPI::IModule::ChainStatus  onReceive(const char* buf, size_t length);
+        zAPI::IModule::ChainStatus  onSend(const char* buf, size_t length);
         int                         getPriority(zAPI::IModule::Event event) const;
         zAPI::IClientSocket*        call(zAPI::IModule::Event, SOCKET);
 };
