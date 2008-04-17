@@ -66,7 +66,7 @@ void		Server::run()
     int					ret;
 
     //Hooks : onServerStart
-    ModuleManager::getInstance().call(zAPI::IModule::ServerEventHook, &zAPI::IServerEvent::onServerStart);
+    ModuleManager::getInstance().call(zAPI::IModule::ServerEventHook, zAPI::IModule::onServerStartEvent);
     Logger::getInstance() << Logger::Info << "All sockets initialized, starting main loop" << Logger::Flush;
     pfds = new struct pollfd[size];
     while (true)
@@ -94,7 +94,7 @@ void		Server::run()
     }
     delete[]	pfds;
     //Hooks : onServerStop
-    ModuleManager::getInstance().call(zAPI::IModule::ServerEventHook, &zAPI::IServerEvent::onServerStop);
+    ModuleManager::getInstance().call(zAPI::IModule::ServerEventHook, zAPI::IModule::onServerStopEvent);
 }
 
 void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) const

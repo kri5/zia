@@ -5,7 +5,6 @@
 #include "MemoryManager.hpp"
 #include "Modules/IModuleManager.h"
 #include "API/IModule.h"
-#include "API/INetwork.h"
 #include "Modules/ModuleManager.h"
 
 int ClientSocket::_nbSockets = 0;
@@ -31,7 +30,7 @@ ClientSocket::~ClientSocket()
 
 int             ClientSocket::send(const char *buf, int length) const
 {
-    ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, buf, length, &zAPI::INetwork::onSend);
+    ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onSendEvent, buf, length);
     int iResult = ::send(listenSocket, buf, length, MSG_NOSIGNAL);
 
 	if (iResult == SOCKET_ERROR)
@@ -63,7 +62,7 @@ int             ClientSocket::recv(char *buf, int length) const
 	if (iResult == SOCKET_ERROR)
         Logger::getInstance() << Logger::Error << "Receive error : " << strerror(errno) << Logger::Flush;
     else
-        ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, buf, iResult, &zAPI::INetwork::onReceive);
+        ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onReceiveEvent, buf, iResult);
 	return (iResult);
 }
 

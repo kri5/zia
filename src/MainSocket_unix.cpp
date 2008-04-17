@@ -8,7 +8,6 @@
 #include "Modules/ModuleManager.h"
 
 #include "MemoryManager.hpp"
-#include "API/INetwork.h"
 
 MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : _netId(netId), _vhosts(vhosts)
 {
@@ -62,7 +61,7 @@ zAPI::IClientSocket*	MainSocket::accept()
         Logger::getInstance() << Logger::Warning << "Can't accept client (" << strerror(errno) << ')' << Logger::Flush;
 		//throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
 	}
-    zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, acceptSocket, &zAPI::INetwork::onAccept);
+    zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onAcceptEvent, acceptSocket);
     if (ret == NULL)
         ret = new ClientSocket(acceptSocket);
 	return (ret);

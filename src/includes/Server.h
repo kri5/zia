@@ -10,7 +10,6 @@
 #include "Sockets/MainSocket.h"
 #include "Network/Vhost.h"
 #include "Workflow/Pool.h"
-#include "API/IServerEvent.h"
 
 class	Server
 {
