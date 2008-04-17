@@ -82,6 +82,11 @@ int                     HttpResponse::getResponseStatus() const
     return this->_responseStatus;
 }
 
+void                    HttpResponse::setResponseValue(const std::string& value)
+{
+    this->_responseValue = value;
+}
+
 const std::string&      HttpResponse::getResponseValue() const
 {
     return this->_responseValue;

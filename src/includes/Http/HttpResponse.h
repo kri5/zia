@@ -31,6 +31,7 @@ class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
         int                                     getResponseStatus() const;
 
         const std::string&                      getResponseValue() const;
+        void                                    setResponseValue(const std::string&);
         static const char*                      getResponseStatusMessage(int key);
 
         void                                    appendStream(zAPI::IResponseStream*);

@@ -31,6 +31,11 @@ namespace zAPI
             virtual int                             getResponseStatus() const = 0;
 
             /**
+             *  Sets the request's response value
+             *  @param value The reponse value (a text describing how the request has been handled)
+             */
+            virtual void                            setResponseValue(const std::string& value) = 0;
+            /**
              *  Returns a description of the HttpResponse status code
              *  @return status code's description
              */
