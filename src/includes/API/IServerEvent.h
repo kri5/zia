@@ -13,7 +13,7 @@ namespace zAPI
      *  </ul>
      */
     /// Base interface for modules who wants to hook on server events.
-    class IServerEvent : public virtual IModule
+    class IServerEvent
     {
         public:
 
@@ -27,14 +27,14 @@ namespace zAPI
              *  This method will be called just after the server has been launched.
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onServerStart() = 0;
+            virtual IModule::ChainStatus     onServerStart() = 0;
 
             /**
              *  The serverStop event.<br>
              *  This method will be called before the server stops.
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onServerStop() = 0;
+            virtual IModule::ChainStatus     onServerStop() = 0;
     };
 }
 

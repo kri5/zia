@@ -1,10 +1,10 @@
 #ifndef MODSSL_H
 #define MODSSL_H
 
-#include "Modules/AbstractModule.h"
+#include "API/IModule.h"
 #include "API/INetwork.h"
 
-class ModSSL : public AbstractModule, public zAPI::INetwork
+class ModSSL : public zAPI::IModule, public zAPI::INetwork
 {
     public:
         ModSSL();

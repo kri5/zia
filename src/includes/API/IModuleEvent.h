@@ -1,8 +1,8 @@
 #ifndef __IMODULEEVENT_H__
 # define __IMODULEEVENT_H__
 
-#include "IModuleInfo.h"
 #include "IModule.h"
+#include "IModuleInfo.h"
 
 namespace zAPI
 {
@@ -12,7 +12,7 @@ namespace zAPI
      *  The second one (onUnload) will be called after a module has been unloaded.
      */
     /// Interface to implement to hook a modules for modules evenement
-    class IModuleEvent : public virtual IModule
+    class IModuleEvent
     {
         public:
             /**
@@ -26,7 +26,7 @@ namespace zAPI
              *  @param module the module that has just been loaded
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onLoadModule(IModuleInfo* module) = 0;
+            virtual IModule::ChainStatus    onLoadModule(IModuleInfo* module) = 0;
 
             /**
              *  The unloadModule event
@@ -34,7 +34,7 @@ namespace zAPI
              *  @param module the module that just has been uloaded
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onUnloadModule(IModuleInfo* module) = 0;
+            virtual IModule::ChainStatus    onUnloadModule(IModuleInfo* module) = 0;
     };
 }
 

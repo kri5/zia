@@ -90,60 +90,6 @@ namespace zAPI
              */
             virtual int                     getPriority(Event event) const = 0;
 
-            /**
-             *  Calls the right event method deppending on the event passed in parameter
-             *  @param event the event being called
-             *  @return ChainStatus
-             */
-            //virtual IModule::ChainStatus    call(Event event) = 0;
-
-            /**
-             *  Calls the right event method deppending on the event passed in parameter
-             *  @param event the event being called
-             *  @param moduleInfo a IModuleInfo
-             *  @return ChainStatus
-             */
-            //virtual IModule::ChainStatus    call(Event event, IModuleInfo* moduleInfo) = 0;
-
-            /**
-             *  Calls the right event method deppending on the event passed in parameter
-             *  @param event the event being called
-             *  @param socket the currently used socket
-             *  @return the new IClientSocket that will be used for this request
-             */
-            //virtual IClientSocket*          call(Event event, SOCKET socket) = 0;
-
-            /**
-             *  Calls the right event method deppending on the event passed in parameter
-             *  @param event the event being called
-             *  @param buf the buffer containing some of the response content data
-             *  @param length the buffer's length
-             *  @return ChainStatus
-             */
-            //virtual IModule::ChainStatus    call(Event event, const char* buf, size_t length) = 0;
-
-            /**
-             *  Calls the right event method deppending on the event passed in parameter
-             *  @param event the event being called
-             *  @param request the current request
-             *  @param response the current response
-             *  @return ChainStatus
-             */
-            //virtual IModule::ChainStatus    call(Event event, IHttpRequest* request, IHttpResponse* response) = 0;
-
-            /**
-             *  Calls the right event method deppending on the event passed in parameter
-             *  This one is only for calling processContent without breaking API's conception.
-             *  @param request the current request
-             *  @param response the current response
-             *  @param buf a buffer containing some of the response content data
-             *  @param length the buffer's length
-             *  @param tab the IModule instances which subscribed to processContent event
-             *  @param index the current module in the IModule tab, to know which module to read in
-             *  @return ChainStatus
-             */
-            //virtual size_t                  call(IHttpRequest* request, IHttpResponse* response, char* buf, size_t length, const std::vector<IModule*>& tab, unsigned int index) = 0;
-
     };
 
     /*

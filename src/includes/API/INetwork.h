@@ -13,7 +13,7 @@ namespace zAPI
      *  The third one (onSend) allows you to access the data to be sent.
      */
     /// Interface for module who wants to hook on Network events
-    class INetwork : public virtual IModule
+    class INetwork
     {
         public:
             /**
@@ -41,7 +41,7 @@ namespace zAPI
              *  @param length the datas length
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onReceive(const char* buf, size_t length) = 0;
+            virtual IModule::ChainStatus    onReceive(const char* buf, size_t length) = 0;
 
             /**
              *  The send event.
@@ -52,7 +52,7 @@ namespace zAPI
              *  @param length the datas length
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onSend(const char* buf, size_t length) = 0;
+            virtual IModule::ChainStatus    onSend(const char* buf, size_t length) = 0;
     };
 }
 

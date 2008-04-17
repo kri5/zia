@@ -17,7 +17,7 @@ namespace zAPI
      *  </ul>
      */
     /// Base interface for modules who wants to hook on response sending events.
-    class ISendResponse : public virtual IModule
+    class ISendResponse
     {
         public:
 
@@ -26,9 +26,9 @@ namespace zAPI
              */
             virtual ~ISendResponse() {}
 
-            virtual ChainStatus onPreSend(IHttpRequest*, IHttpResponse*) = 0;
-            virtual size_t      onProcessContent(IHttpRequest*, IHttpResponse*, char*, size_t, std::vector<zAPI::IModule*>, unsigned int) = 0;
-            virtual ChainStatus onPostSend(IHttpRequest*, IHttpResponse*) = 0;
+            virtual IModule::ChainStatus    onPreSend(IHttpRequest*, IHttpResponse*) = 0;
+            virtual size_t                  onProcessContent(IHttpRequest*, IHttpResponse*, char*, size_t, std::vector<zAPI::IModule*>, unsigned int) = 0;
+            virtual IModule::ChainStatus    onPostSend(IHttpRequest*, IHttpResponse*) = 0;
     };
 }
 

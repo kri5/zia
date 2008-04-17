@@ -72,8 +72,17 @@ bool            ModuleManager::load(const std::string& filename)
     this->_moduleInstances.back().count = 0;
     RefCounter<zAPI::IModuleInfo*>* refCountPtr = &(this->_moduleInstances.back()); //Haha ste loose y a qu'un seul niveau de template :'(
 
-    // Identifying which "event" class the module implement.
     zAPI::IModule* ptr = mi->getInstance();
+    // Checking if the module inherit from IModule.
+    if (!dynamic_cast<zAPI::IModule*>(ptr))
+    {
+        delete ptr;
+        delete library;
+        Logger::getInstance() << Logger::Error << "Module does not inherit from IModule" << Logger::Flush; 
+        return false;
+    }
+
+    // Identifying which "event" class the module implement.
     if (dynamic_cast<zAPI::IServerEvent*>(ptr))
         this->pushModule(zAPI::IModule::ServerEventHook, refCountPtr);
     if (dynamic_cast<zAPI::IModuleEvent*>(ptr))

@@ -16,7 +16,7 @@ namespace zAPI
      *  Both methods receive two parameters : a IHttpRequest* and a IHttpResponse*.
      */
     /// Interface used for response hook
-    class IBuildResponse : public virtual IModule
+    class IBuildResponse
     {
         public:
 
@@ -32,7 +32,7 @@ namespace zAPI
              *  @param reponse a IHttpResponse
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onPreBuild(IHttpRequest* request, IHttpResponse* response) = 0;
+            virtual IModule::ChainStatus    onPreBuild(IHttpRequest* request, IHttpResponse* response) = 0;
 
             /**
              *  The postBuild event.
@@ -41,7 +41,7 @@ namespace zAPI
              *  @param response a IHttpResponse
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onPostBuild(IHttpRequest* request, IHttpResponse* response) = 0;
+            virtual IModule::ChainStatus    onPostBuild(IHttpRequest* request, IHttpResponse* response) = 0;
     };
 }
 

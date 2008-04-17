@@ -16,7 +16,7 @@ namespace zAPI
      *  </ul>
      */
     /// Base interface for modules who wants to hook on main workflow events.
-    class IWorkflow : public virtual IModule
+    class IWorkflow
     {
         public:
             /**
@@ -32,7 +32,7 @@ namespace zAPI
              *  @param response the IHttpResponse of the transaction
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onBegin(IHttpRequest* request, IHttpResponse* response) = 0;
+            virtual IModule::ChainStatus    onBegin(IHttpRequest* request, IHttpResponse* response) = 0;
 
             /**
              *  The workflow end event.<br>
@@ -42,7 +42,7 @@ namespace zAPI
              *  @param response the IHttpResponse of the transaction
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onEnd(IHttpRequest* request, IHttpResponse* response) = 0;
+            virtual IModule::ChainStatus    onEnd(IHttpRequest* request, IHttpResponse* response) = 0;
 
             /**
              *  The workflow error event.<br>
@@ -51,7 +51,7 @@ namespace zAPI
              *  @param response the IHttpResponse of the transaction
              *  @return a ChainStatus
              */
-            virtual ChainStatus     onError(IHttpRequest*, IHttpResponse*) = 0;
+            virtual IModule::ChainStatus    onError(IHttpRequest*, IHttpResponse*) = 0;
     };
 }
 

@@ -15,7 +15,7 @@ namespace zAPI
      *  </ul>
      */
     /// Describe requirements for implementing IReceiveRequest in a module
-    class IReceiveRequest : public virtual IModule
+    class IReceiveRequest
     {
         public:
             /**
@@ -30,7 +30,7 @@ namespace zAPI
              *  @param response the IHttpResponse of the transaction
              *  @return a ChainStatus
              */
-            virtual ChainStatus onPreReceive(IHttpRequest* request, IHttpResponse* response) = 0;
+            virtual IModule::ChainStatus    onPreReceive(IHttpRequest* request, IHttpResponse* response) = 0;
 
             /**
              *  The postReceive event.<br>
@@ -39,7 +39,7 @@ namespace zAPI
              *  @param response the IHttpResponse of the transaction
              *  @return a ChainStatus
              */
-            virtual ChainStatus onPostReceive(IHttpRequest* request, IHttpResponse* response) = 0;
+            virtual IModule::ChainStatus    onPostReceive(IHttpRequest* request, IHttpResponse* response) = 0;
     };
 }
 

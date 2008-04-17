@@ -49,11 +49,13 @@ zAPI::IClientSocket*        ModSSL::onAccept(SOCKET socket)
 
 zAPI::IModule::ChainStatus  ModSSL::onReceive(const char* buf, size_t length)
 {
+    std::cout << "onReceive" << std::endl;
     return zAPI::IModule::CONTINUE;
 }
 
 zAPI::IModule::ChainStatus  ModSSL::onSend(const char* buf, size_t length)
 {
+    std::cout << "onSend" << std::endl;
     return zAPI::IModule::CONTINUE;
 }
 
