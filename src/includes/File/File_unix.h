@@ -28,6 +28,7 @@ class File : public IFile
         void                open();
         void                close();
         std::iostream*      getStream();
+        size_t              read(char*, size_t);
 	private:
 		std::string		    _name;
         std::string         _filePath;

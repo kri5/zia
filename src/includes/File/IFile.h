@@ -32,6 +32,7 @@ class	IFile
         virtual void                    open() = 0;
         virtual void                    close() = 0;
         virtual std::streamsize         get(char* buff, size_t len) = 0;
+        virtual size_t                  read(char* buff, size_t len) = 0;
         virtual bool                    good() const = 0;
         virtual bool                    eof() const = 0;
         virtual std::iostream*          getStream() = 0;

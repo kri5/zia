@@ -114,3 +114,10 @@ std::iostream*       File::getStream()
     return this->_stream;
 }
 
+size_t              File::read(char* buff, size_t size)
+{
+    if (this->_stream == NULL)
+        return 0;
+    this->_stream->read(buff, size);
+    return this->_stream->gcount();
+}

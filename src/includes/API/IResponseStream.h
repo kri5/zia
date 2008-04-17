@@ -14,13 +14,7 @@ namespace zAPI
              */
             virtual ~IResponseStream(){}
 
-            /**
-             *  Return the underlying (std::iostream) stream
-             *  that is used for the content
-             *  @return the underlaying stream
-             */
-            virtual std::iostream&      getContent() = 0;
-
+            virtual size_t              read(char* buff, size_t size) = 0;
             /**
              *  Returns wheter we are a the end of the stream or not
              *  @return stream position status

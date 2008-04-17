@@ -11,7 +11,7 @@ class ResponseStreamFile : public zAPI::IResponseStream
     public:
         ResponseStreamFile(IFile*);
         ~ResponseStreamFile();
-        std::iostream&          getContent();
+        size_t                  read(char*, size_t);
         bool                    completed() const;
         size_t                  getSize() const;
         bool                    good() const;

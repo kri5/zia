@@ -42,9 +42,10 @@ ErrorResponseStream::~ErrorResponseStream() throw()
     delete this->_content;
 }
 
-std::iostream&      ErrorResponseStream::getContent()
+size_t              ErrorResponseStream::read(char* buff, size_t size)
 {
-    return *this->_content;
+    this->_content->read(buff, size);
+    return this->_content->gcount();
 }
 
 bool                ErrorResponseStream::completed() const

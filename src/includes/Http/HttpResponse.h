@@ -6,9 +6,9 @@
 #endif
 
 #include <map>
-#include <sstream>
 #include <queue>
 
+#include "API/IResponseStream.h"
 #include "File/IFile.h"
 #include "HttpTransaction.h"
 #include "API/IResponseStream.h"
@@ -39,8 +39,7 @@ class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
         void                                    setError(ErrorResponseStream*);
         size_t                                  getContentLength() const;
 
-        void                                    setCurrentStream(std::iostream*);
-        std::iostream&                          getCurrentStream();
+        zAPI::IResponseStream*                  getCurrentStream();
 		void							        skipToSend(zAPI::IResponseStream* stream, bool flushStream, bool headerInStream);
 		bool							        isInSendMode() const;
 		bool							        headerInStream() const;

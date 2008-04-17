@@ -55,17 +55,11 @@ namespace zAPI
             virtual std::queue<IResponseStream*>&   getStreams() = 0;
 
             /**
-             *  Sets the current stream providing the response content
-             *  @param stream the stream to set current
-             */
-            virtual void                            setCurrentStream(std::iostream* stream) = 0;
-
-            /**
              *  Returns the current stream providing response content data
              *
              *  @return  the current stream
              */
-            virtual std::iostream&                  getCurrentStream() = 0;
+            virtual IResponseStream*                getCurrentStream() = 0;
 
             /**
              *  This method will allow you to skip to response sending(skip every step(s) between this event and

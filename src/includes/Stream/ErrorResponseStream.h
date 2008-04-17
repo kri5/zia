@@ -14,7 +14,7 @@ class   ErrorResponseStream : public zAPI::IResponseStream
         ErrorResponseStream(int status, HttpRequest& request);
         ErrorResponseStream(int status, HttpRequest* request);
         virtual ~ErrorResponseStream() throw();
-        std::iostream&              getContent();
+        size_t                      read(char*, size_t);
         int                         getStatus() const;
         bool                        completed() const;
         size_t                      getSize() const;

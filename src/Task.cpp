@@ -291,14 +291,9 @@ bool    Task::sendResponse()
     std::queue<zAPI::IResponseStream*>& streamQueue = this->_res->getStreams();
     char    buff[1024];
     size_t  size;
-    zAPI::IResponseStream*    respStream;
 
     while (streamQueue.empty() == false)
     {
-        respStream = streamQueue.front();
-        std::iostream& stream = respStream->getContent();
-        this->_res->setCurrentStream(&stream);
-        streamQueue.pop();
         do
         {
             size = ModuleManager::getInstance().processContent(this->_req, this->_res, buff, 1024);
@@ -306,9 +301,9 @@ bool    Task::sendResponse()
             if (this->sendBuffer() == false)
                 return false;
         } while (size == 1024);
-        delete respStream;
+        delete streamQueue.front();
+        streamQueue.pop();
     }
-    //this->_socket->close(true);
     ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPostSendEvent, this->_req, this->_res, &zAPI::ISendResponse::onPostSend);
     return true;
 }

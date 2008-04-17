@@ -13,7 +13,7 @@ class ResponseStreamDir : public zAPI::IResponseStream
         ResponseStreamDir(const HttpRequest*);
         ~ResponseStreamDir();
         bool            good() const;
-        std::iostream&  getContent();
+        size_t          read(char*, size_t);
         bool            completed() const;
         size_t          getSize() const;
     private:

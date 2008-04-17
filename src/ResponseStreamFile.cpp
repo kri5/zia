@@ -4,6 +4,7 @@
 
 ResponseStreamFile::ResponseStreamFile(IFile* file) : _file(file)
 {
+    _file->open();
 }
 
 ResponseStreamFile::~ResponseStreamFile()
@@ -11,9 +12,9 @@ ResponseStreamFile::~ResponseStreamFile()
     delete this->_file;
 }
 
-std::iostream&      ResponseStreamFile::getContent()
+size_t                  ResponseStreamFile::read(char* buff, size_t size)
 {
-    return *(this->_file->getStream());
+    return this->_file->read(buff, size);
 }
 
 bool                ResponseStreamFile::completed() const

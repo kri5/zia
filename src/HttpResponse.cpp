@@ -103,17 +103,15 @@ std::queue<zAPI::IResponseStream*>&   HttpResponse::getStreams()
     return this->_streams;
 }
 
-std::iostream&          HttpResponse::getCurrentStream()
+zAPI::IResponseStream*    HttpResponse::getCurrentStream()
 {
-    assert(this->_currentStream != NULL);
-    return *(this->_currentStream);
+    if (this->_streams.size() > 0)
+        return this->_streams.front();
+    return NULL;
 }
 
-void                    HttpResponse::setCurrentStream(std::iostream* stream)
-{
-    this->_currentStream = stream;
-}
-
+//FIXME:
+#include <iostream>
 void                    HttpResponse::setError(ErrorResponseStream* error)
 {
     this->_responseStatus = error->getStatus();

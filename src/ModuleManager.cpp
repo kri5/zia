@@ -290,10 +290,7 @@ void        ModuleManager::removeModuleList(unsigned int reqId)
 size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res, char* buff, size_t size)
 {
     if (this->_taskModulesList[req->getRequestId()] == NULL)
-    {
-        res->getCurrentStream().read(buff, size);
-        return res->getCurrentStream().gcount();
-    }
+        return res->getCurrentStream()->read(buff, size);
 
     if (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].size() > 0)
     {
@@ -310,8 +307,7 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
             getInstance())->onProcessContent(req, res, buff, size, tab, 0);
         return ret;
     }
-    res->getCurrentStream().read(buff, size);
-    return res->getCurrentStream().gcount();
+    return res->getCurrentStream()->read(buff, size);
 }
 
 //zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event)

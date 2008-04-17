@@ -19,9 +19,10 @@ bool            ResponseStreamDir::good() const
     return this->_good;
 }
 
-std::iostream&  ResponseStreamDir::getContent()
+size_t              ResponseStreamDir::read(char* buff, size_t size)
 {
-    return *this->_stream;
+    this->_stream->read(buff, size);
+    return this->_stream->gcount();
 }
 
 bool            ResponseStreamDir::completed() const
