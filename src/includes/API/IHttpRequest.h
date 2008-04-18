@@ -47,25 +47,25 @@ namespace zAPI
             virtual const std::string                           getUriQuery() const = 0;
 
             /**
-             *  Will append some arguments to the current argument list.
-             *  @param str The new argument(s) just received
+             *  Sets a body argument with a key / value pair passed in paramater
+             *  @param key a body argument key
+             *  @param value a body argument value
              */
-            virtual void                                        appendBodyArgument(const std::string& str) = 0;
+            virtual void                                        setBodyArgument(const std::string& key, const std::string& value) = 0;
 
             /**
-             *  Will return the complete list of arguments you append with appendBodyArgument()
-             *  @return A reference to string, containing every body arguments you append.
+             *  Returns a map containing all the body arguments
+             *  @return the body arguments map
              */
-            virtual const std::string&                          getBodyArguments() const = 0;
+            virtual const std::map<std::string, std::string>&   getBodyArguments() const = 0;
 
             /**
-             *  Will append a new file to the list of files uploaded by the client in a POST request.
-             *  @param name The file name.
-             *  @param file The path to the temporary file
+             *  Returns the body argument value corresponding to the key passed in parameter.
+             *  If the key is not found, NULL will be returned instead
+             *  @param key a boby argument key
+             *  @return a body argument value
              */
-            virtual void                                        appendFile(const std::string& name, const std::string& file) = 0;
-
-            virtual const std::map<std::string, std::string>&   getFilesList() const;
+            virtual const std::string&                          getBodyArgument(const std::string& key) const = 0;
 
             /**
              *  Sets a custom parameter that will not be used in the server.
