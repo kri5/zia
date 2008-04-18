@@ -253,10 +253,12 @@ bool    Task::buildResponse()
             this->_res->setError(new ErrorResponseStream(500, this->_req));
             return true;
         }
-        this->_res->setHeaderOption("Content-Type", "text/html");
+	    if (this->_res->headerInStream() == false)
+            this->_res->setHeaderOption("Content-Type", "text/html");
         this->_res->appendStream(stream);
     }
-    this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());
+	if (this->_res->headerInStream() == false)
+        this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());
     return true;
 }
 
@@ -305,6 +307,7 @@ bool    Task::sendResponse()
         streamQueue.pop();
     }
     ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPostSendEvent, this->_req, this->_res, &zAPI::ISendResponse::onPostSend);
+    std::cout << "Task sent" << std::endl;
     return true;
 }
 

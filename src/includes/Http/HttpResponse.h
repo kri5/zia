@@ -41,6 +41,7 @@ class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
 
         zAPI::IResponseStream*                  getCurrentStream();
 		void							        skipToSend(zAPI::IResponseStream* stream, bool flushStream, bool headerInStream);
+        void                                    setHeaderInStream(bool);
 		bool							        isInSendMode() const;
 		bool							        headerInStream() const;
 

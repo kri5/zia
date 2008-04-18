@@ -73,6 +73,8 @@ namespace zAPI
              *                          (if not, double \\r\\n will automatically be added)
              */
             virtual void                            skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream) = 0;
+
+            virtual void                            setHeaderInStream(bool headerInStream) = 0;
     };
 }
 

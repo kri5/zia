@@ -147,6 +147,11 @@ void					HttpResponse::skipToSend(zAPI::IResponseStream* stream, bool flushStrea
 	this->_headerInStream = headerIncluded;
 }
 
+void                    HttpResponse::setHeaderInStream(bool headerInStream)
+{
+    this->_headerInStream = headerInStream;
+}
+
 bool					HttpResponse::isInSendMode() const
 {
 	return this->_sendMode;
