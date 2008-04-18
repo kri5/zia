@@ -26,9 +26,9 @@ class ClientSocket : public Socket, public zAPI::IClientSocket
 		ClientSocket(int acceptedSocket);
 		/// Don't close the socket. (Done by ~Socket())
 		~ClientSocket();
-		int		recv(char *buf, int length) const;
-		int		send(const char *buf, int length) const;
-		int		send(const std::string& buf, int length) const;
+		int		recv(char *buf, int length);
+		int		send(const char *buf, int length);
+		int		send(const std::string& buf, int length);
 		static int			countSockets();
 	private:
 		static int			_nbSockets;

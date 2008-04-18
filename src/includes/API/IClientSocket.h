@@ -26,7 +26,7 @@ namespace zAPI
              *  @param length the maximum length to read
              *  @return the read length
              */
-            virtual int	    recv(char *buf, int length) const = 0;
+            virtual int	    recv(char *buf, int length) = 0;
 
             /**
              *  Sends a certain amount of data contained in the specified 
@@ -35,7 +35,7 @@ namespace zAPI
              *  @param length the wanted size to send
              *  @return the size sent through the socket
              */
-            virtual int     send(const char *buf, int length) const = 0;
+            virtual int     send(const char *buf, int length) = 0;
 
             /**
              *  Sends a certain amount of data contained in the specified 
@@ -44,7 +44,7 @@ namespace zAPI
              *  @param length wanted size to send (or -1, if you want to send the entire string)
              *  @return the size sent through the socket
              */
-            virtual int     send(const std::string& buf, int length) const = 0;
+            virtual int     send(const std::string& buf, int length) = 0;
 
             /**
              *  Close the socket, and eventually shut it down nicelly.

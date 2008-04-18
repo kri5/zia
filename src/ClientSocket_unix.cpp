@@ -29,7 +29,7 @@ ClientSocket::~ClientSocket()
     --ClientSocket::_nbSockets;
 }
 
-int             ClientSocket::send(const char *buf, int length) const
+int             ClientSocket::send(const char *buf, int length)
 {
     ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, buf, length, &zAPI::INetwork::onSend);
     int iResult = ::send(listenSocket, buf, length, MSG_NOSIGNAL);
@@ -39,7 +39,7 @@ int             ClientSocket::send(const char *buf, int length) const
 	return (iResult);
 }
 
-int             ClientSocket::send(const std::string& buf, int length) const
+int             ClientSocket::send(const std::string& buf, int length)
 {
     std::string tmp = buf;
     int ret;
@@ -57,7 +57,7 @@ int             ClientSocket::send(const std::string& buf, int length) const
     return 0;
 }
 
-int             ClientSocket::recv(char *buf, int length) const
+int             ClientSocket::recv(char *buf, int length)
 {
 	int iResult = ::recv(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)

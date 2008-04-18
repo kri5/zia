@@ -40,9 +40,9 @@ class ClientSocket : public zAPI::IClientSocket
         ClientSocket(int acceptedSocket);
 		/// Don't close the socket. (Done by ~Socket())
         virtual ~ClientSocket();
-        virtual int	    send(const char *buf, int length) const;
-        virtual int 	send(const std::string& buf, int length) const;
-        virtual int	    recv(char *buf, int length) const;
+        virtual int	    send(const char *buf, int length);
+        virtual int 	send(const std::string& buf, int length);
+        virtual int	    recv(char *buf, int length);
         virtual void    close(bool shutdown);
         virtual bool    isClosed() const;
         virtual int	    getNativeSocket() const;
