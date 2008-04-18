@@ -11,11 +11,9 @@ class Rot13 : public AbstractModule, public zAPI::ISendResponse
         Rot13();
         ~Rot13();
 
-        int             getPriority(zAPI::IModule::Event event);
-        size_t          call(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t, IModule**, unsigned int);
-        ChainStatus     call(zAPI::IModule::Event, zAPI::IHttpRequest*, zAPI::IHttpResponse*);
+        int             getPriority(zAPI::IModule::Event event) const;
         ChainStatus     onPreSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
-        size_t          onProcessContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t, IModule**, unsigned int);
+        size_t          onProcessContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t, std::vector<ISendResponse*>, unsigned int);
         ChainStatus     onPostSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
 };
 

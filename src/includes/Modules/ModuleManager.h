@@ -52,7 +52,7 @@ class   ModuleManager : public Singleton<ModuleManager>
             for (; it != ite; ++it)
             {
                 //res = (*it)->ptr->getInstance()->call(event);
-                res = (reinterpret_cast<T*>((*it)->ptr->getInstance())->*method)();
+                res = (dynamic_cast<T*>((*it)->ptr->getInstance())->*method)();
                 if (res != zAPI::IModule::CONTINUE)
                     break ;
             }
@@ -71,7 +71,7 @@ class   ModuleManager : public Singleton<ModuleManager>
 
             for (; it != ite; ++it)
             {
-                res = (reinterpret_cast<T*>((*it)->ptr->getInstance())->*method)(mod);
+                res = (dynamic_cast<T*>((*it)->ptr->getInstance())->*method)(mod);
                 if (res != zAPI::IModule::CONTINUE)
                     break ;
             }
@@ -107,7 +107,7 @@ class   ModuleManager : public Singleton<ModuleManager>
 
             for (; it != ite; ++it)
             {
-                res = (reinterpret_cast<T*>((*it)->ptr->getInstance())->*method)(buff, size);
+                res = (dynamic_cast<T*>((*it)->ptr->getInstance())->*method)(buff, size);
                 if (res != zAPI::IModule::CONTINUE)
                     break ;
             }
@@ -150,7 +150,7 @@ class   ModuleManager : public Singleton<ModuleManager>
             }
             for (; it != ite; ++it)
             {
-                res = (reinterpret_cast<T*>((*it)->ptr->getInstance())->*method)(httpReq, httpRes);
+                res = (dynamic_cast<T*>((*it)->ptr->getInstance())->*method)(httpReq, httpRes);
                 if (res != zAPI::IModule::CONTINUE)
                     break ;
             }

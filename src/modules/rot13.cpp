@@ -12,7 +12,7 @@ Rot13::~Rot13()
 {
 }
 
-int                     Rot13::getPriority(zAPI::IModule::Event event)
+int                     Rot13::getPriority(zAPI::IModule::Event event) const
 {
     switch (event)
     {
@@ -27,20 +27,6 @@ int                     Rot13::getPriority(zAPI::IModule::Event event)
     }
 }
 
-size_t                  Rot13::call(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res, char* buff, size_t size, IModule** tab, unsigned int index)
-{
-    return this->onProcessContent(req, res, buff, size, tab, index);
-}
-
-zAPI::IModule::ChainStatus    Rot13::call(zAPI::IModule::Event event, zAPI::IHttpRequest* req, zAPI::IHttpResponse* res)
-{
-    if (event == zAPI::IModule::onPreSendEvent)
-        return (this->onPreSend(req, res));
-    else if (event == zAPI::IModule::onPostSendEvent)
-        return (this->onPostSend(req, res));
-	return zAPI::IModule::ERRORMODULE;
-}
-
 zAPI::IModule::ChainStatus    Rot13::onPreSend(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res)
 {
     res->setHeaderOption("Encrypt", "Rot13");
@@ -49,16 +35,15 @@ zAPI::IModule::ChainStatus    Rot13::onPreSend(zAPI::IHttpRequest* req, zAPI::IH
 
 size_t                  Rot13::onProcessContent(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res, 
                                 char* buff, size_t size,
-                                IModule** tab, unsigned int index)
+                                std::vector<zAPI::ISendResponse*> tab, unsigned int index)
 {
     size_t  ret;
-    if (tab[index + 1] == NULL)
+    if (tab.size() == index + 1)
     {
-        res->getCurrentStream().read(buff, size);
-        ret = res->getCurrentStream().gcount();
+        ret = res->getCurrentStream()->read(buff, size);
     }
     else
-        ret = tab[index + 1]->call(req, res, buff, size, tab, index + 1);
+        ret = tab[index + 1]->onProcessContent(req, res, buff, size, tab, index + 1);
     for (unsigned int i = 0; i < ret; ++i)
     {
         if ((buff[i] > 'a' && buff[i] < 'z') || (buff[i] > 'A' && buff[i] < 'Z'))

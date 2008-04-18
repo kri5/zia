@@ -294,16 +294,16 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
 
     if (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].size() > 0)
     {
-        std::vector<zAPI::IModule*> tab;
+        std::vector<zAPI::ISendResponse*> tab;
         unsigned int    i = 0;
         std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator    it = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].begin();
         std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator    ite = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].end();
         for (; it != ite; ++it, ++i)
         {
-            tab.push_back((*it)->ptr->getInstance());
+            tab.push_back(dynamic_cast<zAPI::ISendResponse*>((*it)->ptr->getInstance()));
         }
         tab[i] = NULL;
-        size_t ret = reinterpret_cast<zAPI::ISendResponse*>(this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].front()->ptr->
+        size_t ret = dynamic_cast<zAPI::ISendResponse*>(this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].front()->ptr->
             getInstance())->onProcessContent(req, res, buff, size, tab, 0);
         return ret;
     }
