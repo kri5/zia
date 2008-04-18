@@ -47,25 +47,25 @@ namespace zAPI
             virtual const std::string                           getUriQuery() const = 0;
 
             /**
-             *  Sets a body argument with a key / value pair passed in paramater
-             *  @param key a body argument key
-             *  @param value a body argument value
+             *  Will append some arguments to the current argument list.
+             *  @param str The new argument(s) just received
              */
-            virtual void                                        setBodyArgument(const std::string& key, const std::string& value) = 0;
+            virtual void                                        appendBodyArgument(const std::string& str) = 0;
 
             /**
-             *  Returns a map containing all the body arguments
-             *  @return the body arguments map
+             *  Will return the complete list of arguments you append with appendBodyArgument()
+             *  @return A reference to string, containing every body arguments you append.
              */
-            virtual const std::map<std::string, std::string>&   getBodyArguments() const = 0;
+            virtual const std::string&                          getBodyArguments() const = 0;
 
             /**
-             *  Returns the body argument value corresponding to the key passed in parameter.
-             *  If the key is not found, NULL will be returned instead
-             *  @param key a boby argument key
-             *  @return a body argument value
+             *  Will append a new file to the list of files uploaded by the client in a POST request.
+             *  @param name The file name.
+             *  @param file The path to the temporary file
              */
-            virtual const std::string&                          getBodyArgument(const std::string& key) const = 0;
+            virtual void                                        appendFile(const std::string& name, const std::string& file) = 0;
+
+            virtual const std::map<std::string, std::string>&   getFilesList() const;
 
             /**
              *  Sets a custom parameter that will not be used in the server.
