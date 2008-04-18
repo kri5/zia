@@ -2,6 +2,9 @@
 #define ICLIENT_SOCKET_H__
 
 #include <string>
+#ifndef _WIN32
+typedef int SOCKET;
+#endif
 
 namespace zAPI
 {
@@ -46,9 +49,9 @@ namespace zAPI
             /**
              *  Close the socket, and eventually shut it down nicelly.
              *
-             *  @param shutdown If true, close will call shutdown(2)
+             *  @param niceClosing If true, close will call shutdown(2)
              */
-            virtual void    close(bool shutdown) = 0;
+            virtual void    close(bool niceClosing) = 0;
 
             /**
              *  Check if socket has already be closed, to prevent multiple socket
@@ -63,7 +66,7 @@ namespace zAPI
              * @return a socket identifier
              */
             
-            virtual int	    getNativeSocket() const = 0;
+            virtual SOCKET  getNativeSocket() const = 0;
 
     };
 }
