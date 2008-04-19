@@ -52,7 +52,7 @@ namespace zAPI
              *  This stream will be used by modules to read POST informations.
              *  @param stream The stream which is encapsulating the socket.
              */
-            virtul void                                         setBodyStream(zAPI::IResponseStream* stream) = 0;
+            virtual void                                        setBodyStream(zAPI::IResponseStream* stream) = 0;
 
             /**
              *  Returns a stream to the socket where request is sent.
