@@ -4,6 +4,9 @@
 #include <string>
 #ifndef _WIN32
 typedef int SOCKET;
+#else
+#include <WinSock2.h>
+#include <windows.h>
 #endif
 
 namespace zAPI
