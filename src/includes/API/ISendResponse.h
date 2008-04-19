@@ -27,7 +27,7 @@ namespace zAPI
             virtual ~ISendResponse() {}
 
             virtual IModule::ChainStatus    onPreSend(IHttpRequest*, IHttpResponse*) = 0;
-            virtual size_t                  onProcessContent(IHttpRequest*, IHttpResponse*, char*, size_t, const std::vector<zAPI::ISendResponse*>&, unsigned int) = 0;
+            virtual size_t                  onProcessContent(IHttpRequest* req, IHttpResponse* res, char* buff, size_t buffSize, const std::vector<zAPI::ISendResponse*>& modules, unsigned int index) = 0;
             virtual IModule::ChainStatus    onPostSend(IHttpRequest*, IHttpResponse*) = 0;
     };
 }

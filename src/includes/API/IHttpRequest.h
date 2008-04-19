@@ -48,6 +48,13 @@ namespace zAPI
             virtual const std::string                           getUriQuery() const = 0;
 
             /**
+             *  Will set the stream to the socket used by the client.
+             *  This stream will be used by modules to read POST informations.
+             *  @param stream The stream which is encapsulating the socket.
+             */
+            virtul void                                         setBodyStream(zAPI::IResponseStream* stream) = 0;
+
+            /**
              *  Returns a stream to the socket where request is sent.
              *  You should use it to receive every form fields and files sent by POST.
              *  @return a IResponseStream* reading on the client socket.
