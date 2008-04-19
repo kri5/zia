@@ -5,7 +5,7 @@
 #include "API/ISendResponse.h"
 #include "Modules/AbstractModule.h"
 
-class Rot13 : public AbstractModule, public zAPI::ISendResponse
+class Rot13 : public zAPI::IModule, public zAPI::ISendResponse
 {
     public:
         Rot13();

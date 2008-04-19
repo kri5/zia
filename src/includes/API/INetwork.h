@@ -3,6 +3,7 @@
 
 #include "IModule.h"
 #include "IClientSocket.h"
+#include "IConfig.h"
 
 namespace zAPI
 {
@@ -28,6 +29,7 @@ namespace zAPI
              *  IClientSocket implementation. Typically, you can use this event to replace
              *  the classic IClientSocket by it's SLL implementation.
              *  @param socket the socket built from the accept call
+             *  @param config the configuration associated with the connection
              *  @return a IClientSocket that will be used until the end of the transaction
              */
             virtual IClientSocket*  onAccept(SOCKET socket) = 0;
