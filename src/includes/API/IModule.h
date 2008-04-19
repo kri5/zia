@@ -85,6 +85,9 @@ namespace zAPI
             /**
              * Is called by the ModuleManager when the module is loaded to get the priority
              * of the event passed in parameter.
+             * Priorites must be set in a range of 0 - 100 (0 being the first loaded module).
+             * If a module doesn't use the specified event, the return value must be -1,
+             * so the server can discard it.
              * @param event the event to get priority from
              * @return a priority
              */
