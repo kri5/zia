@@ -19,6 +19,8 @@ class ModPHP : public zAPI::IModule, public zAPI::ISendResponse, public zAPI::IB
 
         zAPI::IModule::ChainStatus      onPreBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response);
         zAPI::IModule::ChainStatus      onPostBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response);
+    private:
+        char**                          createEnv(zAPI::IHttpRequest*) const;
 };
 
 #endif // MODPHP_H

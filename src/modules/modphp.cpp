@@ -50,6 +50,42 @@ int                             ModPHP::getPriority(zAPI::IModule::Event event) 
     return 0;
 }
 
+char**                          ModPHP::createEnv(zAPI::IHttpRequest* req) const
+{
+    std::map<std::string, std::string>      env;
+
+    env["SERVER_SOFTWARE"] = "ziahttpd";
+    env["SERVER_NAME"] = "tachatte";
+    env["GATEWAY_INTERFACE"] = "CGI/1.1";
+    env["SERVER_PROTOCOL"] = "HTTP/1.1";
+    env["SERVER_PORT"] = "8880"; //FIXME with the conf
+    env["REQUEST_METHOD"] = req->getCommand();
+    env["SERVER_PROTOCOL"] = req->getProtocol();
+    //env["PATH_INFO"] = req->getUri();
+    env["PATH_TRANSLATED"] = *(req->getConfig()->getParam("DocumentRoot")) + req->getUri();
+    env["SCRIPT_NAME"] = req->getUri();
+    env["QUERY_STRING"] = req->getUriQuery();
+    env["REMOTE_HOST"] = "REMOTE_ADDR";
+    env["REMOTE_ADDR"] = "127.0.0.1"; //FIXME
+    env["CONTENT_TYPE"] = "HTTP";
+    if (req->headerOptionIsSet("Content-Length"))
+        env["CONTENT_LENGTH"] = req->getHeaderOption("Content-Length");
+    else
+        env["CONTENT_LENGTH"] = "0";
+    if (req->headerOptionIsSet("Content-Type"))
+        env["CONTENT_TYPE"] = req->getHeaderOption("Content-Type");
+
+    char** newEnv = new char*[env.size() + 1];
+    std::map<std::string, std::string>::const_iterator      it = env.begin();
+    std::map<std::string, std::string>::const_iterator      ite = env.end();
+    
+    int     i;
+    for (i = 0; it != ite; ++it, ++i)
+        newEnv[i] = strdup(std::string(it->first + "=" + it->second).c_str());
+    newEnv[i] = NULL;
+    return newEnv;
+}
+
 zAPI::IModule::ChainStatus      ModPHP::onPreSend(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response)
 {
     if (request->getParam("modphp_status") != NULL)
@@ -77,25 +113,9 @@ zAPI::IModule::ChainStatus      ModPHP::onPreSend(zAPI::IHttpRequest* request, z
             close(fds_input[1]);
             close(fds_output[0]);
 
-            //char *newargv[] = { "phptester", NULL };
             char *newargv[] = { "php-cgi", NULL };
-            char *newenviron[] = { "SERVER_SOFTWARE=ziahttpd",
-                "SERVER_NAME=tachatte",
-                "GATEWAY_INTERFACE=CGI/1.1",
-                "SERVER_PROTOCOL=HTTP/1.1",
-                "SERVER_PORT=8880",
-                "REQUEST_METHOD=GET",
-                //"PATH_INFO=",
-                "PATH_TRANSLATED=/home/chouquette/dev/zia_svn/trunk/www/index.php",
-                "SCRIPT_NAME=/home/chouquette/dev/zia_svn/trunk/www/index.php",
-                //"QUERY_STRING=/index.php",
-                "REMOTE_HOST=REMOTE_ADDR",
-                "REMOTE_ADDR=127.0.0.1",
-                "CONTENT_TYPE=HTTP",
-                "CONTENT_LENGTH=0",
-                NULL };
+            char** newenviron = this->createEnv(request);
             if (execve("/usr/bin/php-cgi", newargv, newenviron) == -1)
-                //if (execve("/home/chouquette/dev/zia/phptester", newargv, newenviron) == -1)
             {
                 perror("Execve");
                 close(fds_output[0]);
@@ -107,7 +127,17 @@ zAPI::IModule::ChainStatus      ModPHP::onPreSend(zAPI::IHttpRequest* request, z
         {
             close(fds_output[1]);
             close(fds_input[0]);
-            //send POST
+            zAPI::IResponseStream* post = request->getBodyStream();
+            if (post)
+            {
+                char    buff[1024];
+                size_t  ret;
+                while (post->completed() == false)
+                {
+                    ret = post->read(buff, 1024);
+                    write(fds_input[1], buff, ret);
+                }
+            }
             close(fds_input[1]);
         }
     }

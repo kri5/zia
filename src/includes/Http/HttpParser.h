@@ -11,7 +11,6 @@ class HttpParser : public Parser
         virtual ~HttpParser();
         void            init();
         void            parse();
-        void            parseBody();
         bool            done() const;
         HttpRequest*    getRequest() const;
 
@@ -21,8 +20,6 @@ class HttpParser : public Parser
         bool            parseHeadCommand();
         bool            parseUri();
         bool            parseUriArgument();
-        bool            parseBodyArgumentsMonoPart();
-        bool            parseBodyArgumentsMultiPart();
         bool            parseProtocol();
 
         bool            parseOptions();

@@ -210,127 +210,32 @@ bool        HttpParser::parseUri()
     return false;
 }
 
-/**
- *  Parses the body of the request
- *  if there's one.
- * */
-
-void        HttpParser::parseBody()
-{
-    std::string l;
-
-    if (this->_request->headerOptionIsSet("Content-Type") == false
-            || this->_request->getHeaderOption("Content-Type").compare(0, 20, "multipart/form-data;") != 0) //this is not a bool !!
-    {
-        if (this->_request->headerOptionIsSet("Content-Length"))
-        {
-            l = this->_request->getHeaderOption("Content-Length");
-            this->parseBodyArgumentsMonoPart();
-        } //FIXME: si il n'y a pas de content-length : le signaler.
-    }
-    else
-    {
-        this->parseBodyArgumentsMultiPart();
-    }
-}
-
-/**
- *  Parses all body argument
- *  and put them in the HttpRequest
- *  object
- * */
-
-bool        HttpParser::parseBodyArgumentsMonoPart()
-{
-    std::string key;
-    std::string value;
-
-    if (this->readParam(key, value))
-    {
-        this->_request->setBodyArgument(key, value);
-        while (this->peekIfEqual('&'))
-        {
-            this->readParam(key, value);
-            this->_request->setBodyArgument(key, value);
-        }
-    }
-    return true;
-}
-
-/**
- *  Parse body arguments with a multipart format.
- *  Will put them in the HttpRequest instance
- */
-
-bool        HttpParser::parseBodyArgumentsMultiPart()
-{
-    std::string     boundary;
-    size_t          boundaryPos = this->_request->getHeaderOption("Content-Type").find("boundary=");
-
-    if (boundaryPos == std::string::npos)
-        return false;
-    boundary = this->_request->getHeaderOption("Content-Type").substr(boundaryPos + 9); //9 == strlen("boundary=");
-    while (this->peekIfEqual("--") && this->peekIfEqual(boundary))
-    {
-        if (peekIfEqual("--") == true)
-            break ;
-        if (this->peekIfEqual("\r\n") == false)
-            return false;
-        this->setIgnore(false);
-        if (this->peekIfEqual("Content-Disposition: form-data;") == false)
-        {
-            this->setIgnore(true);
-            std::cout << "Found something that is not a form field. Dropping it" << std::endl;
-            this->readUpTo(boundary);
-        }
-        else
-        {
-            this->setIgnore(true);
-            if (this->peekIfEqual("name=\"") == false)
-                return false;
-            std::string     key;
-            if (this->readAnythingBut("\"", key) == false)
-                return false;
-            if (this->peekIfEqual("\"\r\n\r\n") == false)
-                return false;
-            std::string     value;
-            this->setIgnore(false);
-            this->readUpTo(boundary, value);
-            this->_request->setBodyArgument(key, value);
-            std::cout << key << " => " << value << std::endl;
-            this->setIgnore(true);
-        }
-    }
-    return true;
-}
-
-/**
- *  Parses a key => value pair
- *  in the uri. For now this version
- *  is too permissive, you're allowed
- *  to do such ugly things : 
- *  /index.php?test=42?foo=bar
- *  needs to be fixed
- * */
-
 bool        HttpParser::parseUriArgument()
 {
-    std::string     key;
-    std::string     value;
+    std::string     uriQuery;
 
 	// URI_Argument ::= [ '?' [param]*]?
-    if (this->peekIfEqual('?'))
+//    if (this->peekIfEqual('?'))
+//    {
+//		if (this->readParam(key, value))
+//		{
+//			//this->_request->setUriArgument(key, value);
+//			while (this->peekIfEqual('&'))
+//			{
+//				this->readParam(key, value);
+//				//this->_request->setUriArgument(key, value);
+//			}
+//		}
+//    }
+    this->setIgnore(false);
+    if (this->peekIfEqual('?') == false)
     {
-		if (this->readParam(key, value))
-		{
-			//this->_request->setUriArgument(key, value);
-			while (this->peekIfEqual('&'))
-			{
-				this->readParam(key, value);
-				//this->_request->setUriArgument(key, value);
-			}
-		}
+        this->_request->setUriQuery("");
+        return false;
     }
+    this->readAnythingBut(" \t", uriQuery);
+    this->setIgnore(true);
+    this->_request->setUriQuery(uriQuery);
     return true;
 }
 	// URI_Param ::= [ #paramIdentifier '=' #paramIdentifier ]

@@ -45,7 +45,7 @@ namespace zAPI
              *  Returns a string containing the query of the URI
              *  @return the uri arguments map
              */
-            virtual const std::string                           getUriQuery() const = 0;
+            virtual const std::string&                          getUriQuery() const = 0;
 
             /**
              *  Will set the stream to the socket used by the client.

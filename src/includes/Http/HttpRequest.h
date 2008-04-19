@@ -22,11 +22,7 @@ class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
         //void                                        setUriArgument(const std::string&, const std::string&);
         //const std::map<std::string, std::string>&   getUriArguments() const; 
         void                                        setUriQuery(const std::string&);
-        const std::string                           getUriQuery() const;
-
-        void                                        setBodyArgument(const std::string&, const std::string&);
-        const std::map<std::string, std::string>&   getBodyArguments() const;
-        const std::string&                          getBodyArgument(const std::string&) const;
+        const std::string&                          getUriQuery() const;
 
         bool                                        setParam(const std::string&, void*);
         void*                                       getParam(const std::string&) const;
@@ -49,8 +45,7 @@ class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
     private:
         void                                        addDefaultHost();
         std::string                                 _command;
-        std::map<std::string, std::string>          _uriArguments;
-        std::map<std::string, std::string>          _bodyArguments;
+        std::string                                 _uriArguments;
         std::map<std::string, void*>                _params;
         std::string                                 _uri;
         bool                                        _relativeUri;

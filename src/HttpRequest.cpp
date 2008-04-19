@@ -40,31 +40,6 @@ zAPI::IConfig*	HttpRequest::getConfig() const
 	return this->_cfg;
 }
 
-void            HttpRequest::setBodyArgument(const std::string& key,
-                                                const std::string& value)
-{
-    this->_bodyArguments[key] = value;
-}
-
-const std::string&      HttpRequest::getBodyArgument(const std::string& key) const
-{
-    std::map<std::string, std::string>::const_iterator    toFind = this->_bodyArguments.find(key);
-
-    if (toFind == this->_bodyArguments.end())
-    {
-        //FIXME
-        const std::string& tmp = "";
-        return (tmp);
-    }
-    return toFind->second;
-}
-
-
-const std::map<std::string, std::string>&   HttpRequest::getBodyArguments() const
-{
-    return this->_bodyArguments;
-}
-
 const std::string&     HttpRequest::getCommand() const
 {
     return this->_command;
@@ -81,21 +56,19 @@ bool            HttpRequest::isUriRelative() const
 }
 
 
-const std::string      HttpRequest::getUriQuery() const
+const std::string&     HttpRequest::getUriQuery() const
 {
-    return "";
+    return this->_uriArguments;
 }
 
-void                    HttpRequest::setUriQuery(const std::string&)
+void                    HttpRequest::setUriQuery(const std::string& params)
 {
-    ;
+    this->_uriArguments = params;
 }
 
 void            HttpRequest::clear()
 {
     this->_options.clear();
-    this->_uriArguments.clear();
-    this->_bodyArguments.clear();
 
     this->_uri.clear();
     this->_protocol.clear();
@@ -146,22 +119,11 @@ void            HttpRequest::print()
     std::map<std::string, std::string>::iterator ite
         = this->_options.end();
 
-    std::map<std::string, std::string>::iterator uriIt
-        = this->_uriArguments.begin();
-    std::map<std::string, std::string>::iterator uriIte
-        = this->_uriArguments.end();
-
     std::cout << "----- HttpRequest -----" << std::endl
         << "Command == " << this->_command << std::endl
         << "Uri == " << this->_uri << std::endl
         << "UriRelative == " << std::boolalpha << this->_relativeUri << std::endl 
         << " =[UriArguments]=" << std::endl;
-
-    for (; uriIt != uriIte; ++uriIt)
-        std::cout << "  arg[" << (*uriIt).first
-            << "] == " << (*uriIt).second << std::endl;
-
-
 
     std::cout << "Protocol == " << this->_protocol << std::endl
         << "-- Options --" << std::endl;;
@@ -170,17 +132,7 @@ void            HttpRequest::print()
     for (; it != ite; ++it)
         std::cout << "  option[" << (*it).first 
             << "] = " << (*it).second << std::endl;
-    std::cout << "-- End Option --" << std::endl;
-
-    uriIt = this->_bodyArguments.begin();
-    uriIte = this->_bodyArguments.end();
-
-    std::cout << "---BodyArguments----" << std::endl;
-    for (; uriIt != uriIte; ++uriIt)
-        std::cout << "  option[" << (*uriIt).first
-            << "] = " << (*uriIt).second << std::endl;
-
-    std::cout << "---EndBodyArgts----" << std::endl
+    std::cout << "-- End Option --" << std::endl
         << "----- End HttpResponse -----" << std::endl;
 }
 

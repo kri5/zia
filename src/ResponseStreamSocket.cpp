@@ -21,7 +21,7 @@ size_t      ResponseStreamSocket::read(char* buf, size_t size)
 {
     if (this->_prevBufferSize > 0 && this->_previouslyReadDatasPtr != NULL)
     {
-        if (size < this->_prevBufferSize)
+        if (size > this->_prevBufferSize)
             size = this->_prevBufferSize;
         strncpy(buf, this->_previouslyReadDatasPtr, size);
         this->_prevBufferSize -= size;
@@ -37,7 +37,7 @@ size_t      ResponseStreamSocket::read(char* buf, size_t size)
 
 bool        ResponseStreamSocket::completed() const
 {
-    return (this->poll() > 0); 
+    return (this->poll() == 0 && this->_prevBufferSize == 0); 
 }
 
 bool        ResponseStreamSocket::good() const
