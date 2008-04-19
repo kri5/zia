@@ -46,9 +46,7 @@ class Task
         int                     _timeoutDelay;
         /// Will be set to false if browser sent more than one request in a keepalive socket.
         bool                    _freeTask;
-    public://FIXME
         unsigned int            _taskId;
-        bool                    poped;
 
         const std::vector<Vhost*>*    _vhosts;
 };

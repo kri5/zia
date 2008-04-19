@@ -76,9 +76,9 @@ void        HttpParser::parse()
             //this->flush();
         }
 
-        if (this->_isDone
-            && this->_request->getCommand() == "POST")
-            this->parseBody();
+        //if (this->_isDone
+        //    && this->_request->getCommand() == "POST")
+        //    this->parseBody();
 	}
     this->flush();
 }

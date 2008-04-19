@@ -14,7 +14,7 @@ class ModPHP : public zAPI::IModule, public zAPI::ISendResponse, public zAPI::IB
         int                             getPriority(zAPI::IModule::Event event) const;
         zAPI::IModule::ChainStatus      onPreSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
         size_t                          onProcessContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*,
-                                        size_t, std::vector<zAPI::ISendResponse*>, unsigned int);
+                                        size_t, const std::vector<zAPI::ISendResponse*>&, unsigned int);
         zAPI::IModule::ChainStatus      onPostSend(zAPI::IHttpRequest*, zAPI::IHttpResponse*);
 
         zAPI::IModule::ChainStatus      onPreBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response);

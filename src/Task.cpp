@@ -21,6 +21,7 @@
 #include "Stream/ResponseStreamFile.h"
 #include "Stream/ErrorResponseStream.h" //FIXME : change the name incoherence...
 #include "Modules/ModuleManager.h"
+#include "Stream/ResponseStreamSocket.h"
 
 #include "MemoryManager.hpp"
 #include "API/IWorkflow.h"
@@ -38,8 +39,6 @@ Task::Task(Pool* pool) :
         _timeoutDelay = atoi(RootConfig::getParam("Timeout")->c_str());
     else
         _timeoutDelay = 300;//Arbitrary default value :o)
-
-    poped = false;
 }
 
 Task::~Task()
@@ -68,8 +67,6 @@ void    Task::init(zAPI::IClientSocket* clt,
 
 void    Task::init()
 {
-    assert(poped == false);
-    poped = true;
     this->_req = new HttpRequest();
     this->_res = new HttpResponse();
     this->_time = new Time();
@@ -85,7 +82,6 @@ void    Task::clear(bool clearBuffers)
     delete this->_time;
     delete this->_req;
     delete this->_res;
-    poped = false;
 }
 
 void    Task::execute(unsigned int taskId)
@@ -106,7 +102,7 @@ void    Task::execute(unsigned int taskId)
         {
             ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPostBuildEvent, this->_req, this->_res, &zAPI::IBuildResponse::onPostBuild);
             //just for the moment :
-            this->_res->setHeaderOption("Server", "Ziahttp 0.2 (unix) Gentoo edition");
+            this->_res->setHeaderOption("Server", "Ziahttp 0.5 (unix) Gentoo edition");
             if (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
                 this->_res->setHeaderOption("Connection", "close");
             else
@@ -127,8 +123,10 @@ bool    Task::finalize(bool succeded)
     if (succeded)
         ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onEndEvent, this->_req, this->_res, &zAPI::IWorkflow::onEnd);
 
-    if (succeded == false || this->_socket->isClosed() == true ||
-            this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
+    if (succeded == false || this->_socket->isClosed() == true
+            || (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
+            || (this->_res->headerOptionIsSet("Transfer-Encoding") && this->_res->getHeaderOption("Transfer-Encoding") == "chunked")
+       )
     {
         this->_freeTask = true;
         this->clear();
@@ -174,7 +172,7 @@ bool    Task::receiveDatas()
 #else
     fds.events = (POLLRDNORM);
 #endif
-    ret = poll(&fds, 1, 1);
+    ret = poll(&fds, 1, 1); //Eventually increase the timeout.
     if (ret < 0)
 	{
 #ifndef WIN32     
@@ -214,6 +212,12 @@ bool    Task::parseRequest()
     //FIXME: check host.
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getHeaderOption("Host")));
+    if (this->_req->getCommand() == "POST")
+    {
+        char* buff = this->_readBuffer->get(this->_readBuffer->size());
+        this->_req->setBodyStream(new ResponseStreamSocket(this->_socket, buff, this->_readBuffer->size()));
+        this->_readBuffer->flush();
+    }
     ModuleManager::getInstance().call(zAPI::IModule::ReceiveRequestHook, zAPI::IModule::onPostReceiveEvent, this->_req, this->_res, &zAPI::IReceiveRequest::onPostReceive);
     return true;
 }
@@ -279,6 +283,7 @@ bool    Task::sendHeader()
 	if (this->_res->headerInStream() == false)
 	    header << "\r\n";
     const std::string& str = header.str();
+    //std::cout << "header == \n[" << str << "]" << std::endl;
     //this->_writeBuffer->clear();
     this->_writeBuffer->push(str.c_str(), str.length());
     return (this->sendBuffer());

@@ -8,6 +8,7 @@
 #include "Server.h"
 #include "Config.h"
 #include "Workflow/Pool.h"
+#include "Stream/ResponseStreamSocket.h"
 
 const char* ClientSocket::Error::Msg[] = {
     "Unknown error",
@@ -54,6 +55,11 @@ const char*	Config::Error::Msg[] = {
 const char* Pool::Manager::Error::Msg[] = {
     "Unknown error",
     "Poll() error"
+};
+
+const char* ResponseStreamSocket::Error::Msg[] = {
+    "Unknown error",
+    "Can't ask for a socket stream size"
 };
 
 // Archi dependent part.

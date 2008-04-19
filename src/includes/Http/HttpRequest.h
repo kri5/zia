@@ -31,6 +31,9 @@ class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
         bool                                        setParam(const std::string&, void*);
         void*                                       getParam(const std::string&) const;
 
+        zAPI::IResponseStream*                      getBodyStream() const;
+        void                                        setBodyStream(zAPI::IResponseStream* stream);
+
         void                                        setCommand(const std::string&);
         const std::string&                          getCommand() const;
 
@@ -53,6 +56,7 @@ class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
         bool                                        _relativeUri;
         zAPI::IConfig*								_cfg;
         unsigned int                                _reqId;
+        zAPI::IResponseStream*                      _bodyStream;
 };
 
 #endif /* !__HTTPREQUEST_H__ */

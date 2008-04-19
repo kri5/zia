@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-HttpRequest::HttpRequest() : _relativeUri(true)
+HttpRequest::HttpRequest() : _relativeUri(true), _bodyStream(NULL)
 {
 }
 
@@ -127,6 +127,16 @@ unsigned int    HttpRequest::getRequestId() const
 void            HttpRequest::setRequestId(unsigned int id)
 {
     this->_reqId = id;
+}
+
+zAPI::IResponseStream*  HttpRequest::getBodyStream() const
+{
+    return this->_bodyStream;
+}
+
+void                    HttpRequest::setBodyStream(zAPI::IResponseStream* stream)
+{
+    this->_bodyStream = stream;
 }
 
 void            HttpRequest::print()
