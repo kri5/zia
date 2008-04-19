@@ -2,6 +2,7 @@
 # define IHTTPREQUEST_H__
 
 #include "IHttpTransaction.h"
+#include "IResponseStream.h"
 #include "IConfig.h"
 
 #include <string>
