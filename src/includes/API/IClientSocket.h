@@ -68,8 +68,19 @@ namespace zAPI
              * Get the underlying socket used for the client
              * @return a socket identifier
              */
-            
             virtual SOCKET  getNativeSocket() const = 0;
+
+            /**
+             *  Get the client's IP address
+             *  @return the client's IP
+             */
+            virtual const std::string&  getIP() const = 0;
+
+            /**
+             *  Get the client connection port
+             *  @return the port used by the client to connect to the server
+             */
+            virtual int                 getPort() const = 0;
 
     };
 }
