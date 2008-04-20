@@ -29,10 +29,11 @@ namespace zAPI
              *  IClientSocket implementation. Typically, you can use this event to replace
              *  the classic IClientSocket by it's SLL implementation.
              *  @param socket the socket built from the accept call
+             *  @param port the port used by the client. (To know if it's a SSL port or not)
              *  @param config the configuration associated with the connection
              *  @return a IClientSocket that will be used until the end of the transaction
              */
-            virtual IClientSocket*  onAccept(SOCKET socket) = 0;
+            virtual IClientSocket*  onAccept(SOCKET socket, int port, zAPI::IConfig* config) = 0;
 
             /**
              *  The receive event.
