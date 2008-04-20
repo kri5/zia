@@ -74,7 +74,21 @@ namespace zAPI
              */
             virtual void                            skipToSend(IResponseStream* stream, bool flushStream, bool headerInStream) = 0;
 
+            /**
+             *  Will set headerInStream status.
+             *  headerInStream is a state flag which let the server know if it should automatically add a
+             *  \r\n to notify the end of the HTTP header, or if it will be contained in the response
+             *  body itself (as an exemple : PHP will add some header fields and a \r\n, so headerInStream
+             *  will have to be set to true.
+             *  Default value is false
+             *  @param headerInStream the headerInStream flag new value.
+             */
             virtual void                            setHeaderInStream(bool headerInStream) = 0;
+            /**
+             *  Will allow you to know if headerInStream is true or false
+             *  @return headerInStream value
+             */
+            virtual bool							getHeaderInStream() const= 0;
     };
 }
 
