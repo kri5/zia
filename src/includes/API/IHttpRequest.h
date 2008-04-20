@@ -4,6 +4,7 @@
 #include "IHttpTransaction.h"
 #include "IResponseStream.h"
 #include "IConfig.h"
+#include "IClientSocket.h"
 
 #include <string>
 #include <map>
@@ -101,7 +102,6 @@ namespace zAPI
              */
             virtual IConfig*                                    getConfig() const = 0;
 
-
             /**
              *  Return the current request ID
              *  Used for identifying requests within workflow, and eventually
@@ -118,6 +118,18 @@ namespace zAPI
              *  To set the request id (see getRequestId for more info on what is requestId)
              */
             virtual void                                        setRequestId(unsigned int id) = 0;
+
+            /**
+             *  Allow you to set the client which is sending request.
+             *  @param clt the instance of IClientSocket corresponding to the client
+             */
+            virtual void                                        setClient(zAPI::IClientSocket* clt) = 0;
+
+            /**
+             *  Will return the client who has sent the request
+             *  @return the IClientSocket instance.
+             */
+            virtual zAPI::IClientSocket*                        getClient() const = 0;
     };
 }
 #endif /* !IHTTPREQUEST_H__ */
