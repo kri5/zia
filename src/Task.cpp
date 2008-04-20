@@ -88,6 +88,7 @@ void    Task::execute(unsigned int taskId)
 {
     _taskId = taskId;
     this->_req->setRequestId(taskId);
+    this->_req->setClient(this->_socket);
     ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onBeginEvent, this->_req, this->_res, &zAPI::IWorkflow::onBegin);
     //std::cout << "new task" << std::endl;
     if (this->_socket->isClosed() == true)
@@ -257,11 +258,11 @@ bool    Task::buildResponse()
             this->_res->setError(new ErrorResponseStream(500, this->_req));
             return true;
         }
-	    if (this->_res->headerInStream() == false)
+	    if (this->_res->getHeaderInStream() == false)
             this->_res->setHeaderOption("Content-Type", "text/html");
         this->_res->appendStream(stream);
     }
-	if (this->_res->headerInStream() == false)
+	if (this->_res->getHeaderInStream() == false)
         this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());
     return true;
 }
@@ -280,7 +281,7 @@ bool    Task::sendHeader()
         header << it->first << ": " << it->second << "\r\n";
         ++it;
     }
-	if (this->_res->headerInStream() == false)
+	if (this->_res->getHeaderInStream() == false)
 	    header << "\r\n";
     const std::string& str = header.str();
     //std::cout << "header == \n[" << str << "]" << std::endl;

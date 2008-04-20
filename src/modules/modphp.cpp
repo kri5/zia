@@ -66,7 +66,7 @@ char**                          ModPHP::createEnv(zAPI::IHttpRequest* req) const
     env["SCRIPT_NAME"] = req->getUri();
     env["QUERY_STRING"] = req->getUriQuery();
     env["REMOTE_HOST"] = "REMOTE_ADDR";
-    env["REMOTE_ADDR"] = "127.0.0.1"; //FIXME
+    env["REMOTE_ADDR"] = req->getClient()->getIP();
     env["CONTENT_TYPE"] = "HTTP";
     if (req->headerOptionIsSet("Content-Length"))
         env["CONTENT_LENGTH"] = req->getHeaderOption("Content-Length");

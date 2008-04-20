@@ -37,7 +37,7 @@ class ClientSocket : public zAPI::IClientSocket
 			static const char* Msg[];
 		};
 		/// Will set the socket from the one returned by MainSocket::accept();
-        ClientSocket(int acceptedSocket);
+        ClientSocket(int acceptedSocket, const std::string&, int);
 		/// Don't close the socket. (Done by ~Socket())
         virtual ~ClientSocket();
         virtual int	    send(const char *buf, int length);
@@ -46,6 +46,8 @@ class ClientSocket : public zAPI::IClientSocket
         virtual void    close(bool shutdown);
         virtual bool    isClosed() const;
         virtual int	    getNativeSocket() const;
+        virtual const   std::string&  getIP() const;
+        virtual int     getPort() const;
 
         static  int     countSockets();
         static const int SOCKET_ERROR = -1;
@@ -54,6 +56,8 @@ class ClientSocket : public zAPI::IClientSocket
         static  Mutex   _mutex;
         int             listenSocket;
         bool            _closed;
+        std::string     _address;
+        int             _port;
 };
 
 #endif //__CLIENT_SOCKET_UNIX_H__

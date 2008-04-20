@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-HttpRequest::HttpRequest() : _relativeUri(true), _bodyStream(NULL)
+HttpRequest::HttpRequest() : _relativeUri(true), _bodyStream(NULL), _clt(NULL)
 {
 }
 
@@ -110,6 +110,16 @@ zAPI::IResponseStream*  HttpRequest::getBodyStream() const
 void                    HttpRequest::setBodyStream(zAPI::IResponseStream* stream)
 {
     this->_bodyStream = stream;
+}
+
+void                    HttpRequest::setClient(zAPI::IClientSocket* clt)
+{
+    _clt = clt;
+}
+
+zAPI::IClientSocket*    HttpRequest::getClient() const
+{
+    return this->_clt;
 }
 
 void            HttpRequest::print()

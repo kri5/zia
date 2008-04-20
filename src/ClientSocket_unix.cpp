@@ -11,7 +11,7 @@
 int ClientSocket::_nbSockets = 0;
 Mutex   ClientSocket::_mutex;
 
-ClientSocket::ClientSocket(int acceptedSocket) : deleted(false), _closed(false) 
+ClientSocket::ClientSocket(int acceptedSocket, const std::string& address, int port) : deleted(false), _closed(false), _address(address), _port(port)
 {
 	listenSocket = acceptedSocket;
     struct timeval tv;
@@ -93,4 +93,14 @@ void            ClientSocket::close(bool shutdown)
             Logger::getInstance() << Logger::Error << "Can't close socket : " << strerror(errno) << Logger::Flush;
         this->_closed = true;
     }
+}
+
+const std::string&  ClientSocket::getIP() const
+{
+    return this->_address;
+}
+
+int                 ClientSocket::getPort() const
+{
+    return this->_port;
 }

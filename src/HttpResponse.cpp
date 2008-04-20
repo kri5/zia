@@ -157,7 +157,7 @@ bool					HttpResponse::isInSendMode() const
 	return this->_sendMode;
 }
 
-bool					HttpResponse::headerInStream() const
+bool					HttpResponse::getHeaderInStream() const
 {
 	return this->_headerInStream;
 }

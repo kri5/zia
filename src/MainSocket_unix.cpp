@@ -6,6 +6,7 @@
 #include "Network/Vhost.h"
 #include "Modules/IModuleManager.h"
 #include "Modules/ModuleManager.h"
+#include "RootConfig.hpp"
 
 #include "MemoryManager.hpp"
 #include "API/INetwork.h"
@@ -56,15 +57,19 @@ void	MainSocket::listen(int queue) const
 
 zAPI::IClientSocket*	MainSocket::accept()
 {
-	int acceptSocket = ::accept(listenSocket, NULL, NULL);
+    struct sockaddr_in    clientSin;
+    int                   clientSinLen;
+
+    clientSinLen = sizeof(clientSin);
+	int acceptSocket = ::accept(listenSocket, (struct sockaddr*)&clientSin, (socklen_t*)&clientSinLen);
 	if (acceptSocket == SOCKET_ERROR)
 	{
         Logger::getInstance() << Logger::Warning << "Can't accept client (" << strerror(errno) << ')' << Logger::Flush;
 		//throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
 	}
-    zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, acceptSocket, &zAPI::INetwork::onAccept);
+    zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, acceptSocket, inet_ntoa(clientSin.sin_addr), this->_netId->getPort().getPort(), RootConfig::getConfig(), &zAPI::INetwork::onAccept);
     if (ret == NULL)
-        ret = new ClientSocket(acceptSocket);
+        ret = new ClientSocket(acceptSocket, inet_ntoa(clientSin.sin_addr), this->_netId->getPort().getPort());
 	return (ret);
 }
 

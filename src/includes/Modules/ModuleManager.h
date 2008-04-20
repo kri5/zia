@@ -79,7 +79,7 @@ class   ModuleManager : public Singleton<ModuleManager>
         }
 
         template <typename T>
-        zAPI::IClientSocket*          call(zAPI::IModule::Hook hook, SOCKET sock, zAPI::IClientSocket* (T::*method)(SOCKET))
+        zAPI::IClientSocket*          call(zAPI::IModule::Hook hook, SOCKET sock, const std::string& address, int port, zAPI::IConfig* config, zAPI::IClientSocket* (T::*method)(SOCKET, const std::string&, int, zAPI::IConfig*))
         {
             if (this->_modules.size() == 0)
                 return NULL;
@@ -92,7 +92,7 @@ class   ModuleManager : public Singleton<ModuleManager>
                 Logger::getInstance() << Logger::Warning << "Can't have more than one module hooked to accept(). Will be using the first one." << Logger::Flush;
             std::cout << "passed onAccept (call)" << std::endl;
             // FIXME reinterpret_cast
-            return (dynamic_cast<T*>((*(this->_modules.back().ptr[hook].begin()))->ptr->getInstance())->*method)(sock);
+            return (dynamic_cast<T*>((*(this->_modules.back().ptr[hook].begin()))->ptr->getInstance())->*method)(sock, address, port, config);
         }
 
         template<typename T>

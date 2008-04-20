@@ -42,6 +42,8 @@ class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
         unsigned int                                getRequestId() const;
         void                                        setRequestId(unsigned int);
 
+        void                                        setClient(zAPI::IClientSocket* clt);
+        zAPI::IClientSocket*                        getClient() const;
     private:
         void                                        addDefaultHost();
         std::string                                 _command;
@@ -52,6 +54,7 @@ class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
         zAPI::IConfig*								_cfg;
         unsigned int                                _reqId;
         zAPI::IResponseStream*                      _bodyStream;
+        zAPI::IClientSocket*                        _clt;
 };
 
 #endif /* !__HTTPREQUEST_H__ */
