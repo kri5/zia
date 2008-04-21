@@ -229,8 +229,6 @@ bool    Task::buildResponse()
     const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
     IFile*              fileInfo = new File(this->_req->getUri(), docRoot.c_str());
 
-    //this->_readBuffer->dump();
-    //std::cout << "===========================\n===============================" << std::endl;
     if (fileInfo->getError() != IFile::Error::None)
     {
         if (fileInfo->getError() == IFile::Error::NoSuchFile)

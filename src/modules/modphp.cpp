@@ -196,6 +196,7 @@ zAPI::IModule::ChainStatus      ModPHP::onPostSend(zAPI::IHttpRequest* request, 
 zAPI::IModule::ChainStatus    ModPHP::onPreBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response)
 {
     size_t  pos;
+    std::cout << request->getUri() << std::endl;
     if ((pos = request->getUri().rfind('.')) != std::string::npos &&
             request->getUri().compare(pos, std::string::npos, ".php") == 0)
     {
