@@ -31,7 +31,7 @@ ClientSocket::~ClientSocket()
 
 int             ClientSocket::send(const char *buf, int length)
 {
-    ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, buf, length, &zAPI::INetwork::onSend);
+    ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onSendEvent, buf, length, &zAPI::INetwork::onSend);
     int iResult = ::send(listenSocket, buf, length, MSG_NOSIGNAL);
 
 	if (iResult == SOCKET_ERROR)
@@ -63,7 +63,7 @@ int             ClientSocket::recv(char *buf, int length)
 	if (iResult == SOCKET_ERROR)
         Logger::getInstance() << Logger::Error << "Receive error : " << strerror(errno) << Logger::Flush;
     else
-        ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, buf, iResult, &zAPI::INetwork::onReceive);
+        ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onReceiveEvent, buf, iResult, &zAPI::INetwork::onReceive);
 	return (iResult);
 }
 

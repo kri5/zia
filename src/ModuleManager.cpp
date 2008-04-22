@@ -99,7 +99,7 @@ bool            ModuleManager::load(const std::string& filename)
         this->pushModule(zAPI::IModule::SendResponseHook, refCountPtr);
 
     Logger::getInstance() << Logger::Info << "Module " << mi->getName() << " version " << mi->getVersion() << " loaded." << Logger::Flush;
-    ModuleManager::getInstance().call(zAPI::IModule::ModuleEventHook, mi, &zAPI::IModuleEvent::onLoadModule);
+    ModuleManager::getInstance().call(zAPI::IModule::ModuleEventHook, zAPI::IModule::onLoadModuleEvent, mi, &zAPI::IModuleEvent::onLoadModule);
     return true;
 }
 
@@ -140,7 +140,7 @@ void                    ModuleManager::unload(const std::string& filename)
     {
         if ((*it).ptr->getFileName() == filename)
         {
-            this->call(zAPI::IModule::ModuleEventHook, (*it).ptr, &zAPI::IModuleEvent::onUnloadModule);
+            this->call(zAPI::IModule::ModuleEventHook, zAPI::IModule::onUnloadModuleEvent, (*it).ptr, &zAPI::IModuleEvent::onUnloadModule);
             std::cout << "counting refs : " << (*it).count << std::endl;
             this->removeFromHooks((*it).ptr);
             std::cout << "counting refs : " << (*it).count << std::endl;
@@ -279,6 +279,50 @@ void        ModuleManager::removeModuleList(unsigned int reqId)
     }
 }
 
+void                   ModuleManager::getSortedList(zAPI::IModule::Hook hook, zAPI::IModule::Event event,
+                                                    std::list<RefCounter<zAPI::IModuleInfo*>*>& nList)
+{
+    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  it = this->_modules.back().ptr[hook].begin();
+    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  ite = this->_modules.back().ptr[hook].end();
+
+    for (; it != ite; ++it)
+    {
+        int prio = (*it)->ptr->getInstance()->getPriority(event);
+        std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  nIt = nList.begin();
+        std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  nIte = nList.end();
+        bool    inserted = false;
+
+        if (nIt == nIte)
+            nList.push_back((*it));
+        else
+        {
+            for (; nIt != nIte; ++nIt)
+            {
+                int nPrio = (*nIt)->ptr->getInstance()->getPriority(event);
+                if (prio < nPrio)
+                {
+                    nList.insert(nIt, (*it));
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted)
+                nList.push_back((*it));
+        }
+
+
+    }
+
+    //std::cout << "================================" << std::endl;
+    //std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  nIt = nList.begin();
+    //std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  nIte = nList.end();
+    //for (; nIt != nIte; ++nIt)
+    //{
+    //    std::cout << "module[" << (*nIt)->ptr->getName() << "] prio == " << (*nIt)->ptr->getInstance()->getPriority(event) << std::endl;
+    //}
+    //std::cout << "================================" << std::endl;
+}
+
 ////////////////////////////////////////// ////////////////////////////////////////////
 ////////////////////////////////////////   ////////////////////////////////////////////
 //////////////////////////////////////     ////////////////////////////////////////////
@@ -296,15 +340,16 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
     {
         std::vector<zAPI::ISendResponse*> tab;
         unsigned int    i = 0;
-        std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator    it = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].begin();
-        std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator    ite = this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].end();
+        std::list<RefCounter<zAPI::IModuleInfo*>*>  nList;
+        this->getSortedList(zAPI::IModule::SendResponseHook, zAPI::IModule::onProcessContentEvent, nList);
+
+        std::list<RefCounter<zAPI::IModuleInfo*>*>::reverse_iterator          it = nList.rbegin();
+        std::list<RefCounter<zAPI::IModuleInfo*>*>::reverse_iterator          ite = nList.rend();
         for (; it != ite; ++it, ++i)
         {
             tab.push_back(dynamic_cast<zAPI::ISendResponse*>((*it)->ptr->getInstance()));
         }
-        tab[i] = NULL;
-        size_t ret = dynamic_cast<zAPI::ISendResponse*>(this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].front()->ptr->
-            getInstance())->onProcessContent(req, res, buff, size, tab, 0);
+        size_t ret = tab.front()->onProcessContent(req, res, buff, size, tab, 0);
         return ret;
     }
     return res->getCurrentStream()->read(buff, size);
