@@ -9,20 +9,24 @@
 class SSLClientSocket : public zAPI::IClientSocket
 {
   public:
-    SSLClientSocket(int acceptedSocket);
+    SSLClientSocket(int acceptedSocket, const std::string& address, int port);
     virtual ~SSLClientSocket();
-    virtual int     send(const char *buf, int length) const;
-    virtual int     send(const std::string& buf, int length) const;
-    virtual int     recv(char *buf, int length) const;
-    virtual void    close(bool shutdown);
-    virtual bool    isClosed() const;
-    virtual int     getNativeSocket() const;
+    virtual int                 send(const char *buf, int length);
+    virtual int                 send(const std::string& buf, int length);
+    virtual int                 recv(char *buf, int length);
+    virtual void                close(bool niceClosing);
+    virtual bool                isClosed() const;
+    virtual int                 getNativeSocket() const;
+    virtual const std::string&  getIP() const;
+    virtual int                 getPort() const;
 
   protected:
-    SSL_CTX*        ctx;
-    SSL*            ssl;
-    int             listenSocket;
-    bool            _closed;
+    SSL_CTX*                    ctx;
+    SSL*                        ssl;
+    int                         listenSocket;
+    bool                        _closed;
+    const std::string&          _address;
+    int                         _port;
 
   private:
     void	logError() const;

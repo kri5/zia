@@ -34,28 +34,23 @@ ModSSL::~ModSSL()
 
 }
 
-zAPI::IClientSocket*        ModSSL::call(zAPI::IModule::Event event, SOCKET socket)
+zAPI::IClientSocket*        ModSSL::onAccept(SOCKET socket, const std::string& address, int port, zAPI::IConfig* config)
 {
-    if (event == zAPI::IModule::onAcceptEvent)
-        return onAccept(socket);
-}
-
-zAPI::IClientSocket*        ModSSL::onAccept(SOCKET socket)
-{
-    std::cout << "onAcceptSSL" << std::endl;
-    //return new SSLClientSocket(socket); 
+    if (port == 8443)
+    {
+        std::cout << "SSL enabled" << std::endl;
+        return new SSLClientSocket(socket, address, port);
+    }
     return NULL;
 }
 
 zAPI::IModule::ChainStatus  ModSSL::onReceive(const char* buf, size_t length)
 {
-    std::cout << "onReceive" << std::endl;
     return zAPI::IModule::CONTINUE;
 }
 
 zAPI::IModule::ChainStatus  ModSSL::onSend(const char* buf, size_t length)
 {
-    std::cout << "onSend" << std::endl;
     return zAPI::IModule::CONTINUE;
 }
 

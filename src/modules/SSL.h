@@ -10,11 +10,10 @@ class ModSSL : public zAPI::IModule, public zAPI::INetwork
         ModSSL();
         virtual ~ModSSL();
 
-        zAPI::IClientSocket*        onAccept(SOCKET socket);
+        zAPI::IClientSocket*        onAccept(SOCKET socket, const std::string& address, int port, zAPI::IConfig* config);
         zAPI::IModule::ChainStatus  onReceive(const char* buf, size_t length);
         zAPI::IModule::ChainStatus  onSend(const char* buf, size_t length);
         int                         getPriority(zAPI::IModule::Event event) const;
-        zAPI::IClientSocket*        call(zAPI::IModule::Event, SOCKET);
 };
 
 #endif // MODSSL_H

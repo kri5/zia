@@ -1,11 +1,10 @@
 #include "SSLClientSocket.h"
 
 /// Initializing SSL socket and doing handshake with the client.
-SSLClientSocket::SSLClientSocket(int acceptedSocket)
+SSLClientSocket::SSLClientSocket(int acceptedSocket, const std::string& address, int port) : listenSocket(acceptedSocket), _address(address), _port(port)
 {
   int iResult;
   bool no_error = true;
-  listenSocket = acceptedSocket;
 
   // Initializing the SSL Method
   ctx = SSL_CTX_new(SSLv23_server_method());
@@ -17,12 +16,12 @@ SSLClientSocket::SSLClientSocket(int acceptedSocket)
 
   //FIXME we must get the certificates path from the configuration!
   // Load the certificate and the private key
-  if (SSL_CTX_use_certificate_file(ctx, "ssl/server.crt", SSL_FILETYPE_PEM) < 1)
+  if (SSL_CTX_use_certificate_file(ctx, "/home/etix/dev/zia/trunk/ssl/server.crt", SSL_FILETYPE_PEM) < 1)
   {
     this->logError();
     return;
   }
-  if (SSL_CTX_use_PrivateKey_file(ctx, "ssl/server.key.unsecure", SSL_FILETYPE_PEM) < 1)
+  if (SSL_CTX_use_PrivateKey_file(ctx, "/home/etix/dev/zia/trunk/ssl/server.key.unsecure", SSL_FILETYPE_PEM) < 1)
   {
     this->logError();
     return;
@@ -76,12 +75,12 @@ SSLClientSocket::~SSLClientSocket()
   SSL_CTX_free(ctx);
 }
 
-int     SSLClientSocket::send(const std::string& buf, int length) const
+int     SSLClientSocket::send(const std::string& buf, int length)
 {
     send(buf.c_str(), buf.size());
 }
 
-int     SSLClientSocket::send(const char *buf, int length) const
+int     SSLClientSocket::send(const char *buf, int length)
 {
   bool no_error = true;
   int iResult;
@@ -95,7 +94,7 @@ int     SSLClientSocket::send(const char *buf, int length) const
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
       case SSL_ERROR_WANT_WRITE:
-	//Logger::getInstance() << Logger::Debug << "SSL_write: renegociating session." << Logger::Flush;
+    //std::cout << "SSL_write: renegociating session" << std::endl;
 	break;
       case SSL_ERROR_WANT_CONNECT:
       case SSL_ERROR_WANT_ACCEPT:
@@ -113,7 +112,7 @@ int     SSLClientSocket::send(const char *buf, int length) const
   return iResult;
 }
 
-int     SSLClientSocket::recv(char *buf, int length) const
+int     SSLClientSocket::recv(char *buf, int length)
 {
   bool no_error = true;
   int iResult;
@@ -126,7 +125,7 @@ int     SSLClientSocket::recv(char *buf, int length) const
       case SSL_ERROR_NONE:
       case SSL_ERROR_ZERO_RETURN:
       case SSL_ERROR_WANT_READ:
-	//Logger::getInstance() << Logger::Debug << "SSL_read: renegociating session." << Logger::Flush;
+    //std::cout << "SSL_write: renegociating session" << std::endl;
 	break;
       case SSL_ERROR_WANT_WRITE:
       case SSL_ERROR_WANT_CONNECT:
@@ -166,15 +165,25 @@ int     SSLClientSocket::getNativeSocket() const
     return listenSocket;
 }
 
+const std::string&  SSLClientSocket::getIP() const
+{
+    return _address;
+}
+
+int                 SSLClientSocket::getPort() const
+{
+    return _port;
+}
+
 /// Get and send errors (as strings) to the logger.
 void	SSLClientSocket::logError() const
 {
-  /*unsigned long e;
+  unsigned long e;
   static char *buf;
 
   e = ERR_get_error();
   buf = ERR_error_string(e, NULL);
-  Logger::getInstance() << Logger::Error << "SSL " << std::string(buf) << Logger::Flush;*/
+  std::cerr << "SSL " << buf << std::endl;
 }
 
 
