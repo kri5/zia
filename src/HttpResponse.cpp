@@ -110,8 +110,6 @@ zAPI::IResponseStream*    HttpResponse::getCurrentStream()
     return NULL;
 }
 
-//FIXME:
-#include <iostream>
 void                    HttpResponse::setError(ErrorResponseStream* error)
 {
     this->_responseStatus = error->getStatus();
