@@ -2,8 +2,9 @@
 #include "Workflow/Worker.h"
 
 #include "Logger.hpp"
-#include "MemoryManager.hpp"
 #include "Time/Time.h"
+
+#include "MemoryManager.hpp"
 
 Worker::Worker(Pool* pool, unsigned int id) : _pool(pool), _id(id)
 {
@@ -42,8 +43,5 @@ void            Worker::code()
             this->checkSleep(true);
         }
     }
-    //FIXME : can't let this on prod.
-    std::cout << "Thread is dying" << std::endl;
-    exit(1);
 }
 

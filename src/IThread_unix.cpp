@@ -15,6 +15,7 @@ IThread::IThread()
 
 IThread::~IThread()
 {
+    delete this->_mutex;
 }
 
 void			IThread::run()

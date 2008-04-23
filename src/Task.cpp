@@ -23,12 +23,12 @@
 #include "Modules/ModuleManager.h"
 #include "Stream/ResponseStreamSocket.h"
 
-#include "MemoryManager.hpp"
 #include "API/IWorkflow.h"
 #include "API/IBuildResponse.h"
 #include "API/IReceiveRequest.h"
 #include "API/ISendResponse.h"
 
+#include "MemoryManager.hpp"
 
 Task::Task(Pool* pool) :
     _res(NULL), _socket(NULL), _time(NULL), _pool(pool), _vhosts(NULL)
@@ -48,12 +48,6 @@ Task::~Task()
 
     this->_readBuffer->clear();
     delete this->_readBuffer;
-
-    delete this->_req;
-    delete this->_res;
-
-    if (this->_time)
-        delete this->_time;
 }
 
 void    Task::init(zAPI::IClientSocket* clt,

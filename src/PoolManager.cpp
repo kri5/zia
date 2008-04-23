@@ -9,7 +9,7 @@
 #include "Modules/ModuleManager.h"
 #include "ZException.hpp"
 
-//#include "MemoryManager.hpp"
+#include "MemoryManager.hpp"
 
 Pool::Manager*    Pool::Manager::create(Pool* pool)
 {
@@ -21,6 +21,11 @@ Pool::Manager*    Pool::Manager::create(Pool* pool)
 Pool::Manager::Manager(Pool* pool) : _pool(pool)
 {
     _timer = new Time();
+}
+
+Pool::Manager::~Manager()
+{
+    delete this->_timer;
 }
 
 void    Pool::Manager::initKeepAlivePoll() //warning : high contendence.

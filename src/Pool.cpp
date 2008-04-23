@@ -12,8 +12,13 @@ Pool::Pool(unsigned int nbThreads, unsigned int nbTasks) : _nbThreads(nbThreads)
 
 Pool::~Pool()
 {
-    delete this->_mutex;
     //delete this->_keepAliveMutex;
+    while (this->_freeTasks.empty() == false)
+    {
+        delete this->_freeTasks.front();
+        this->_freeTasks.pop();
+    }
+    delete this->_mutex;
 }
 
 void        Pool::init()

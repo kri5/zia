@@ -12,7 +12,7 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
 	Config.cpp Init.cpp Vhost.cpp
 	Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp
 	MemoryManager.hpp ErrorMsg.cpp ZException.hpp
-	MutexLock.hpp AtExit.hpp Parser.cpp HttpParser.cpp HttpRequest.cpp
+	MutexLock.hpp Parser.cpp HttpParser.cpp HttpRequest.cpp
     HttpResponse.cpp Server.cpp ErrorResponseStream.cpp
     Buffer.cpp DirectoryBrowser.cpp ResponseStreamFile.cpp ResponseStreamDir.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp

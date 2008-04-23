@@ -98,8 +98,6 @@ class   ModuleManager : public Singleton<ModuleManager>
                 return NULL;
             else if (size > 1)
                 Logger::getInstance() << Logger::Warning << "Can't have more than one module hooked to accept(). Will be using the first one." << Logger::Flush;
-            std::cout << "passed onAccept (call)" << std::endl;
-            // FIXME reinterpret_cast
             return (dynamic_cast<T*>((*(this->_modules.back().ptr[hook].begin()))->ptr->getInstance())->*method)(sock, address, port, config);
         }
 

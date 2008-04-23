@@ -17,6 +17,8 @@
 #include "API/IBuildResponse.h"
 #include "API/ISendResponse.h"
 
+#undef new
+
 ModuleManager::ModuleManager()
 {
     //_modules = new std::list<IModuleInfo*>[NumberOfHooks];
@@ -243,7 +245,7 @@ void        ModuleManager::scanModuleDir()
         if (firstChange == true)
             delete[] newList;
     }
-    delete files;
+    delete fs;
 }
 
 void        ModuleManager::removeModuleList(unsigned int reqId)
@@ -273,6 +275,7 @@ void        ModuleManager::removeModuleList(unsigned int reqId)
         {
             if (&(*mIt) == this->_taskModulesList[reqId])
             {
+                delete[] (*mIt).ptr;
                 this->_modules.erase(mIt);
             }
         }
@@ -309,27 +312,8 @@ void                   ModuleManager::getSortedList(zAPI::IModule::Hook hook, zA
             if (!inserted)
                 nList.push_back((*it));
         }
-
-
     }
-
-    //std::cout << "================================" << std::endl;
-    //std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  nIt = nList.begin();
-    //std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  nIte = nList.end();
-    //for (; nIt != nIte; ++nIt)
-    //{
-    //    std::cout << "module[" << (*nIt)->ptr->getName() << "] prio == " << (*nIt)->ptr->getInstance()->getPriority(event) << std::endl;
-    //}
-    //std::cout << "================================" << std::endl;
 }
-
-////////////////////////////////////////// ////////////////////////////////////////////
-////////////////////////////////////////   ////////////////////////////////////////////
-//////////////////////////////////////     ////////////////////////////////////////////
-//////////////////////////////    CALL METHODS     ////////////////////////////////////
-////////////////////////////////////       ////////////////////////////////////////////
-/////////////////////////////////////   ///// Tomb's spinning top /////////////////////
-///////////////////////////////////// /////////////////////////////////////////////////
 
 size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, zAPI::IHttpResponse* res, char* buff, size_t size)
 {
@@ -354,112 +338,4 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
     }
     return res->getCurrentStream()->read(buff, size);
 }
-
-//zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event)
-//{
-//    if (this->_modules.size() == 0)
-//        return zAPI::IModule::CONTINUE;
-//
-//    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = this->_modules.back().ptr[hook].begin();
-//    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = this->_modules.back().ptr[hook].end();
-//    zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
-//
-//    for (; it != ite; ++it)
-//    {
-//        res = (*it)->ptr->getInstance()->call(event);
-//        if (res != zAPI::IModule::CONTINUE)
-//            break ;
-//    }
-//    return res;
-//}
-
-//zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, zAPI::IModuleInfo* mod)
-//{
-//    if (this->_modules.size() == 0)
-//        return zAPI::IModule::CONTINUE;
-//
-//    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = this->_modules.back().ptr[hook].begin();
-//    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = this->_modules.back().ptr[hook].end();
-//    zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
-//
-//    for (; it != ite; ++it)
-//    {
-//        res = (*it)->ptr->getInstance()->call(event, mod);
-//        if (res != zAPI::IModule::CONTINUE)
-//            break ;
-//    }
-//    return res;
-//}
-
-//zAPI::IClientSocket*  ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, SOCKET sock)
-//{
-//    if (this->_modules.size() == 0)
-//        return NULL;
-//
-//    size_t      size = this->_modules.back().ptr[hook].size();
-//
-//    if (size == 0)
-//        return NULL;
-//    else if (size > 1)
-//        Logger::getInstance() << Logger::Warning << "Can't have more than one module hooked to accept(). Will be using the first one." << Logger::Flush;
-//    return (*(this->_modules.back().ptr[hook].begin()))->ptr->getInstance()->call(event, sock);
-//}
-
-//zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, const char* buff, size_t size)
-//{
-//    if (this->_modules.size() == 0)
-//        return zAPI::IModule::CONTINUE;
-//
-//    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = this->_modules.back().ptr[hook].begin();
-//    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = this->_modules.back().ptr[hook].end();
-//    zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
-//
-//    for (; it != ite; ++it)
-//    {
-//        res = (*it)->ptr->getInstance()->call(event, buff, size);
-//        if (res != zAPI::IModule::CONTINUE)
-//            break ;
-//    }
-//    return res;
-//}
-
-//zAPI::IModule::ChainStatus     ModuleManager::call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, zAPI::IHttpRequest* httpReq, zAPI::IHttpResponse* httpRes)
-//{
-//    if (this->_modules.size() == 0)
-//        return zAPI::IModule::CONTINUE;
-//
-//    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = this->_modules.back().ptr[hook].begin();
-//    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = this->_modules.back().ptr[hook].end();
-//    zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
-//
-//    if (hook == zAPI::IModule::WorkflowHook) //setting pointer to current modules list
-//    {
-//        if (event == zAPI::IModule::onBeginEvent)
-//        {
-//            this->_taskModulesList[httpReq->getRequestId()] = &(this->_modules.back());
-//            this->_taskModulesList[httpReq->getRequestId()]->count++;
-//            //std::cout << "Starting workflow : " << this->_taskModulesList[httpReq->getRequestId()]->count << std::endl;
-//            //std::cout << "request id == " << httpReq->getRequestId() << std::endl;
-//        }
-//        else //onError or onEnd : we decrement counter, and eventually remove modules list.
-//        {
-//            this->_taskModulesList[httpReq->getRequestId()]->count--;
-//            //std::cout << "Ending workflow : " << this->_taskModulesList[httpReq->getRequestId()]->count << std::endl;
-//            if (this->_taskModulesList[httpReq->getRequestId()]->count == 0 && 
-//                    this->_taskModulesList[httpReq->getRequestId()] != &(this->_modules.back()))
-//            {
-//                //std::cout << "Removing module list" << std::endl;
-//                this->removeModuleList(httpReq->getRequestId());
-//            }
-//
-//        }
-//    }
-//    for (; it != ite; ++it)
-//    {
-//        res = (*it)->ptr->getInstance()->call(event, httpReq, httpRes);
-//        if (res != zAPI::IModule::CONTINUE)
-//            break ;
-//    }
-//    return res;
-//}
 

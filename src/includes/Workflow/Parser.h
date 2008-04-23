@@ -5,7 +5,6 @@
 #include <sstream>
 #include <iostream>
 #include "Utils/Buffer.h"
-#include "MemoryManager.hpp"
 
 class	Parser
 {

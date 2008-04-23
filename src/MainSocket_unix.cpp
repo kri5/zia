@@ -7,11 +7,11 @@
 #include "Modules/IModuleManager.h"
 #include "Modules/ModuleManager.h"
 #include "RootConfig.hpp"
-
-#include "MemoryManager.hpp"
 #include "API/INetwork.h"
 
-MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : _netId(netId), _vhosts(vhosts)
+#include "MemoryManager.hpp"
+
+MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : _closed(false), _netId(netId), _vhosts(vhosts)
 {
 	listenSocket = ::socket(PF_INET, SOCK_STREAM, 0);
 	if (listenSocket == SOCKET_ERROR)

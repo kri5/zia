@@ -6,11 +6,10 @@
 
 #include <map>
 #include <stack>
+#include <new>
 
 #include "zia.h"
-#include "Singleton.hpp"
-#include "Logger.hpp"
-#include "Mutex.h"
+#include "Mutex/Mutex.h"
 #include "MutexLock.hpp"
 
 /// Will track memory leaks. Automaticly enabled if NDEBUG isn't set, and if the file is included at the top of the file. Must be last file included.
@@ -21,22 +20,30 @@ class MemoryManager
 		{
 			int				size;
 			unsigned int	line;
-			std::string		file;
+			//std::string		file;
 			bool			isArray;
 		};
 
 	public:
 		static MemoryManager&		getInstance()
 		{
+            //MutexLock   get_lock(glMutex);
 			static MemoryManager	mem;
 
 			return mem;
 		}
 
 		/// used for blocks allocation.
-		void*	alloc(std::size_t size, const char* file, int line, bool isArray)
+		void*	alloc(std::size_t size, const char* , int line, bool isArray)
 		{
             MutexLock   get_lock(this->_mutex);
+
+            /*
+            //debug : 
+            void* ptr2 = malloc(size);
+            return ptr2;
+            */
+
 			void*	ptr = malloc(size);
 			if (ptr == NULL)
 				throw std::bad_alloc();
@@ -44,7 +51,7 @@ class MemoryManager
 			MemoryBlock 	newBlock;
 			newBlock.size = size;
 			newBlock.line = line;
-			newBlock.file = file;
+			//newBlock.file = file;
 			newBlock.isArray = isArray;
 			this->_blocks[ptr] = newBlock;
 
@@ -56,6 +63,13 @@ class MemoryManager
 		void	free(void* ptr, bool isArray)
 		{
             MutexLock   get_lock(this->_mutex);
+
+            /*
+            //debug :
+            ::free(ptr);
+            return ;
+            */
+
 			std::map<void*, MemoryBlock>::iterator		it;
 
 			it = this->_blocks.find(ptr);
@@ -86,14 +100,14 @@ class MemoryManager
 			}
 			else
 			{
-				Logger::getInstance() << Logger::Error << "Warning : memory leaks detected :";
+                std::cerr << "Warning : memory leaks detected :";
 
 				std::map<void*, MemoryBlock>::iterator	it;
 				it = this->_blocks.begin();
 				while (it != this->_blocks.end())
 				{
 					//error msg.
-					std::cerr << Zia::Newline << " - On " << it->second.file << " at line " << it->second.line
+					std::cerr << Zia::Newline << " - On " << it->second.line << " at line " << it->second.line
 						<< " undeleted block of " << it->second.size << " bytes\n";
 					++it;
 				}

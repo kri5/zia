@@ -14,8 +14,6 @@
 
 int main(int argc, char **argv)
 {
-	//IFileSystem* fs = new FileSystem(".");
-	//fs->getFileList(".conf");
 	Init		i(argc, argv);
 	Server*		srv;
 
@@ -34,7 +32,7 @@ int main(int argc, char **argv)
 
     delete srv;
 	
-	//Logger::deleteInstance(); 
+	Logger::deleteInstance(); 
     //Buffer      buff(5);
 
     //buff.push("abcdefghijklmnopqrtsuvwxyz", 26);

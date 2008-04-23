@@ -70,6 +70,7 @@ class   Pool
                 static Manager* create(Pool*);
             private:
                 Manager(Pool*);
+                ~Manager();
                 void            code();
                 void            initKeepAlivePoll();
                 void            checkKeepAlive();

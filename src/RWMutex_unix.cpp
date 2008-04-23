@@ -2,8 +2,9 @@
 #include <iostream>
 
 #include "Mutex/RWMutex.h"
-#include "MemoryManager.hpp"
 #include "Logger.hpp"
+
+#include "MemoryManager.hpp"
 
 RWMutex::RWMutex()
 {

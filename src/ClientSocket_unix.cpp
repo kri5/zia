@@ -2,11 +2,12 @@
 
 #include "Sockets/ClientSocket_unix.h"
 #include "ZException.hpp"
-#include "MemoryManager.hpp"
 #include "Modules/IModuleManager.h"
 #include "API/IModule.h"
 #include "API/INetwork.h"
 #include "Modules/ModuleManager.h"
+
+#include "MemoryManager.hpp"
 
 int ClientSocket::_nbSockets = 0;
 Mutex   ClientSocket::_mutex;
