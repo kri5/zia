@@ -152,9 +152,8 @@ void        Init::readConfiguration(const std::string fileName, Config* cfg)
 
 void        Init::initModules()
 {
-    int nb = this->_conf->getIntParam("PoolThreadNumber", DEFAULT_POOL_THREAD_NUMBER);
+    int nb = this->_conf->getIntParam("PoolThreadNumber", Init::_defaultPoolThreadNumber);
 
-    std::cout << "threadNb == " << nb << std::endl;
     ModuleManager::getInstance().init(nb);
     ModuleManager::getInstance().scanModuleDir();
     //ModuleManager::getInstance().initProcessContent();
@@ -236,8 +235,8 @@ void        Init::initSockets()
 /// Spawn the threads
 void        Init::initThreads()
 {
-    int threadNb = this->_conf->getIntParam("PoolThreadNumber", DEFAULT_POOL_THREAD_NUMBER);
-    int taskSize = this->_conf->getIntParam("PoolTaskSize", DEFAULT_POOL_TASK_SIZE);
+    int threadNb = this->_conf->getIntParam("PoolThreadNumber", Init::_defaultPoolThreadNumber);
+    int taskSize = this->_conf->getIntParam("PoolTaskSize", Init::_defaultPoolTaskSize);
 
     _pool = new Pool(threadNb, taskSize);
     _pool->init();

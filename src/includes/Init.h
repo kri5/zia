@@ -13,9 +13,6 @@
 #include "Config.h"
 #include "Workflow/Pool.h"
 
-#define DEFAULT_POOL_THREAD_NUMBER 5
-#define DEFAULT_POOL_TASK_SIZE 300
-
 class Init
 {
 	public:
@@ -48,6 +45,8 @@ class Init
 
 		int     _argc;
 		char**  _argv;  
+        const static int                                        _defaultPoolThreadNumber = 10;
+        const static int                                        _defaultPoolTaskSize = 300;
 };
 
 #endif // __INIT_H__

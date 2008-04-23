@@ -210,7 +210,6 @@ bool    Task::parseRequest()
             return false;
         parser.parse();
     }
-    //FIXME: check host.
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getHeaderOption("Host")));
     if (this->_req->getCommand() == "POST")

@@ -642,6 +642,27 @@ bool        HttpParser::readHost(std::string& host)
          host = tmp;
          return true;
     }
+    else
+        if (this->appendInteger(tmp)
+            && this->peekIfEqual(".", tmp))
+        {
+            if (this->appendInteger(tmp)
+                && this->peekIfEqual(".", tmp))
+            {
+                if (this->appendInteger(tmp)
+                    && this->peekIfEqual(".", tmp))
+                {
+                    if (this->appendInteger(tmp))
+                    {
+                        if (this->peekIfEqual(":", tmp)
+                            && !this->appendInteger(tmp))
+                            return false;
+                        host = tmp;
+                        return true;
+                    }
+                }
+            }
+        }
     return false;
 }
 
