@@ -47,6 +47,8 @@ ModPHP::~ModPHP()
 
 int                             ModPHP::getPriority(zAPI::IModule::Event event) const
 {
+    if (event == zAPI::IModule::onPreBuildEvent)
+        return 10;
     return 0;
 }
 
@@ -168,7 +170,6 @@ size_t                          ModPHP::onProcessContent(zAPI::IHttpRequest* req
             return zAPI::IModule::ERRORMODULE;
         }
     }
-        std::cout << "not php" << std::endl;
     size_t  ret;
     if (tab.size() == index + 1)
     {
@@ -188,15 +189,12 @@ zAPI::IModule::ChainStatus      ModPHP::onPostSend(zAPI::IHttpRequest* request, 
         delete[] fds_output;
         delete[] fds_input;
     }
-    else
-        std::cout << "not php" << std::endl;
     return zAPI::IModule::CONTINUE;
 }
 
 zAPI::IModule::ChainStatus    ModPHP::onPreBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response)
 {
     size_t  pos;
-    std::cout << request->getUri() << std::endl;
     if ((pos = request->getUri().rfind('.')) != std::string::npos &&
             request->getUri().compare(pos, std::string::npos, ".php") == 0)
     {

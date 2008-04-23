@@ -311,7 +311,6 @@ bool    Task::sendResponse()
         streamQueue.pop();
     }
     ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPostSendEvent, this->_req, this->_res, &zAPI::ISendResponse::onPostSend);
-    std::cout << "Task sent" << std::endl;
     return true;
 }
 

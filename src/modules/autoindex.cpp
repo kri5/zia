@@ -29,7 +29,7 @@ extern "C" float  version()
 
 int         AutoIndex::getPriority(zAPI::IModule::Event event) const
 {
-    return 100;
+    return 0;
 }
 
 zAPI::IModule::ChainStatus    AutoIndex::onPreBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response)
