@@ -63,6 +63,8 @@ HttpResponse::~HttpResponse()
 {
 }
 
+#include <iostream>
+
 const char*             HttpResponse::getResponseStatusMessage(int key)
 {
     for (int i = 0; ResponseStatus[i].value; i++)
@@ -113,6 +115,7 @@ zAPI::IResponseStream*    HttpResponse::getCurrentStream()
 void                    HttpResponse::setError(ErrorResponseStream* error)
 {
     this->_responseStatus = error->getStatus();
+    this->_responseValue = HttpResponse::getResponseStatusMessage(this->_responseStatus);
     this->clearStreams();
     this->appendStream(error);
     this->setHeaderOption("Content-Length", error->getSize());

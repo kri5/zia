@@ -55,16 +55,19 @@ int                             ModPHP::getPriority(zAPI::IModule::Event event) 
 char**                          ModPHP::createEnv(zAPI::IHttpRequest* req) const
 {
     std::map<std::string, std::string>      env;
+    char                                    port[42];
+    sprintf(port, "%d", req->getClient()->getPort());
 
     env["SERVER_SOFTWARE"] = "ziahttpd";
     env["SERVER_NAME"] = "tachatte";
     env["GATEWAY_INTERFACE"] = "CGI/1.1";
     env["SERVER_PROTOCOL"] = "HTTP/1.1";
-    env["SERVER_PORT"] = "8880"; //FIXME with the conf
+    env["SERVER_PORT"] = port;
     env["REQUEST_METHOD"] = req->getCommand();
     env["SERVER_PROTOCOL"] = req->getProtocol();
     //env["PATH_INFO"] = req->getUri();
     env["PATH_TRANSLATED"] = *(req->getConfig()->getParam("DocumentRoot")) + req->getUri();
+    env["SCRIPT_FILENAME"] = *(req->getConfig()->getParam("DocumentRoot")) + req->getUri();
     env["SCRIPT_NAME"] = req->getUri();
     env["QUERY_STRING"] = req->getUriQuery();
     env["REMOTE_HOST"] = "REMOTE_ADDR";
@@ -149,7 +152,6 @@ zAPI::IModule::ChainStatus      ModPHP::onPreSend(zAPI::IHttpRequest* request, z
 size_t                          ModPHP::onProcessContent(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response, char* buf,
                                 size_t size, const std::vector<zAPI::ISendResponse*>& tab, unsigned int index)
 {
-    std::cout << "***** PHP processContent *****" << std::endl;
     if (request->getParam("modphp_status") != NULL)
     {
         int* fds_output = (int*)request->getParam("modphp_fds_output");
