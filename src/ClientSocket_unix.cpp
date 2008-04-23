@@ -36,7 +36,7 @@ int             ClientSocket::send(const char *buf, int length)
     int iResult = ::send(listenSocket, buf, length, MSG_NOSIGNAL);
 
 	if (iResult == SOCKET_ERROR)
-        Logger::getInstance() << Logger::Error << "Send error : " << strerror(errno) << Logger::Flush;
+        Logger::getInstance() << Logger::NoStdOut << Logger::Error << "Send error : " << strerror(errno) << Logger::Flush;
 	return (iResult);
 }
 
@@ -62,7 +62,7 @@ int             ClientSocket::recv(char *buf, int length)
 {
 	int iResult = ::recv(listenSocket, buf, length, 0);
 	if (iResult == SOCKET_ERROR)
-        Logger::getInstance() << Logger::Error << "Receive error : " << strerror(errno) << Logger::Flush;
+        Logger::getInstance() << Logger::NoStdOut << Logger::Error << "Receive error : " << strerror(errno) << Logger::Flush;
     else
         ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onReceiveEvent, buf, iResult, &zAPI::INetwork::onReceive);
 	return (iResult);
@@ -89,9 +89,9 @@ void            ClientSocket::close(bool shutdown)
     {
         if (shutdown)
             if (::shutdown(listenSocket, SHUT_RDWR))
-                Logger::getInstance() << Logger::Error << "Can't shutdown socket : " << strerror(errno) << Logger::Flush;
+                Logger::getInstance() << Logger::NoStdOut << Logger::Error << "Can't shutdown socket : " << strerror(errno) << Logger::Flush;
         if (::close(listenSocket) < 0)
-            Logger::getInstance() << Logger::Error << "Can't close socket : " << strerror(errno) << Logger::Flush;
+            Logger::getInstance() << Logger::NoStdOut << Logger::Error << "Can't close socket : " << strerror(errno) << Logger::Flush;
         this->_closed = true;
     }
 }

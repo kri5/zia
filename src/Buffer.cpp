@@ -64,6 +64,7 @@ void    Buffer::packBuffer(size_t begin)
     {
         return ;
     }
+    //std::cout << "last erase caracter : " << this->_buffers.front()->at(begin) << std::endl;
     this->_buffers.front()->erase(0, begin);
     this->_bufPos = 0;
     this->getEolPos();
@@ -127,7 +128,7 @@ char    Buffer::getChar(size_t pos)
         }
         else //le resultat est dans ce buffer.
         {
-            if (pos >= (*it)->length())
+            if (pos >= i + (*it)->length())
             {
                 //std::cout << "pos == " << pos << std::endl << " i == " << i << " length " << (*it)->length() << std::endl;
                 //this->dump();
@@ -203,12 +204,12 @@ void    Buffer::flush(size_t length)
     size_t                                  i;
     size_t                                  strLength;
 
-    for (nb = 0; it != end; )
+    for (nb = 0; it != end && length > 0; )
     {
         strLength = (*it)->length();
         for (i = 0; i < strLength; ++i, ++nb)
         {
-            if (i == strLength - 1)
+            if (i == strLength) //warning : bug generator
             {
                 break ;
             }
@@ -224,6 +225,20 @@ void    Buffer::flush(size_t length)
         this->_size -= strLength;
         if (nb == length - 1)
             return ;
+        //if (length >= strLength)
+        //{
+        //    delete *it;
+        //    it = this->_buffers.erase(it);
+        //    length -= strLength;
+        //    this->_size -= strLength;
+        //    continue ;
+        //}
+        //else
+        //{
+        //    this->packBuffer(length);
+        //    this->_size -= strLength;
+        //    return ;
+        //}
     }
     this->_size = 0;
 }

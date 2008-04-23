@@ -56,10 +56,11 @@ zAPI::IModule::ChainStatus    AutoIndex::onPreBuild(zAPI::IHttpRequest* request,
             if (strcmp(file->d_name, "index.php") == 0)
             {
                 request->setUri(request->getUri() + "/index.php");
-                std::cout << "after autoindex : " << request->getUri() << std::endl;
+                closedir(dir);
                 return IModule::CONTINUE;
             }
         }
+        closedir(dir);
     }
     return IModule::CONTINUE;
 }

@@ -65,6 +65,7 @@ zAPI::IClientSocket*	MainSocket::accept()
 	if (acceptSocket == SOCKET_ERROR)
 	{
         Logger::getInstance() << Logger::Warning << "Can't accept client (" << strerror(errno) << ')' << Logger::Flush;
+        return NULL;
 		//throw ZException<IMainSocket>(INFO, MainSocket::Error::Accept, strerror(errno));
 	}
     zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, acceptSocket, inet_ntoa(clientSin.sin_addr), this->_netId->getPort().getPort(), RootConfig::getConfig(), &zAPI::INetwork::onAccept);

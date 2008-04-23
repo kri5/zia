@@ -54,7 +54,6 @@ void        HttpParser::parse()
         return ;
     if (this->_isFirstLine)
     {
-        //this->_buffer->dump();
         if (this->parseGetCommand()
             || this->parsePostCommand()
             || this->parseHeadCommand())
@@ -75,12 +74,17 @@ void        HttpParser::parse()
             //FIXME: remove me after debug, causea i'm kind of slow.
             //this->flush();
         }
-
-        //if (this->_isDone
-        //    && this->_request->getCommand() == "POST")
-        //    this->parseBody();
 	}
-    this->flush();
+    if (this->_isDone)
+    {
+        //std::cout << "\n\n************PRE DUMP************\n\n" << std::endl;
+        //this->_buffer->dump();
+        //std::cout << "\n\n************POST DUMP************\n\n" << std::endl;
+        this->flush();
+        //std::cout << "\n\n************PRE FLUSH************\n\n" << std::endl;
+        //this->_buffer->dump();
+        //std::cout << "\n\n************POST FLUSH************\n\n" << std::endl;
+    }
 }
 
 

@@ -17,6 +17,7 @@ extern "C"  void    modphp_catchpipe(int sig)
 extern "C" zAPI::IModule* create()
 {
     signal(SIGPIPE, modphp_catchpipe);
+    signal(SIGCHLD, SIG_IGN);
     return new ModPHP;
 }
 
@@ -101,10 +102,12 @@ zAPI::IModule::ChainStatus      ModPHP::onPreSend(zAPI::IHttpRequest* request, z
         request->setParam("modphp_fds_input", fds_input);
         request->setParam("modphp_fds_output", fds_output);
 
-        pipe(fds_input);
-        pipe(fds_output);
+        if (pipe(fds_input) < 0)
+            return zAPI::IModule::ERRORMODULE;
+        if (pipe(fds_output) < 0)
+            return zAPI::IModule::ERRORMODULE;
 
-        pid_t pid = fork();
+        pid_t   pid = fork();
         if (pid == -1)
         {
             perror("fork");
@@ -130,6 +133,7 @@ zAPI::IModule::ChainStatus      ModPHP::onPreSend(zAPI::IHttpRequest* request, z
         }
         else
         {
+            request->setParam("modphp_pid_t", reinterpret_cast<void*>(pid));
             close(fds_output[1]);
             close(fds_input[0]);
             zAPI::IResponseStream* post = request->getBodyStream();
@@ -157,10 +161,11 @@ size_t                          ModPHP::onProcessContent(zAPI::IHttpRequest* req
         int* fds_output = (int*)request->getParam("modphp_fds_output");
         if (tab.size() == index + 1)
         {
-            size_t len = read(fds_output[0], buf, size);
+            int len = read(fds_output[0], buf, size);
             if (len < 0)
             {
                 std::cerr << "Reading error in modphp: " << strerror(errno) << std::endl;
+                return 0;
             }
             if (len < size)
                 buf[len] = 0;
@@ -188,8 +193,13 @@ zAPI::IModule::ChainStatus      ModPHP::onPostSend(zAPI::IHttpRequest* request, 
     {
         int* fds_output = (int*)request->getParam("modphp_fds_output");
         int* fds_input = (int*)request->getParam("modphp_fds_input");
+        close(fds_output[0]);
         delete[] fds_output;
         delete[] fds_input;
+        int status;
+        //pid_t pid = reinterpret_cast<pid_t>(request->getParam("modphp_pid_t"));
+        //std::cout << "done : status == " << status << " " << waitpid(pid, &status, 0) << "done " << std::endl;
+        //std::cout << WIFSTOPPED(status) << std::endl;
     }
     return zAPI::IModule::CONTINUE;
 }

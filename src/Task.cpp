@@ -183,6 +183,7 @@ bool    Task::receiveDatas()
         //std::cout << "readed [" << tmp << "]" << std::endl;
         if (sockRet <= 0) //check recv / error
             return false;
+        //std::cout << "Feeding parser" << std::endl;
         this->_readBuffer->push(tmp, sockRet);
     }
     return true;
@@ -192,12 +193,15 @@ bool    Task::parseRequest()
 {
     HttpParser      parser(this->_req, this->_readBuffer);
 
+    this->_time->init();
     ModuleManager::getInstance().call(zAPI::IModule::ReceiveRequestHook, zAPI::IModule::onPreReceiveEvent, this->_req, this->_res, &zAPI::IReceiveRequest::onPreReceive);
     while (parser.done() == false)
     {
         if (this->checkTimeout())
         {
+            //write(1, "-- \n", 4);
             //this->_readBuffer->dump();
+            //exit(1);
             return false;
         }
         if (this->receiveDatas() == false)
@@ -296,6 +300,8 @@ bool    Task::sendResponse()
         do
         {
             size = ModuleManager::getInstance().processContent(this->_req, this->_res, buff, 1024);
+            if (size == 0)
+                break ;
             this->_writeBuffer->push(buff, size);
             if (this->sendBuffer() == false)
                 return false;

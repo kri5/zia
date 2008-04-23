@@ -62,6 +62,7 @@ zAPI::IClientSocket*	MainSocket::accept()
 	{
 		closesocket(listenSocket);
 		WSACleanup();
+        //FIXME: can be a little ruff...
 		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Accept);
 	}
 	zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, acceptSocket, inet_ntoa(clientSin.sin_addr), this->_netId->getPort().getPort(), RootConfig::getConfig(), &zAPI::INetwork::onAccept);
