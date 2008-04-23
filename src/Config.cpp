@@ -113,3 +113,15 @@ void        Config::dump() const
     }
 }
 
+int         Config::getIntParam(const std::string& key, int defaultValue) const
+{
+    int nb;
+
+    if (this->isSet(key))
+    {
+        std::string threadNb = *this->getParam(key);
+        if ((nb = atoi(threadNb.c_str())) != 0)
+            return nb;
+    }
+    return defaultValue;
+}

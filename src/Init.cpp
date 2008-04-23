@@ -152,7 +152,10 @@ void        Init::readConfiguration(const std::string fileName, Config* cfg)
 
 void        Init::initModules()
 {
-    ModuleManager::getInstance().init(10); //FIXME : get thread number from conf.
+    int nb = this->_conf->getIntParam("PoolThreadNumber", DEFAULT_POOL_THREAD_NUMBER);
+
+    std::cout << "threadNb == " << nb << std::endl;
+    ModuleManager::getInstance().init(nb);
     ModuleManager::getInstance().scanModuleDir();
     //ModuleManager::getInstance().initProcessContent();
 }
@@ -233,8 +236,10 @@ void        Init::initSockets()
 /// Spawn the threads
 void        Init::initThreads()
 {
-    //FIXME : adapt the number of threads from the config.
-    _pool = new Pool(10, 300);
+    int threadNb = this->_conf->getIntParam("PoolThreadNumber", DEFAULT_POOL_THREAD_NUMBER);
+    int taskSize = this->_conf->getIntParam("PoolTaskSize", DEFAULT_POOL_TASK_SIZE);
+
+    _pool = new Pool(threadNb, taskSize);
     _pool->init();
 }
 
@@ -251,7 +256,7 @@ bool    Init::checkConfig() const
         Logger::getInstance() << Logger::Error << "You must specify a port to listen to. Shuting down." << Logger::Flush;
         return false;
     }
-    else if (this->_conf->isSet("Timeout") == false) //FIXME : check if timeout is a number.
+    else if (this->_conf->getIntParam("Timeout", false) == false)
     {
         Logger::getInstance() << Logger::Error << "You must specify a port to timeout delay. Shuting down." << Logger::Flush;
         return false;

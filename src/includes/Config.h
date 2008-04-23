@@ -36,6 +36,7 @@ class Config : public zAPI::IConfig
         const std::list<std::string>&           getModules() const;
         bool                                    isSet(const std::string& name) const;
         void                                    dump() const;
+        int                                     getIntParam(const std::string&, int = 0) const;
 	protected:
 		/// Default port values :
 		enum DefaultPort

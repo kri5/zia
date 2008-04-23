@@ -147,7 +147,7 @@ zAPI::IModule::ChainStatus      ModPHP::onPreSend(zAPI::IHttpRequest* request, z
 size_t                          ModPHP::onProcessContent(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response, char* buf,
                                 size_t size, const std::vector<zAPI::ISendResponse*>& tab, unsigned int index)
 {
-
+    std::cout << "***** PHP processContent *****" << std::endl;
     if (request->getParam("modphp_status") != NULL)
     {
         int* fds_output = (int*)request->getParam("modphp_fds_output");

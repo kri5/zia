@@ -13,6 +13,9 @@
 #include "Config.h"
 #include "Workflow/Pool.h"
 
+#define DEFAULT_POOL_THREAD_NUMBER 5
+#define DEFAULT_POOL_TASK_SIZE 300
+
 class Init
 {
 	public:
