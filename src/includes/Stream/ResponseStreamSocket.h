@@ -23,7 +23,7 @@ class   ResponseStreamSocket : public zAPI::IResponseStream
         bool                    good() const;
         size_t                  getSize() const;
     private:
-        int                     poll() const;
+        int                     sockPoll() const;
         zAPI::IClientSocket*    _socket;
         char*                   _previouslyReadDatas;
         char*                   _previouslyReadDatasPtr;

@@ -24,6 +24,7 @@ class File : public IFile
 		void					open();
 		void					close();
 		std::streamsize			get(char* buff, size_t len);
+		size_t                  read(char* buff, size_t len);
 		bool					good() const;
 		bool					eof() const;
 		std::iostream*			getStream();

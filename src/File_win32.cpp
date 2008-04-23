@@ -94,6 +94,14 @@ std::streamsize	File::get(char *buff, size_t len)
 	return this->_stream->gcount();
 }
 
+size_t          File::read(char* buff, size_t len)
+{
+	if (this->_stream == NULL)
+		return 0;
+	this->_stream->read(buff, len);
+	return this->_stream->gcount();
+}
+
 bool			File::good() const
 {
 	return this->_stream->good();

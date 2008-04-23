@@ -1,5 +1,6 @@
 #include "API/IClientSocket.h"
 #include "Sockets/MainSocket.h"
+#include "Sockets/ClientSocket.h"
 #include "Network/NetworkID.h"
 #include "Network/Vhost.h"
 #include "Network/Port.h"
@@ -69,12 +70,6 @@ const char* ResponseStreamSocket::Error::Msg[] = {
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 #ifdef WIN32
-
-#include "Sockets/Socket_win32.h"
-const char*	Socket::Error::Msg[] = {
-	"Unknown error",
-	"Can't initialize socket librairie (WSAstartup)"
-};
 
 #include "File/File_win32.h"
 

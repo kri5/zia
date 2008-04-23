@@ -1,4 +1,7 @@
 INCLUDE_DIRECTORIES(../includes/ ./)
+
+IF (UNIX)
+
 #ADD_LIBRARY (helloworld MODULE helloworld.cpp)
 #ADD_LIBRARY (rot13 MODULE rot13.cpp)
 #ADD_LIBRARY (loutre MODULE loutre.cpp)
@@ -9,3 +12,5 @@ ADD_LIBRARY (ModPHP MODULE modphp.cpp)
 ADD_LIBRARY (AutoIndex MODULE autoindex.cpp)
 #ADD_LIBRARY(PriorityTest1 MODULE priorityTest1.cpp)
 #ADD_LIBRARY(PriorityTest2 MODULE priorityTest2.cpp)
+
+ENDIF (UNIX)

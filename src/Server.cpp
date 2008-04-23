@@ -12,6 +12,7 @@
 #include "ZException.hpp"
 #include "RootConfig.hpp"
 #include "Modules/ModuleManager.h"
+#include "Sockets/ClientSocket.h"
 
 #include "MemoryManager.hpp"
 

@@ -4,8 +4,16 @@
 #include "Modules/ModuleManager.h"
 #include "ZException.hpp"
 #include "MemoryManager.hpp"
+#include "RootConfig.hpp"
+#include "Network/Vhost.h"
 
-MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : Socket(), _netId(netId), _vhosts(vhosts)
+#include "API/INetwork.h"
+
+#ifdef _WIN32
+typedef int socklen_t;
+#endif // _WIN32
+
+MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : _netId(netId), _vhosts(vhosts)
 {
 	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (listenSocket == INVALID_SOCKET)
@@ -44,20 +52,29 @@ void MainSocket::listen(int queue) const
 
 zAPI::IClientSocket*	MainSocket::accept()
 {
-	SOCKET acceptSocket = ::accept(listenSocket, NULL, NULL);
+	struct sockaddr_in    clientSin;
+	int                   clientSinLen;
+
+	clientSinLen = sizeof(clientSin);
+	SOCKET acceptSocket = ::accept(listenSocket, (struct sockaddr*)&clientSin, (socklen_t*)&clientSinLen);
 	if (acceptSocket == INVALID_SOCKET)
 	{
 		closesocket(listenSocket);
 		WSACleanup();
 		throw ZException<IMainSocket>(INFO, IMainSocket::Error::Accept);
 	}
-	zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, zAPI::IModule::onAcceptEvent, acceptSocket);
+	zAPI::IClientSocket*  ret = ModuleManager::getInstance().call(zAPI::IModule::NetworkHook, acceptSocket, inet_ntoa(clientSin.sin_addr), this->_netId->getPort().getPort(), RootConfig::getConfig(), &zAPI::INetwork::onAccept);
     if (ret == NULL)
-        ret = new ClientSocket(acceptSocket);
+        ret = new ClientSocket(acceptSocket, inet_ntoa(clientSin.sin_addr), this->_netId->getPort().getPort());
 	return (ret);
 }
 
 const std::vector<Vhost*>&   MainSocket::getAssociatedVhosts()
 {
     return _vhosts;
+}
+
+SOCKET						MainSocket::getNativeSocket() const
+{
+	return listenSocket;
 }

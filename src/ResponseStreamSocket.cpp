@@ -1,7 +1,9 @@
-#include <errno.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <poll.h>
+#ifndef _WIN32
+ #include <errno.h>
+ #include <arpa/inet.h>
+ #include <netinet/in.h>
+ #include <poll.h>
+#endif // _WIN32
 
 #include "Stream/ResponseStreamSocket.h"
 #include "ZException.hpp"
@@ -37,12 +39,12 @@ size_t      ResponseStreamSocket::read(char* buf, size_t size)
 
 bool        ResponseStreamSocket::completed() const
 {
-    return (this->poll() == 0 && this->_prevBufferSize == 0); 
+    return (this->sockPoll() == 0 && this->_prevBufferSize == 0); 
 }
 
 bool        ResponseStreamSocket::good() const
 {
-    return (this->poll() >= 0);
+    return (this->sockPoll() >= 0);
 }
 
 size_t        ResponseStreamSocket::getSize() const
@@ -50,7 +52,7 @@ size_t        ResponseStreamSocket::getSize() const
     throw ZException<ResponseStreamSocket>(INFO, ResponseStreamSocket::Error::Size);
 }
 
-int             ResponseStreamSocket::poll() const
+int             ResponseStreamSocket::sockPoll() const
 {
     struct pollfd   fds;
     int             ret;
