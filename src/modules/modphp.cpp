@@ -31,9 +31,9 @@ extern "C" std::string name()
     return "ModPHP";
 }
 
-extern "C" int  version()
+extern "C" float version()
 {
-    return 5;
+    return 5.0;
 }
 
 ModPHP::ModPHP()
