@@ -30,8 +30,8 @@
 
 #include "MemoryManager.hpp"
 
-Task::Task(Pool* pool) :
-    _res(NULL), _socket(NULL), _time(NULL), _pool(pool), _vhosts(NULL)
+Task::Task(Pool* pool, unsigned int id) :
+    _res(NULL), _socket(NULL), _time(NULL), _pool(pool), _taskId(id), _vhosts(NULL)
 {
     _readBuffer = new Buffer(1024);
     _writeBuffer = new Buffer(1024);
@@ -80,13 +80,16 @@ void    Task::clear(bool clearBuffers)
     _status = Stacked;
 }
 
-void    Task::execute(unsigned int taskId)
+void    Task::execute()
 {
-    _taskId = taskId;
-    this->_req->setRequestId(taskId);
-    this->_req->setClient(this->_socket);
-    ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onBeginEvent, this->_req, this->_res, &zAPI::IWorkflow::onBegin);
-    //std::cout << "new task" << std::endl;
+    //std::cout << "status == " << this->_status << " RolledBack == " << RolledBack << std::endl;
+    if (this->_status != RolledBack)
+    {
+        this->_req->setRequestId(_taskId);
+        this->_req->setClient(this->_socket);
+        ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onBeginEvent, this->_req, this->_res, &zAPI::IWorkflow::onBegin);
+        //std::cout << "new task" << std::endl;
+    }
     if (this->_socket->isClosed() == true)
     {
         this->finalize(false);
@@ -121,6 +124,12 @@ bool    Task::finalize(bool succeded)
 {
     if (succeded)
         ModuleManager::getInstance().call(zAPI::IModule::WorkflowHook, zAPI::IModule::onEndEvent, this->_req, this->_res, &zAPI::IWorkflow::onEnd);
+    if (this->_status == RolledBack)
+    {
+        this->_freeTask = false;
+        this->_pool->rescheduleTask(this);
+        return succeded;
+    }
 
     if (succeded == false || this->_socket->isClosed() == true
             || (this->_req->headerOptionIsSet("Connection") && this->_req->getHeaderOption("Connection") == "close")
@@ -195,6 +204,7 @@ bool    Task::receiveDatas()
 
 bool    Task::parseRequest()
 {
+    //std::cout << "parsing request" << std::endl;
     HttpParser      parser(this->_req, this->_readBuffer);
 
     this->_status = ReceivingRequest;
@@ -227,6 +237,7 @@ bool    Task::parseRequest()
 
 bool    Task::buildResponse()
 {
+    //std::cout << "Building response" << std::endl;
     _status = BuildingResponse;
     ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPreBuildEvent, this->_req, this->_res, &zAPI::IBuildResponse::onPreBuild);
     const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
@@ -270,9 +281,10 @@ bool    Task::buildResponse()
 
 bool    Task::sendHeader()
 {
+    //std::cout << "sending header" << std::endl;
     std::ostringstream      header;
 
-    header << "HTTP/1.1 " << this->_res->getResponseStatus() << " " << this->_res->getResponseValue() << "\r\n";
+    header << this->_req->getProtocol() << this->_res->getResponseStatus() << " " << this->_res->getResponseValue() << "\r\n";
 
     const std::map<std::string, std::string>& headerParams = this->_res->getHeaderOptions();
     std::map<std::string, std::string>::const_iterator        it = headerParams.begin();
@@ -296,6 +308,7 @@ bool    Task::sendResponseStream()
     char    buff[1024];
     size_t  size;
 
+    this->_time->init(); //initialisation du timer pour les grosses requetes.
     do
     {
         size = ModuleManager::getInstance().processContent(this->_req, this->_res, buff, 1024);
@@ -304,6 +317,11 @@ bool    Task::sendResponseStream()
         this->_writeBuffer->push(buff, size);
         if (this->sendBuffer() == false)
             return false;
+        if (this->_time->elapsed(5))
+        {
+            this->_status = RolledBack;
+            return true;
+        }
     } while (size == 1024);
     return true;
 }
@@ -320,11 +338,13 @@ bool    Task::sendResponse()
 
     this->_status = SendingResponse;
     std::queue<zAPI::IResponseStream*>& streamQueue = this->_res->getStreams();
-
+    //std::cout << "Sending response" << std::endl;
     while (streamQueue.empty() == false)
     {
         if (this->sendResponseStream() == false)
             return false;
+        if (this->_status == RolledBack)
+            return true;
         delete streamQueue.front();
         streamQueue.pop();
     }

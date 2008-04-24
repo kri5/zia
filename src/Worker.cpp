@@ -32,7 +32,7 @@ void            Worker::code()
         Task*   t = this->_pool->popTask();
         if (t != NULL)
         {
-            t->execute(this->_id);
+            t->execute();
             if (t->isFree() == true)
                 this->_pool->finishTask(t);
         }

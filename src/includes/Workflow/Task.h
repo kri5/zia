@@ -16,9 +16,9 @@ class Pool;
 class Task
 {
     public:
-        Task(Pool*);
+        Task(Pool*, unsigned int);
         virtual ~Task();
-        void    execute(unsigned int);
+        void    execute();
         void    clear(bool clearBuffers = true);
         /// Will totaly reinitialize the task (new client, new potential vhosts, and call init())
         void    init(zAPI::IClientSocket*, const std::vector<Vhost*>*);
@@ -35,6 +35,7 @@ class Task
             BuildingResponse,
             SendingHeader,
             SendingResponse,
+            RolledBack,
             Done
         };
         bool            parseRequest();

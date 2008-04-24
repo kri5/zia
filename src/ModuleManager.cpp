@@ -17,8 +17,6 @@
 #include "API/IBuildResponse.h"
 #include "API/ISendResponse.h"
 
-#undef new
-
 ModuleManager::ModuleManager()
 {
     //_modules = new std::list<IModuleInfo*>[NumberOfHooks];
@@ -36,6 +34,7 @@ ModuleManager::~ModuleManager()
 void            ModuleManager::init(unsigned int nbTasks)
 {
     this->_taskModulesList = new RefCounter<std::list<RefCounter<zAPI::IModuleInfo*>*>*>*[nbTasks];
+    std::cout << nbTasks << std::endl;
     for (unsigned int i = 0; i < nbTasks; ++i)
         this->_taskModulesList[i] = NULL;
 }

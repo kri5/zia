@@ -32,7 +32,7 @@ void        Pool::init()
     }
     for (unsigned int i = 0; i < this->_nbTasks; ++i)
     {
-        this->_freeTasks.push(new Task(this));
+        this->_freeTasks.push(new Task(this, i));
     }
     this->_manager = Pool::Manager::create(this);
 }
@@ -146,8 +146,8 @@ bool            Pool::empty() const
 
 void    Pool::rescheduleTask(Task* t)
 {
-    //std::cout << "rescheduling task " << t->_taskId << std::endl;
     MutexLock   getLock(this->_mutex);
+    //std::cout << "rescheduling task " << std::endl;
     this->_tasks.push(t);
 }
 

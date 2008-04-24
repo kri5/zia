@@ -152,7 +152,7 @@ void        Init::readConfiguration(const std::string fileName, Config* cfg)
 
 void        Init::initModules()
 {
-    int nb = this->_conf->getIntParam("PoolThreadNumber", Init::_defaultPoolThreadNumber);
+    int nb = this->_conf->getIntParam("PoolTaskSize", Init::_defaultPoolTaskSize);
 
     ModuleManager::getInstance().init(nb);
     ModuleManager::getInstance().scanModuleDir();
