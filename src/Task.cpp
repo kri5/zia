@@ -64,6 +64,7 @@ void    Task::init()
     this->_req = new HttpRequest();
     this->_res = new HttpResponse();
     this->_time = new Time();
+    _status = Started;
 }
 
 void    Task::clear(bool clearBuffers)
@@ -76,6 +77,7 @@ void    Task::clear(bool clearBuffers)
     delete this->_time;
     delete this->_req;
     delete this->_res;
+    _status = Stacked;
 }
 
 void    Task::execute(unsigned int taskId)
@@ -90,10 +92,12 @@ void    Task::execute(unsigned int taskId)
         this->finalize(false);
         return ;
     }
-    if (this->_res->isInSendMode() == true || this->parseRequest() == true)
+    if (this->_status > ReceivingRequest || this->_res->isInSendMode() == true 
+            || this->parseRequest() == true)
     {
         this->_time->init();
-        if (this->_res->isInSendMode() == true || this->buildResponse() == true)
+        if (this->_status > BuildingResponse || this->_res->isInSendMode() == true 
+                || this->buildResponse() == true)
         {
             ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPostBuildEvent, this->_req, this->_res, &zAPI::IBuildResponse::onPostBuild);
             //just for the moment :
@@ -102,7 +106,7 @@ void    Task::execute(unsigned int taskId)
                 this->_res->setHeaderOption("Connection", "close");
             else
                 this->_res->setHeaderOption("Connection", "Keep-Alive");
-            if (this->sendResponse())
+            if (this->_status >= Done || this->sendResponse())
             {
                 this->finalize(true);
                 return ;
@@ -193,6 +197,7 @@ bool    Task::parseRequest()
 {
     HttpParser      parser(this->_req, this->_readBuffer);
 
+    this->_status = ReceivingRequest;
     this->_time->init();
     ModuleManager::getInstance().call(zAPI::IModule::ReceiveRequestHook, zAPI::IModule::onPreReceiveEvent, this->_req, this->_res, &zAPI::IReceiveRequest::onPreReceive);
     while (parser.done() == false)
@@ -222,6 +227,7 @@ bool    Task::parseRequest()
 
 bool    Task::buildResponse()
 {
+    _status = BuildingResponse;
     ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPreBuildEvent, this->_req, this->_res, &zAPI::IBuildResponse::onPreBuild);
     const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
     IFile*              fileInfo = new File(this->_req->getUri(), docRoot.c_str());
@@ -285,31 +291,45 @@ bool    Task::sendHeader()
     return (this->sendBuffer());
 }
 
-bool    Task::sendResponse()
+bool    Task::sendResponseStream()
 {
-    ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPreSendEvent, this->_req, this->_res, &zAPI::ISendResponse::onPreSend);
-    if (this->sendHeader() == false)
-        return false;
-
-    std::queue<zAPI::IResponseStream*>& streamQueue = this->_res->getStreams();
     char    buff[1024];
     size_t  size;
 
+    do
+    {
+        size = ModuleManager::getInstance().processContent(this->_req, this->_res, buff, 1024);
+        if (size == 0)
+            break ;
+        this->_writeBuffer->push(buff, size);
+        if (this->sendBuffer() == false)
+            return false;
+    } while (size == 1024);
+    return true;
+}
+
+bool    Task::sendResponse()
+{
+    if (this->_status < SendingHeader)
+    {
+        this->_status = SendingHeader;
+        ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPreSendEvent, this->_req, this->_res, &zAPI::ISendResponse::onPreSend);
+        if (this->sendHeader() == false)
+            return false;
+    }
+
+    this->_status = SendingResponse;
+    std::queue<zAPI::IResponseStream*>& streamQueue = this->_res->getStreams();
+
     while (streamQueue.empty() == false)
     {
-        do
-        {
-            size = ModuleManager::getInstance().processContent(this->_req, this->_res, buff, 1024);
-            if (size == 0)
-                break ;
-            this->_writeBuffer->push(buff, size);
-            if (this->sendBuffer() == false)
-                return false;
-        } while (size == 1024);
+        if (this->sendResponseStream() == false)
+            return false;
         delete streamQueue.front();
         streamQueue.pop();
     }
     ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPostSendEvent, this->_req, this->_res, &zAPI::ISendResponse::onPostSend);
+    this->_status = Done;
     return true;
 }
 

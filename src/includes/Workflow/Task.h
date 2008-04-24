@@ -27,6 +27,16 @@ class Task
         bool    isFree() const;
 
     private:
+        enum    Status
+        {
+            Stacked,
+            Started,
+            ReceivingRequest,
+            BuildingResponse,
+            SendingHeader,
+            SendingResponse,
+            Done
+        };
         bool            parseRequest();
         bool            buildResponse();
         bool            sendHeader();
@@ -34,6 +44,7 @@ class Task
         bool            finalize(bool);
         bool            sendBuffer();
         bool            receiveDatas();
+        bool            sendResponseStream();
         bool            checkTimeout();
 
         HttpRequest*            _req;
@@ -47,6 +58,7 @@ class Task
         /// Will be set to false if browser sent more than one request in a keepalive socket.
         bool                    _freeTask;
         unsigned int            _taskId;
+        Status                  _status;
 
         const std::vector<Vhost*>*    _vhosts;
 };
