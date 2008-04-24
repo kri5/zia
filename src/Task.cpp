@@ -199,8 +199,8 @@ bool    Task::parseRequest()
     {
         if (this->checkTimeout())
         {
-            //write(1, "-- \n", 4);
-            //this->_readBuffer->dump();
+            write(1, "-- \n", 4);
+            this->_readBuffer->dump();
             //exit(1);
             return false;
         }

@@ -36,7 +36,6 @@ class ClientSocket : public zAPI::IClientSocket
 		virtual int			getPort() const;
 
 		static int			countSockets();
-		bool				deleted;
 	private:
 		static int			_nbSockets;
 		static Mutex		_mutex;

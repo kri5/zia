@@ -24,7 +24,6 @@
 class ClientSocket : public zAPI::IClientSocket
 {
     public:
-        bool            deleted;
 		struct  Error
 		{
 			enum    Code

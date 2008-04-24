@@ -12,7 +12,7 @@
 int	ClientSocket::_nbSockets = 0;
 Mutex   ClientSocket::_mutex;
 
-ClientSocket::ClientSocket(int acceptedSocket, const std::string& address, int port) : deleted(false), _closed(false), _address(address), _port(port)
+ClientSocket::ClientSocket(int acceptedSocket, const std::string& address, int port) : _closed(false), _address(address), _port(port)
 {
 	listenSocket = acceptedSocket;
 	struct timeval tv;
@@ -24,7 +24,6 @@ ClientSocket::ClientSocket(int acceptedSocket, const std::string& address, int p
 
 ClientSocket::~ClientSocket()
 {
-	deleted = true;
 	this->close(true);
 	MutexLock getLock(ClientSocket::_mutex);
 	--ClientSocket::_nbSockets;
@@ -105,3 +104,4 @@ int					ClientSocket::getPort() const
 {
 	return this->_port;
 }
+
