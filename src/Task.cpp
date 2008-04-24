@@ -222,6 +222,13 @@ bool    Task::parseRequest()
         if (this->receiveDatas() == false)
             return false;
         parser.parse();
+        if (parser.isValid() == false)
+        {
+            this->_req->setConfig(Vhost::getVhost(*this->_vhosts, ""));
+            this->_res->setError(new ErrorResponseStream(400, this->_req));
+            this->sendResponse();
+            return false;
+        }
     }
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getHeaderOption("Host")));

@@ -12,6 +12,8 @@ class HttpParser : public Parser
         void            init();
         void            parse();
         bool            done() const;
+        bool            isValid() const;
+        bool            isFirstLine() const;
         HttpRequest*    getRequest() const;
 
     private:

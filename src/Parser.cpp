@@ -50,7 +50,7 @@ void		Parser::feed(const char* str, size_t size)
 
 bool        Parser::isFed() const
 {
-    return this->_isFed;
+    return this->_buffer->size() > 0;
 }
 
 //bool		Parser::extendBuffer()
@@ -181,13 +181,9 @@ void        Parser::restoreContextPub()
 
 void		Parser::flush()
 {
-    //this->_buffer->dump();
-    //std::cout << "flushing with i == " << this->_i << std::endl;
     this->_buffer->flush(this->_i);
     if (this->_i > 0)
         this->_i = 0;
-    //std::cout << "flushed" << std::endl;
-    //this->_buffer->dump();
 }
 
 char	Parser::readChar()
@@ -530,7 +526,7 @@ bool    Parser::hasEOL()
 
 bool    Parser::isEnd() const
 {
-    return this->_end;
+    return this->_i >= this->_buffer->size();
 }
 
 bool    Parser::isAlpha()

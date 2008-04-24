@@ -37,6 +37,20 @@ void    HttpParser::init()
 }
 
 /**
+ *  Checks if the parsed request is valid or not
+ *  @return true if the request is valid, false otherwise
+ */
+bool        HttpParser::isValid() const
+{
+    return this->_isValid;
+}
+
+bool        HttpParser::isFirstLine() const
+{
+    return this->_isFirstLine;
+}
+
+/**
  *  tries to parse any implemented
  *  Http command and then if it succeeds
  *  parses options as long as it can
@@ -52,14 +66,17 @@ void        HttpParser::parse()
 //        << "isEnd " << this->isEnd() << std::endl;
     if (!this->isFed())
         return ;
-    if (this->_isFirstLine)
+    if (this->_isFirstLine && this->hasEOL())
     {
         if (this->parseGetCommand()
             || this->parsePostCommand()
             || this->parseHeadCommand())
         {
+            this->_isValid = true;
             if (this->isEOL())
+            {
                 this->_isDone = true;
+            }
             this->_isFirstLine = false;
         }
         else
@@ -292,9 +309,8 @@ bool        HttpParser::parseOptions()
             }
             return true;
         }
-        else
-            std::cout << " === ERROR === " << std::endl;
     }
+    this->_isValid = false;
     this->readUntilEndOfLine();
     return false;
 }
