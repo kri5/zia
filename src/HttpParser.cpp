@@ -88,6 +88,7 @@ void        HttpParser::parse()
             this->_isDone = true;
         while (!this->isEnd() && this->hasEOL() && this->parseOptions())
         {
+            std::cout << "mustelidae" << std::endl;
             //FIXME: remove me after debug, causea i'm kind of slow.
             //this->flush();
         }
@@ -311,7 +312,7 @@ bool        HttpParser::parseOptions()
         }
     }
     this->_isValid = false;
-    this->readUntilEndOfLine();
+    //this->readUntilEndOfLine();
     return false;
 }
 
@@ -774,7 +775,6 @@ bool        HttpParser::readRelativeUri(std::string& uri,
                || this->peekIfEqual(".", res)
                || this->peekIfEqual("/", res)
                || this->peekIfNum(res))
-            ;
         uri = res;
         relative = true;
         this->setIgnore(true);

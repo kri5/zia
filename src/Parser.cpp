@@ -188,7 +188,9 @@ void		Parser::flush()
 
 char	Parser::readChar()
 {
+    //std::cout << "pre read char" << std::endl;
 	char	c = this->_buffer->getChar(this->_i);
+    //std::cout << "post read char" << std::endl;
 
     if (c < 0)
     {
@@ -196,7 +198,11 @@ char	Parser::readChar()
         return 0;
     }
     if (this->_comment)
+    {
+        this->_comment = false;
         this->skipComment(c);
+        this->_comment = true;
+    }
 	return (c);
 }
 

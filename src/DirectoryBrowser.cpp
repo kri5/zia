@@ -23,6 +23,8 @@ bool           DirectoryBrowser::get()
     if (this->_fileList == NULL)
         return false;
     std::string parent = _request.getUri();
+    if (parent.length() == 0)
+        return false;
 
     // Remove trailing slash, if any.
     if (parent.size() > 1 && parent[parent.size() - 1] == '/')
@@ -30,7 +32,7 @@ bool           DirectoryBrowser::get()
 
     // Find the parentdir path
     size_t found = parent.rfind("/");
-    if (found > 0)
+    if (found > 0 && found != std::string::npos)
         parent.erase(found);
     else
         parent.erase(1);

@@ -214,14 +214,20 @@ bool    Task::parseRequest()
     {
         if (this->checkTimeout())
         {
-            write(1, "-- \n", 4);
-            this->_readBuffer->dump();
+            //write(1, "-- \n", 4);
+            //this->_readBuffer->dump();
             //exit(1);
             return false;
         }
         if (this->receiveDatas() == false)
             return false;
+        std::cout << this->_readBuffer->size() << std::endl;
         parser.parse();
+        if (parser.done() == false && this->_readBuffer->size() > 2000000) //Junk connection.
+        {
+            std::cout << "Junk connection" << std::endl;
+            return false;
+        }
         if (parser.isValid() == false)
         {
             this->_req->setConfig(Vhost::getVhost(*this->_vhosts, ""));
