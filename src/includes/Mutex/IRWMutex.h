@@ -6,9 +6,9 @@ class IRWMutex
 public:
         virtual         ~IRWMutex() { }
         /// Get a *shared* read lock.
-        virtual void    rdlock() = 0;
+        virtual void    rdLock() = 0;
         /// Get an *exclusive* write lock.
-        virtual void    wrlock() = 0;
+        virtual void    wrLock() = 0;
         /// Unlock a shared read lock.
         virtual void    rdUnlock() = 0;
 		/// Unlock an exclusive write lock.
