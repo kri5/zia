@@ -1,0 +1,53 @@
+#!/bin/env python
+#
+# Change module 2 times per second to check
+# that the module manager is thread-safe.
+
+print 'moduleSafe: rename modules in an infinite loop to'
+print 'track down module hot loading / unloading bugs.'
+print 'Note: you can pass as first argument a new'
+print 'working directory path.'
+print '-------------------------------------------------'
+print ' '
+
+import sys, re, os, string, time
+from random import choice
+
+if len(sys.argv) >= 2:
+    basepath = sys.argv[1]
+else:
+    basepath = '.'
+
+basepath = os.getcwd() + '/' + basepath
+inexpr = ''
+
+while len(inexpr) == 0:
+    inexpr = raw_input('Enter a regexp to search for (.so for example):\n')
+
+try:
+    expr = re.compile(inexpr)
+except:
+    print "Invalid expression!"
+    sys.exit()
+
+def randomChars():
+    chars = string.letters + string.digits
+    randtext = ''
+    for i in range(8):
+        randtext = randtext + choice(chars)
+    return randtext
+
+print "Starting in " + basepath
+
+while True:
+    print '------'
+    for fname in os.listdir(basepath):
+        match = re.compile(inexpr).search
+        if match(fname):
+           print fname
+           ext = os.path.splitext(fname)
+           newname = randomChars() + ext[1]
+           os.rename(basepath + fname, basepath + newname)
+    time.sleep(0.5)
+
+
