@@ -221,7 +221,7 @@ bool    Task::parseRequest()
         }
         if (this->receiveDatas() == false)
             return false;
-        std::cout << this->_readBuffer->size() << std::endl;
+        //std::cout << this->_readBuffer->size() << std::endl;
         parser.parse();
         if (parser.done() == false && this->_readBuffer->size() > 2000000) //Junk connection.
         {

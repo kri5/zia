@@ -114,13 +114,13 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
             zAPI::IClientSocket*      clt = this->_sockets[i]->accept();
             if (clt)
             {
-                if (ClientSocket::countSockets() >= this->_maxFd)
-                {
-                    std::cout << "Max client reached, disconnecting" << std::endl;
-                    delete clt;
-                }
-                else
-                {
+                //if (ClientSocket::countSockets() >= this->_maxFd)
+                //{
+                //    std::cout << "Max client reached, disconnecting" << std::endl;
+                //    delete clt;
+                //}
+                //else
+                //{
                     if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
                     {
                         //FIXME: check for memory leak (not deleting clt)
@@ -130,7 +130,7 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
                     //{
                     //    std::cout << "new connected client" << std::endl;
                     //}
-                }
+                //}
             }
         }
     }

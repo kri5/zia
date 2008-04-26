@@ -26,15 +26,14 @@ ModuleManager::~ModuleManager()
 {
     for (std::list<RefCounter<zAPI::IModuleInfo*> >::iterator it = _moduleInstances.begin(); it != _moduleInstances.end(); ++it)
         delete (*it).ptr;
-    for (std::list<RefCounter<std::list<RefCounter<zAPI::IModuleInfo*>*>*> >::iterator it = this->_modules.begin(); it != this->_modules.end(); ++it)
-        delete[] (*it).ptr;
+    for (std::list<RefCounter<ModuleStuff> >::iterator it = this->_modules.begin(); it != this->_modules.end(); ++it)
+        delete[] (*it).ptr.hooks;
     delete[] this->_taskModulesList;
 }
 
 void            ModuleManager::init(unsigned int nbTasks)
 {
-    this->_taskModulesList = new RefCounter<std::list<RefCounter<zAPI::IModuleInfo*>*>*>*[nbTasks];
-    std::cout << nbTasks << std::endl;
+    this->_taskModulesList = new RefCounter<ModuleStuff>*[nbTasks];
     for (unsigned int i = 0; i < nbTasks; ++i)
         this->_taskModulesList[i] = NULL;
 }
@@ -42,7 +41,7 @@ void            ModuleManager::init(unsigned int nbTasks)
 //Will add a hook for a module. (on the new set of modules)
 void            ModuleManager::pushModule(zAPI::IModule::Hook hook, RefCounter<zAPI::IModuleInfo*>* mi)
 {
-    this->_modules.back().ptr[hook].push_back(mi);
+    this->_modules.back().ptr.hooks[hook].push_back(mi);
     mi->ptr->addSupportedHook(hook);
     mi->count++;
 }
@@ -116,15 +115,15 @@ void                    ModuleManager::removeFromHooks(zAPI::IModuleInfo* mi)
 
     for (; it != ite; ++it)
     {
-        itMod = this->_modules.back().ptr[*it].begin();
-        iteMod = this->_modules.back().ptr[*it].end();
+        itMod = this->_modules.back().ptr.hooks[*it].begin();
+        iteMod = this->_modules.back().ptr.hooks[*it].end();
 
         for (; itMod != iteMod; ++itMod)
         {
             if ((*itMod)->ptr == mi)
             {
                 (*itMod)->count--;
-                this->_modules.back().ptr[*it].erase(itMod);
+                this->_modules.back().ptr.hooks[*it].erase(itMod);
                 break ;
             }
         }
@@ -155,7 +154,7 @@ bool        ModuleManager::isLoaded(const std::string& fileName) const
 {
     if (this->_modules.size() <= 0)
         return false;
-    const std::list<RefCounter<zAPI::IModuleInfo*>*>*           list = this->_modules.back().ptr;
+    const std::list<RefCounter<zAPI::IModuleInfo*>*>*           list = this->_modules.back().ptr.hooks;
     for (int i = 0; i < zAPI::IModule::NumberOfHooks; ++i)
     {
         std::list<RefCounter<zAPI::IModuleInfo*>*>::const_iterator    it = list[i].begin();
@@ -183,12 +182,14 @@ void        ModuleManager::scanModuleDir()
     if (files != NULL)
     {
         //Creating a new modules list
+        ModuleStuff     newStuff;
         std::list<RefCounter<zAPI::IModuleInfo*>*>* newList = new std::list<RefCounter<zAPI::IModuleInfo*>*>[zAPI::IModule::NumberOfHooks];
+        newStuff.hooks = newList;
         //duplicating old list, to apply changes from the old one to the new one
         if (this->_modules.size() > 0)
         {
             for (int i = 0; i < zAPI::IModule::NumberOfHooks; ++i)
-                newList[i] = this->_modules.back().ptr[i];
+                newList[i] = this->_modules.back().ptr.hooks[i];
         }
         //flag to see if some changes occured.
         bool    firstChange = true;
@@ -213,7 +214,7 @@ void        ModuleManager::scanModuleDir()
             {
                 if (firstChange)
                 {
-                    this->_modules.push_back(newList);
+                    this->_modules.push_back(newStuff);
                     this->_modules.back().count = 0;
                     firstChange = false;
                 }
@@ -234,7 +235,7 @@ void        ModuleManager::scanModuleDir()
             {
                 if (firstChange)
                 {
-                    this->_modules.push_back(newList);
+                    this->_modules.push_back(newStuff);
                     this->_modules.back().count = 0;
                     firstChange = false;
                 }
@@ -243,13 +244,25 @@ void        ModuleManager::scanModuleDir()
         }
         if (firstChange == true)
             delete[] newList;
+        else //if a new list has been added, we push our new processContent list :
+        {
+            std::list<RefCounter<zAPI::IModuleInfo*>*>  nList;
+            this->getSortedList(zAPI::IModule::SendResponseHook, zAPI::IModule::onProcessContentEvent, nList);
+
+            std::list<RefCounter<zAPI::IModuleInfo*>*>::reverse_iterator          it = nList.rbegin();
+            std::list<RefCounter<zAPI::IModuleInfo*>*>::reverse_iterator          ite = nList.rend();
+            for (; it != ite; ++it)
+            {
+                this->_modules.back().ptr.tab.push_back(dynamic_cast<zAPI::ISendResponse*>((*it)->ptr->getInstance()));
+            }
+        }
     }
     delete fs;
 }
 
 void        ModuleManager::removeModuleList(unsigned int reqId)
 {
-    std::list<RefCounter<zAPI::IModuleInfo*>*>* list = this->_taskModulesList[reqId]->ptr;
+    std::list<RefCounter<zAPI::IModuleInfo*>*>* list = this->_taskModulesList[reqId]->ptr.hooks;
 
     for (int i = 0; i < zAPI::IModule::NumberOfHooks; ++i)
     {
@@ -268,13 +281,13 @@ void        ModuleManager::removeModuleList(unsigned int reqId)
             }
         }
 
-        std::list<RefCounter<std::list<RefCounter<zAPI::IModuleInfo*>*>*> >::iterator        mIt = this->_modules.begin();
-        std::list<RefCounter<std::list<RefCounter<zAPI::IModuleInfo*>*>*> >::iterator        mIte = this->_modules.end();
+        std::list<RefCounter<ModuleStuff> >::iterator        mIt = this->_modules.begin();
+        std::list<RefCounter<ModuleStuff> >::iterator        mIte = this->_modules.end();
         for (; mIt != mIte; ++it)
         {
             if (&(*mIt) == this->_taskModulesList[reqId])
             {
-                delete[] (*mIt).ptr;
+                delete[] (*mIt).ptr.hooks;
                 this->_modules.erase(mIt);
             }
         }
@@ -284,8 +297,8 @@ void        ModuleManager::removeModuleList(unsigned int reqId)
 void                   ModuleManager::getSortedList(zAPI::IModule::Hook hook, zAPI::IModule::Event event,
                                                     std::list<RefCounter<zAPI::IModuleInfo*>*>& nList)
 {
-    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  it = this->_modules.back().ptr[hook].begin();
-    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  ite = this->_modules.back().ptr[hook].end();
+    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  it = this->_modules.back().ptr.hooks[hook].begin();
+    std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  ite = this->_modules.back().ptr.hooks[hook].end();
 
     for (; it != ite; ++it)
     {
@@ -319,19 +332,9 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
     if (this->_taskModulesList[req->getRequestId()] == NULL)
         return res->getCurrentStream()->read(buff, size);
 
-    if (this->_taskModulesList[req->getRequestId()]->ptr[zAPI::IModule::SendResponseHook].size() > 0)
+    if (this->_taskModulesList[req->getRequestId()]->ptr.hooks[zAPI::IModule::SendResponseHook].size() > 0)
     {
-        std::vector<zAPI::ISendResponse*> tab;
-        unsigned int    i = 0;
-        std::list<RefCounter<zAPI::IModuleInfo*>*>  nList;
-        this->getSortedList(zAPI::IModule::SendResponseHook, zAPI::IModule::onProcessContentEvent, nList);
-
-        std::list<RefCounter<zAPI::IModuleInfo*>*>::reverse_iterator          it = nList.rbegin();
-        std::list<RefCounter<zAPI::IModuleInfo*>*>::reverse_iterator          ite = nList.rend();
-        for (; it != ite; ++it, ++i)
-        {
-            tab.push_back(dynamic_cast<zAPI::ISendResponse*>((*it)->ptr->getInstance()));
-        }
+        std::vector<zAPI::ISendResponse*>& tab = this->_taskModulesList[req->getRequestId()]->ptr.tab;
         size_t ret = tab.front()->onProcessContent(req, res, buff, size, tab, 0);
         return ret;
     }

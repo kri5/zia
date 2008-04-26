@@ -122,11 +122,11 @@ zAPI::IClientSocket*    HttpRequest::getClient() const
     return this->_clt;
 }
 
-void            HttpRequest::print()
+void            HttpRequest::print() const
 {
-    std::map<std::string, std::string>::iterator it
+    std::map<std::string, std::string>::const_iterator it
         = this->_options.begin();
-    std::map<std::string, std::string>::iterator ite
+    std::map<std::string, std::string>::const_iterator ite
         = this->_options.end();
 
     std::cout << "----- HttpRequest -----" << std::endl

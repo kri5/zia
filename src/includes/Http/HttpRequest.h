@@ -37,7 +37,7 @@ class HttpRequest : public virtual zAPI::IHttpRequest, public HttpTransaction
         zAPI::IConfig*								getConfig() const;
         bool                                        isUriRelative() const;
         void                                        clear();
-        void                                        print();
+        void                                        print() const;
 
         unsigned int                                getRequestId() const;
         void                                        setRequestId(unsigned int);
