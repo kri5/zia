@@ -17,7 +17,8 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
     Buffer.cpp DirectoryBrowser.cpp ResponseStreamFile.cpp ResponseStreamDir.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp
     ModuleManager.cpp UrlString.cpp NastyCast.hpp ModuleInfo.cpp ResponseStreamGeneric.cpp
-    AbstractModule.cpp ResponseStreamSocket.cpp BlackList.cpp)
+    AbstractModule.cpp ResponseStreamSocket.cpp BlackList.cpp HttpCommandBuilder.cpp 
+    HttpGetCommand.cpp HttpPostCommand.cpp HttpHeadCommand.cpp)
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
 	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
@@ -34,7 +35,12 @@ SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/ClientSocket_
     includes/Modules/ModuleManager.h includes/Modules/IDynLib.h includes/Modules/DynLib.h includes/Modules/DynLib_win32.h
     includes/API/IModuleInfo.h includes/Stream/ResponseStreamGeneric.h
     includes/Modules/AbstractModule.h includes/Stream/ResponseStreamSocket.h
-    includes/Modules/BlackList.h)
+    includes/Modules/BlackList.h
+    includes/Http/IHttpCommand.h 
+    includes/Http/HttpGetCommand.h
+    includes/Http/HttpPostCommand.h
+    includes/Http/HttpCommandBuilder.h
+    includes/Http/HttpHeadCommand.h)
 
 
 IF (WIN32)

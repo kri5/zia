@@ -10,6 +10,7 @@
 #include "Utils/Buffer.h"
 #include "Mutex/IMutex.h"
 #include "Mutex/Mutex.h"
+#include "Http/IHttpCommand.h"
 
 class Pool;
 
@@ -50,6 +51,7 @@ class Task
 
         HttpRequest*            _req;
         HttpResponse*           _res;
+        IHttpCommand*           _command;
         zAPI::IClientSocket*    _socket;
         Buffer*                 _writeBuffer;
         Buffer*                 _readBuffer;

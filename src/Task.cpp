@@ -22,6 +22,8 @@
 #include "Stream/ErrorResponseStream.h" //FIXME : change the name incoherence...
 #include "Modules/ModuleManager.h"
 #include "Stream/ResponseStreamSocket.h"
+#include "Http/HttpCommandBuilder.h"
+#include "Http/IHttpCommand.h"
 
 #include "API/IWorkflow.h"
 #include "API/IBuildResponse.h"
@@ -238,12 +240,15 @@ bool    Task::parseRequest()
     }
     this->_req->setConfig(Vhost::getVhost((*this->_vhosts), 
                 this->_req->getHeaderOption("Host")));
-    if (this->_req->getCommand() == "POST")
-    {
-        char* buff = this->_readBuffer->get(this->_readBuffer->size());
-        this->_req->setBodyStream(new ResponseStreamSocket(this->_socket, buff, this->_readBuffer->size()));
-        this->_readBuffer->flush();
-    }
+    //if (this->_req->getCommand() == "POST")
+    //{
+    //    char* buff = this->_readBuffer->get(this->_readBuffer->size());
+    //    this->_req->setBodyStream(new ResponseStreamSocket(this->_socket, buff, this->_readBuffer->size()));
+    //    this->_readBuffer->flush();
+    //}
+    this->_command = HttpCommandBuilder().buildCommand(this->_req);
+    this->_command->manageRequestBody(this->_req, this->_readBuffer, this->_socket);
+
     ModuleManager::getInstance().call(zAPI::IModule::ReceiveRequestHook, zAPI::IModule::onPostReceiveEvent, this->_req, this->_res, &zAPI::IReceiveRequest::onPostReceive);
     return true;
 }
@@ -253,42 +258,51 @@ bool    Task::buildResponse()
     //std::cout << "Building response" << std::endl;
     _status = BuildingResponse;
     ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPreBuildEvent, this->_req, this->_res, &zAPI::IBuildResponse::onPreBuild);
-    const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
-    IFile*              fileInfo = new File(this->_req->getUri(), docRoot.c_str());
+    if (this->_command != NULL)
+        this->_command->execute(this->_req, this->_res);
 
-    if (fileInfo->getError() != IFile::Error::None)
-    {
-        if (fileInfo->getError() == IFile::Error::NoSuchFile)
-            this->_res->setError(new ErrorResponseStream(404, this->_req));
-        else if (fileInfo->getError() == IFile::Error::PermissionDenied)
-            this->_res->setError(new ErrorResponseStream(403, this->_req));
-        //FIXME: add no more file descriptors as a potential error.
-        delete fileInfo;
-        return true;
-    }
-    if (fileInfo->isDirectory() == false)
-    {
-        this->_res->setHeaderOption("MimeType", 
-              RootConfig::getInstance().getConfig()->getMimeType(fileInfo->getExtension()));
-        this->_res->appendStream(new ResponseStreamFile(fileInfo));
-    }
-    else
-    {
-        std::string     path(docRoot + this->_req->getUri());
-        delete fileInfo;
-        zAPI::IResponseStream* stream = new ResponseStreamDir(this->_req);
-        if (stream->good() == false)
-        {
-            delete stream;
-            this->_res->setError(new ErrorResponseStream(500, this->_req));
-            return true;
-        }
-	    if (this->_res->getHeaderInStream() == false)
-            this->_res->setHeaderOption("Content-Type", "text/html");
-        this->_res->appendStream(stream);
-    }
-	if (this->_res->getHeaderInStream() == false)
-        this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());
+
+
+
+
+
+
+//    const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
+//    IFile*              fileInfo = new File(this->_req->getUri(), docRoot.c_str());
+//
+//    if (fileInfo->getError() != IFile::Error::None)
+//    {
+//        if (fileInfo->getError() == IFile::Error::NoSuchFile)
+//            this->_res->setError(new ErrorResponseStream(404, this->_req));
+//        else if (fileInfo->getError() == IFile::Error::PermissionDenied)
+//            this->_res->setError(new ErrorResponseStream(403, this->_req));
+//        //FIXME: add no more file descriptors as a potential error.
+//        delete fileInfo;
+//        return true;
+//    }
+//    if (fileInfo->isDirectory() == false)
+//    {
+//        this->_res->setHeaderOption("MimeType", 
+//              RootConfig::getInstance().getConfig()->getMimeType(fileInfo->getExtension()));
+//        this->_res->appendStream(new ResponseStreamFile(fileInfo));
+//    }
+//    else
+//    {
+//        std::string     path(docRoot + this->_req->getUri());
+//        delete fileInfo;
+//        zAPI::IResponseStream* stream = new ResponseStreamDir(this->_req);
+//        if (stream->good() == false)
+//        {
+//            delete stream;
+//            this->_res->setError(new ErrorResponseStream(500, this->_req));
+//            return true;
+//        }
+//	    if (this->_res->getHeaderInStream() == false)
+//            this->_res->setHeaderOption("Content-Type", "text/html");
+//        this->_res->appendStream(stream);
+//    }
+//	if (this->_res->getHeaderInStream() == false)
+//        this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());
     return true;
 }
 
@@ -297,7 +311,7 @@ bool    Task::sendHeader()
     //std::cout << "sending header" << std::endl;
     std::ostringstream      header;
 
-    header << this->_req->getProtocol() << this->_res->getResponseStatus() << " " << this->_res->getResponseValue() << "\r\n";
+    header << this->_req->getProtocol() << " " << this->_res->getResponseStatus() << " " << this->_res->getResponseValue() << "\r\n";
 
     const std::map<std::string, std::string>& headerParams = this->_res->getHeaderOptions();
     std::map<std::string, std::string>::const_iterator        it = headerParams.begin();
@@ -350,16 +364,19 @@ bool    Task::sendResponse()
     }
 
     this->_status = SendingResponse;
-    std::queue<zAPI::IResponseStream*>& streamQueue = this->_res->getStreams();
-    //std::cout << "Sending response" << std::endl;
-    while (streamQueue.empty() == false)
+    if (this->_res->getSendContent())
     {
-        if (this->sendResponseStream() == false)
-            return false;
-        if (this->_status == RolledBack)
-            return true;
-        delete streamQueue.front();
-        streamQueue.pop();
+        std::queue<zAPI::IResponseStream*>& streamQueue = this->_res->getStreams();
+        //std::cout << "Sending response" << std::endl;
+        while (streamQueue.empty() == false)
+        {
+            if (this->sendResponseStream() == false)
+                return false;
+            if (this->_status == RolledBack)
+                return true;
+            delete streamQueue.front();
+            streamQueue.pop();
+        }
     }
     ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPostSendEvent, this->_req, this->_res, &zAPI::ISendResponse::onPostSend);
     this->_status = Done;

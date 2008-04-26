@@ -53,7 +53,7 @@ HttpResponse::KeyValue     HttpResponse::ResponseStatus[] =
     { -1, NULL }
 };
 
-HttpResponse::HttpResponse() : _responseStatus(200), _responseValue("OK"), _contentLength(0), _mimeType("text/html"), _currentStream(NULL), _sendMode(false), _headerInStream(false)
+HttpResponse::HttpResponse() : _responseStatus(200), _responseValue("OK"), _contentLength(0), _mimeType("text/html"), _currentStream(NULL), _sendMode(false), _headerInStream(false), _sendContent(true)
 {
     //"text/html" => probable default value (in case of an error, directory.
     // if it's a file, we will change this.
@@ -112,12 +112,13 @@ zAPI::IResponseStream*    HttpResponse::getCurrentStream()
     return NULL;
 }
 
-void                    HttpResponse::setError(ErrorResponseStream* error)
+void                    HttpResponse::setError(ErrorResponseStream* error, bool appendStream)
 {
     this->_responseStatus = error->getStatus();
     this->_responseValue = HttpResponse::getResponseStatusMessage(this->_responseStatus);
     this->clearStreams();
-    this->appendStream(error);
+    if (appendStream)
+        this->appendStream(error);
     this->setHeaderOption("Content-Length", error->getSize());
 }
 
@@ -163,3 +164,12 @@ bool					HttpResponse::getHeaderInStream() const
 	return this->_headerInStream;
 }
 
+bool                    HttpResponse::getSendContent() const
+{
+    return this->_sendContent;
+}
+
+void                    HttpResponse::setSendContent(bool sendContent)
+{
+    this->_sendContent = sendContent;
+}

@@ -36,7 +36,7 @@ class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
 
         void                                    appendStream(zAPI::IResponseStream*);
         std::queue<zAPI::IResponseStream*>&     getStreams();
-        void                                    setError(ErrorResponseStream*);
+        void                                    setError(ErrorResponseStream*, bool=true);
         size_t                                  getContentLength() const;
 
         zAPI::IResponseStream*                  getCurrentStream();
@@ -44,6 +44,8 @@ class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
         void                                    setHeaderInStream(bool);
 		bool							        isInSendMode() const;
 		bool							        getHeaderInStream() const;
+        bool                                    getSendContent() const;
+        void                                    setSendContent(bool);
 
     private:
         void                                    clearStreams();
@@ -57,6 +59,7 @@ class   HttpResponse : public zAPI::IHttpResponse, public HttpTransaction
         std::iostream*                          _currentStream;
 		bool							        _sendMode;
 		bool							        _headerInStream;
+        bool                                    _sendContent;
 };
 
 #endif  /* !__HTTPRESPONSE_H__ */
