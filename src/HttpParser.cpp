@@ -88,7 +88,6 @@ void        HttpParser::parse()
             this->_isDone = true;
         while (!this->isEnd() && this->hasEOL() && this->parseOptions())
         {
-            std::cout << "mustelidae" << std::endl;
             //FIXME: remove me after debug, causea i'm kind of slow.
             //this->flush();
         }

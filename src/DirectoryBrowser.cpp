@@ -23,20 +23,23 @@ bool           DirectoryBrowser::get()
     if (this->_fileList == NULL)
         return false;
     std::string parent = _request.getUri();
-    if (parent.length() == 0)
-        return false;
+    //if (parent.length() == 0)
+    //    return false;
 
     // Remove trailing slash, if any.
-    if (parent.size() > 1 && parent[parent.size() - 1] == '/')
-        parent.erase(parent.size() - 1);
+    if (parent.size() > 1)
+    {
+        if (parent[parent.size() - 1] == '/')
+            parent.erase(parent.size() - 1);
 
-    // Find the parentdir path
-    size_t found = parent.rfind("/");
-    if (found > 0 && found != std::string::npos)
-        parent.erase(found);
-    else
-        parent.erase(1);
-
+        // Find the parentdir path
+        size_t found = parent.rfind("/");
+        std::cout << found << std::endl;
+        if (found > 0)
+            parent.erase(found);
+        else
+            parent.erase(1);
+    }
     *(this->_stream) << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n";
     *(this->_stream) << "<html>\n<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />\n";
     *(this->_stream) << "<head>\n<title>Index of " << _request.getUri() << "</title></head>\n";
