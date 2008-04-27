@@ -385,7 +385,7 @@ bool    Task::sendResponse()
 
 bool        Task::sendBuffer()
 {
-    char	line[1025];
+    char    line[1025];
     int     ret;
 
     while (this->_writeBuffer->empty() == false)

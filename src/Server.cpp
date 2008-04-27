@@ -65,11 +65,13 @@ void		Server::run()
     int					size = this->_sockets.size();
     struct pollfd*		pfds;
     int					ret;
+    //int                 DEBUG = 10;
 
     //Hooks : onServerStart
     ModuleManager::getInstance().call(zAPI::IModule::ServerEventHook, zAPI::IModule::onServerStartEvent, &zAPI::IServerEvent::onServerStart);
     Logger::getInstance() << Logger::Info << "All sockets initialized, starting main loop" << Logger::Flush;
     pfds = new struct pollfd[size];
+    //while (DEBUG--)
     while (true)
     {
         memset(pfds, 0, sizeof(*pfds) * size);

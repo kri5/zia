@@ -104,12 +104,7 @@ void    Pool::Manager::code()
 {
     while (this->_running)
     {
-        if (this->_pool->empty())
-        {
-            //Logger::getInstance() << Logger::PrintStdOut << Logger::Info << "No more task, Manager's going to bed" << Logger::Flush;
-            //this->checkSleep(true);
-        }
-        else
+        if (this->_pool->empty() == false)
         {
             //si on arrive ici, c'est qu'aucun thread n'est actuellement libre, ou il sont tous endormis.
             //reste-t-il des threads libre (il seraient alors tous endormis)
