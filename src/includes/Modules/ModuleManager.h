@@ -32,6 +32,7 @@ class   ModuleManager : public Singleton<ModuleManager>
     {
         std::list<RefCounter<zAPI::IModuleInfo*>*>*         hooks;
         std::vector<zAPI::ISendResponse*>                   tab;
+        std::list<zAPI::IModuleInfo*>*                      list;
     };
     typedef std::list<RefCounter<zAPI::IModuleInfo*> >     ModuleList;
     public:
@@ -42,29 +43,26 @@ class   ModuleManager : public Singleton<ModuleManager>
         bool                    isLoaded(const std::string&) const;
 
         size_t                  processContent(zAPI::IHttpRequest*, zAPI::IHttpResponse*, char*, size_t);
-        void                    getSortedList(zAPI::IModule::Hook hook, zAPI::IModule::Event event,
-                                            std::list<RefCounter<zAPI::IModuleInfo*>*>&);
 
 
 
         template<typename T>
-        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, zAPI::IModule::ChainStatus (T::*method)())
+        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook, zAPI::IModule::Event event, zAPI::IModule::ChainStatus (T::*method)())
         {
         
-            if (this->_modules.size() == 0)
+            if (this->_modules.size() == 0 || this->_modules.back().ptr.list == NULL)
                 return zAPI::IModule::CONTINUE;
 
-            std::list<RefCounter<zAPI::IModuleInfo*>*>  nList;
-            this->getSortedList(hook, event, nList);
+            std::list<zAPI::IModuleInfo*>&  nList = this->_modules.back().ptr.list[event];
 
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = nList.begin();
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = nList.end();
+            std::list<zAPI::IModuleInfo*>::iterator          it = nList.begin();
+            std::list<zAPI::IModuleInfo*>::iterator          ite = nList.end();
             zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
 
             for (; it != ite; ++it)
             {
                 //res = (*it)->ptr->getInstance()->call(event);
-                res = (dynamic_cast<T*>((*it)->ptr->getInstance())->*method)();
+                res = (dynamic_cast<T*>((*it)->getInstance())->*method)();
                 if (res != zAPI::IModule::CONTINUE)
                     break ;
             }
@@ -72,21 +70,21 @@ class   ModuleManager : public Singleton<ModuleManager>
         }
 
         template<typename T>
-        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, zAPI::IModuleInfo* mod, zAPI::IModule::ChainStatus (T::*method)(zAPI::IModuleInfo*))
+        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook, zAPI::IModule::Event event, zAPI::IModuleInfo* mod, zAPI::IModule::ChainStatus (T::*method)(zAPI::IModuleInfo*))
         {
-            if (this->_modules.size() == 0)
+            if (this->_modules.size() == 0 || this->_modules.back().ptr.list == NULL)
                 return zAPI::IModule::CONTINUE;
 
-            std::list<RefCounter<zAPI::IModuleInfo*>*>  nList;
-            this->getSortedList(hook, event, nList);
+            //CHECKME: je pense que le refcounter n'est pas bien initialise... ou quelquechose du genre.
+            std::list<zAPI::IModuleInfo*>&  nList = this->_modules.back().ptr.list[event];
 
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = nList.begin();
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = nList.end();
-            zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
+            std::list<zAPI::IModuleInfo*>::iterator         it = nList.begin();
+            std::list<zAPI::IModuleInfo*>::iterator         ite = nList.end();
+            zAPI::IModule::ChainStatus                      res = zAPI::IModule::CONTINUE;
 
             for (; it != ite; ++it)
             {
-                res = (dynamic_cast<T*>((*it)->ptr->getInstance())->*method)(mod);
+                res = (dynamic_cast<T*>((*it)->getInstance())->*method)(mod);
                 if (res != zAPI::IModule::CONTINUE)
                     break ;
             }
@@ -96,7 +94,7 @@ class   ModuleManager : public Singleton<ModuleManager>
         template <typename T>
         zAPI::IClientSocket*          call(zAPI::IModule::Hook hook, SOCKET sock, const std::string& address, int port, zAPI::IConfig* config, zAPI::IClientSocket* (T::*method)(SOCKET, const std::string&, int, zAPI::IConfig*))
         {
-            if (this->_modules.size() == 0)
+            if (this->_modules.size() == 0 || this->_modules.back().ptr.list == NULL)
                 return NULL;
 
             size_t      size = this->_modules.back().ptr.hooks[hook].size();
@@ -109,21 +107,20 @@ class   ModuleManager : public Singleton<ModuleManager>
         }
 
         template<typename T>
-        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook hook, zAPI::IModule::Event event, const char* buff, size_t size, zAPI::IModule::ChainStatus (T::*method)(const char*, size_t))
+        zAPI::IModule::ChainStatus    call(zAPI::IModule::Hook, zAPI::IModule::Event event, const char* buff, size_t size, zAPI::IModule::ChainStatus (T::*method)(const char*, size_t))
         {
-            if (this->_modules.size() == 0)
+            if (this->_modules.size() == 0 || this->_modules.back().ptr.list == NULL)
                 return zAPI::IModule::CONTINUE;
 
-            std::list<RefCounter<zAPI::IModuleInfo*>*>  nList;
-            this->getSortedList(hook, event, nList);
+            std::list<zAPI::IModuleInfo*>&  nList = this->_modules.back().ptr.list[event];
 
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = nList.begin();
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = nList.end();
-            zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
+            std::list<zAPI::IModuleInfo*>::iterator         it = nList.begin();
+            std::list<zAPI::IModuleInfo*>::iterator         ite = nList.end();
+            zAPI::IModule::ChainStatus                      res = zAPI::IModule::CONTINUE;
 
             for (; it != ite; ++it)
             {
-                res = (dynamic_cast<T*>((*it)->ptr->getInstance())->*method)(buff, size);
+                res = (dynamic_cast<T*>((*it)->getInstance())->*method)(buff, size);
                 if (res != zAPI::IModule::CONTINUE)
                     break ;
             }
@@ -135,14 +132,13 @@ class   ModuleManager : public Singleton<ModuleManager>
                                             zAPI::IHttpRequest* httpReq, zAPI::IHttpResponse* httpRes, 
                                             zAPI::IModule::ChainStatus (T::*method)(zAPI::IHttpRequest*, zAPI::IHttpResponse*))
         {
-            if (this->_modules.size() == 0)
+            if (this->_modules.size() == 0 || this->_modules.back().ptr.list == NULL)
                 return zAPI::IModule::CONTINUE;
 
-            std::list<RefCounter<zAPI::IModuleInfo*>*>  nList;
-            this->getSortedList(hook, event, nList);
+            std::list<zAPI::IModuleInfo*>&  nList = this->_modules.back().ptr.list[event];
 
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          it = nList.begin();
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator          ite = nList.end();
+            std::list<zAPI::IModuleInfo*>::iterator          it = nList.begin();
+            std::list<zAPI::IModuleInfo*>::iterator          ite = nList.end();
 
             zAPI::IModule::ChainStatus                                    res = zAPI::IModule::CONTINUE;
 
@@ -170,7 +166,7 @@ class   ModuleManager : public Singleton<ModuleManager>
             }
             for (; it != ite; ++it)
             {
-                res = (dynamic_cast<T*>((*it)->ptr->getInstance())->*method)(httpReq, httpRes);
+                res = (dynamic_cast<T*>((*it)->getInstance())->*method)(httpReq, httpRes);
                 if (res != zAPI::IModule::CONTINUE)
                     break ;
             }
@@ -184,13 +180,10 @@ class   ModuleManager : public Singleton<ModuleManager>
         void                    pushModule(zAPI::IModule::Hook, RefCounter<zAPI::IModuleInfo*>*);
         void                    removeFromHooks(zAPI::IModuleInfo*);
         void                    removeModuleList(unsigned int);
-        /*
-           struct  ModuleStuff
-           {
-           std::list<RefCounter<zAPI::IModuleInfo*>*>*         hooks;
-           std::vector<zAPI::ISendResponse*>                   tab;
-           };
-         */
+        void                    createModuleStuff();
+        void                    getSortedList(zAPI::IModule::Hook hook, zAPI::IModule::Event event,
+                                            std::list<zAPI::IModuleInfo*>&);
+        void                    makeLists(ModuleStuff&);
 
         std::list<RefCounter<ModuleStuff> >   _modules;          // A list of a hook indexed array of IModuleInfo list
         std::list<RefCounter<zAPI::IModuleInfo*> >                            _moduleInstances;  // Every instance of modules

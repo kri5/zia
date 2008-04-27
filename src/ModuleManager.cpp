@@ -48,6 +48,7 @@ void            ModuleManager::pushModule(zAPI::IModule::Hook hook, RefCounter<z
 
 bool            ModuleManager::load(const std::string& filename)
 {
+    std::cout << "loading" << std::endl;
     IDynLib* library = new DynLib();
 
     // Loading the module
@@ -169,6 +170,40 @@ bool        ModuleManager::isLoaded(const std::string& fileName) const
     return false;
 }
 
+void        ModuleManager::makeLists(ModuleStuff& stuff)
+{
+    stuff.list = new std::list<zAPI::IModuleInfo*>[zAPI::IModule::onPostSendEvent + 1];
+    this->getSortedList(zAPI::IModule::ServerEventHook,     zAPI::IModule::onServerStartEvent,      stuff.list[0]);
+    this->getSortedList(zAPI::IModule::ServerEventHook,     zAPI::IModule::onServerStopEvent,       stuff.list[1]);
+    this->getSortedList(zAPI::IModule::ModuleEventHook,     zAPI::IModule::onLoadModuleEvent,       stuff.list[2]);
+    this->getSortedList(zAPI::IModule::ModuleEventHook,     zAPI::IModule::onUnloadModuleEvent,     stuff.list[3]);
+    this->getSortedList(zAPI::IModule::WorkflowHook,        zAPI::IModule::onBeginEvent,            stuff.list[4]);
+    this->getSortedList(zAPI::IModule::WorkflowHook,        zAPI::IModule::onEndEvent,              stuff.list[5]);
+    this->getSortedList(zAPI::IModule::WorkflowHook,        zAPI::IModule::onErrorEvent,            stuff.list[6]);
+    this->getSortedList(zAPI::IModule::NetworkHook,         zAPI::IModule::onAcceptEvent,           stuff.list[7]);
+    this->getSortedList(zAPI::IModule::NetworkHook,         zAPI::IModule::onReceiveEvent,          stuff.list[8]);
+    this->getSortedList(zAPI::IModule::NetworkHook,         zAPI::IModule::onSendEvent,             stuff.list[9]);
+    this->getSortedList(zAPI::IModule::ReceiveRequestHook,  zAPI::IModule::onPreReceiveEvent,       stuff.list[10]);
+    this->getSortedList(zAPI::IModule::ReceiveRequestHook,  zAPI::IModule::onPostReceiveEvent,      stuff.list[11]);
+    this->getSortedList(zAPI::IModule::BuildResponseHook,   zAPI::IModule::onPreBuildEvent,         stuff.list[12]);
+    this->getSortedList(zAPI::IModule::BuildResponseHook,   zAPI::IModule::onPostBuildEvent,        stuff.list[13]);
+    this->getSortedList(zAPI::IModule::SendResponseHook,    zAPI::IModule::onPreSendEvent,          stuff.list[14]);
+    this->getSortedList(zAPI::IModule::SendResponseHook,    zAPI::IModule::onProcessContentEvent,   stuff.list[15]);
+    this->getSortedList(zAPI::IModule::SendResponseHook,    zAPI::IModule::onPostSendEvent,         stuff.list[16]);
+}
+
+void        ModuleManager::createModuleStuff()
+{
+    this->makeLists(this->_modules.back().ptr);
+    std::list<zAPI::IModuleInfo*>  nList;
+    this->getSortedList(zAPI::IModule::SendResponseHook, zAPI::IModule::onProcessContentEvent, nList);
+
+    std::list<zAPI::IModuleInfo*>::reverse_iterator          it = nList.rbegin();
+    std::list<zAPI::IModuleInfo*>::reverse_iterator          ite = nList.rend();
+    for (; it != ite; ++it)
+        this->_modules.back().ptr.tab.push_back(dynamic_cast<zAPI::ISendResponse*>((*it)->getInstance()));
+}
+
 void        ModuleManager::scanModuleDir()
 {
     if (RootConfig::isSet("ModulesDir") == false)
@@ -184,6 +219,7 @@ void        ModuleManager::scanModuleDir()
         //Creating a new modules list
         ModuleStuff     newStuff;
         std::list<RefCounter<zAPI::IModuleInfo*>*>* newList = new std::list<RefCounter<zAPI::IModuleInfo*>*>[zAPI::IModule::NumberOfHooks];
+        newStuff.list = NULL;
         newStuff.hooks = newList;
         //duplicating old list, to apply changes from the old one to the new one
         if (this->_modules.size() > 0)
@@ -244,18 +280,8 @@ void        ModuleManager::scanModuleDir()
         }
         if (firstChange == true)
             delete[] newList;
-        else //if a new list has been added, we push our new processContent list :
-        {
-            std::list<RefCounter<zAPI::IModuleInfo*>*>  nList;
-            this->getSortedList(zAPI::IModule::SendResponseHook, zAPI::IModule::onProcessContentEvent, nList);
-
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::reverse_iterator          it = nList.rbegin();
-            std::list<RefCounter<zAPI::IModuleInfo*>*>::reverse_iterator          ite = nList.rend();
-            for (; it != ite; ++it)
-            {
-                this->_modules.back().ptr.tab.push_back(dynamic_cast<zAPI::ISendResponse*>((*it)->ptr->getInstance()));
-            }
-        }
+        else
+            this->createModuleStuff();
     }
     delete fs;
 }
@@ -295,34 +321,33 @@ void        ModuleManager::removeModuleList(unsigned int reqId)
 }
 
 void                   ModuleManager::getSortedList(zAPI::IModule::Hook hook, zAPI::IModule::Event event,
-                                                    std::list<RefCounter<zAPI::IModuleInfo*>*>& nList)
+                                                    std::list<zAPI::IModuleInfo*>& nList)
 {
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  it = this->_modules.back().ptr.hooks[hook].begin();
     std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  ite = this->_modules.back().ptr.hooks[hook].end();
-
     for (; it != ite; ++it)
     {
         int prio = (*it)->ptr->getInstance()->getPriority(event);
-        std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  nIt = nList.begin();
-        std::list<RefCounter<zAPI::IModuleInfo*>*>::iterator  nIte = nList.end();
+        std::list<zAPI::IModuleInfo*>::iterator  nIt = nList.begin();
+        std::list<zAPI::IModuleInfo*>::iterator  nIte = nList.end();
         bool    inserted = false;
 
         if (nIt == nIte)
-            nList.push_back((*it));
+            nList.push_back((*it)->ptr);
         else
         {
             for (; nIt != nIte; ++nIt)
             {
-                int nPrio = (*nIt)->ptr->getInstance()->getPriority(event);
+                int nPrio = (*nIt)->getInstance()->getPriority(event);
                 if (prio < nPrio)
                 {
-                    nList.insert(nIt, (*it));
+                    nList.insert(nIt, (*it)->ptr);
                     inserted = true;
                     break;
                 }
             }
             if (!inserted)
-                nList.push_back((*it));
+                nList.push_back((*it)->ptr);
         }
     }
 }
@@ -332,9 +357,9 @@ size_t                  ModuleManager::processContent(zAPI::IHttpRequest* req, z
     if (this->_taskModulesList[req->getRequestId()] == NULL)
         return res->getCurrentStream()->read(buff, size);
 
-    if (this->_taskModulesList[req->getRequestId()]->ptr.hooks[zAPI::IModule::SendResponseHook].size() > 0)
+    std::vector<zAPI::ISendResponse*>& tab = this->_taskModulesList[req->getRequestId()]->ptr.tab;
+    if (tab.size() > 0)
     {
-        std::vector<zAPI::ISendResponse*>& tab = this->_taskModulesList[req->getRequestId()]->ptr.tab;
         size_t ret = tab.front()->onProcessContent(req, res, buff, size, tab, 0);
         return ret;
     }

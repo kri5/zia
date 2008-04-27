@@ -1,5 +1,5 @@
-SET(CMAKE_BUILD_TYPE Release)
-#SET(CMAKE_BUILD_TYPE Debug)
+#SET(CMAKE_BUILD_TYPE Release)
+SET(CMAKE_BUILD_TYPE Debug)
 
 #doesn't work on win32 :
 ADD_SUBDIRECTORY(modules)
@@ -54,8 +54,8 @@ IF (WIN32)
 		MainSocket_win32.cpp File_win32.cpp Time_win32.cpp FileSystem_win32.cpp
 		DynLib_win32.cpp)
 ELSE (WIN32)
-	SET(CMAKE_CXX_FLAGS "-O3 -Wall -W -pedantic -funroll-loops -march=prescott -pipe -fomit-frame-pointer")
-    #SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic -ggdb")
+    #SET(CMAKE_CXX_FLAGS "-O3 -Wall -W -pedantic -funroll-loops -march=prescott -pipe -fomit-frame-pointer")
+    SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic -ggdb")
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
 	LINK_DIRECTORIES(../libs/unix/)
 	SET(ZIAHTTPD_LIBS pthread ticpp dl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
