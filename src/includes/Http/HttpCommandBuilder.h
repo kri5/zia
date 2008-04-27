@@ -3,14 +3,14 @@
 
 #include "Http/IHttpCommand.h"
 #include "API/IHttpResponse.h"
-#include "API/IHttpRequest.h"
+#include "Http/HttpRequest.h"
 
 class HttpCommandBuilder
 {
     public:
         HttpCommandBuilder();
         ~HttpCommandBuilder();
-        IHttpCommand*        buildCommand(zAPI::IHttpRequest*);
+        IHttpCommand*        buildCommand(HttpRequest*);
 };
 
 #endif /* !__HTTPCOMMANDBUILDER_H__ */

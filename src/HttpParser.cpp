@@ -70,7 +70,8 @@ void        HttpParser::parse()
     {
         if (this->parseGetCommand()
             || this->parsePostCommand()
-            || this->parseHeadCommand())
+            || this->parseHeadCommand()
+            || this->parseGenericCommand())
         {
             this->_isValid = true;
             if (this->isEOL())
@@ -128,6 +129,27 @@ bool        HttpParser::parseGetCommand()
                 if (this->isEOL())
                 {
                     this->_request->setCommand("GET");
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool        HttpParser::parseGenericCommand()
+{
+    std::string command;
+
+    if (this->readIdentifier(command))
+    {
+        if (this->parseUri())
+        {
+            if (this->parseProtocol())
+            {
+                if (this->isEOL())
+                {
+                    this->_request->setCommand(command);
                     return true;
                 }
             }
@@ -212,12 +234,13 @@ bool        HttpParser::parsePostCommand()
 bool        HttpParser::parseUri()
 {
     std::string     token;
-    bool            relative;
+    bool            relative = true;
 
     this->setCommentList("#");
     this->setComment(true);
     if (this->readAbsoluteUri(token, relative)
-        || this->readRelativeUri(token, relative))
+        || this->readRelativeUri(token, relative)
+        || this->peekIfEqual("*", token))
     {
 		this->setIgnore(false);
         this->_request->setUri(token, relative);
