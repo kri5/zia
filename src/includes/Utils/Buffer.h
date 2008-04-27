@@ -12,8 +12,9 @@ class Buffer
         ~Buffer();
 
         bool        hasEOL() const;
-		void		get(char* buff, size_t length);
-        char*       get(size_t length);
+		void		get(std::string& buff, size_t length);
+		//void		get(char* buff, size_t length);
+        //char*       get(size_t length);
         void        push(const char* data, size_t size);
         size_t      capacity() const;
         size_t      size() const;

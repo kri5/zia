@@ -70,45 +70,66 @@ void    Buffer::packBuffer(size_t begin)
     this->getEolPos();
 }
 
-void	Buffer::get(char* res, size_t length)
+void	Buffer::get(std::string& res, size_t length)
 {
-	size_t                                  i = 0;
+	//size_t                                  i = 0;
 	size_t                                  nb = 0;
     std::vector<std::string*>::iterator     it = this->_buffers.begin();
     std::vector<std::string*>::iterator     ite = this->_buffers.end();
+    res.clear();
+    res.reserve(length);
 
-	for (; nb < length; ++nb)
-	{
-		if (i == (*it)->length())
-		{
-			++it;
-			if (it == ite)
-			{
-				this->_readCount = nb;
-				res[nb] = 0;
-				return ;
-			}
-			i = 0;
-		}
-		else if (nb == this->_size)
-		{
-			this->_readCount = nb;
-			res[nb] = 0;
-			return ;
-		}
-		res[nb] = (*it)->at(i);
-		++i;
-	}
-	res[nb] = 0;
-	this->_readCount = nb;
+	//for (; nb < length; ++nb)
+	//{
+	//	if (i == (*it)->length())
+	//	{
+	//		++it;
+	//		if (it == ite)
+	//		{
+	//			this->_readCount = nb;
+	//			res[nb] = 0;
+	//			return ;
+	//		}
+	//		i = 0;
+	//	}
+	//	else if (nb == this->_size)
+	//	{
+	//		this->_readCount = nb;
+	//		res[nb] = 0;
+	//		return ;
+	//	}
+	//	res[nb] = (*it)->at(i);
+	//	++i;
+	//}
+	//res[nb] = 0;
+	//this->_readCount = nb;
+    while (nb < length && it != ite)
+    {
+        if ((*it)->length() >= length)
+        {
+            res.append(*(*it), 0, length);
+            nb += length;
+            break ;
+        }
+        else
+        {
+            res.append(*(*it));
+            length -= (*it)->length();
+            nb += (*it)->length();
+        }
+        ++it;
+    }
+    this->_readCount = nb;
+    //char* ptr = NULL;
+    //ptr[2] = 0;
 }
 
-char*   Buffer::get(size_t length)
-{
-    char* res = new char[length + 1];
-	this->get(res, length);
-	return res;
-}
+//char*   Buffer::get(size_t length)
+//{
+//    char* res = new char[length + 1];
+//	this->get(res, length);
+//	return res;
+//}
 
 char    Buffer::getChar(size_t pos)
 {
