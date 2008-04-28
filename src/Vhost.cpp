@@ -43,7 +43,7 @@ const std::string*		Vhost::getParam(std::string name) const
 
 zAPI::IConfig*	Vhost::getVhost(const std::vector<Vhost*>& vhosts, const std::string& host)
 {
-    MutexLock   lock(Vhost::_mutex);
+    MutexLock   lock(*Vhost::_mutex);
 	int		i;
 	int		size = vhosts.size();
 
