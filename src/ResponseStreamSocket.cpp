@@ -8,24 +8,30 @@
 #include "Stream/ResponseStreamSocket.h"
 #include "ZException.hpp"
 
-ResponseStreamSocket::ResponseStreamSocket(zAPI::IClientSocket* sock, const std::string& prev, size_t prevSize) :
+ResponseStreamSocket::ResponseStreamSocket(zAPI::IClientSocket* sock, char* prev, size_t prevSize) :
     _socket(sock), _previouslyReadDatas(prev), _prevBufferSize(prevSize)
 {
+    _previouslyReadDatasPtr = _previouslyReadDatas;
 }
 
 ResponseStreamSocket::~ResponseStreamSocket()
 {
+    delete[] _previouslyReadDatas;
 }
 
 size_t      ResponseStreamSocket::read(char* buf, size_t size)
 {
-    if (this->_prevBufferSize > 0)
+    if (this->_prevBufferSize > 0 && this->_previouslyReadDatasPtr != NULL)
     {
         if (size > this->_prevBufferSize)
             size = this->_prevBufferSize;
-        strncpy(buf, this->_previouslyReadDatas.c_str(), size);
+        strncpy(buf, this->_previouslyReadDatasPtr, size);
         this->_prevBufferSize -= size;
-        this->_previouslyReadDatas.erase(0, size);
+        this->_previouslyReadDatasPtr += size;
+        if (this->_prevBufferSize == 0)
+            this->_previouslyReadDatasPtr = NULL;
+        else
+            this->_previouslyReadDatasPtr += size;
         return size;
     }
     return this->_socket->recv(buf, size);

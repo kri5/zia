@@ -1,6 +1,7 @@
 #SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_BUILD_TYPE Debug)
 
+#doesn't work on win32 :
 ADD_SUBDIRECTORY(modules)
 
 ADD_DEFINITIONS(-DTIXML_USE_TICPP)
@@ -17,7 +18,8 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
     Task.cpp Worker.cpp Pool.cpp PoolManager.cpp HttpTransaction.cpp
     ModuleManager.cpp UrlString.cpp NastyCast.hpp ModuleInfo.cpp ResponseStreamGeneric.cpp
     AbstractModule.cpp ResponseStreamSocket.cpp BlackList.cpp HttpCommandBuilder.cpp 
-    HttpGetCommand.cpp HttpPostCommand.cpp HttpHeadCommand.cpp HttpOptionsCommand.cpp HttpErrorCommand.cpp)
+    HttpGetCommand.cpp HttpPostCommand.cpp HttpHeadCommand.cpp HttpOptionsCommand.cpp 
+    HttpErrorCommand.cpp HttpTraceCommand.cpp)
 
 SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
 	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
@@ -41,7 +43,8 @@ SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/ClientSocket_
     includes/Http/HttpCommandBuilder.h
     includes/Http/HttpHeadCommand.h
     includes/Http/HttpErrorCommand.h
-    includes/Http/HttpOptionsCommand.h)
+    includes/Http/HttpOptionsCommand.h
+    includes/Http/HttpTraceCommand.h)
 
 
 IF (WIN32)
@@ -56,8 +59,7 @@ IF (WIN32)
 		DynLib_win32.cpp)
 ELSE (WIN32)
     #SET(CMAKE_CXX_FLAGS "-O3 -Wall -W -pedantic -funroll-loops -march=prescott -pipe -fomit-frame-pointer")
-    SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic -ggdb -pg")
-    SET(CMAKE_C_FLAGS "-pg")
+    SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic -ggdb")
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
 	LINK_DIRECTORIES(../libs/unix/)
 	SET(ZIAHTTPD_LIBS pthread ticpp dl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})

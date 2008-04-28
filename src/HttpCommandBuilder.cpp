@@ -5,6 +5,7 @@
 #include "Http/HttpHeadCommand.h"
 #include "Http/HttpErrorCommand.h"
 #include "Http/HttpOptionsCommand.h"
+#include "Http/HttpTraceCommand.h"
 
 HttpCommandBuilder::HttpCommandBuilder()
 {
@@ -30,5 +31,7 @@ IHttpCommand*       HttpCommandBuilder::buildCommand(HttpRequest* req)
         return new HttpHeadCommand();
     else if (req->getCommand() == "OPTIONS")
         return new HttpOptionsCommand();
+    else if (req->getCommand() == "TRACE")
+        return new HttpTraceCommand();
     return new HttpErrorCommand(501);
 }

@@ -16,7 +16,7 @@ class   ResponseStreamSocket : public zAPI::IResponseStream
             };
             static const char*  Msg[];
         };
-        ResponseStreamSocket(zAPI::IClientSocket*, const std::string&, size_t);
+        ResponseStreamSocket(zAPI::IClientSocket*, char*, size_t);
         virtual ~ResponseStreamSocket();
         virtual size_t          read(char*, size_t);
         bool                    completed() const;
@@ -25,7 +25,8 @@ class   ResponseStreamSocket : public zAPI::IResponseStream
     private:
         int                     sockPoll() const;
         zAPI::IClientSocket*    _socket;
-        std::string             _previouslyReadDatas;
+        char*                   _previouslyReadDatas;
+        char*                   _previouslyReadDatasPtr;
         size_t                  _prevBufferSize;
 };
 

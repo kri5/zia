@@ -65,13 +65,11 @@ void		Server::run()
     int					size = this->_sockets.size();
     struct pollfd*		pfds;
     int					ret;
-    //int                 DEBUG = 10;
 
     //Hooks : onServerStart
     ModuleManager::getInstance().call(zAPI::IModule::ServerEventHook, zAPI::IModule::onServerStartEvent, &zAPI::IServerEvent::onServerStart);
     Logger::getInstance() << Logger::Info << "All sockets initialized, starting main loop" << Logger::Flush;
     pfds = new struct pollfd[size];
-    //while (DEBUG--)
     while (true)
     {
         memset(pfds, 0, sizeof(*pfds) * size);
@@ -87,8 +85,7 @@ void		Server::run()
         ret = poll(pfds, size, 1000);
         if (ret < 0)
         {
-            std::cerr << "Error in poll Server::run" << std::endl;
-            return ;
+            throw ZException<Server>(INFO, Error::Select);
         }
         if (ret == 0)
         {

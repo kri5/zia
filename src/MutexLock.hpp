@@ -16,6 +16,7 @@ class   MutexLock
         {
             //std::cout << "Locked" << std::endl;
             mutex.lock();
+            //_mutex->lock();
         }
         ~MutexLock()
         {

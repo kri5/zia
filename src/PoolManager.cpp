@@ -70,16 +70,10 @@ void    Pool::Manager::checkKeepAlive()
     if (ret < 0)
 	{
 #ifndef WIN32    
-		//throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(errno));
-        std::cerr << "Error in poll (Pool::Manager::checkKeepAlive)" << std::endl;
-        delete[] this->_fds;
-        return;
+		throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(errno));
 #else
-		//std::cout << strerror(WSAGetLastError()) << " " << WSAGetLastError() << std::endl;
-		//throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(WSAGetLastError()));
-        std::cerr << "Error in [p;; (Pool::Manager::checkKeepAlive)" << std::endl;
-        delete[] this->_fds;
-        return ;
+		std::cout << strerror(WSAGetLastError()) << " " << WSAGetLastError() << std::endl;
+		throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(WSAGetLastError()));
 #endif
 	}
 	if (ret > 0)
@@ -110,7 +104,12 @@ void    Pool::Manager::code()
 {
     while (this->_running)
     {
-        if (this->_pool->empty() == false)
+        if (this->_pool->empty())
+        {
+            //Logger::getInstance() << Logger::PrintStdOut << Logger::Info << "No more task, Manager's going to bed" << Logger::Flush;
+            //this->checkSleep(true);
+        }
+        else
         {
             //si on arrive ici, c'est qu'aucun thread n'est actuellement libre, ou il sont tous endormis.
             //reste-t-il des threads libre (il seraient alors tous endormis)
@@ -131,14 +130,7 @@ void    Pool::Manager::code()
 		{
 #endif
 			this->initKeepAlivePoll();
-            //try
-            //{
-                this->checkKeepAlive();
-            //}
-            //catch (ZException<Pool::Manager> e)
-            //{
-            //    std::cerr << "Exception thrown in pool msg == " << e.what() << std::endl;
-            //}
+			this->checkKeepAlive();
 #ifdef WIN32
         }
 #endif
