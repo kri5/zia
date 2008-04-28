@@ -70,10 +70,16 @@ void    Pool::Manager::checkKeepAlive()
     if (ret < 0)
 	{
 #ifndef WIN32    
-		throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(errno));
+		//throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(errno));
+        std::cerr << "Error in poll (Pool::Manager::checkKeepAlive)" << std::endl;
+        delete[] this->_fds;
+        return;
 #else
-		std::cout << strerror(WSAGetLastError()) << " " << WSAGetLastError() << std::endl;
-		throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(WSAGetLastError()));
+		//std::cout << strerror(WSAGetLastError()) << " " << WSAGetLastError() << std::endl;
+		//throw ZException<Pool::Manager>(INFO, Error::Poll, strerror(WSAGetLastError()));
+        std::cerr << "Error in [p;; (Pool::Manager::checkKeepAlive)" << std::endl;
+        delete[] this->_fds;
+        return ;
 #endif
 	}
 	if (ret > 0)
@@ -125,7 +131,14 @@ void    Pool::Manager::code()
 		{
 #endif
 			this->initKeepAlivePoll();
-			this->checkKeepAlive();
+            //try
+            //{
+                this->checkKeepAlive();
+            //}
+            //catch (ZException<Pool::Manager> e)
+            //{
+            //    std::cerr << "Exception thrown in pool msg == " << e.what() << std::endl;
+            //}
 #ifdef WIN32
         }
 #endif

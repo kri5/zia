@@ -87,7 +87,8 @@ void		Server::run()
         ret = poll(pfds, size, 1000);
         if (ret < 0)
         {
-            throw ZException<Server>(INFO, Error::Select);
+            std::cerr << "Error in poll Server::run" << std::endl;
+            return ;
         }
         if (ret == 0)
         {
