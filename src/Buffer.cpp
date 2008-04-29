@@ -152,37 +152,50 @@ void    Buffer::dump()
 void        Buffer::getEolPos()
 {
     std::list<std::string*>::iterator       it = this->_buffers.begin();
-    std::list<std::string*>::iterator       end = this->_buffers.end();
-    int                                     nb;
-    size_t                                  i;
-    bool                                    backslashAire = false;
-    size_t                                  length;
+    std::list<std::string*>::iterator       ite = this->_buffers.end();
 
-    for (nb = 0; it != end; ++it)
-    {
-        length = (*it)->length();
-        for (i = 0; i < length; ++i, ++nb)
-        {
-            if (backslashAire == true)
-            {
-                if ((*it)->at(i) == '\n')
-                {
-                    this->_eol = nb;
-                    return ;    
-                }
-                else
-                    backslashAire = false;
-            }
-            else
-            {
-                if ((*it)->at(i) == '\r')
-                {
-                    backslashAire = true;
-                }
-            } 
-        }
-    }
-    this->_eol = -1;
+    size_t      pos; 
+    for (; it != ite; ++it) 
+    { 
+        if ((pos = (*it)->find("\r\n")) != std::string::npos) 
+        { 
+            this->_eol = pos; 
+            return ; 
+        } 
+    } 
+    this->_eol = -1; 
+    //std::list<std::string*>::iterator       it = this->_buffers.begin();
+    //std::list<std::string*>::iterator       end = this->_buffers.end();
+    //int                                     nb;
+    //size_t                                  i;
+    //bool                                    backslashAire = false;
+    //size_t                                  length;
+
+    //for (nb = 0; it != end; ++it)
+    //{
+    //    length = (*it)->length();
+    //    for (i = 0; i < length; ++i, ++nb)
+    //    {
+    //        if (backslashAire == true)
+    //        {
+    //            if ((*it)->at(i) == '\n')
+    //            {
+    //                this->_eol = nb;
+    //                return ;    
+    //            }
+    //            else
+    //                backslashAire = false;
+    //        }
+    //        else
+    //        {
+    //            if ((*it)->at(i) == '\r')
+    //            {
+    //                backslashAire = true;
+    //            }
+    //        } 
+    //    }
+    //}
+    //this->_eol = -1;
 }
 
 char*   Buffer::getLine()
