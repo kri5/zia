@@ -41,6 +41,7 @@ int             ClientSocket::send(const char *buf, int length)
 
 int             ClientSocket::send(const std::string& buf, int length)
 {
+    std::cout << "WARNING" <<std::endl;
     std::string tmp = buf;
     int ret;
     int remainingSize = length;

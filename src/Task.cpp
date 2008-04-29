@@ -385,13 +385,15 @@ bool    Task::sendResponse()
 
 bool        Task::sendBuffer()
 {
-    char	line[1025];
+    //char	line[1025];
+    std::string     line;
     int     ret;
 
     while (this->_writeBuffer->empty() == false)
     {
+        //this->_writeBuffer->get(line, 1024);
         this->_writeBuffer->get(line, 1024);
-        ret = this->_socket->send(line, this->_writeBuffer->gcount());
+        ret = this->_socket->send(line.c_str(), this->_writeBuffer->gcount());
         if (ret < 0)
             return false;
         this->_writeBuffer->flush(ret);

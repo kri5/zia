@@ -70,46 +70,65 @@ void    Buffer::packBuffer(size_t begin)
     this->getEolPos();
 }
 
-void	Buffer::get(char* res, size_t length)
+void	Buffer::get(std::string& res, size_t length)
 {
-	size_t                                  i;
-	size_t                                  nb;
+	//size_t                                  i;
+	size_t                                  nb = 0;
 	std::list<std::string*>::iterator       it = this->_buffers.begin();
-	std::list<std::string*>::iterator       end = this->_buffers.end();
+	std::list<std::string*>::iterator       ite = this->_buffers.end();
 
-	i = 0;
-	for (nb = 0; nb < length; ++nb)
-	{
-		if (i == (*it)->length())
-		{
-			++it;
-			if (it == end)
-			{
-				this->_readCount = nb;
-				res[nb] = 0;
-				return ;
-			}
-			i = 0;
-		}
-		else if (nb == this->_size)
-		{
-			this->_readCount = nb;
-			res[nb] = 0;
-			return ;
-		}
-		res[nb] = (*it)->at(i);
-		++i;
-	}
-	res[nb] = 0;
-	this->_readCount = nb;
+	//i = 0;
+	//for (nb = 0; nb < length; ++nb)
+	//{
+	//	if (i == (*it)->length())
+	//	{
+	//		++it;
+	//		if (it == end)
+	//		{
+	//			this->_readCount = nb;
+	//			res[nb] = 0;
+	//			return ;
+	//		}
+	//		i = 0;
+	//	}
+	//	else if (nb == this->_size)
+	//	{
+	//		this->_readCount = nb;
+	//		res[nb] = 0;
+	//		return ;
+	//	}
+	//	res[nb] = (*it)->at(i);
+	//	++i;
+	//}
+	//res[nb] = 0;
+	//this->_readCount = nb;
+    res.clear(); 
+ 	res.reserve(length);
+    while (nb < length && it != ite) 
+    { 
+        if ((*it)->length() >= length) 
+        { 
+            res.append(*(*it), 0, length); 
+            nb += length; 
+            break ; 
+        } 
+        else 
+        { 
+            res.append(*(*it)); 
+            length -= (*it)->length(); 
+            nb += (*it)->length(); 
+        } 
+        ++it; 
+    } 
+    this->_readCount = nb;
 }
 
-char*   Buffer::get(size_t length)
-{
-    char* res = new char[length + 1];
-	this->get(res, length);
-	return res;
-}
+//char*   Buffer::get(size_t length)
+//{
+//    char* res = new char[length + 1];
+//	this->get(res, length);
+//	return res;
+//}
 
 char    Buffer::getChar(size_t pos)
 {
@@ -198,14 +217,14 @@ void        Buffer::getEolPos()
     //this->_eol = -1;
 }
 
-char*   Buffer::getLine()
-{
-    if (this->hasEOL())
-    {
-        return this->get(this->_eol + 1);
-    }
-    return NULL;
-}
+//char*   Buffer::getLine()
+//{
+//    if (this->hasEOL())
+//    {
+//        return this->get(this->_eol + 1);
+//    }
+//    return NULL;
+//}
 
 void    Buffer::flush(size_t length)
 {

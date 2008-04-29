@@ -21,7 +21,8 @@ HttpPostCommand::~HttpPostCommand()
 
 void        HttpPostCommand::manageRequestBody(HttpRequest* req, Buffer* readBuffer, zAPI::IClientSocket* socket)
 {
-    char* buff = readBuffer->get(readBuffer->size());
+    std::string     buff;
+    readBuffer->get(buff, readBuffer->size());
     req->setBodyStream(new ResponseStreamSocket(socket, buff, readBuffer->size()));
     readBuffer->flush();
 }
