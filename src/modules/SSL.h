@@ -8,7 +8,7 @@
 #ifdef _WIN32
  #define DLLEXP __declspec(dllexport)
 #else
- #define DDLEXP
+ #define DLLEXP
 #endif // !_WIN32
 
 class ModSSL : public zAPI::IModule, public zAPI::INetwork
