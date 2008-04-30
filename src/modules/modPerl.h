@@ -23,9 +23,7 @@ class ModPerl : public zAPI::IModule, public zAPI::ISendResponse, public zAPI::I
         zAPI::IModule::ChainStatus      onPreBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response);
         zAPI::IModule::ChainStatus      onPostBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response);
     private:
-        void                            init();
-
-        PerlInterpreter                 *_perlInterpreter;
+        char**                          createEnv(zAPI::IHttpRequest*) const;
 };
 
 #endif // MODPERL_H
