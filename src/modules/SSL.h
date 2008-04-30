@@ -3,6 +3,13 @@
 
 #include "API/IModule.h"
 #include "API/INetwork.h"
+#include "API/IConfig.h"
+
+#ifdef _WIN32
+ #define DLLEXP __declspec(dllexport)
+#else
+ #define DDLEXP
+#endif // !_WIN32
 
 class ModSSL : public zAPI::IModule, public zAPI::INetwork
 {

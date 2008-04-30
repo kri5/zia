@@ -1,7 +1,7 @@
 #include "SSLClientSocket.h"
 
 /// Initializing SSL socket and doing handshake with the client.
-SSLClientSocket::SSLClientSocket(int acceptedSocket, const std::string& address, int port) : listenSocket(acceptedSocket), _address(address), _port(port)
+SSLClientSocket::SSLClientSocket(int acceptedSocket, const std::string& address, int port, zAPI::IConfig* config) : listenSocket(acceptedSocket), _address(address), _port(port)
 {
   int iResult;
   bool no_error = true;
@@ -16,12 +16,12 @@ SSLClientSocket::SSLClientSocket(int acceptedSocket, const std::string& address,
 
   //FIXME we must get the certificates path from the configuration!
   // Load the certificate and the private key
-  if (SSL_CTX_use_certificate_file(ctx, "/home/etix/dev/zia/trunk/ssl/server.crt", SSL_FILETYPE_PEM) < 1)
+  if (SSL_CTX_use_certificate_file(ctx, config->getParam("SSLCertificateFile")->c_str(), SSL_FILETYPE_PEM) < 1)
   {
     this->logError();
     return;
   }
-  if (SSL_CTX_use_PrivateKey_file(ctx, "/home/etix/dev/zia/trunk/ssl/server.key.unsecure", SSL_FILETYPE_PEM) < 1)
+  if (SSL_CTX_use_PrivateKey_file(ctx, config->getParam("SSLCertificateKeyFile")->c_str(), SSL_FILETYPE_PEM) < 1)
   {
     this->logError();
     return;
@@ -77,7 +77,7 @@ SSLClientSocket::~SSLClientSocket()
 
 int     SSLClientSocket::send(const std::string& buf, int length)
 {
-    send(buf.c_str(), buf.size());
+    return send(buf.c_str(), buf.size());
 }
 
 int     SSLClientSocket::send(const char *buf, int length)
@@ -160,7 +160,7 @@ bool    SSLClientSocket::isClosed() const
     return this->_closed;
 }
 
-int     SSLClientSocket::getNativeSocket() const
+SOCKET  SSLClientSocket::getNativeSocket() const
 {
     return listenSocket;
 }
@@ -178,12 +178,14 @@ int                 SSLClientSocket::getPort() const
 /// Get and send errors (as strings) to the logger.
 void	SSLClientSocket::logError() const
 {
+#ifndef _WIN32
   unsigned long e;
   static char *buf;
 
   e = ERR_get_error();
   buf = ERR_error_string(e, NULL);
   std::cerr << "SSL " << buf << std::endl;
+#endif // !_WIN32
 }
 
 

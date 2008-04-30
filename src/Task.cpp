@@ -196,10 +196,10 @@ bool    Task::receiveDatas()
     if (ret > 0)
     {
         sockRet = this->_socket->recv(tmp, 1024);
-        tmp[sockRet] = 0;
         //std::cout << "readed [" << tmp << "]" << std::endl;
         if (sockRet <= 0) //check recv / error
             return false;
+		tmp[sockRet] = 0;
         //std::cout << "Feeding parser" << std::endl;
         this->_readBuffer->push(tmp, sockRet);
     }

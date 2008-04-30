@@ -213,7 +213,11 @@ void        ModuleManager::scanModuleDir()
     }
     //Retreiving modules in ModulesDir
     IFileSystem* fs = new FileSystem(RootConfig::getParamChar("ModulesDir"));
+#ifndef _WIN32
     std::list<IFile*>* files = fs->getFileList("so");
+#else
+	std::list<IFile*>* files = fs->getFileList("dll");
+#endif // !_WIN32
     if (files != NULL)
     {
         //Creating a new modules list

@@ -1,22 +1,22 @@
 #include "SSL.h"
 #include "SSLClientSocket.h"
 
-extern "C" zAPI::IModule* create()
+extern "C" DLLEXP zAPI::IModule* create()
 {
     return new ModSSL;
 }
 
-extern "C" void destroy(zAPI::IModule* i)
+extern "C" DLLEXP void destroy(zAPI::IModule* i)
 {
     delete i;
 }
 
-extern "C" std::string name()
+extern "C" DLLEXP std::string name()
 {
     return "ModSSL (Secure Socket Layer)";
 }
 
-extern "C" int  version()
+extern "C" DLLEXP float  version()
 {
     return 1;
 }
@@ -36,10 +36,12 @@ ModSSL::~ModSSL()
 
 zAPI::IClientSocket*        ModSSL::onAccept(SOCKET socket, const std::string& address, int port, zAPI::IConfig* config)
 {
+	if (!config->getParam("SSLCertificateFile") || !config->getParam("SSLCertificateKeyFile"))
+		return NULL;
     if (port == 8443)
     {
         std::cout << "SSL enabled" << std::endl;
-        return new SSLClientSocket(socket, address, port);
+        return new SSLClientSocket(socket, address, port, config);
     }
     return NULL;
 }

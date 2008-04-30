@@ -5,18 +5,22 @@
 #include <openssl/err.h>
 #include <iostream>
 #include "API/IClientSocket.h"
+#include "API/IConfig.h"
+
+#define USE_SSLEAY
+#define USE_OPENSSL
 
 class SSLClientSocket : public zAPI::IClientSocket
 {
   public:
-    SSLClientSocket(int acceptedSocket, const std::string& address, int port);
+    SSLClientSocket(int acceptedSocket, const std::string& address, int port, zAPI::IConfig* config);
     virtual ~SSLClientSocket();
     virtual int                 send(const char *buf, int length);
     virtual int                 send(const std::string& buf, int length);
     virtual int                 recv(char *buf, int length);
     virtual void                close(bool niceClosing);
     virtual bool                isClosed() const;
-    virtual int                 getNativeSocket() const;
+    virtual SOCKET              getNativeSocket() const;
     virtual const std::string&  getIP() const;
     virtual int                 getPort() const;
 
