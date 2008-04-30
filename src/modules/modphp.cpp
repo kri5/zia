@@ -159,52 +159,44 @@ size_t                          ModPHP::onProcessContent(zAPI::IHttpRequest* req
 {
     if (request->getParam("modphp_status") != NULL)
     {
-        pid_t   pid = reinterpret_cast<pid_t>(request->getParam("modphp_pid_t"));
-        int*    fds_output = (int*)request->getParam("modphp_fds_output");
-        int     *exited = (int*)(request->getParam("modphp_exited"));
+        pid_t   pid         = reinterpret_cast<pid_t>(request->getParam("modphp_pid_t"));
+        int*    fds_output  = reinterpret_cast<int*>(request->getParam("modphp_fds_output"));
+        int     *exited     = reinterpret_cast<int*>(request->getParam("modphp_exited"));
         int     status;
 
         waitpid(pid, &status, WNOHANG);
         if (!*exited && WIFEXITED(status))
             *exited = 1;
 
-        if (tab.size() == index + 1)
+        int len = read(fds_output[0], buf, size);
+        if (len < 0)
         {
-            int len = read(fds_output[0], buf, size);
-            if (len < 0)
-            {
-                std::cerr << "Reading error in modphp: " << strerror(errno) << std::endl;
-                return 0;
-            }
-            if (len < size)
-                buf[len] = 0;
+            std::cerr << "Reading error in modphp: " << strerror(errno) << std::endl;
+            return 0;
+        }
+        if (len < size)
+            buf[len] = 0;
 
-            ssize_t toRead = size - len;
-            int     readA = len;
-            int     nLen = 0;
-            if (!*exited && len != size)
-            {
-                while (toRead > 0)
-                {
-                    nLen = read(fds_output[0], &buf[readA], toRead);
-                    toRead -= nLen;
-                    readA += nLen;
-                    waitpid(pid, &status, WNOHANG);
-                    if (WIFEXITED(status))
-                    {
-                        *exited = 1;
-                        break;
-                    }
-                }
-                len = readA;
-            }
-            return (size_t)len;
-        }
-        else
+        ssize_t toRead = size - len;
+        int     readA = len;
+        int     nLen = 0;
+        if (!*exited && len != size)
         {
-            std::cerr << "ModPHP must be the first module on the ProcessContent." << std::endl;
-            return zAPI::IModule::ERRORMODULE;
+            while (toRead > 0)
+            {
+                nLen = read(fds_output[0], &buf[readA], toRead);
+                toRead -= nLen;
+                readA += nLen;
+                waitpid(pid, &status, WNOHANG);
+                if (WIFEXITED(status))
+                {
+                    *exited = 1;
+                    break;
+                }
+            }
+            len = readA;
         }
+        return (size_t)len;
     }
     size_t  ret;
     if (tab.size() == index + 1)
@@ -220,9 +212,9 @@ zAPI::IModule::ChainStatus      ModPHP::onPostSend(zAPI::IHttpRequest* request, 
 {
     if (request->getParam("modphp_status") != NULL)
     {
-        int* fds_output = (int*)request->getParam("modphp_fds_output");
-        int* fds_input = (int*)request->getParam("modphp_fds_input");
-        int* exited = (int*)request->getParam("modphp_exited");
+        int* fds_output = reinterpret_cast<int*>(request->getParam("modphp_fds_output"));
+        int* fds_input  = reinterpret_cast<int*>(request->getParam("modphp_fds_input"));
+        int* exited     = reinterpret_cast<int*>(request->getParam("modphp_exited"));
         close(fds_output[0]);
         delete[] fds_output;
         delete[] fds_input;
@@ -240,8 +232,8 @@ zAPI::IModule::ChainStatus    ModPHP::onPreBuild(zAPI::IHttpRequest* request, zA
     if ((pos = request->getUri().rfind('.')) != std::string::npos &&
             request->getUri().compare(pos, std::string::npos, ".php") == 0)
     {
-        request->setParam("modphp_status", (void*)1);
-        request->setParam("modphp_exited", (void*)exited);
+        request->setParam("modphp_status", reinterpret_cast<void*>(1));
+        request->setParam("modphp_exited", reinterpret_cast<void*>(exited));
         response->setHeaderInStream(true);
         request->setHeaderOption("Connection", "close");
         response->setHeaderOption("Connection", "close");
@@ -256,71 +248,4 @@ zAPI::IModule::ChainStatus    ModPHP::onPostBuild(zAPI::IHttpRequest* request, z
     return zAPI::IModule::CONTINUE;
 }
 
-
-//zAPI::IModule::ChainStatus      ModPHP::onPostReceive(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response)
-//{
-//    std::cout << "Event: onPostReceive" << std::endl;
-//    // PHP GOES HERE :D
-//
-//    int fds_input[2];
-//    int fds_output[2];
-//    pipe(fds_input);
-//    pipe(fds_output);
-//    pid_t pid = fork();
-//    if (pid == -1)
-//    {
-//        std::cerr << "Fork failed, modphp can't continue." << std::endl;
-//        return zAPI::IModule::CONTINUE;
-//    }
-//    else if (pid == 0)
-//    {
-//        // Child
-//        char *newargv[] = { "php-cgi", NULL };
-//        char *newenviron[] = { "SERVER_SOFTWARE=ziahttpd",
-//                                "SERVER_NAME=tachatte",
-//                                "GATEWAY_INTERFACE=CGI/1.1",
-//                                "SERVER_PROTOCOL=HTTP/1.1",
-//                                "SERVER_PORT=8880",
-//                                "REQUEST_METHOD=GET",
-//                                //"PATH_INFO=",
-//                                "PATH_TRANSLATED=/home/etix/dev/zia/trunk/www/index.php",
-//                                "SCRIPT_NAME=/index.php",
-//                                "QUERY_STRING=/index.php",
-//                                "REMOTE_HOST=REMOTE_ADDR",
-//                                "REMOTE_ADDR=127.0.0.1",
-//                                "CONTENT_TYPE=HTTP",
-//                                "CONTENT_LENGTH=0",
-//                                NULL };
-//        dup2(0, fds_input[0]);
-//        dup2(1, fds_output[1]);
-//        if (execve("/usr/bin/php-cgi", newargv, newenviron) == -1)
-//        {
-//            perror("Execve");
-//            exit(1);
-//        }
-//    }
-//    else
-//    {
-//        // Parent
-//
-//        // Giving file to php
-//        std::ifstream f("/home/etix/dev/zia/trunk/www/index.php", std::fstream::out);
-//        
-//        char bigbuf[10000];
-//        f.read(bigbuf, 10000);
-//        f.close();
-//        write(fds_input[1], bigbuf, 10000);
-//
-//        // Reading php output
-//        ssize_t len;
-//        char buf[1024 + 1];
-//        while ((len = read(fds_output[0], buf, 1024)) != 0)
-//        {
-//           buf[len] = '\0'; 
-//           std::cout << buf << std::endl;
-//        }
-//        std::cout << "Goodbye" << std::endl;
-//    }
-//    return zAPI::IModule::CONTINUE;
-//}
 
