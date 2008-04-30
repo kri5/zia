@@ -44,7 +44,8 @@ SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/ClientSocket_
     includes/Http/HttpHeadCommand.h
     includes/Http/HttpErrorCommand.h
     includes/Http/HttpOptionsCommand.h
-    includes/Http/HttpTraceCommand.h)
+    includes/Http/HttpTraceCommand.h
+    )
 
 
 IF (WIN32)
@@ -62,7 +63,7 @@ ELSE (WIN32)
     SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic -ggdb")
 	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
 	LINK_DIRECTORIES(../libs/unix/)
-	SET(ZIAHTTPD_LIBS pthread ticpp dl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
+	SET(ZIAHTTPD_LIBS pthread ticpp dl perl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
     #SET(ZIAHTTPD_LIBS ${ZIAHTTPD_LIBS} -lefence)
 ENDIF (WIN32)
 

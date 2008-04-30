@@ -1,4 +1,5 @@
-INCLUDE_DIRECTORIES(../includes/ ./)
+INCLUDE(perl.cmake)
+INCLUDE_DIRECTORIES(${PERL_INCLUDE_PATH} ../includes/ ./)
 
 IF (UNIX)
 
@@ -9,6 +10,7 @@ IF (UNIX)
 #ADD_LIBRARY (SSL MODULE SSL.cpp SSLClientSocket.cpp)
 #ADD_LIBRARY (maintenance MODULE maintenance.cpp)
 ADD_LIBRARY (ModPHP MODULE modphp.cpp)
+#ADD_LIBRARY (ModPerl MODULE modPerl.cpp)
 #ADD_LIBRARY (AutoIndex MODULE autoindex.cpp)
 #ADD_LIBRARY(PriorityTest1 MODULE priorityTest1.cpp)
 #ADD_LIBRARY(PriorityTest2 MODULE priorityTest2.cpp)
