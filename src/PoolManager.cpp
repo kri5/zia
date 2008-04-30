@@ -30,8 +30,6 @@ Pool::Manager::~Manager()
 
 void    Pool::Manager::initKeepAlivePoll() //warning : high contendence.
 {
-    this->_pool->flushKeepAlive(this->_keepAlive);
-
     std::list<KeepAliveClient>::iterator    it = this->_keepAlive.begin();
     std::list<KeepAliveClient>::iterator    ite = this->_keepAlive.end();
     size_t                                  size = this->_keepAlive.size();
@@ -125,6 +123,7 @@ void    Pool::Manager::code()
                 //  non : a voir pour un algo de recreation de thread.
             }
         }
+		this->_pool->flushKeepAlive(this->_keepAlive);
 #ifdef WIN32 //because Windows can't poll on a empty fds set...
 		if (this->_keepAlive.size() > 0)
 		{
@@ -133,6 +132,7 @@ void    Pool::Manager::code()
 			this->checkKeepAlive();
 #ifdef WIN32
         }
+		Sleep(1);
 #endif
         if (this->_timer->elapsed(3))
         {

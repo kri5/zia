@@ -16,6 +16,9 @@ typedef int socklen_t;
 
 MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhost*>& vhosts) : _netId(netId), _vhosts(vhosts)
 {
+	if (WSAStartup(MAKEWORD(2,2), &_wsaData) != NOERROR)
+		throw ZException<IMainSocket>(INFO, MainSocket::Error::Create);
+
 	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (listenSocket == INVALID_SOCKET)
 	{
@@ -24,6 +27,11 @@ MainSocket::MainSocket(const NetworkID* netId, int queue, const std::vector<Vhos
 	}
 	bind(netId);
 	listen(queue);
+}
+
+MainSocket::~MainSocket()
+{
+	WSACleanup();
 }
 
 void MainSocket::bind(const NetworkID* netId) const

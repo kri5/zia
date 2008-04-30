@@ -17,7 +17,7 @@ Logger& Logger::getInstance()
 void  Logger::setLogLevel(Logger::LEVEL level)
 {
 	this->_level = level;
-    this->_logMutex->unlock();
+    //this->_logMutex->unlock();
 }
 
 void  Logger::setOutputFile(const char* file)
@@ -29,7 +29,7 @@ void  Logger::setOutputFile(const char* file)
         this->_file = NULL;
     }
     this->_file = new std::ofstream(file, std::ios_base::out | std::ios_base::trunc);
-    this->_logMutex->unlock();
+    //this->_logMutex->unlock();
 }
 
 void  Logger::setStdOut(bool value)

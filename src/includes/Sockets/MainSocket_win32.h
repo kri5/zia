@@ -15,6 +15,7 @@ class MainSocket : public IMainSocket
 public:
 	// MainSocket constructor : will build a main server socket, listening on "adress":"port", with a "queue" client queue.
 	MainSocket(const NetworkID*, int, const std::vector<Vhost*>&);
+	~MainSocket();
 	
     const std::vector<Vhost*>&   getAssociatedVhosts();
 
@@ -35,6 +36,7 @@ private:
 
 	const NetworkID*			_netId;
 	const std::vector<Vhost*>&	_vhosts;
+	WSADATA						_wsaData;
 };
 
 #endif //__MAINSOCKET_WIN32_H__

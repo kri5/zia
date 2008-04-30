@@ -11,6 +11,7 @@
 Init::Init(int argc, char **argv) : _argc(argc), _argv(argv)
 {
 	_conf = new Config();
+	_pool = NULL;
 }
 
 /// Will destroy logger, since this function is supposed to be the last called in this server.
@@ -25,7 +26,8 @@ Init::~Init()
 	}
 	this->_vhosts.clear();
 	delete this->_conf;
-    delete this->_pool;
+	if (this->_pool)
+		delete this->_pool;
 }
 
 /// Run the sequential initialization

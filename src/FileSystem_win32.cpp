@@ -51,7 +51,6 @@ std::list<IFile*>*				FileSystem::getFileList(const char* pattern)
 		{
 			if (files.cFileName && files.cFileName[0] != '.')
 			{
-				std::cout << files.cFileName << std::endl;
 				this->_files->push_back(new File(files.cFileName, this->_path.c_str()));
 			}
 			res = FindNextFile(search, &files);

@@ -38,5 +38,6 @@ void		Mutex::unlock()
 {
 	if (lockCount > 0)
 		lockCount -= 1;
-	ReleaseMutex(ghMutex);
+	if (ReleaseMutex(ghMutex) == 0)
+		std::cout << "Mutex error: " << GetLastError() << " see http://msdn.microsoft.com/en-us/library/ms681382(VS.85).aspx" << std::endl;
 }

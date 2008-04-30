@@ -34,7 +34,6 @@ bool           DirectoryBrowser::get()
 
         // Find the parentdir path
         size_t found = parent.rfind("/");
-        std::cout << found << std::endl;
         if (found > 0)
             parent.erase(found);
         else
