@@ -33,3 +33,9 @@ size_t					ResponseStreamGeneric::getSize() const
 {
     return this->_stream->str().size();
 }
+
+size_t                  ResponseStreamGeneric::read(char* buf, size_t size)
+{
+    this->_stream->read(buf, size);
+    return (size_t)this->_stream->gcount();
+}

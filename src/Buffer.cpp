@@ -58,6 +58,13 @@ void    Buffer::push(const char* data, size_t size)
         this->getEolPos();
 }
 
+void    Buffer::pushFront(const std::string& buff)
+{
+    this->_size += buff.size();
+    this->_buffers.push_front(new std::string(buff));
+    this->getEolPos();
+}
+
 void    Buffer::packBuffer(size_t begin)
 {
     if (this->_buffers.size() == 0)
@@ -217,14 +224,15 @@ void        Buffer::getEolPos()
     //this->_eol = -1;
 }
 
-//char*   Buffer::getLine()
-//{
-//    if (this->hasEOL())
-//    {
-//        return this->get(this->_eol + 1);
-//    }
-//    return NULL;
-//}
+bool    Buffer::getLine(std::string& res)
+{
+    if (this->hasEOL())
+    {
+        this->get(res, this->_eol + 2);
+        return true;
+    }
+    return false;
+}
 
 void    Buffer::flush(size_t length)
 {

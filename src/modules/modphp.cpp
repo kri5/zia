@@ -17,7 +17,7 @@ extern "C"  void    modphp_catchpipe(int sig)
 extern "C" zAPI::IModule* create()
 {
     signal(SIGPIPE, modphp_catchpipe);
-    signal(SIGCHLD, SIG_IGN);
+    //signal(SIGCHLD, SIG_IGN);
     return new ModPHP;
 }
 
@@ -61,6 +61,7 @@ char**                          ModPHP::createEnv(zAPI::IHttpRequest* req) const
 
     env["SERVER_SOFTWARE"] = "ziahttpd";
     env["SERVER_NAME"] = "tachatte";
+    env["HTTP_HOST"] = *(req->getConfig()->getParam("ServerName"));
     env["GATEWAY_INTERFACE"] = "CGI/1.1";
     env["SERVER_PROTOCOL"] = "HTTP/1.1";
     env["SERVER_PORT"] = port;
@@ -158,7 +159,15 @@ size_t                          ModPHP::onProcessContent(zAPI::IHttpRequest* req
 {
     if (request->getParam("modphp_status") != NULL)
     {
-        int* fds_output = (int*)request->getParam("modphp_fds_output");
+        pid_t   pid = reinterpret_cast<pid_t>(request->getParam("modphp_pid_t"));
+        int*    fds_output = (int*)request->getParam("modphp_fds_output");
+        int     *exited = (int*)(request->getParam("modphp_exited"));
+        int     status;
+
+        waitpid(pid, &status, WNOHANG);
+        if (!*exited && WIFEXITED(status))
+            *exited = 1;
+
         if (tab.size() == index + 1)
         {
             int len = read(fds_output[0], buf, size);
@@ -169,7 +178,27 @@ size_t                          ModPHP::onProcessContent(zAPI::IHttpRequest* req
             }
             if (len < size)
                 buf[len] = 0;
-            return len;
+
+            ssize_t toRead = size - len;
+            int     readA = len;
+            int     nLen = 0;
+            if (!*exited && len != size)
+            {
+                while (toRead > 0)
+                {
+                    nLen = read(fds_output[0], &buf[readA], toRead);
+                    toRead -= nLen;
+                    readA += nLen;
+                    waitpid(pid, &status, WNOHANG);
+                    if (WIFEXITED(status))
+                    {
+                        *exited = 1;
+                        break;
+                    }
+                }
+                len = readA;
+            }
+            return (size_t)len;
         }
         else
         {
@@ -193,13 +222,11 @@ zAPI::IModule::ChainStatus      ModPHP::onPostSend(zAPI::IHttpRequest* request, 
     {
         int* fds_output = (int*)request->getParam("modphp_fds_output");
         int* fds_input = (int*)request->getParam("modphp_fds_input");
+        int* exited = (int*)request->getParam("modphp_exited");
         close(fds_output[0]);
         delete[] fds_output;
         delete[] fds_input;
-        int status;
-        //pid_t pid = reinterpret_cast<pid_t>(request->getParam("modphp_pid_t"));
-        //std::cout << "done : status == " << status << " " << waitpid(pid, &status, 0) << "done " << std::endl;
-        //std::cout << WIFSTOPPED(status) << std::endl;
+        delete[] exited;
     }
     return zAPI::IModule::CONTINUE;
 }
@@ -207,10 +234,14 @@ zAPI::IModule::ChainStatus      ModPHP::onPostSend(zAPI::IHttpRequest* request, 
 zAPI::IModule::ChainStatus    ModPHP::onPreBuild(zAPI::IHttpRequest* request, zAPI::IHttpResponse* response)
 {
     size_t  pos;
+    int* exited = new int;
+    *exited = 0;
+
     if ((pos = request->getUri().rfind('.')) != std::string::npos &&
             request->getUri().compare(pos, std::string::npos, ".php") == 0)
     {
         request->setParam("modphp_status", (void*)1);
+        request->setParam("modphp_exited", (void*)exited);
         response->setHeaderInStream(true);
         request->setHeaderOption("Connection", "close");
         response->setHeaderOption("Connection", "close");

@@ -1,12 +1,12 @@
 #ifndef MODPERL_H
 #define MODPERL_H
 
-#include <EXTERN.h>
-#include <perl.h>
-
 #include "API/IModule.h"
 #include "API/ISendResponse.h"
 #include "API/IBuildResponse.h"
+
+#include <EXTERN.h>
+#include <perl.h>
 
 class ModPerl : public zAPI::IModule, public zAPI::ISendResponse, public zAPI::IBuildResponse
 {

@@ -47,6 +47,7 @@ class Task
         bool            sendBuffer();
         bool            receiveDatas();
         bool            sendResponseStream();
+        bool            checkHeaderInStream();
         bool            checkTimeout();
 
         HttpRequest*            _req;
@@ -62,6 +63,8 @@ class Task
         bool                    _freeTask;
         unsigned int            _taskId;
         Status                  _status;
+        bool                    _headerInStreamParsed;
+        bool                    _headerInStreamSent;
 
         const std::vector<Vhost*>*    _vhosts;
 };

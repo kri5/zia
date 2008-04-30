@@ -67,6 +67,8 @@ void    Task::init()
     this->_res = new HttpResponse();
     this->_time = new Time();
     _status = Started;
+    _headerInStreamParsed = false;
+    _headerInStreamSent = false;
 }
 
 void    Task::clear(bool clearBuffers)
@@ -255,54 +257,10 @@ bool    Task::parseRequest()
 
 bool    Task::buildResponse()
 {
-    //std::cout << "Building response" << std::endl;
     _status = BuildingResponse;
     ModuleManager::getInstance().call(zAPI::IModule::BuildResponseHook, zAPI::IModule::onPreBuildEvent, this->_req, this->_res, &zAPI::IBuildResponse::onPreBuild);
     if (this->_command != NULL)
         this->_command->execute(this->_req, this->_res);
-
-
-
-
-
-
-
-//    const std::string&  docRoot = *(this->_req->getConfig()->getParam("DocumentRoot"));
-//    IFile*              fileInfo = new File(this->_req->getUri(), docRoot.c_str());
-//
-//    if (fileInfo->getError() != IFile::Error::None)
-//    {
-//        if (fileInfo->getError() == IFile::Error::NoSuchFile)
-//            this->_res->setError(new ErrorResponseStream(404, this->_req));
-//        else if (fileInfo->getError() == IFile::Error::PermissionDenied)
-//            this->_res->setError(new ErrorResponseStream(403, this->_req));
-//        //FIXME: add no more file descriptors as a potential error.
-//        delete fileInfo;
-//        return true;
-//    }
-//    if (fileInfo->isDirectory() == false)
-//    {
-//        this->_res->setHeaderOption("MimeType", 
-//              RootConfig::getInstance().getConfig()->getMimeType(fileInfo->getExtension()));
-//        this->_res->appendStream(new ResponseStreamFile(fileInfo));
-//    }
-//    else
-//    {
-//        std::string     path(docRoot + this->_req->getUri());
-//        delete fileInfo;
-//        zAPI::IResponseStream* stream = new ResponseStreamDir(this->_req);
-//        if (stream->good() == false)
-//        {
-//            delete stream;
-//            this->_res->setError(new ErrorResponseStream(500, this->_req));
-//            return true;
-//        }
-//	    if (this->_res->getHeaderInStream() == false)
-//            this->_res->setHeaderOption("Content-Type", "text/html");
-//        this->_res->appendStream(stream);
-//    }
-//	if (this->_res->getHeaderInStream() == false)
-//        this->_res->setHeaderOption("Content-Length", this->_res->getContentLength());
     return true;
 }
 
@@ -311,6 +269,10 @@ bool    Task::sendHeader()
     //std::cout << "sending header" << std::endl;
     std::ostringstream      header;
 
+    if (this->_res->headerOptionIsSet("Status"))
+    {
+        this->_res->setResponseStatus(atoi(this->_res->getHeaderOption("Status").c_str()));
+    }
     header << this->_req->getProtocol() << " " << this->_res->getResponseStatus() << " " << this->_res->getResponseValue() << "\r\n";
 
     const std::map<std::string, std::string>& headerParams = this->_res->getHeaderOptions();
@@ -321,13 +283,42 @@ bool    Task::sendHeader()
         header << it->first << ": " << it->second << "\r\n";
         ++it;
     }
-	if (this->_res->getHeaderInStream() == false)
-	    header << "\r\n";
+    header << "\r\n";
     const std::string& str = header.str();
     //std::cout << "header == \n[" << str << "]" << std::endl;
     //this->_writeBuffer->clear();
-    this->_writeBuffer->push(str.c_str(), str.length());
+    this->_writeBuffer->pushFront(str);
+    this->_headerInStreamSent = true;
     return (this->sendBuffer());
+}
+
+bool    Task::checkHeaderInStream()
+{
+    std::string line;
+    while (this->_writeBuffer->getLine(line))
+    {
+        if (line == "\r\n") //done with headers
+        {
+            this->_headerInStreamParsed = true;
+            this->_writeBuffer->flush();
+            return true;
+        }
+        else
+        {
+            line.erase(line.length() - 2);
+            std::string     key;
+            std::string     value;
+            size_t          pos = line.find(":");
+            key = line.substr(0, pos);
+            value = line.substr(pos + 1, std::string::npos);
+            size_t          firstNonSpace = value.find_first_not_of(' ');
+            if (firstNonSpace > 0)
+                value = value.substr(firstNonSpace, std::string::npos);
+            this->_res->setHeaderOption(key, value);
+            this->_writeBuffer->flush();
+        }
+    }
+    return true;
 }
 
 bool    Task::sendResponseStream()
@@ -342,8 +333,21 @@ bool    Task::sendResponseStream()
         if (size == 0)
             break ;
         this->_writeBuffer->push(buff, size);
-        if (this->sendBuffer() == false)
-            return false;
+        if (this->_res->getHeaderInStream() == true && this->_headerInStreamParsed == false)
+            this->checkHeaderInStream();
+        if (this->_res->getHeaderInStream() == true && this->_headerInStreamSent == false)
+            this->sendHeader();
+        if (this->_res->getHeaderInStream() == true && this->_headerInStreamSent == false)
+        {
+            if (this->sendBuffer() == false)
+                return false;
+        }
+        else if (this->_res->getHeaderInStream() == false
+                || this->_headerInStreamSent)
+        {
+            if (this->sendBuffer() == false)
+                return false;
+        }
         if (this->_time->elapsed(5))
         {
             this->_status = RolledBack;
@@ -359,7 +363,7 @@ bool    Task::sendResponse()
     {
         this->_status = SendingHeader;
         ModuleManager::getInstance().call(zAPI::IModule::SendResponseHook, zAPI::IModule::onPreSendEvent, this->_req, this->_res, &zAPI::ISendResponse::onPreSend);
-        if (this->sendHeader() == false)
+        if (this->_res->getHeaderInStream() == false && this->sendHeader() == false)
             return false;
     }
 
