@@ -51,7 +51,7 @@ int                             ModPerl::getPriority(zAPI::IModule::Event event)
 {
     if (event == zAPI::IModule::onPreBuildEvent)
         return 10;
-    return 0;
+    return 2;
 }
 
 //char**                          ModPerl::createEnv(zAPI::IHttpRequest* req) const

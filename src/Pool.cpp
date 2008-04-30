@@ -48,7 +48,7 @@ bool        Pool::addTask(zAPI::IClientSocket* clt, const std::vector<Vhost*>* v
         this->_tasks.push(t);
         return true;
     }
-    std::cout << "Warning : dropping task !!!" << std::endl;
+    clt->send("HTTP/1.x 503 Service Unavailaible\r\n\r\nServer is full\r\n", 53);
     return false;
 }
 

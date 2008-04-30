@@ -41,7 +41,7 @@ Server::Server(const std::map<const NetworkID*, std::vector<Vhost*> >& toBind,
     getrlimit(RLIMIT_NOFILE, &l);
     _maxFd = (l.rlim_cur - 4) / 2;
 #else
-	_maxFd = FD_SETSIZE;
+    _maxFd = FD_SETSIZE;
 #endif
 }
 
@@ -103,36 +103,25 @@ void            Server::checkSockets(int nbSockets, const struct pollfd* pfds) c
     int         size = this->_sockets.size();
     int         i;
 
-    for (i = 0; i < size && nbSockets > 0; ++i) //FIXME: if nbSockets is the number of sockets to read, maybe we should use it :p
+    for (i = 0; i < size && nbSockets > 0; ++i)
     {
 #ifndef WIN32
         if (pfds[i].revents & (POLLIN | POLLOUT | POLLERR | POLLHUP))
 #else
-        if (pfds[i].revents & (POLLRDNORM))
+            if (pfds[i].revents & (POLLRDNORM))
 #endif
-        {
-            zAPI::IClientSocket*      clt = this->_sockets[i]->accept();
-            if (clt)
             {
-                //if (ClientSocket::countSockets() >= this->_maxFd)
-                //{
-                //    std::cout << "Max client reached, disconnecting" << std::endl;
-                //    delete clt;
-                //}
-                //else
-                //{
+                zAPI::IClientSocket*      clt = this->_sockets[i]->accept();
+                --nbSockets;
+                if (clt)
+                {
                     if (this->_pool->addTask(clt, &(this->_sockets[i]->getAssociatedVhosts())) == false)
                     {
-                        //FIXME: check for memory leak (not deleting clt)
-                        Logger::getInstance() << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
+                        delete clt;
+                        Logger::getInstance() << Logger::NoStdOut << Logger::Info << "Can't add task : dropping clients" << Logger::Flush;
                     }
-                    //else
-                    //{
-                    //    std::cout << "new connected client" << std::endl;
-                    //}
-                //}
+                }
             }
-        }
     }
 }
 
