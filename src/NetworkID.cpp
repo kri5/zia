@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Logger.hpp"
 
 #include "Network/NetworkID.h"

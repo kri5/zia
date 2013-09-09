@@ -6,7 +6,7 @@
 #include <list>
 #include <string>
 #include <openssl/ssl.h>
-#include <ticpp.h>
+#include <tinyxml2.h>
 
 #include "Logger.hpp"
 #include "Network/Vhost.h"
@@ -24,16 +24,16 @@ class Init
         Pool*                                                           getPool() const;
 	private:
 		void    		readCommandLine();
-		void    		readConfiguration(const std::string fileName = "zia.conf", Config* cfg = NULL);
+		bool			readConfiguration(const std::string fileName = "zia.conf", Config* cfg = NULL);
         void            initModules();
 		void    		initSSL();
 		void    		initSockets();
 		void    		initThreads();
 		void			includeConfigFile(std::string fileName, Config* cfg);
 
-		void			parseConfigNode(ticpp::Node*, Config*);
-		void			addVhost(ticpp::Element&);
-		void			addMimeType(ticpp::Element& node);
+		void			parseConfigNode(tinyxml2::XMLNode*, Config*);
+		void			addVhost(tinyxml2::XMLElement&);
+		void			addMimeType(tinyxml2::XMLElement& node);
 		void			addWildcardVhosts();
 		void			addNonWildcardVhosts();
         bool            checkConfig() const;

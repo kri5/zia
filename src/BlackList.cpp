@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Modules/BlackList.h"
 #include "File/IFile.h"
 #include "File/File.h"

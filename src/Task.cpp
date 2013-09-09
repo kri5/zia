@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <errno.h>
+#include <cstring>
 #ifndef WIN32
 #include <poll.h>
 #endif

@@ -2,7 +2,8 @@
 # define BUFFER_H__
 
 #include <list>
-#include <stdlib.h>
+#include <cstdlib>
+#include <string>
 
 class Buffer
 {
@@ -11,8 +12,8 @@ class Buffer
         ~Buffer();
 
         bool        hasEOL() const;
-		/// Buff needs to be length + 1 char.
-		void		get(std::string& buff, size_t length);
+	/// Buff needs to be length + 1 char.
+	void 	    get(std::string& buff, size_t length);
         void        push(const char* data, size_t size);
         void        pushFront(const std::string& data);
         size_t      capacity() const;

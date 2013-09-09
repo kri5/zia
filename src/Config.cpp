@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include "Config.h"
 #include "ZException.hpp"

@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "zia.h"
 #include "FileSystem/FileSystem_unix.h"
 #include "ZException.hpp"

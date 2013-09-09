@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <cstring>
 
 #include "Sockets/ClientSocket_unix.h"
 #include "ZException.hpp"

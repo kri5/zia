@@ -1,4 +1,5 @@
 #include <errno.h> //FIXME: check win32 compactibility
+#include <cstring>
 #ifndef WIN32
 # include <poll.h>
 #endif

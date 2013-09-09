@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <cstring>
 #include <iostream>
 
 #include "Mutex/Mutex_unix.h"

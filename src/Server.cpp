@@ -6,6 +6,8 @@
 #include <poll.h>
 #endif
 
+#include <cstring>
+
 #include "zia.h"
 #include "Server.h"
 #include "Workflow/Worker.h"

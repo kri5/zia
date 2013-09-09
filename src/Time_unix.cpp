@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Time/Time_unix.h"
 
 Time::Time()

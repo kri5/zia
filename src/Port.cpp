@@ -1,4 +1,5 @@
 #include <sstream>
+#include <cstdlib>
 
 #include "Logger.hpp"
 #include "Network/Port.h"

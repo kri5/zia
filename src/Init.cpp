@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string.h>
+#include <cstring>
 
 #include "Init.h"
 #include "Network/NetworkID.h"
@@ -33,23 +33,24 @@ Init::~Init()
 /// Run the sequential initialization
 int         Init::start()
 {
-    this->readCommandLine();
-	try
+	this->readCommandLine();
+	if (this->readConfiguration() == false)
 	{
-		this->readConfiguration();
+		Logger::getInstance() << Logger::Warning << "Can't load configuration file" << Logger::Flush;
+		return EXIT_FAILURE;
 	}
-	catch (ticpp::Exception& ex)
-	{
-		Logger::getInstance() << Logger::Warning << "Can't load configuration file" << ex.what() << Logger::Flush;
-        return EXIT_FAILURE;
-	}
-    if (this->checkConfig() == false)
-        return EXIT_FAILURE;
-    this->initModules();
-    this->initSockets();
-    this->initThreads();
+	if (this->checkConfig() == false)
+		return EXIT_FAILURE;
+	this->_conf->dump();
+	std::cout << "Conf Dumped" << std::endl;
+	this->initModules();
+	std::cout << "Modules Initialized" << std::endl;
+	this->initSockets();
+	std::cout << "Sockets Initialized" << std::endl;
+	this->initThreads();
+	std::cout << "Threads Initialized" << std::endl;
 
-    return EXIT_SUCCESS; // EXIT_FAILURE on error
+	return EXIT_SUCCESS; // EXIT_FAILURE on error
 }
 
 /// Read and process arguments from the command line
@@ -58,20 +59,20 @@ void        Init::readCommandLine()
 
 }
 
-void		Init::addVhost(ticpp::Element& node)
+void		Init::addVhost(tinyxml2::XMLElement& node)
 {
 	std::string		addr;
 	std::string		port;
 
-	addr = node.GetAttribute("address");
-	port = node.GetAttribute("port");
+	addr = node.Attribute("address");
+	port = node.Attribute("port");
 	if (addr == "" || port == "")
 	{
 		Logger::getInstance() << Logger::Warning << "Can't have VirtualHost without both address and port" << Logger::Flush;
 		return ;
 	}
 	Vhost*	v = new Vhost(NetworkID::factory(addr, port), this->_conf);
-	this->parseConfigNode(static_cast<ticpp::Node*>(&node), static_cast<Config*>(v));
+	this->parseConfigNode(static_cast<tinyxml2::XMLNode*>(&node), static_cast<Config*>(v));
     if (v->isSet("ServerName") == false)
     {
         Logger::getInstance() << Logger::Warning << "This vhost (" << addr << ':' << port << ") doesn't have a ServerName." << Zia::Newline
@@ -90,9 +91,9 @@ void		Init::addVhost(ticpp::Element& node)
     }
 }
 
-void		Init::addMimeType(ticpp::Element& node)
+void		Init::addMimeType(tinyxml2::XMLElement& node)
 {
-	std::string fileExts = node.GetAttribute("file");
+	std::string fileExts = node.Attribute("file");
 
 	if (fileExts == "")
 		return ;
@@ -108,32 +109,24 @@ void		Init::addMimeType(ticpp::Element& node)
 
 void		Init::includeConfigFile(std::string fileName, Config* cfg)
 {
-	try
-	{
-		this->readConfiguration(fileName, cfg);
-	}
-	catch (ticpp::Exception& ex)
-	{
-		Logger::getInstance() << Logger::Warning << "Can't include file " << fileName << ": " << Zia::Newline << ex.what() << Logger::Flush;
-	}
+	if (this->readConfiguration(fileName, cfg) != true)
+		Logger::getInstance() << Logger::Warning << "Can't include file " << fileName << Zia::Newline << Logger::Flush;
 }
 
-void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
+void		Init::parseConfigNode(tinyxml2::XMLNode* node, Config* cfg)
 {
-	ticpp::Iterator<ticpp::Element>	it;
-
-	for (it = it.begin(node); it != it.end(); ++it)
+	for (tinyxml2::XMLNode* it = node->FirstChild(); it; it = it->NextSibling())
 	{
-		if (it->Value() == "VirtualHost")
-			this->addVhost(*it);
-		else if (it->Value() == "Include")
-			this->includeConfigFile(it->GetText(), cfg);
-		else if (it->Value() == "type")
-			this->addMimeType(*it); 
+		if (strcmp(it->Value(),"VirtualHost") == 0)
+			this->addVhost(*it->ToElement());
+		else if (strcmp(it->Value(),"Include") == 0)
+			this->includeConfigFile(it->ToElement()->GetText(), cfg);
+		else if (strcmp(it->Value(),"type") == 0)
+			this->addMimeType(*it->ToElement()); 
 		// Generic parameters
 		else
 		{
-			cfg->setParam(it->Value(), it->GetText());
+			cfg->setParam(it->Value(), it->ToElement()->GetText());
 			Logger::getInstance() << Logger::Info << Logger::NoStdOut << "Adding " << it->Value() << " = " << *(this->_conf->getParam(it->Value())) << " to conf" << Zia::Newline << Logger::End;
 		}
 	}
@@ -141,15 +134,18 @@ void		Init::parseConfigNode(ticpp::Node* node, Config* cfg)
 }
 
 /// Read the XML configuration
-void        Init::readConfiguration(const std::string fileName, Config* cfg)
+bool	Init::readConfiguration(const std::string fileName, Config* cfg)
 {
 	if (!cfg)
 		cfg = this->_conf;
-	ticpp::Document	doc(fileName);
-	doc.LoadFile();
+	tinyxml2::XMLDocument	doc;
+	std::cout << fileName << std::endl;
+	if (doc.LoadFile(fileName.c_str()) != 0)
+		return false;
 
-	ticpp::Node* node =	doc.FirstChild();
+	tinyxml2::XMLNode* node = doc.FirstChild();
 	this->parseConfigNode(node, cfg);
+	return true;
 }
 
 void        Init::initModules()
@@ -213,10 +209,12 @@ void		Init::addNonWildcardVhosts()
 				if (itNet->first->getAddress() == "*" && itNet->first->getPort() == (*it)->getPort())
 				{
 					found = true;
+					std::cout << found << std::endl;
 					itNet->second.push_back(*it);
 				}
 				++itNet;
 			}
+			std::cout << found << std::endl;
 			if (found == false)
 				this->_bindList[&((*it)->getNetworkID())].push_back(*it);
 		}
@@ -227,9 +225,6 @@ void		Init::addNonWildcardVhosts()
 /// Start the server sockets
 void        Init::initSockets()
 {
-	std::list<Vhost*>::iterator		it = this->_vhosts.begin();
-	std::list<Vhost*>::iterator		end = this->_vhosts.end();
-
 	this->addWildcardVhosts();
 	this->addNonWildcardVhosts();
 }

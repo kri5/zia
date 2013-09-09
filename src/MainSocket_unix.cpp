@@ -1,5 +1,7 @@
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
+#include <cstdlib>
 
 #include "Sockets/MainSocket_unix.h"
 #include "ZException.hpp"

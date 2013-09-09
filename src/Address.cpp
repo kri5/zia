@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Network/Address.h"
 
 #include "MemoryManager.hpp"

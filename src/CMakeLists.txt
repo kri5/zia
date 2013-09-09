@@ -4,8 +4,6 @@ SET(CMAKE_BUILD_TYPE Debug)
 #doesn't work on win32 :
 ADD_SUBDIRECTORY(modules)
 
-ADD_DEFINITIONS(-DTIXML_USE_TICPP)
-
 INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR} includes/ ./)
 
 SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp 
@@ -61,9 +59,8 @@ IF (WIN32)
 ELSE (WIN32)
     #SET(CMAKE_CXX_FLAGS "-O3 -Wall -W -pedantic -funroll-loops -march=prescott -pipe -fomit-frame-pointer")
     SET(CMAKE_CXX_FLAGS "-O0 -Wall -W -pedantic -ggdb")
-	INCLUDE_DIRECTORIES(../libs/includes/ticpp)
 	LINK_DIRECTORIES(../libs/unix/)
-	SET(ZIAHTTPD_LIBS pthread ticpp dl perl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
+	SET(ZIAHTTPD_LIBS pthread tinyxml2 dl perl ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES})
     #SET(ZIAHTTPD_LIBS ${ZIAHTTPD_LIBS} -lefence)
 ENDIF (WIN32)
 
