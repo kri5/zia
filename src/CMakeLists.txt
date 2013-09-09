@@ -4,6 +4,8 @@ SET(CMAKE_BUILD_TYPE Debug)
 #doesn't work on win32 :
 ADD_SUBDIRECTORY(modules)
 
+ADD_DEFINITIONS(-std=c++11 -W -Wall)
+
 INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR} includes/ ./)
 
 SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp 
