@@ -4,14 +4,14 @@
 #include <fstream>
 #include <exception>
 
-#include "Threads/IThread.h"
+#include "Threads/ZThread.h"
 #include "Workflow/Pool.h"
 #include "Workflow/Task.h"
 #include "Time/ITime.h"
 
 class Pool;
 
-class Worker : public IThread
+class Worker : public ZThread
 {
     public:
         static Worker*      create(Pool*, unsigned int);

@@ -8,7 +8,7 @@ ADD_DEFINITIONS(-std=c++11 -W -Wall)
 
 INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR} includes/ ./)
 
-SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp 
+SET(ZIAHTTPD_SRCS main.cpp ZThread.cpp Logger.cpp 
 	Config.cpp Init.cpp Vhost.cpp
 	Address.cpp Port.cpp NetworkID.cpp Wildcard.hpp Logger.hpp
 	MemoryManager.hpp ErrorMsg.cpp ZException.hpp
@@ -21,11 +21,11 @@ SET(ZIAHTTPD_SRCS main.cpp IThreadbase.cpp Logger.cpp
     HttpGetCommand.cpp HttpPostCommand.cpp HttpHeadCommand.cpp HttpOptionsCommand.cpp 
     HttpErrorCommand.cpp HttpTraceCommand.cpp)
 
-SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/IThreadbase.h 
-	includes/Threads/IThread_win32.h includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
+SET(ZIAHTTPD_HEADERS includes/zia.h Singleton.hpp includes/Sockets/ClientSocket_win32.h includes/Sockets/MainSocket_win32.h includes/Threads/ZThread.h 
+	includes/Mutex/IMutex.h includes/Mutex/Mutex_win32.h includes/Mutex/IRWMutex.h includes/Mutex/RWMutex.h includes/Mutex/RWMutex_win32.h
 	includes/API/IClientSocket.h includes/Init.h includes/Config.h includes/Network/Vhost.h
 	includes/Network/Address.h includes/Network/Port.h includes/Network/NetworkID.h includes/File/IFile.h includes/FileSystem/IFileSystem.h includes/File/File_win32.h includes/FileSystem/FileSystem_win32.h
-	includes/Time/ITime.h includes/Time/Time_win32.h includes/Workflow/Parser.h includes/Http/HttpParser.h includes/Http/HttpRequest.h includes/Threads/IThread.h
+	includes/Time/ITime.h includes/Time/Time_win32.h includes/Workflow/Parser.h includes/Http/HttpParser.h includes/Http/HttpRequest.h 
     includes/API/IHttpTransaction.h includes/API/IHttpRequest.h includes/API/IHttpResponse.h includes/API/IServerEvent.h includes/API/IModuleEvent.h
     includes/API/IWorkflow.h includes/API/INetwork.h includes/API/IReceiveRequest.h includes/API/IBuildResponse.h includes/API/ISendResponse.h
     includes/Http/HttpResponse.h includes/Stream/ErrorResponseStream.h includes/Server.h
@@ -54,7 +54,7 @@ IF (WIN32)
 	LINK_DIRECTORIES(../libs/win32/)
 	SET(ZIAHTTPD_LIBS Ws2_32.lib ticppd.lib ${OPENSSL_LIBRARIES}
       ${OPENSSL_EAY_LIBRARIES})
-	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS}  IThread_win32.cpp
+	SET(ZIAHTTPD_SRCS ${ZIAHTTPD_HEADERS} ${ZIAHTTPD_SRCS}  
 		Mutex_win32.cpp RWMutex_win32.cpp ClientSocket_win32.cpp
 		MainSocket_win32.cpp File_win32.cpp Time_win32.cpp FileSystem_win32.cpp
 		DynLib_win32.cpp)
@@ -68,7 +68,7 @@ ENDIF (WIN32)
 
 IF (UNIX)
   SET(ZIAHTTPD_SRCS ${ZIAHTTPD_SRCS} ClientSocket_unix.cpp
-	  MainSocket_unix.cpp IThread_unix.cpp Mutex_unix.cpp RWMutex_unix.cpp
+	  MainSocket_unix.cpp Mutex_unix.cpp RWMutex_unix.cpp
       FileSystem_unix.cpp File_unix.cpp Time_unix.cpp DynLib_unix.cpp)
 ENDIF (UNIX)
 

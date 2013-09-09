@@ -112,7 +112,7 @@ bool        Pool::createThread()
 
 void        Pool::relaunchThread(Worker* w)
 {
-    w->stop();
+    //w->stop();
 }
 
 void        Pool::killThread()

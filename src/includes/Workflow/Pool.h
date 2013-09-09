@@ -5,7 +5,7 @@
 #include <list>
 
 #include "Task.h"
-#include "Threads/IThread.h"
+#include "Threads/ZThread.h"
 #include "Workflow/Worker.h"
 #include "Mutex/Mutex.h"
 #include "Time/ITime.h"
@@ -55,7 +55,7 @@ class   Pool
         unsigned int            _nbTasks;
         IMutex*                 _mutex;
         //IMutex*                 _keepAliveMutex;
-        class   Manager : public IThread
+        class   Manager : public ZThread
         {
             public:
                 struct  Error
