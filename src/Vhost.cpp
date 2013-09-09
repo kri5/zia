@@ -34,7 +34,7 @@ const NetworkID&	Vhost::getNetworkID() const
 	return *(this->_netId);
 }
 
-const std::string*		Vhost::getParam(std::string name) const
+const std::string*		Vhost::getParam(const std::string& name) const
 {
 	if (name == "User" || name == "Group")
 		throw ZException<Vhost>(INFO, Vhost::Error::InvalidConfig, name.c_str());
