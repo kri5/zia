@@ -12,31 +12,32 @@
 
 class File : public IFile
 {
-	public:
-		File(std::string, const char* path = NULL);
-		~File();
-        Error::Code         getError() const;
-		const std::string&	getFileName() const;
-        const std::string&  getFullFileName() const;
-        bool                isDirectory() const;
-		unsigned int	    getSize() const;
-		ITime*			    getModifDate();
-        std::streamsize     get(char* buff, size_t len);
-		std::string		    getExtension() const;
-        bool                good() const;
-        bool                eof() const;
-        void                open();
-        void                close();
-        std::iostream*      getStream();
-        size_t              read(char*, size_t);
-	private:
-		std::string		    _name;
-        std::string         _filePath;
-		struct stat		    _stat;
-		ITime*			    _modifTime;
-        std::fstream*       _stream;
-        bool                _closed;
-        Error::Code         _errorCode;
+public:
+  File(const std::string&, const std::string&);
+  ~File();
+  Error::Code getError() const;
+  const std::string &getFileName() const;
+  const std::string &getFullFileName() const;
+  bool isDirectory() const;
+  unsigned int getSize() const;
+  ITime *getModifDate();
+  std::streamsize get(char *buff, size_t len);
+  std::string getExtension() const;
+  bool good() const;
+  bool eof() const;
+  void open();
+  void close();
+  std::iostream *getStream();
+  size_t read(char *, size_t);
+
+private:
+  std::string _name;
+  std::string _filePath;
+  struct stat _stat;
+  ITime *_modifTime;
+  std::fstream *_stream;
+  bool _closed;
+  Error::Code _errorCode;
 };
 
 #endif //FILE_H__
