@@ -1,128 +1,88 @@
 #include <iostream>
 #include <cstdlib>
+#include <vector>
+#include <algorithm>
+#include <sstream>
 
 #include "Config.h"
 #include "ZException.hpp"
 
 #include "MemoryManager.hpp"
 
-Config::Config() : _globalConf(true)
-{
-	_params.clear();
-	_mime = new std::map<std::string, std::string>;
-	_modules = new std::list<std::string>;
+Config::Config() : _globalConf(true) {
 }
 
-Config::~Config()
-{
-	if (this->_mime != NULL)
-		delete this->_mime;
-	if (this->_modules != NULL)
-		delete this->_modules;
-	_params.clear();
+Config::~Config() {
 }
 
-Config::Config(const Config& right) : IConfig(), _mime(NULL), _modules(NULL), _globalConf(false)
-{
-    //some parameters shouldn't be herited :
-    std::map<std::string, std::string>::const_iterator    it = right._params.begin();
-    std::map<std::string, std::string>::const_iterator    ite = right._params.end();
+Config::Config(const Config &right)
+    : IConfig(), _globalConf(false) {
+  std::vector<std::string> v {
+    "ServerName", "Listen", "LogLevel", "UserDir", "ErrorLog"
+  };
 
-    while (it != ite)
-    {
-        if (it->first != "ServerName"
-                && it->first != "Listen"
-                && it->first != "LogLevel"
-                && it->first != "UserDir"
-                && it->first != "ErrorLog") //to be continued
-            _params[it->first] = it->second;
-        ++it;
-    }
+  for (auto param : right._params) {
+    if (std::find(std::begin(v), std::end(v), param.first) != std::end(v))
+      this->_params.insert(param);
+  }
 }
 
-const std::string*      Config::getParam(const std::string& name) const
-{
-	//We have to go through with an iterator because operator[] isn't a const method.
-	std::map<std::string, std::string>::const_iterator		it = this->_params.find(name);
-	if (it == this->_params.end())
-		return (NULL);
-	return &(it->second);
+const std::string *Config::getParam(const std::string &name) const {
+  //We have to go through with an iterator because operator[] isn't a const
+  //method.
+  auto it = this->_params.find(name);
+  return (it == std::end(this->_params) ? nullptr : &(it->second));
 }
 
-const char*             Config::getParamChar(const std::string& name) const
-{
-	//We have to go through with an iterator because operator[] isn't a const method.
-	std::map<std::string, std::string>::const_iterator		it = this->_params.find(name);
-	if (it == this->_params.end())
-		return (NULL);
-	return it->second.c_str();
+const char *Config::getParamChar(const std::string &name) const {
+  //We have to go through with an iterator because operator[] isn't a const
+  //method.
+  auto it = this->_params.find(name);
+  return (it == std::end(this->_params) ? nullptr : it->second.c_str());
 }
 
-void			Config::setParam(const std::string& name, const std::string& value)
-{
-	this->_params[name] = value;
+void Config::setParam(const std::string &name, const std::string &value) {
+  this->_params[name] = value;
 }
 
-void	Config::addMimeType(std::string ext, std::string type)
-{
-	(*this->_mime)[ext] = type;
+void Config::addMimeType(std::string ext, std::string type) {
+  this->_mime[ext] = type;
 }
 
-std::string	Config::getMimeType(std::string ext) const
-{
-	if (this->_mime == NULL)
-		throw ZException<Config>(INFO, Error::NotRootConfig);
-	std::map<std::string, std::string>::const_iterator	it = this->_mime->find(ext);
-
-	if (it != this->_mime->end())
-		return it->second;
-	return "text/plain";
+std::string Config::getMimeType(std::string ext) const {
+  if (this->_mime.empty())
+    throw ZException<Config>(INFO, Error::NotRootConfig);
+  auto it = this->_mime.find(ext);
+  return (it != std::end(this->_mime) ? it->second : "text/plain");
 }
 
-void	Config::addModule(std::string location)
-{
-    Logger::getInstance() << Logger::Info << "Adding module \"" << location << '"' << Logger::Flush;
-	this->_modules->push_back(location);
+void Config::addModule(std::string location) {
+  Logger::getInstance() << Logger::Info << "Adding module \"" << location << '"'
+                        << Logger::Flush;
+  this->_modules.push_back(location);
 }
 
-const std::list<std::string>&	Config::getModules() const
-{
-	if (this->_modules == NULL)
-		throw ZException<Config>(INFO, Error::NotRootConfig);
-    return *(this->_modules);
+const std::list<std::string> &Config::getModules() const {
+  if (this->_modules.empty())
+    throw ZException<Config>(INFO, Error::NotRootConfig);
+  return this->_modules;
 }
 
-bool        Config::isSet(const std::string& name) const
-{
-    return (this->_params.find(name) != this->_params.end());
+bool Config::isSet(const std::string &name) const {
+  return (this->_params.find(name) != std::end(this->_params));
 }
 
-void        Config::removeParameter(std::string name)
-{
-    this->_params.erase(name);
+void Config::removeParameter(std::string name) { this->_params.erase(name); }
+
+void Config::dump() const {
+  for (auto param : this->_params)
+    std::cout << param.first << " => " << param.second << std::endl;
 }
 
-void        Config::dump() const
-{
-    std::map<std::string, std::string>::const_iterator it = this->_params.begin();
-    std::map<std::string, std::string>::const_iterator ite = this->_params.end();
+int Config::getIntParam(const std::string &key, int defaultValue) const {
+  int nb = 0;
 
-    while (it != ite)
-    {
-        std::cout << it->first << " => " << it->second << std::endl;
-        ++it;
-    }
-}
-
-int         Config::getIntParam(const std::string& key, int defaultValue) const
-{
-    int nb;
-
-    if (this->isSet(key))
-    {
-        std::string threadNb = *this->getParam(key);
-        if ((nb = atoi(threadNb.c_str())) != 0)
-            return nb;
-    }
-    return defaultValue;
+  if (this->isSet(key))
+	  std::istringstream(*this->getParam(key)) >> nb;
+  return nb != 0 ? nb : defaultValue;
 }
