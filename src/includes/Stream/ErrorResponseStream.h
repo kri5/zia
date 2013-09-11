@@ -8,24 +8,24 @@
 #include "Http/HttpRequest.h"
 #include "API/IResponseStream.h"
 
-class   ErrorResponseStream : public zAPI::IResponseStream
-{
-    public:
-        ErrorResponseStream(int status, HttpRequest& request);
-        ErrorResponseStream(int status, HttpRequest* request);
-        virtual ~ErrorResponseStream() throw();
-        size_t                      read(char*, size_t);
-        int                         getStatus() const;
-        bool                        completed() const;
-        size_t                      getSize() const;
-        bool                        good() const;
-    private:
-        void                        setContent();
+class ErrorResponseStream : public zAPI::IResponseStream {
+public:
+  ErrorResponseStream(int status, HttpRequest &request);
+  ErrorResponseStream(int status, HttpRequest *request);
+  virtual ~ErrorResponseStream() throw();
+  size_t read(char *, size_t);
+  int getStatus() const;
+  bool completed() const;
+  size_t getSize() const;
+  bool good() const;
 
-        HttpRequest&                _request;
-        int                         _status;
-        std::string                 _message;
-        std::stringstream*          _content;
+private:
+  void setContent();
+
+  HttpRequest &_request;
+  int _status;
+  std::string _message;
+  std::stringstream *_content;
 };
 
 
